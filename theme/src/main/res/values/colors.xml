@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="md_theme_primary">#00A9CE</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#B3EBFF</color>
+    <color name="md_theme_onPrimaryContainer">#001F29</color>
+    <color name="md_theme_secondary">#0077C8</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#FFFFFF</color>
+    <color name="md_theme_onSecondaryContainer">#001C37</color>
+    <color name="md_theme_tertiary">#0033A0</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#D0E4FF</color>
+    <color name="md_theme_onTertiaryContainer">#41000A</color>
+    <color name="md_theme_error">#BA1B1B</color>
+    <color name="md_theme_errorContainer">#FFDAD4</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410001</color>
+    <color name="md_theme_background">#FFF5F5F5</color>
+    <color name="md_theme_onBackground">#191C1E</color>
+    <color name="md_theme_surface">#FFF5F5F5</color>
+    <color name="md_theme_onSurface">#191C1E</color>
+    <color name="md_theme_surfaceVariant">#DCE4E8</color>
+    <color name="md_theme_onSurfaceVariant">#40484B</color>
+    <color name="md_theme_outline">#70787C</color>
+    <color name="md_theme_inverseOnSurface">#F0F1F4</color>
+    <color name="md_theme_inverseSurface">#2E3133</color>
+    <color name="md_theme_primaryInverse">#57D5FC</color>
+
+    <color name="error">#BA1B1B</color>
+
+    <color name="iconColor">@color/md_theme_onSecondaryContainer</color>
+
+    <color name="colorNordicLogo">@color/md_theme_primary</color>
+    <color name="colorNordicLogoText">@android:color/black</color>
+
+    <color name="drawableColor">@color/md_theme_background</color>
+    <color name="appBarColor">@color/md_theme_primary</color>
+
+    <color name="statusBarColor">@color/md_theme_secondary</color>
+</resources>
