@@ -37,48 +37,21 @@ dependencies {
 
     implementation "no.nordicsemi.android.common:theme:1.0.0"
 
-    implementation "no.nordicsemi.android:ble-common:2.2.0"
-    implementation 'androidx.lifecycle:lifecycle-service:2.4.0'
-
-    implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
-
     implementation "androidx.compose.material3:material3:1.0.0-alpha01"
-    implementation 'com.google.android.material:material:1.5.0-beta01'
 
     def compose_version = "1.1.0-beta03"
 
     implementation "androidx.compose.ui:ui:$compose_version"
-    // Tooling support (Previews, etc.)
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material design icons
     implementation "androidx.compose.material:material-icons-core:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Integration with activities
     implementation "androidx.activity:activity-compose:1.4.0"
-    // Integration with ViewModels
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
-    // Integration with observables
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-
-    implementation "androidx.activity:activity-ktx:1.4.0"
-    implementation "androidx.fragment:fragment-ktx:1.4.0"
-    implementation "androidx.recyclerview:recyclerview:1.2.1"
-    implementation "androidx.cardview:cardview:1.0.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
-    implementation "com.google.android.material:material:1.4.0"
 
     // Brings the new BluetoothLeScanner API to older platforms
     implementation "no.nordicsemi.android.support.v18:scanner:1.6.0"
-
-    // Log Bluetooth LE events in nRF Logger
-    implementation "no.nordicsemi.android:log:2.3.0"
-
-    // BLE library
-    implementation "no.nordicsemi.android:ble-livedata:2.3.1"
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.compose.ui:ui-tooling:1.0.5"
 }
 
 // === Maven Central configuration ===
