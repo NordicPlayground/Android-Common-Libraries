@@ -9,6 +9,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:7.0.3"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
         classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
+        classpath "com.autonomousapps:dependency-analysis-gradle-plugin:0.78.0"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -22,3 +23,4 @@ task clean(type: Delete) {
 // Maven Central publishing
 apply plugin: 'io.github.gradle-nexus.publish-plugin'
 apply from: rootProject.file('gradle/publish-root.gradle')
+apply plugin: "com.autonomousapps.dependency-analysis"

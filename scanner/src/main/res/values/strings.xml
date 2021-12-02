@@ -45,4 +45,6 @@
         require it in order to scan for Bluetooth LE devices. If you are sure your
         device is advertising and it doesn\'t show up here, click the button below to
         enable Location.</string>
+
+    <string name="navigation_item_accessibility">App bar navigation back icon.</string>
 </resources>
