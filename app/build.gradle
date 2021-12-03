@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -29,20 +30,72 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    /**
+     * There is an issue with recomposition performance when data objects doesn't belong to the module
+     * when composition is enabled, because those objects cannot be properly compared for the changes.
+     * Better to leave enabled for all modules.
+     */
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion kotlin_version
+    }
     buildFeatures {
-        viewBinding true
+        compose true
     }
 }
 
 dependencies {
+    implementation project(":scanner")
+    implementation project(":theme")
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    def koin_version= "3.1.2"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+
+    implementation "no.nordicsemi.android.common:theme:1.0.0"
+
+    implementation "no.nordicsemi.android:ble-common:2.2.0"
+    implementation 'androidx.lifecycle:lifecycle-service:2.4.0'
+
+    implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
+
+    implementation "androidx.compose.material3:material3:1.0.0-alpha01"
+    implementation 'com.google.android.material:material:1.5.0-beta01'
+
+    def compose_version = "1.1.0-beta03"
+
+    implementation "androidx.compose.ui:ui:1.1.0-beta03"
+    // Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    // Material design icons
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:1.4.0"
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
+    // Integration with observables
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
+    implementation "androidx.activity:activity-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
+    implementation "com.google.android.material:material:1.4.0"
+
+    // Brings the new BluetoothLeScanner API to older platforms
+    implementation "no.nordicsemi.android.support.v18:scanner:1.6.0"
+
+    // Log Bluetooth LE events in nRF Logger
+    implementation "no.nordicsemi.android:log:2.3.0"
+
+    // BLE library
+    implementation "no.nordicsemi.android:ble-livedata:2.3.1"
+    implementation "androidx.core:core-ktx:1.7.0"
 }

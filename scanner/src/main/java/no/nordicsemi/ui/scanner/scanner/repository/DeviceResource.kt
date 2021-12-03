@@ -1,6 +1,6 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
-sealed class DeviceResource<T> {
+internal sealed class DeviceResource<T> {
 
     companion object {
         fun <T> createLoading() = LoadingResult<T>()
@@ -9,8 +9,8 @@ sealed class DeviceResource<T> {
     }
 }
 
-class LoadingResult <T> : DeviceResource<T>()
+internal class LoadingResult <T> : DeviceResource<T>()
 
-data class SuccessResult<T>(val value: T) : DeviceResource<T>()
+internal data class SuccessResult<T>(val value: T) : DeviceResource<T>()
 
-data class ErrorResult<T>(val errorCode: Int) : DeviceResource<T>()
+internal data class ErrorResult<T>(val errorCode: Int) : DeviceResource<T>()

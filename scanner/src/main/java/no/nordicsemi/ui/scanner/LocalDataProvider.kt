@@ -1,6 +1,5 @@
 package no.nordicsemi.ui.scanner
 
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.LocationManager
@@ -79,7 +78,7 @@ class LocalDataProvider(private val context: Context) {
     val isSOrAbove: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-    var device: BluetoothDevice? = null
+    var device: DiscoveredBluetoothDevice? = null
 
     private fun isLocationRequiredAndEnabled(): Boolean {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager

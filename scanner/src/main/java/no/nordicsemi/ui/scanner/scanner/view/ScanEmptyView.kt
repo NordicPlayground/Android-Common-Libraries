@@ -25,7 +25,7 @@ import no.nordicsemi.ui.scanner.R
 import org.koin.androidx.compose.get
 
 @Composable
-fun ScanEmptyView(showDialog: () -> Unit) {
+internal fun ScanEmptyView(showDialog: () -> Unit) {
     val dataProvider = get<LocalDataProvider>()
     val requireLocation = dataProvider.locationState.collectAsState().value
 
@@ -78,6 +78,6 @@ private fun openLocationSettings(context: Context) {
 
 @Preview
 @Composable
-fun ScanEmptyView_Preview() {
+private fun ScanEmptyView_Preview() {
     ScanEmptyView { }
 }

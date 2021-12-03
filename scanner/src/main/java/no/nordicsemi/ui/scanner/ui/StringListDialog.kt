@@ -2,14 +2,7 @@ package no.nordicsemi.ui.scanner.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -34,14 +27,14 @@ import no.nordicsemi.ui.scanner.scanner.repository.LoadingResult
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
 
 @Composable
-fun StringListDialog(config: StringListDialogConfig) {
+internal fun StringListDialog(config: StringListDialogConfig) {
     Dialog(onDismissRequest = { config.onResult(FlowCanceled) }) {
         StringListView(config)
     }
 }
 
 @Composable
-fun StringListView(config: StringListDialogConfig) {
+internal fun StringListView(config: StringListDialogConfig) {
     Card(
         modifier = Modifier.height(300.dp),
         backgroundColor = MaterialTheme.colorScheme.background,

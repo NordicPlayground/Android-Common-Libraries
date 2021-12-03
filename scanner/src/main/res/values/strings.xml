@@ -47,4 +47,8 @@
         enable Location.</string>
 
     <string name="navigation_item_accessibility">App bar navigation back icon.</string>
+
+    <string name="bonding_in_progress">Bonding in progress. Please follow instruction on the screen.</string>
+    <string name="bonding_success">Bonding success. Please wait for the redirect to chosen profile screen.</string>
+    <string name="bonding_error">We cannot get data from the peripheral without bonding. Please bond the device.</string>
 </resources>

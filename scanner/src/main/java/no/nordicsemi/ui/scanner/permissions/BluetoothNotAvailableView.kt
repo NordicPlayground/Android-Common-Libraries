@@ -1,12 +1,7 @@
 package no.nordicsemi.ui.scanner.permissions
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +16,7 @@ import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
-fun BluetoothNotAvailableView() {
+internal fun BluetoothNotAvailableView() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -52,6 +47,6 @@ fun BluetoothNotAvailableView() {
 
 @Preview
 @Composable
-fun BluetoothNotAvailableView_Preview() {
+private fun BluetoothNotAvailableView_Preview() {
     BluetoothNotAvailableView()
 }

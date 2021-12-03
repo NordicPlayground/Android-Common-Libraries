@@ -1,5 +1,6 @@
 package no.nordicsemi.ui.scanner.scanner.view
 
+import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -7,20 +8,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
+import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource
 import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
-import no.nordicsemi.ui.scanner.R
-import no.nordicsemi.ui.scanner.ui.AppBar
-import no.nordicsemi.ui.scanner.ui.FilterItem
-import no.nordicsemi.ui.scanner.ui.FlowCanceled
-import no.nordicsemi.ui.scanner.ui.ItemSelectedResult
-import no.nordicsemi.ui.scanner.ui.StringListDialog
-import no.nordicsemi.ui.scanner.ui.StringListDialogConfig
-import no.nordicsemi.ui.scanner.ui.toAnnotatedString
+import no.nordicsemi.ui.scanner.ui.*
 import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ScannerScreen(refreshNavigation: () -> Unit) {
+internal fun ScannerScreen(uuid: ParcelUuid, refreshNavigation: () -> Unit) {
 
     Column {
         AppBar(stringResource(id = R.string.scanner_screen))
@@ -32,7 +28,7 @@ fun ScannerScreen(refreshNavigation: () -> Unit) {
         }
 
         if (showSearchDialog.value) {
-            ShowSearchDialog(refreshNavigation) {
+            ShowSearchDialog(uuid, refreshNavigation) {
                 showSearchDialog.value = false
             }
         }
@@ -40,8 +36,8 @@ fun ScannerScreen(refreshNavigation: () -> Unit) {
 }
 
 @Composable
-fun ShowSearchDialog(refreshNavigation: () -> Unit, hideDialog: () -> Unit) {
-    val viewModel = getViewModel<ScannerViewModel>()
+internal fun ShowSearchDialog(uuid: ParcelUuid, refreshNavigation: () -> Unit, hideDialog: () -> Unit) {
+    val viewModel = getViewModel<ScannerViewModel> { parametersOf(uuid) }
     val result = viewModel.devices.collectAsState(DeviceResource.createLoading()).value
 
     val uuidIsCheckedFilter = rememberSaveable { mutableStateOf(false) }
@@ -77,7 +73,7 @@ fun ShowSearchDialog(refreshNavigation: () -> Unit, hideDialog: () -> Unit) {
         when (it) {
             FlowCanceled -> hideDialog()
             is ItemSelectedResult -> {
-                viewModel.onDeviceSelected(it.value.device)
+                viewModel.onDeviceSelected(it.value)
                 refreshNavigation()
             }
         }

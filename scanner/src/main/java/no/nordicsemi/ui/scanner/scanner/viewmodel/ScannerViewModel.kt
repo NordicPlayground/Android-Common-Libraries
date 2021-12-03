@@ -1,6 +1,5 @@
 package no.nordicsemi.ui.scanner.scanner.viewmodel
 
-import android.bluetooth.BluetoothDevice
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,6 +7,7 @@ import kotlinx.coroutines.flow.combine
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.LocalDataProvider
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesRepository
+import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
 import java.util.*
 
@@ -15,7 +15,8 @@ private val LBS_UUID_SERVICE = UUID.fromString("0000180D-0000-1000-8000-00805f9b
 private val FILTER_UUID = ParcelUuid(LBS_UUID_SERVICE)
 private const val FILTER_RSSI = -50 // [dBm]
 
-class ScannerViewModel(
+internal class ScannerViewModel(
+    private val filterUuid: ParcelUuid,
     private val dataProvider: LocalDataProvider,
     devicesRepository: DevicesRepository
 ) : ViewModel() {
@@ -40,7 +41,7 @@ class ScannerViewModel(
         } ?: result
     }
 
-    fun onDeviceSelected(device: BluetoothDevice) {
+    fun onDeviceSelected(device: DiscoveredBluetoothDevice) {
         dataProvider.device = device
     }
 

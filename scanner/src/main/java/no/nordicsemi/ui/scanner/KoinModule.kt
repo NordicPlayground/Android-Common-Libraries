@@ -3,14 +3,17 @@ package no.nordicsemi.ui.scanner
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import no.nordicsemi.ui.scanner.scanner.viewmodel.DevicesDataStore
-import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
+import android.os.ParcelUuid
+import no.nordicsemi.ui.scanner.navigation.viewmodel.ScannerNavigationViewModel
+import no.nordicsemi.ui.scanner.scanner.repository.DevicesDataStore
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesRepository
+import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val scannerModule = module {
-    viewModel { ScannerViewModel(get(), get()) }
+    viewModel { (uuid: ParcelUuid) -> ScannerViewModel(uuid, get(), get()) }
+    viewModel { ScannerNavigationViewModel(get(), get()) }
 
     single { Utils(get(), get(), getBleAdapter(get())) }
     single { LocalDataProvider(get()) }

@@ -5,7 +5,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.toDiscoveredBluetoothDevice
 
-class DevicesDataStore {
+internal class DevicesDataStore {
 
     val devices = mutableListOf<DiscoveredBluetoothDevice>()
     val data = MutableStateFlow(devices.toList())
@@ -24,7 +24,7 @@ class DevicesDataStore {
     }
 }
 
-data class DevicesScanFilter(
+internal data class DevicesScanFilter(
     val filterUuidRequired: Boolean,
     val filterNearbyOnly: Boolean
 )

@@ -26,7 +26,7 @@ import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
-fun BluetoothDisabledView() {
+internal fun BluetoothDisabledView() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -68,6 +68,6 @@ private fun enableBluetooth(context: Context) {
 
 @Preview
 @Composable
-fun BluetoothDisabledView_Preview() {
+private fun BluetoothDisabledView_Preview() {
     BluetoothDisabledView()
 }

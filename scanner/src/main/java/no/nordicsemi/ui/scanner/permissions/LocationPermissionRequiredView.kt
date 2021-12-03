@@ -8,11 +8,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,7 +26,7 @@ import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
-fun LocationPermissionRequiredView(isDeniedForever: Boolean, refreshNavigation: () -> Unit) {
+internal fun LocationPermissionRequiredView(isDeniedForever: Boolean, refreshNavigation: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AppBar(stringResource(id = R.string.location))
 
@@ -93,6 +89,6 @@ private fun openPermissionSettings(context: Context) {
 
 @Preview
 @Composable
-fun LocationPermissionRequiredView_Preview() {
+private fun LocationPermissionRequiredView_Preview() {
     LocationPermissionRequiredView(true) { }
 }

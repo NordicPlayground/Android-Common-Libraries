@@ -5,7 +5,7 @@ import androidx.compose.ui.text.AnnotatedString
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource
 
-data class StringListDialogConfig(
+internal data class StringListDialogConfig(
     val title: AnnotatedString? = null,
     @DrawableRes
     val leftIcon: Int? = null,
@@ -16,7 +16,7 @@ data class StringListDialogConfig(
     val onResult: (StringListDialogResult) -> Unit
 )
 
-data class FilterItem(
+internal data class FilterItem(
     val text: String,
     val isChecked: Boolean = false,
     @DrawableRes

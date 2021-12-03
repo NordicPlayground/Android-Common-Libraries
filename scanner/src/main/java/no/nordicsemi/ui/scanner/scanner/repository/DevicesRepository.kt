@@ -2,7 +2,6 @@ package no.nordicsemi.ui.scanner.scanner.repository
 
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.ui.scanner.scanner.viewmodel.DevicesDataStore
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanResult
@@ -11,7 +10,7 @@ import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.LocalDataProvider
 import no.nordicsemi.ui.scanner.Utils
 
-class DevicesRepository(
+internal class DevicesRepository(
     private val utils: Utils,
     private val dataProvider: LocalDataProvider,
     private val devicesDataStore: DevicesDataStore
