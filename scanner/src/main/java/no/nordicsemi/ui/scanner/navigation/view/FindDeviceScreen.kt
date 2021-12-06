@@ -52,13 +52,18 @@ fun FindDeviceScreen(uuid: ParcelUuid, onDeviceFound: (DiscoveredBluetoothDevice
         composable(PeripheralDeviceRequiredDestination.id) {
             ScannerScreen(uuid, refreshNavigation)
         }
+        /**
+         * fixme for some reason this block cannot be placed in below launchedeffect because it want to invoke below code before
+         *  navigate is actually called
+         */
+        composable("finish") {
+            (destination as? FinishDestination)?.let {
+                onDeviceFound(it.device)
+            }
+        }
     }
 
     LaunchedEffect(destination) {
-        (destination as? FinishDestination)?.let {
-            onDeviceFound(it.device)
-            return@LaunchedEffect
-        }
         navController.navigate(destination.id)
     }
 }
