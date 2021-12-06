@@ -23,7 +23,7 @@ import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun FindDeviceScreen(uuid: ParcelUuid, onDeviceFound: (DiscoveredBluetoothDevice) -> Unit) {
+fun FindDeviceScreen(uuid: ParcelUuid, onDeviceFound: @Composable (DiscoveredBluetoothDevice) -> Unit) {
     val viewModel = getViewModel<ScannerNavigationViewModel>()
     val utils = get<Utils>()
     val localDataProvider = get<LocalDataProvider>()
