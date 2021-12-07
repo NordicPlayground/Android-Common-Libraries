@@ -5,6 +5,8 @@ import android.os.ParcelUuid
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +37,7 @@ import no.nordicsemi.ui.scanner.permissions.BluetoothNotAvailableView
 import no.nordicsemi.ui.scanner.permissions.BluetoothPermissionRequiredView
 import no.nordicsemi.ui.scanner.permissions.LocationPermissionRequiredView
 import no.nordicsemi.ui.scanner.scanner.view.ScannerScreen
+import no.nordicsemi.ui.scanner.ui.exhaustive
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
@@ -42,7 +45,6 @@ import org.koin.androidx.compose.getViewModel
 fun FindDeviceScreen(uuid: ParcelUuid, onDeviceFound: @Composable (DiscoveredBluetoothDevice) -> Unit) {
     val viewModel = getViewModel<ScannerNavigationViewModel>()
     val utils = get<Utils>()
-    val localDataProvider = get<LocalDataProvider>()
 
     val destination = viewModel.destination.collectAsState().value
     val refreshNavigation = { viewModel.refreshNavigation() }
@@ -51,40 +53,19 @@ fun FindDeviceScreen(uuid: ParcelUuid, onDeviceFound: @Composable (DiscoveredBlu
     val activity = context as Activity
     BackHandler { activity.finish() }
 
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = destination.id,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
-    ) {
-        composable(LocationPermissionRequiredDestination.id) {
-            LocationPermissionRequiredView(isDeniedForever = utils.isLocationPermissionDeniedForever(activity), refreshNavigation)
-        }
-        composable(BluetoothPermissionRequiredDestination.id) {
-            BluetoothPermissionRequiredView(isDeniedForever = utils.isBluetoothScanPermissionDeniedForever(activity), refreshNavigation)
-        }
-        composable(BluetoothNotAvailableDestination.id) {
-            BluetoothNotAvailableView()
-        }
-        composable(BluetoothDisabledDestination.id) {
-            BluetoothDisabledView()
-        }
-        composable(PeripheralDeviceRequiredDestination.id) {
-            ScannerScreen(uuid, refreshNavigation)
-        }
-        /**
-         * fixme for some reason this block cannot be placed in below launchedeffect because it want to invoke below code before
-         *  navigate is actually called
-         */
-        composable("finish") {
-            (destination as? FinishDestination)?.let {
-                onDeviceFound(it.device)
-            }
-        }
+    (destination as? FinishDestination)?.let {
+        onDeviceFound(destination.device)
+        return
     }
 
-    LaunchedEffect(destination) {
-        navController.navigate(destination.id)
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        when (destination) {
+            BluetoothDisabledDestination -> BluetoothDisabledView()
+            BluetoothNotAvailableDestination -> BluetoothNotAvailableView()
+            BluetoothPermissionRequiredDestination -> BluetoothPermissionRequiredView(isDeniedForever = utils.isBluetoothScanPermissionDeniedForever(activity), refreshNavigation)
+            LocationPermissionRequiredDestination -> LocationPermissionRequiredView(isDeniedForever = utils.isLocationPermissionDeniedForever(activity), refreshNavigation)
+            PeripheralDeviceRequiredDestination -> ScannerScreen(uuid, refreshNavigation)
+        }
     }
 }
 
