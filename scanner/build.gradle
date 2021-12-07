@@ -4,6 +4,8 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 apply from: rootProject.file("gradle/git-tag-version.gradle")
 
+group = GROUP
+
 android {
     compileSdk 31
 
