@@ -127,9 +127,11 @@ private fun DevicesSection(
     config: StringListDialogConfig
 ) {
     items.forEach {
-        Column(modifier = Modifier
-            .clickable { config.onResult(ItemSelectedResult(it)) }
-            .height(35.dp)) {
+        Column(
+            modifier = Modifier
+                .clickable { config.onResult(ItemSelectedResult(it)) }
+                .height(35.dp)
+        ) {
 
             Row {
                 config.leftIcon?.let {
@@ -140,7 +142,7 @@ private fun DevicesSection(
                     )
                 }
                 Text(
-                    text = it.name ?: it.address,
+                    text = it.displayName(),
                     fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth()
                 )

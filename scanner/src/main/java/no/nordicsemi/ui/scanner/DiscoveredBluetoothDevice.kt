@@ -75,6 +75,14 @@ data class DiscoveredBluetoothDevice(
         device.createBond()
     }
 
+    fun displayName(): String {
+        return when {
+            name?.isNotEmpty() == true -> name
+            address.isNotEmpty() -> address
+            else -> device.address
+        }
+    }
+
     override fun hashCode(): Int {
         return device.hashCode()
     }
