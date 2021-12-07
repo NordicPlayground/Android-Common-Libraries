@@ -11,7 +11,13 @@ import androidx.compose.ui.res.stringResource
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource
 import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
-import no.nordicsemi.ui.scanner.ui.*
+import no.nordicsemi.ui.scanner.ui.AppBar
+import no.nordicsemi.ui.scanner.ui.FilterItem
+import no.nordicsemi.ui.scanner.ui.FlowCanceled
+import no.nordicsemi.ui.scanner.ui.ItemSelectedResult
+import no.nordicsemi.ui.scanner.ui.StringListDialog
+import no.nordicsemi.ui.scanner.ui.StringListDialogConfig
+import no.nordicsemi.ui.scanner.ui.toAnnotatedString
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
