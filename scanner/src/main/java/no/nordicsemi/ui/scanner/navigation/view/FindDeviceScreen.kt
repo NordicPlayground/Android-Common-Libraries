@@ -1,6 +1,13 @@
 package no.nordicsemi.ui.scanner.navigation.view
 
 import android.app.Activity
+import android.bluetooth.BluetoothAdapter
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.location.LocationManager
+import android.location.LocationManager.MODE_CHANGED_ACTION
 import android.os.ParcelUuid
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -67,8 +74,30 @@ fun FindDeviceScreen(uuid: ParcelUuid, onDeviceFound: @Composable (DiscoveredBlu
             PeripheralDeviceRequiredDestination -> ScannerScreen(uuid, refreshNavigation)
         }
     }
+
+    registerReceiver(IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+    registerReceiver(IntentFilter(MODE_CHANGED_ACTION))
 }
 
+@Composable
+private fun registerReceiver(intentFilter: IntentFilter) {
+    val viewModel = getViewModel<ScannerNavigationViewModel>()
+    val context = LocalContext.current
+
+    DisposableEffect(context) {
+        val broadcast = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                viewModel.refreshNavigation()
+            }
+        }
+
+        context.registerReceiver(broadcast, intentFilter)
+
+        onDispose {
+            context.unregisterReceiver(broadcast)
+        }
+    }
+}
 
 @Composable
 private fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
