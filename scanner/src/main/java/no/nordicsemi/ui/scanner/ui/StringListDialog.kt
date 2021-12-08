@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -18,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import no.nordicsemi.android.material.you.Card
-import no.nordicsemi.android.material.you.Checkbox
 import no.nordicsemi.android.material.you.CircularProgressIndicator
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.R
@@ -50,12 +50,12 @@ internal fun StringListView(config: StringListDialogConfig) {
             ) {
                 Text(
                     text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
-                    fontSize = 20.sp
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
             if (config.filterItems.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             Row(
@@ -63,7 +63,7 @@ internal fun StringListView(config: StringListDialogConfig) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 config.filterItems.forEachIndexed { i, item ->
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(checked = item.isChecked, onCheckedChange = {
                             config.onFilterItemCheckChanged(i)
                         })
@@ -81,7 +81,7 @@ internal fun StringListView(config: StringListDialogConfig) {
             }
 
             if (config.filterItems.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
             Column(
