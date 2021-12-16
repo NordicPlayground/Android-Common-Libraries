@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Card(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     shape: Shape = RoundedCornerShape(10.dp),
     elevation: Dp = 4.dp,
     content: @Composable () -> Unit
