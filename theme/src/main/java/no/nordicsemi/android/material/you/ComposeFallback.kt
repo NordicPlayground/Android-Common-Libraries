@@ -45,23 +45,7 @@ fun CircularProgressIndicator() {
 
 data class RadioGroupViewEntity(
     val items: List<RadioButtonItem>,
-    val onItemClick: (RadioButtonItem) -> Unit
-) {
-    fun copyWithNewItem(item: RadioButtonItem): RadioGroupViewEntity {
-        if (item.isChecked) return this
-
-        val oldIndex = items.indexOf(item)
-        val newItems = items.elementAtOrNull(oldIndex)?.let {
-            items.mapIndexed { i, item ->
-                when (i) {
-                    oldIndex -> item.copy(isChecked = true)
-                    else -> item.copy(isChecked = false)
-                }
-            }
-        } ?: throw IllegalArgumentException("Item is not added to the RadioGroup.")
-        return copy(items = newItems)
-    }
-}
+)
 
 data class RadioButtonItem(
     val label: String,
@@ -69,14 +53,14 @@ data class RadioButtonItem(
 )
 
 @Composable
-fun RadioButtonGroup(viewEntity: RadioGroupViewEntity) {
+fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButtonItem) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         viewEntity.items.onEach {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                RadioButton(selected = it.isChecked, onClick = { viewEntity.onItemClick(it) })
+                RadioButton(selected = it.isChecked, onClick = { onItemClick(it) })
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)
             }
         }

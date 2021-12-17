@@ -130,10 +130,9 @@ private fun DevicesSection(
         Column(
             modifier = Modifier
                 .clickable { config.onResult(ItemSelectedResult(it)) }
-                .height(35.dp)
         ) {
 
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 config.leftIcon?.let {
                     Image(
                         modifier = Modifier.padding(horizontal = 4.dp),
@@ -147,6 +146,8 @@ private fun DevicesSection(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
