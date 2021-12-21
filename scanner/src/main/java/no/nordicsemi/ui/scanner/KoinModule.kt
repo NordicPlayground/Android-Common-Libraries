@@ -12,7 +12,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val scannerModule = module {
-    viewModel { (uuid: ParcelUuid) -> ScannerViewModel(uuid, get(), get()) }
+    viewModel { ScannerViewModel(get(), get()) }
     viewModel { ScannerNavigationViewModel(get(), get()) }
 
     single { Utils(get(), get(), getBleAdapter(get())) }

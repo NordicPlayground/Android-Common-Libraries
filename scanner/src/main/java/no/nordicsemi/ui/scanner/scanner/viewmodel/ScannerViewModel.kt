@@ -16,7 +16,6 @@ private val FILTER_UUID = ParcelUuid(LBS_UUID_SERVICE)
 private const val FILTER_RSSI = -50 // [dBm]
 
 internal class ScannerViewModel(
-    private val filterUuid: ParcelUuid,
     private val dataProvider: LocalDataProvider,
     devicesRepository: DevicesRepository
 ) : ViewModel() {

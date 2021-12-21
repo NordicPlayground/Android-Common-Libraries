@@ -77,8 +77,8 @@ data class DiscoveredBluetoothDevice(
 
     fun displayName(): String {
         return when {
-            name?.isNotEmpty() == true -> String.format("%s (%s)", name, displayAddress())
-            else -> displayAddress()
+            name?.isNotEmpty() == true -> name
+            else -> "Unknown"
         }
     }
 

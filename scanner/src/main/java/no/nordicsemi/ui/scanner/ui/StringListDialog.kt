@@ -1,9 +1,18 @@
 package no.nordicsemi.ui.scanner.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
@@ -13,10 +22,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import no.nordicsemi.android.material.you.Card
 import no.nordicsemi.android.material.you.CircularProgressIndicator
@@ -36,7 +45,7 @@ internal fun StringListDialog(config: StringListDialogConfig) {
 @Composable
 internal fun StringListView(config: StringListDialogConfig) {
     Card(
-        modifier = Modifier.height(300.dp),
+        modifier = Modifier.height(350.dp),
         backgroundColor = MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(10.dp),
         elevation = 0.dp
@@ -135,16 +144,26 @@ private fun DevicesSection(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 config.leftIcon?.let {
                     Image(
-                        modifier = Modifier.padding(horizontal = 4.dp),
                         painter = painterResource(it),
-                        contentDescription = "Content image"
+                        contentDescription = "Content image",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.tertiary,
+                                shape = CircleShape
+                            )
+                            .padding(8.dp)
                     )
                 }
-                Text(
-                    text = it.displayName(),
-                    fontSize = 16.sp,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Spacer(modifier = Modifier.padding(8.dp))
+
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = it.displayName(),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(text = it.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
