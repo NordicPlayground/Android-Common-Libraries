@@ -48,8 +48,7 @@ internal fun LocationPermissionRequiredView(isDeniedForever: Boolean, refreshNav
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            textAlign = TextAlign.Center
+                .padding(16.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
