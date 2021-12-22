@@ -9,13 +9,11 @@ import no.nordicsemi.ui.scanner.LocalDataProvider
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesRepository
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
-import java.util.*
 
-private val LBS_UUID_SERVICE = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
-private val FILTER_UUID = ParcelUuid(LBS_UUID_SERVICE)
 private const val FILTER_RSSI = -50 // [dBm]
 
 internal class ScannerViewModel(
+    private val uuid: ParcelUuid,
     private val dataProvider: LocalDataProvider,
     devicesRepository: DevicesRepository
 ) : ViewModel() {
@@ -30,9 +28,7 @@ internal class ScannerViewModel(
     val devices = config.combine(devicesRepository.getDevices()) { config, result ->
         (result as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
             val newItems = it.value.filter {
-                !config.filterUuidRequired || it.scanResult.scanRecord?.serviceUuids?.contains(
-                    FILTER_UUID
-                ) ?: false
+                !config.filterUuidRequired || it.scanResult.scanRecord?.serviceUuids?.contains(uuid) ?: false
             }.filter {
                 !config.filterNearbyOnly || it.rssi >= FILTER_RSSI
             }
