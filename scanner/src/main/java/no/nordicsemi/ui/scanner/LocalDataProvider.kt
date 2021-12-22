@@ -1,9 +1,11 @@
 package no.nordicsemi.ui.scanner
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.LocationManager
 import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +18,7 @@ private const val PREFS_LOCATION_REQUIRED = "location_required"
 private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
 private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_requested"
 
+@SuppressLint("AnnotateVersionCheck")
 class LocalDataProvider(private val context: Context) {
 
     val locationState = MutableStateFlow(isLocationRequiredAndEnabled())

@@ -29,13 +29,6 @@ data class DiscoveredBluetoothDevice(
     val address: String = "",
 ) : Parcelable {
 
-    /**
-     * This method returns true if the RSSI range has changed. The RSSI range depends on drawable
-     * levels from [no.nordicsemi.android.finder.R.drawable.ic_signal_bar].
-     *
-     * @return True, if the RSSI range has changed.
-     */
-    /* package */
     fun hasRssiLevelChanged(): Boolean {
         val newLevel =
             if (rssi <= 10) 0 else if (rssi <= 28) 1 else if (rssi <= 45) 2 else if (rssi <= 65) 3 else 4
@@ -44,11 +37,6 @@ data class DiscoveredBluetoothDevice(
         return newLevel != oldLevel
     }
 
-    /**
-     * Updates the device values based on the scan result.
-     *
-     * @param scanResult the new received scan result.
-     */
     fun update(scanResult: ScanResult): DiscoveredBluetoothDevice {
         return copy(
             lastScanResult = scanResult,

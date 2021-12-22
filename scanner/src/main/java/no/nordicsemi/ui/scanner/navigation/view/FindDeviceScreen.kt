@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.location.LocationManager
 import android.location.LocationManager.MODE_CHANGED_ACTION
 import android.os.ParcelUuid
 import androidx.activity.OnBackPressedCallback
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -25,12 +23,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.ui.scanner.LocalDataProvider
 import no.nordicsemi.ui.scanner.Utils
 import no.nordicsemi.ui.scanner.navigation.viewmodel.BluetoothDisabledDestination
 import no.nordicsemi.ui.scanner.navigation.viewmodel.BluetoothNotAvailableDestination
@@ -44,7 +37,6 @@ import no.nordicsemi.ui.scanner.permissions.BluetoothNotAvailableView
 import no.nordicsemi.ui.scanner.permissions.BluetoothPermissionRequiredView
 import no.nordicsemi.ui.scanner.permissions.LocationPermissionRequiredView
 import no.nordicsemi.ui.scanner.scanner.view.ScannerScreen
-import no.nordicsemi.ui.scanner.ui.exhaustive
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 

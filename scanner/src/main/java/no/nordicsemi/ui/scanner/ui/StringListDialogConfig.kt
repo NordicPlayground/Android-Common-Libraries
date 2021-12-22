@@ -1,8 +1,6 @@
 package no.nordicsemi.ui.scanner.ui
 
 import androidx.annotation.DrawableRes
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource

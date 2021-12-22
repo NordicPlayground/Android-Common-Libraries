@@ -27,6 +27,8 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 
@@ -65,6 +67,7 @@ class Utils(
                 == PackageManager.PERMISSION_GRANTED)
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
         return (!isLocationPermissionGranted() // Location permission must be denied
                 && dataProvider.bluetoothPermissionRequested

@@ -8,7 +8,7 @@
 
     <string name="devices">Devices</string>
     <string name="dialog">Dialog</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
 
     <string name="scan_failed">We were not able to download list of available devices. Please try again.</string>
     <string name="scanner_screen">Scanner</string>
