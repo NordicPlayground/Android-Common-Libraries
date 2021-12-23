@@ -7,11 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HourglassTop
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +54,7 @@ fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButton
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        viewEntity.items.onEach {
+        viewEntity.items.onEachIndexed { i, it ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 RadioButton(selected = it.isChecked, onClick = { onItemClick(it) })
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)

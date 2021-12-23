@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.5.31'
-    ext.compose_version = '1.0.5'
+    ext.kotlin_version = '1.6.0'
+    ext.compose_version = '1.1.0-rc01'
 
     repositories {
         google()
@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.4"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
         classpath "io.github.gradle-nexus:publish-plugin:1.1.0"
         classpath "com.autonomousapps:dependency-analysis-gradle-plugin:0.78.0"
 
