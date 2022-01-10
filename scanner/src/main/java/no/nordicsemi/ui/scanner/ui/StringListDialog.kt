@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -155,7 +156,7 @@ private fun DevicesSection(
                             .padding(8.dp)
                     )
                 }
-                Spacer(modifier = Modifier.padding(8.dp))
+                Spacer(modifier = Modifier.size(8.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(

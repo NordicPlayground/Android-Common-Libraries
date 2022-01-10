@@ -26,7 +26,6 @@ data class DiscoveredBluetoothDevice(
     val rssi: Int = 0,
     val previousRssi: Int = 0,
     val highestRssi: Int = 0,
-    val address: String = "",
 ) : Parcelable {
 
     fun hasRssiLevelChanged(): Boolean {
@@ -70,9 +69,12 @@ data class DiscoveredBluetoothDevice(
         }
     }
 
+    fun address(): String {
+        return device.address
+    }
+
     fun displayAddress(): String {
         return when {
-            address.isNotEmpty() -> address
             else -> device.address
         }
     }
