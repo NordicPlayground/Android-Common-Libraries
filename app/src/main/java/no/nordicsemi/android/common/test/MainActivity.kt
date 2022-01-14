@@ -8,13 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import no.nordicsemi.android.material.you.NordicTheme
 import no.nordicsemi.ui.scanner.navigation.view.FindDeviceCloseResult
-import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
-import no.nordicsemi.ui.scanner.navigation.view.FindDeviceProcessingResult
 import no.nordicsemi.ui.scanner.navigation.view.FindDeviceScreen
 import no.nordicsemi.ui.scanner.navigation.view.FindDeviceSuccessResult
 import java.util.*
@@ -30,18 +26,13 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val findDeviceResult = remember {
-                        mutableStateOf<FindDeviceFlowStatus>(FindDeviceProcessingResult)
-                    }
-
-                    FindDeviceScreen(uuid = ParcelUuid(UUID.randomUUID()), findDeviceResult)
-
-                    when (val result = findDeviceResult.value) {
-                        FindDeviceCloseResult -> "Flow closed."
-                        FindDeviceProcessingResult -> null
-                        is FindDeviceSuccessResult -> result.device.name
-                    }?.let {
-                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                    FindDeviceScreen(uuid = ParcelUuid(UUID.randomUUID())) {
+                        when (it) {
+                            FindDeviceCloseResult -> "Flow closed."
+                            is FindDeviceSuccessResult -> it.device.name
+                        }?.let {
+                            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }

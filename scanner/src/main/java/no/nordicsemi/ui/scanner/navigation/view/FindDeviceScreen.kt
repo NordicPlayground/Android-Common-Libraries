@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,7 +35,7 @@ import org.koin.androidx.compose.get
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun FindDeviceScreen(uuid: ParcelUuid, result: MutableState<FindDeviceFlowStatus>) {
+fun FindDeviceScreen(uuid: ParcelUuid, onResult: (FindDeviceFlowStatus) -> Unit) {
     val viewModel = getViewModel<ScannerNavigationViewModel>()
     val utils = get<Utils>()
 
@@ -45,10 +44,11 @@ fun FindDeviceScreen(uuid: ParcelUuid, result: MutableState<FindDeviceFlowStatus
 
     val context = LocalContext.current
     val activity = context as Activity
-    BackHandler { result.value = FindDeviceCloseResult }
+    BackHandler { onResult(FindDeviceCloseResult) }
 
-    val onResult = { newResult: FindDeviceFlowStatus ->
-        result.value = newResult
+    (destination as? FinishDestination)?.let { // Don't move to when. Doesn't work.
+        onResult(FindDeviceSuccessResult(destination.device))
+        return
     }
 
     Box(
@@ -70,10 +70,6 @@ fun FindDeviceScreen(uuid: ParcelUuid, result: MutableState<FindDeviceFlowStatus
                 ), refreshNavigation, onResult
             )
             PeripheralDeviceRequiredDestination -> ScannerScreen(uuid, refreshNavigation, onResult)
-            is FinishDestination -> {
-                result.value = FindDeviceSuccessResult(destination.device)
-                return
-            }
         }
     }
 

@@ -4,8 +4,6 @@ import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 
 sealed class FindDeviceFlowStatus
 
-object FindDeviceProcessingResult : FindDeviceFlowStatus()
-
 data class FindDeviceSuccessResult(val device: DiscoveredBluetoothDevice) : FindDeviceFlowStatus()
 
 object FindDeviceCloseResult : FindDeviceFlowStatus()
