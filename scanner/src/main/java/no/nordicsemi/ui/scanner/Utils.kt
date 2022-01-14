@@ -67,7 +67,6 @@ class Utils(
                 == PackageManager.PERMISSION_GRANTED)
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
         return (!isLocationPermissionGranted() // Location permission must be denied
                 && dataProvider.bluetoothPermissionRequested

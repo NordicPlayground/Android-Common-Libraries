@@ -1,8 +1,7 @@
 package no.nordicsemi.ui.scanner.ui
 
-import android.app.Activity
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -10,16 +9,13 @@ import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.ui.scanner.R
 
 @Composable
-fun AppBar(text: String) {
-
-    val context = (LocalContext.current as? Activity)
+fun AppBar(text: String, onNavigationButtonClick: () -> Unit) {
 
     SmallTopAppBar(
         title = { Text(text) },
@@ -31,9 +27,9 @@ fun AppBar(text: String) {
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         navigationIcon = {
-            IconButton(onClick = { context?.finish() }) {
+            IconButton(onClick = { onNavigationButtonClick() }) {
                 Icon(
-                    Icons.Default.Close,
+                    Icons.Default.ArrowBack,
                     contentDescription = stringResource(id = R.string.navigation_item_accessibility),
                 )
             }
@@ -44,5 +40,5 @@ fun AppBar(text: String) {
 @Preview
 @Composable
 private fun AppBarPreview() {
-    AppBar(text = "Test")
+    AppBar(text = "Test") { }
 }

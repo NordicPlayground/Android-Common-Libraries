@@ -24,16 +24,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import no.nordicsemi.ui.scanner.R
+import no.nordicsemi.ui.scanner.navigation.view.FindDeviceCloseResult
+import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @SuppressLint("InlinedApi")
 @Composable
-internal fun BluetoothPermissionRequiredView(isDeniedForever: Boolean, refreshNavigation: () -> Unit) {
+internal fun BluetoothPermissionRequiredView(
+    isDeniedForever: Boolean,
+    refreshNavigation: () -> Unit,
+    onResult: (FindDeviceFlowStatus) -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        AppBar(stringResource(id = R.string.bluetooth))
+        AppBar(stringResource(id = R.string.bluetooth)) {
+            onResult(FindDeviceCloseResult)
+        }
 
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
@@ -90,5 +98,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun BluetoothPermissionRequiredView_Preview() {
-    BluetoothPermissionRequiredView(false) { }
+    BluetoothPermissionRequiredView(false, { }) { }
 }

@@ -26,12 +26,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import no.nordicsemi.ui.scanner.R
+import no.nordicsemi.ui.scanner.navigation.view.FindDeviceCloseResult
+import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
-internal fun LocationPermissionRequiredView(isDeniedForever: Boolean, refreshNavigation: () -> Unit) {
+internal fun LocationPermissionRequiredView(
+    isDeniedForever: Boolean,
+    refreshNavigation: () -> Unit,
+    onResult: (FindDeviceFlowStatus) -> Unit
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        AppBar(stringResource(id = R.string.location))
+        AppBar(stringResource(id = R.string.location)) {
+            onResult(FindDeviceCloseResult)
+        }
 
         Image(
             painter = painterResource(id = R.drawable.ic_location_off),
@@ -92,5 +100,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun LocationPermissionRequiredView_Preview() {
-    LocationPermissionRequiredView(true) { }
+    LocationPermissionRequiredView(true, { }) { }
 }

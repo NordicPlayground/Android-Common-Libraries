@@ -23,15 +23,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.ui.scanner.R
+import no.nordicsemi.ui.scanner.navigation.view.FindDeviceCloseResult
+import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
-internal fun BluetoothDisabledView() {
+internal fun BluetoothDisabledView(onResult: (FindDeviceFlowStatus) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        AppBar(stringResource(id = R.string.bluetooth))
+        AppBar(stringResource(id = R.string.bluetooth)) {
+            onResult(FindDeviceCloseResult)
+        }
 
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
@@ -69,5 +73,5 @@ private fun enableBluetooth(context: Context) {
 @Preview
 @Composable
 private fun BluetoothDisabledView_Preview() {
-    BluetoothDisabledView()
+    BluetoothDisabledView { }
 }
