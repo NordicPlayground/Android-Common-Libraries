@@ -15,7 +15,7 @@ internal class ScannerNavigationViewModel(
     fun refreshNavigation() {
         val nextDestination = getNextScreenDestination()
         if (destination.value != nextDestination) {
-            destination.value = getNextScreenDestination()
+            destination.value = nextDestination
         }
     }
 
@@ -26,7 +26,9 @@ internal class ScannerNavigationViewModel(
             !utils.isBluetoothConnectPermissionGranted() -> BluetoothPermissionRequiredDestination
             !utils.isBleEnabled -> BluetoothDisabledDestination
             dataProvider.device == null -> PeripheralDeviceRequiredDestination
-            else -> FinishDestination(dataProvider.device!!)
+            else -> FinishDestination(dataProvider.device!!).also {
+                dataProvider.device = null
+            }
         }
     }
 }
