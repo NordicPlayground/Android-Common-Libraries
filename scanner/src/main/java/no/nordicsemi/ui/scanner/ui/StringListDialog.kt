@@ -23,6 +23,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -139,7 +140,9 @@ private fun DevicesSection(
     items.forEach {
         Column(
             modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
                 .clickable { config.onResult(ItemSelectedResult(it)) }
+                .padding(8.dp),
         ) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -166,9 +169,8 @@ private fun DevicesSection(
                     Text(text = it.displayAddress(), style = MaterialTheme.typography.bodyMedium)
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
