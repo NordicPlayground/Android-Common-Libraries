@@ -15,7 +15,7 @@ private const val FILTER_RSSI = -50 // [dBm]
 internal class ScannerViewModel(
     private val uuid: ParcelUuid,
     private val dataProvider: LocalDataProvider,
-    devicesRepository: DevicesRepository
+    private val devicesRepository: DevicesRepository
 ) : ViewModel() {
 
     private val config = MutableStateFlow(
@@ -46,5 +46,10 @@ internal class ScannerViewModel(
 
     fun filterByDistance(nearbyOnly: Boolean) {
         config.value = config.value.copy(filterNearbyOnly = nearbyOnly)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        devicesRepository.clear()
     }
 }

@@ -38,6 +38,7 @@ data class DiscoveredBluetoothDevice(
 
     fun update(scanResult: ScanResult): DiscoveredBluetoothDevice {
         return copy(
+            device = scanResult.device,
             lastScanResult = scanResult,
             name = scanResult.scanRecord?.deviceName,
             previousRssi = rssi,

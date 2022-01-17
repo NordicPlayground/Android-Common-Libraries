@@ -53,6 +53,7 @@ internal class DevicesRepository(
 
         val settings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+            .setLegacy(false)
             .setReportDelay(500)
             .setUseHardwareBatchingIfSupported(false)
             .build()
@@ -62,5 +63,9 @@ internal class DevicesRepository(
         awaitClose {
             scanner.stopScan(scanCallback)
         }
+    }
+
+    fun clear() {
+        devicesDataStore.clear()
     }
 }
