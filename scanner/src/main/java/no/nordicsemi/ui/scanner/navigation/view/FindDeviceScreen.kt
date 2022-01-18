@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,9 +47,10 @@ fun FindDeviceScreen(uuid: ParcelUuid, onResult: (FindDeviceFlowStatus) -> Unit)
     val activity = context as Activity
     BackHandler { onResult(FindDeviceCloseResult) }
 
-    (destination as? FinishDestination)?.let { // Don't move to when. Doesn't work.
-        onResult(FindDeviceSuccessResult(destination.device))
-        return
+    LaunchedEffect(destination) {
+        (destination as? FinishDestination)?.let { // Don't move to when. Doesn't work.
+            onResult(FindDeviceSuccessResult(destination.device))
+        }
     }
 
     Box(
