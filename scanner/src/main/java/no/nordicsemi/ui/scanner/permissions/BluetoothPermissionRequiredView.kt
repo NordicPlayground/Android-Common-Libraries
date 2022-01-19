@@ -32,16 +32,13 @@ import no.nordicsemi.ui.scanner.ui.AppBar
 @Composable
 internal fun BluetoothPermissionRequiredView(
     isDeniedForever: Boolean,
-    refreshNavigation: () -> Unit,
-    onResult: (FindDeviceFlowStatus) -> Unit
+    onEvent: (PermissionsViewEvent) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        AppBar(stringResource(id = R.string.bluetooth)) {
-            onResult(FindDeviceCloseResult)
-        }
+        AppBar(stringResource(id = R.string.bluetooth)) { onEvent(NavigateUp) }
 
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
@@ -69,7 +66,7 @@ internal fun BluetoothPermissionRequiredView(
 
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
-        ) { refreshNavigation() }
+        ) { onEvent(RefreshNavigation) }
 
         val context = LocalContext.current
         if (!isDeniedForever) {
@@ -98,5 +95,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun BluetoothPermissionRequiredView_Preview() {
-    BluetoothPermissionRequiredView(false, { }) { }
+    BluetoothPermissionRequiredView(false) { }
 }

@@ -18,14 +18,12 @@ import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
-internal fun BluetoothNotAvailableView(onResult: (FindDeviceFlowStatus) -> Unit) {
+internal fun BluetoothNotAvailableView(onEvent: (PermissionsViewEvent) -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        AppBar(stringResource(id = R.string.bluetooth)) {
-            onResult(FindDeviceCloseResult)
-        }
+        AppBar(stringResource(id = R.string.bluetooth)) { onEvent(NavigateUp) }
 
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),

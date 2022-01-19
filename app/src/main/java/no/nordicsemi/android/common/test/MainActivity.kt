@@ -26,14 +26,14 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FindDeviceScreen(uuid = ParcelUuid(UUID.randomUUID())) {
-                        when (it) {
-                            FindDeviceCloseResult -> "Flow closed."
-                            is FindDeviceSuccessResult -> it.device.name
-                        }?.let {
-                            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-                        }
-                    }
+//                    FindDeviceScreen() {
+//                        when (it) {
+//                            FindDeviceCloseResult -> "Flow closed."
+//                            is FindDeviceSuccessResult -> it.device.name
+//                        }?.let {
+//                            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
                 }
             }
         }

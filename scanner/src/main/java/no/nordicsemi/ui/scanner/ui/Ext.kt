@@ -15,5 +15,5 @@ fun <T> MutableStateFlow<T>.updateIfDifferent(newValue: T) {
     }
 }
 
-val <T> T.exhaustive
-    get() = this
+val <T> T.exhaustive: Any
+    get() = this as Any

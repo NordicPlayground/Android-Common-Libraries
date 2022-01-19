@@ -14,8 +14,7 @@ private const val FILTER_RSSI = -50 // [dBm]
 
 internal class ScannerViewModel(
     private val uuid: ParcelUuid,
-    private val dataProvider: LocalDataProvider,
-    private val devicesRepository: DevicesRepository
+    private val devicesRepository: DevicesRepository,
 ) : ViewModel() {
 
     private val config = MutableStateFlow(
@@ -34,10 +33,6 @@ internal class ScannerViewModel(
             }
             SuccessResult(newItems)
         } ?: result
-    }
-
-    fun onDeviceSelected(device: DiscoveredBluetoothDevice) {
-        dataProvider.device = device
     }
 
     fun filterByUuid(uuidRequired: Boolean) {

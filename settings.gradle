@@ -10,3 +10,4 @@ rootProject.name = "Common Libraries"
 include ':app'
 include ':theme'
 include ':scanner'
+include ':navigation'

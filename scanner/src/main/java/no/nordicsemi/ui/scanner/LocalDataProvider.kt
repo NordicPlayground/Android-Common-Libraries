@@ -81,8 +81,6 @@ class LocalDataProvider(private val context: Context) {
     val isSOrAbove: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-    var device: DiscoveredBluetoothDevice? = null
-
     private fun isLocationRequiredAndEnabled(): Boolean {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm)

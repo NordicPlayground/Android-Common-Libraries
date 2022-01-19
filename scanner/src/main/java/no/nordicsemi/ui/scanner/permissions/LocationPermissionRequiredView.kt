@@ -33,12 +33,11 @@ import no.nordicsemi.ui.scanner.ui.AppBar
 @Composable
 internal fun LocationPermissionRequiredView(
     isDeniedForever: Boolean,
-    refreshNavigation: () -> Unit,
-    onResult: (FindDeviceFlowStatus) -> Unit
+    onEvent: (PermissionsViewEvent) -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AppBar(stringResource(id = R.string.location)) {
-            onResult(FindDeviceCloseResult)
+            onEvent(NavigateUp)
         }
 
         Image(
@@ -71,7 +70,7 @@ internal fun LocationPermissionRequiredView(
 
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
-        ) { refreshNavigation() }
+        ) { onEvent(RefreshNavigation) }
 
         if (!isDeniedForever) {
             Button(onClick = { launcher.launch(requiredPermissions) }) {
@@ -100,5 +99,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun LocationPermissionRequiredView_Preview() {
-    LocationPermissionRequiredView(true, { }) { }
+    LocationPermissionRequiredView(true) { }
 }
