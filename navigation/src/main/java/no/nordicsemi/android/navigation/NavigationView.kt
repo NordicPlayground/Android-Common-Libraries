@@ -24,7 +24,7 @@ fun NavigationView(destinations: ComposeDestinations) {
         startDestination = destinations.values[0].id.name
     ) {
         destinations.values.forEach { destination ->
-            composable(destination.id.name) { destination.draw }
+            composable(destination.id.name) { destination.draw() }
         }
     }
 

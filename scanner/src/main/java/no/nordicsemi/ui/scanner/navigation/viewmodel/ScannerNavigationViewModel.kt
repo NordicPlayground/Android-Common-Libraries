@@ -3,8 +3,10 @@ package no.nordicsemi.ui.scanner.navigation.viewmodel
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import no.nordicsemi.android.navigation.CancelDestinationResult
 import no.nordicsemi.android.navigation.NavigationManager
 import no.nordicsemi.android.navigation.ParcelableArgument
+import no.nordicsemi.android.navigation.SuccessDestinationResult
 import no.nordicsemi.android.navigation.UUIDArgument
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.ScannerDestinationId
@@ -28,7 +30,7 @@ internal class ScannerNavigationViewModel(
 
     fun onEvent(event: PermissionsViewEvent) {
         when (event) {
-            NavigateUp -> navigationManager.navigateUp()
+            NavigateUp -> navigationManager.navigateUp(ScannerDestinationId, CancelDestinationResult)
             RefreshNavigation -> refreshNavigation()
             is DeviceSelected -> onDeviceSelected(event.device)
         }.exhaustive
@@ -43,7 +45,7 @@ internal class ScannerNavigationViewModel(
         val nextDestination = getNextScreenDestination()
 
         if (nextDestination == null) {
-            navigationManager.navigateUp(ParcelableArgument(device!!))
+            navigationManager.navigateUp(ScannerDestinationId, SuccessDestinationResult(ParcelableArgument(device!!)))
         } else if (destination.value != nextDestination) {
             destination.value = nextDestination
         }

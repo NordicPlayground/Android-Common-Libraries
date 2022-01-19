@@ -12,9 +12,14 @@ class NavigationManager @Inject constructor() {
     val navigationDestination = _navigationDestination.asStateFlow()
 
     private val arguments = mutableMapOf<DestinationId, DestinationArgument>()
-    private val results = mutableMapOf<DestinationId, DestinationArgument>()
+    private val results = mutableMapOf<DestinationId, DestinationResult>()
 
-    fun navigateUp(args: DestinationArgument? = null) {
+    fun navigateUp() {
+        _navigationDestination.value = BackDestination
+    }
+
+    fun navigateUp(destinationId: DestinationId, args: DestinationResult) {
+        results[destinationId] = args
         _navigationDestination.value = BackDestination
     }
 
@@ -24,4 +29,6 @@ class NavigationManager @Inject constructor() {
     }
 
     fun getArgument(destinationId: DestinationId) = arguments.remove(destinationId)
+
+    fun getResult(destinationId: DestinationId) = results.remove(destinationId)
 }
