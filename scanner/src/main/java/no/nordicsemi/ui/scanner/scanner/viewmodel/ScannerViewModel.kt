@@ -2,6 +2,7 @@ package no.nordicsemi.ui.scanner.scanner.viewmodel
 
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
@@ -9,13 +10,17 @@ import no.nordicsemi.ui.scanner.LocalDataProvider
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesRepository
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
+import javax.inject.Inject
 
 private const val FILTER_RSSI = -50 // [dBm]
 
-internal class ScannerViewModel(
-    private val uuid: ParcelUuid,
+@HiltViewModel
+internal class ScannerViewModel @Inject constructor(
+    val dataProvider: LocalDataProvider,
     private val devicesRepository: DevicesRepository,
 ) : ViewModel() {
+
+    private lateinit var uuid: ParcelUuid
 
     private val config = MutableStateFlow(
         DevicesScanFilter(
@@ -33,6 +38,10 @@ internal class ScannerViewModel(
             }
             SuccessResult(newItems)
         } ?: result
+    }
+
+    fun setFilterUuid(uuid: ParcelUuid) {
+        this.uuid = uuid
     }
 
     fun filterByUuid(uuidRequired: Boolean) {

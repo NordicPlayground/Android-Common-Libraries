@@ -8,41 +8,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
-import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
+import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.permissions.DeviceSelected
 import no.nordicsemi.ui.scanner.permissions.NavigateUp
 import no.nordicsemi.ui.scanner.permissions.PermissionsViewEvent
 import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource
 import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
-import no.nordicsemi.ui.scanner.ui.AppBar
-import no.nordicsemi.ui.scanner.ui.FilterItem
-import no.nordicsemi.ui.scanner.ui.FlowCanceled
-import no.nordicsemi.ui.scanner.ui.ItemSelectedResult
-import no.nordicsemi.ui.scanner.ui.StringListDialog
-import no.nordicsemi.ui.scanner.ui.StringListDialogConfig
-import no.nordicsemi.ui.scanner.ui.toAnnotatedString
-import org.koin.androidx.compose.getViewModel
-import org.koin.core.parameter.parametersOf
+import no.nordicsemi.ui.scanner.ui.*
 
 @Composable
 internal fun ScannerScreen(
     uuid: ParcelUuid,
     onEvent: (PermissionsViewEvent) -> Unit
 ) {
+    val viewModel = hiltViewModel<ScannerViewModel>().apply {
+        setFilterUuid(uuid)
+    }
+    val requireLocation = viewModel.dataProvider.locationState.collectAsState().value
 
     Column {
         AppBar(stringResource(id = R.string.scanner_screen)) { onEvent(NavigateUp) }
 
         val showSearchDialog = remember { mutableStateOf(true) }
 
-        ScanEmptyView {
+        ScanEmptyView(requireLocation) {
             showSearchDialog.value = true
         }
 
         if (showSearchDialog.value) {
             ShowSearchDialog(
-                uuid,
                 { showSearchDialog.value = false },
                 onEvent
             )
@@ -52,11 +47,10 @@ internal fun ScannerScreen(
 
 @Composable
 internal fun ShowSearchDialog(
-    uuid: ParcelUuid,
     hideDialog: () -> Unit,
     onEvent: (PermissionsViewEvent) -> Unit,
 ) {
-    val viewModel = getViewModel<ScannerViewModel> { parametersOf(uuid) }
+    val viewModel = hiltViewModel<ScannerViewModel>()
     val result = viewModel.devices.collectAsState(DeviceResource.createLoading()).value
 
     val uuidIsCheckedFilter = rememberSaveable { mutableStateOf(false) }

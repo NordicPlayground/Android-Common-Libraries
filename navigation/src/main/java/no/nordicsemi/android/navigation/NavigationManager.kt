@@ -1,5 +1,7 @@
 package no.nordicsemi.android.navigation
 
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -8,27 +10,43 @@ import javax.inject.Singleton
 @Singleton
 class NavigationManager @Inject constructor() {
 
-    private val _navigationDestination = MutableStateFlow<NavigationDestination>(InitialDestination)
+    private val _navigationDestination = MutableStateFlow(NavigationDestinationComposeHelper(InitialDestination))
     val navigationDestination = _navigationDestination.asStateFlow()
 
     private val arguments = mutableMapOf<DestinationId, DestinationArgument>()
     private val results = mutableMapOf<DestinationId, DestinationResult>()
 
+    val recentArgument = MutableSharedFlow<DestinationArgument>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    val recentResult = MutableSharedFlow<DestinationResult>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
     fun navigateUp() {
-        _navigationDestination.value = BackDestination
+        postDestination(BackDestination)
     }
 
     fun navigateUp(destinationId: DestinationId, args: DestinationResult) {
         results[destinationId] = args
-        _navigationDestination.value = BackDestination
+        recentResult.tryEmit(args)
+        postDestination(BackDestination)
     }
 
     fun navigateTo(destination: ForwardDestination, args: DestinationArgument? = null) {
-        args?.let { arguments[destination.id] = it }
-        _navigationDestination.value = destination
+        args?.let {
+            arguments[destination.id] = it
+            recentArgument.tryEmit(it)
+        }
+        postDestination(destination)
     }
 
-    fun getArgument(destinationId: DestinationId) = arguments.remove(destinationId)
+    private fun postDestination(destination: NavigationDestination) {
+        _navigationDestination.value = NavigationDestinationComposeHelper(destination)
+    }
 
-    fun getResult(destinationId: DestinationId) = results.remove(destinationId)
+    fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]
 }

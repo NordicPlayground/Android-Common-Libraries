@@ -1,11 +1,14 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.toDiscoveredBluetoothDevice
+import javax.inject.Inject
 
-class DevicesDataStore {
+@ViewModelScoped
+class DevicesDataStore @Inject constructor() {
 
     val devices = mutableListOf<DiscoveredBluetoothDevice>()
     val data = MutableStateFlow(devices.toList())

@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NavigationViewModel @Inject constructor(
-    private val navigationManager: NavigationManager
+    private val navigationManager: NavigationManager,
 ) : ViewModel() {
 
     val destination = navigationManager.navigationDestination

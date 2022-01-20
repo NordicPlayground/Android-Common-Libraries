@@ -1,5 +1,6 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
@@ -9,8 +10,10 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.LocalDataProvider
 import no.nordicsemi.ui.scanner.Utils
+import javax.inject.Inject
 
-internal class DevicesRepository(
+@ViewModelScoped
+internal class DevicesRepository @Inject constructor(
     private val utils: Utils,
     private val dataProvider: LocalDataProvider,
     private val devicesDataStore: DevicesDataStore

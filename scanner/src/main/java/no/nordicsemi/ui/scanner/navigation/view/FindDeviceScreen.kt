@@ -18,29 +18,14 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import no.nordicsemi.ui.scanner.Utils
-import no.nordicsemi.ui.scanner.navigation.viewmodel.BluetoothDisabledDestination
-import no.nordicsemi.ui.scanner.navigation.viewmodel.BluetoothNotAvailableDestination
-import no.nordicsemi.ui.scanner.navigation.viewmodel.BluetoothPermissionRequiredDestination
-import no.nordicsemi.ui.scanner.navigation.viewmodel.LocationPermissionRequiredDestination
-import no.nordicsemi.ui.scanner.navigation.viewmodel.PeripheralDeviceRequiredDestination
-import no.nordicsemi.ui.scanner.navigation.viewmodel.ScannerNavigationViewModel
-import no.nordicsemi.ui.scanner.permissions.BluetoothDisabledView
-import no.nordicsemi.ui.scanner.permissions.BluetoothNotAvailableView
-import no.nordicsemi.ui.scanner.permissions.BluetoothPermissionRequiredView
-import no.nordicsemi.ui.scanner.permissions.LocationPermissionRequiredView
-import no.nordicsemi.ui.scanner.permissions.NavigateUp
-import no.nordicsemi.ui.scanner.permissions.PermissionsViewEvent
-import no.nordicsemi.ui.scanner.permissions.RefreshNavigation
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.ui.scanner.navigation.viewmodel.*
+import no.nordicsemi.ui.scanner.permissions.*
 import no.nordicsemi.ui.scanner.scanner.view.ScannerScreen
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun FindDeviceScreen() {
-    val viewModel = getViewModel<ScannerNavigationViewModel>()
-
-    val utils = get<Utils>()
+    val viewModel = hiltViewModel<ScannerNavigationViewModel>()
 
     val destination = viewModel.destination.collectAsState().value
 
@@ -48,7 +33,9 @@ fun FindDeviceScreen() {
     val activity = context as Activity
     BackHandler { viewModel.onEvent(NavigateUp) }
 
-    val onEvent = { event: PermissionsViewEvent -> }
+    val onEvent = { event: PermissionsViewEvent ->
+        viewModel.onEvent(event)
+    }
 
     Box(
         modifier = Modifier
@@ -59,13 +46,13 @@ fun FindDeviceScreen() {
             BluetoothDisabledDestination -> BluetoothDisabledView(onEvent)
             BluetoothNotAvailableDestination -> BluetoothNotAvailableView(onEvent)
             BluetoothPermissionRequiredDestination -> BluetoothPermissionRequiredView(
-                utils.isBluetoothScanPermissionDeniedForever(
+                viewModel.utils.isBluetoothScanPermissionDeniedForever(
                     activity
                 ),
                 onEvent
             )
             LocationPermissionRequiredDestination -> LocationPermissionRequiredView(
-                utils.isLocationPermissionDeniedForever(
+                viewModel.utils.isLocationPermissionDeniedForever(
                     activity
                 ),
                 onEvent
@@ -81,7 +68,7 @@ fun FindDeviceScreen() {
 @SuppressLint("ComposableNaming")
 @Composable
 private fun registerReceiver(intentFilter: IntentFilter) {
-    val viewModel = getViewModel<ScannerNavigationViewModel>()
+    val viewModel = hiltViewModel<ScannerNavigationViewModel>()
     val context = LocalContext.current
 
     DisposableEffect(context) {

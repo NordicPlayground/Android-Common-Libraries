@@ -30,7 +30,7 @@ fun NavigationView(destinations: ComposeDestinations) {
 
     val context = LocalContext.current as Activity
     LaunchedEffect(destination.value) {
-        when (val dest = destination.value) {
+        when (val dest = destination.value.destination) {
             BackDestination -> navController.navigateUp()
             FinishDestination -> context.finish()
             is ForwardDestination -> navController.navigate(dest.id.name)

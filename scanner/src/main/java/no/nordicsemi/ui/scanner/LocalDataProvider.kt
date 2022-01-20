@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.location.LocationManager
 import android.os.Build
-import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
 private const val PREFS_FILTER_UUID_REQUIRED = "filter_uuid"
@@ -19,7 +21,11 @@ private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
 private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_requested"
 
 @SuppressLint("AnnotateVersionCheck")
-class LocalDataProvider(private val context: Context) {
+@Singleton
+class LocalDataProvider @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
+) {
 
     val locationState = MutableStateFlow(isLocationRequiredAndEnabled())
 

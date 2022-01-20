@@ -2,12 +2,9 @@ package no.nordicsemi.ui.scanner.navigation.viewmodel
 
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import no.nordicsemi.android.navigation.CancelDestinationResult
-import no.nordicsemi.android.navigation.NavigationManager
-import no.nordicsemi.android.navigation.ParcelableArgument
-import no.nordicsemi.android.navigation.SuccessDestinationResult
-import no.nordicsemi.android.navigation.UUIDArgument
+import no.nordicsemi.android.navigation.*
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.ScannerDestinationId
 import no.nordicsemi.ui.scanner.Utils
@@ -16,13 +13,15 @@ import no.nordicsemi.ui.scanner.permissions.NavigateUp
 import no.nordicsemi.ui.scanner.permissions.PermissionsViewEvent
 import no.nordicsemi.ui.scanner.permissions.RefreshNavigation
 import no.nordicsemi.ui.scanner.ui.exhaustive
+import javax.inject.Inject
 
-internal class ScannerNavigationViewModel(
-    private val utils: Utils,
+@HiltViewModel
+internal class ScannerNavigationViewModel @Inject constructor(
+    val utils: Utils,
     private val navigationManager: NavigationManager
 ) : ViewModel() {
 
-    val args = navigationManager.getArgument(ScannerDestinationId) as UUIDArgument
+    val args = navigationManager.getImmediateArgument(ScannerDestinationId) as UUIDArgument
     val filterId = ParcelUuid(args.value)
     val destination = MutableStateFlow(getNextScreenDestination())
 
@@ -30,7 +29,7 @@ internal class ScannerNavigationViewModel(
 
     fun onEvent(event: PermissionsViewEvent) {
         when (event) {
-            NavigateUp -> navigationManager.navigateUp(ScannerDestinationId, CancelDestinationResult)
+            NavigateUp -> navigationManager.navigateUp(ScannerDestinationId, CancelDestinationResult(ScannerDestinationId))
             RefreshNavigation -> refreshNavigation()
             is DeviceSelected -> onDeviceSelected(event.device)
         }.exhaustive
@@ -45,7 +44,10 @@ internal class ScannerNavigationViewModel(
         val nextDestination = getNextScreenDestination()
 
         if (nextDestination == null) {
-            navigationManager.navigateUp(ScannerDestinationId, SuccessDestinationResult(ParcelableArgument(device!!)))
+            navigationManager.navigateUp(
+                ScannerDestinationId,
+                SuccessDestinationResult(ScannerDestinationId, ParcelableArgument(ScannerDestinationId, device!!))
+            )
         } else if (destination.value != nextDestination) {
             destination.value = nextDestination
         }

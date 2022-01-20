@@ -27,12 +27,13 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class Utils(
+class Utils @Inject constructor(
+    @ApplicationContext
     private val context: Context,
     private val dataProvider: LocalDataProvider,
     private val bleAdapter: BluetoothAdapter?
