@@ -22,4 +22,8 @@ class NavigationViewModel @Inject constructor(
     fun navigateUp() {
         navigationManager.navigateUp()
     }
+
+    fun consumeLastEvent() {
+        navigationManager.consumeLastEvent()
+    }
 }

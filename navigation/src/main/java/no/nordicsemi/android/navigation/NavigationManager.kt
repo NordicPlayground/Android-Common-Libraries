@@ -26,6 +26,10 @@ class NavigationManager @Inject constructor() {
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
+    fun consumeLastEvent() {
+        _navigationDestination.value = _navigationDestination.value.copy(isConsumed = true)
+    }
+
     fun navigateUp() {
         postDestination(BackDestination)
     }

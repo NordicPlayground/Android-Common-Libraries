@@ -30,11 +30,15 @@ fun NavigationView(destinations: ComposeDestinations) {
 
     val context = LocalContext.current as Activity
     LaunchedEffect(destination.value) {
+        if (destination.value.isConsumed) {
+            return@LaunchedEffect
+        }
         when (val dest = destination.value.destination) {
             BackDestination -> navController.navigateUp()
             FinishDestination -> context.finish()
             is ForwardDestination -> navController.navigate(dest.id.name)
             InitialDestination -> doNothing() //Needed because collectAsState() requires initial state.
         }
+        viewModel.consumeLastEvent()
     }
 }
