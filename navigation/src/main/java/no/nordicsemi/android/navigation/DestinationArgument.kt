@@ -3,21 +3,25 @@ package no.nordicsemi.android.navigation
 import android.os.Parcelable
 import java.util.*
 
-sealed class DestinationArgument {
-    abstract val destinationId: DestinationId
-}
+data class DestinationArgument(
+    val destinationId: DestinationId,
+    val argument: Argument
+)
+
+sealed class Argument
 
 data class StringDestinationArgument(
-    override val destinationId: DestinationId,
     val value: String,
-) : DestinationArgument()
+) : Argument()
 
 data class UUIDArgument(
-    override val destinationId: DestinationId,
     val value: UUID,
-) : DestinationArgument()
+) : Argument()
 
 data class ParcelableArgument(
-    override val destinationId: DestinationId,
     val value: Parcelable,
-) : DestinationArgument()
+) : Argument()
+
+data class AnyArgument(
+    val value: Any,
+) : Argument()

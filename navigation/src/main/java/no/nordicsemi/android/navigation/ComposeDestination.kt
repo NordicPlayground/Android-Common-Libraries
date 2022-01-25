@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 
 class ComposeDestinations(val values: List<ComposeDestination>) {
 
+    constructor(destination: ComposeDestination) : this(listOf(destination))
+
     operator fun plus(other: ComposeDestinations): ComposeDestinations {
         return ComposeDestinations(this.values + other.values)
     }

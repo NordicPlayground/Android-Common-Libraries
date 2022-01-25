@@ -10,5 +10,5 @@ class CancelDestinationResult(
 
 data class SuccessDestinationResult(
     override val destinationId: DestinationId,
-    val argument: DestinationArgument,
+    val argument: Argument,
 ) : DestinationResult()

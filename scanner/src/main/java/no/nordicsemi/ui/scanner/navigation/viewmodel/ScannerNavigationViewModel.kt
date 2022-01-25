@@ -46,7 +46,7 @@ internal class ScannerNavigationViewModel @Inject constructor(
         if (nextDestination == null) {
             navigationManager.navigateUp(
                 ScannerDestinationId,
-                SuccessDestinationResult(ScannerDestinationId, ParcelableArgument(ScannerDestinationId, device!!))
+                SuccessDestinationResult(ScannerDestinationId, ParcelableArgument(device!!))
             )
         } else if (destination.value != nextDestination) {
             destination.value = nextDestination

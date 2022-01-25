@@ -40,12 +40,13 @@ class NavigationManager @Inject constructor() {
         postDestination(BackDestination)
     }
 
-    fun navigateTo(destination: ForwardDestination, args: DestinationArgument? = null) {
+    fun navigateTo(destination: DestinationId, args: Argument? = null) {
         args?.let {
-            arguments[destination.id] = it
-            recentArgument.tryEmit(it)
+            val destinationArgument = DestinationArgument(destination, args)
+            arguments[destination] = destinationArgument
+            recentArgument.tryEmit(destinationArgument)
         }
-        postDestination(destination)
+        postDestination(ForwardDestination(destination))
     }
 
     private fun postDestination(destination: NavigationDestination) {
