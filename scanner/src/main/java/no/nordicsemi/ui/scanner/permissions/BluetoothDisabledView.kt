@@ -4,12 +4,15 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,37 +30,43 @@ import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
 internal fun BluetoothDisabledView(onEvent: (PermissionsViewEvent) -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column {
         AppBar(stringResource(id = R.string.bluetooth)) { onEvent(NavigateUp) }
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+                contentDescription = "",
+                modifier = Modifier.padding(16.dp)
+            )
 
-        Text(
-            text = stringResource(id = R.string.bluetooth_disabled_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
+            Text(
+                text = stringResource(id = R.string.bluetooth_disabled_title),
+                color = MaterialTheme.colorScheme.secondary
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = stringResource(id = R.string.bluetooth_disabled_info),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            textAlign = TextAlign.Center
-        )
+            Text(
+                text = stringResource(id = R.string.bluetooth_disabled_info),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val context = LocalContext.current
-        Button(onClick = { enableBluetooth(context) }) {
-            Text(text = stringResource(id = R.string.action_enable))
+            val context = LocalContext.current
+            Button(onClick = { enableBluetooth(context) }) {
+                Text(text = stringResource(id = R.string.action_enable))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

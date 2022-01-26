@@ -8,11 +8,9 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,8 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import no.nordicsemi.ui.scanner.R
-import no.nordicsemi.ui.scanner.navigation.view.FindDeviceCloseResult
-import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @Composable
@@ -35,52 +31,60 @@ internal fun LocationPermissionRequiredView(
     isDeniedForever: Boolean,
     onEvent: (PermissionsViewEvent) -> Unit
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column {
         AppBar(stringResource(id = R.string.location)) {
             onEvent(NavigateUp)
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_location_off),
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
-        )
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        Text(
-            text = stringResource(id = R.string.location_permission_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
+            Image(
+                painter = painterResource(id = R.drawable.ic_location_off),
+                contentDescription = "",
+                modifier = Modifier.padding(16.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.location_permission_title),
+                color = MaterialTheme.colorScheme.secondary
+            )
 
-        Text(
-            text = stringResource(id = R.string.location_permission_info),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.location_permission_info),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
 
-        val requiredPermissions = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val launcher = rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { onEvent(RefreshNavigation) }
+            val requiredPermissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
 
-        if (!isDeniedForever) {
-            Button(onClick = { launcher.launch(requiredPermissions) }) {
-                Text(text = stringResource(id = R.string.action_grant_permission))
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { onEvent(RefreshNavigation) }
+
+            if (!isDeniedForever) {
+                Button(onClick = { launcher.launch(requiredPermissions) }) {
+                    Text(text = stringResource(id = R.string.action_grant_permission))
+                }
+            } else {
+                val context = LocalContext.current
+                Button(onClick = { openPermissionSettings(context) }) {
+                    Text(text = stringResource(id = R.string.action_settings))
+                }
             }
-        } else {
-            val context = LocalContext.current
-            Button(onClick = { openPermissionSettings(context) }) {
-                Text(text = stringResource(id = R.string.action_settings))
-            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

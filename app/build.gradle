@@ -50,11 +50,6 @@ dependencies {
     implementation project(":theme")
     implementation project(":navigation")
 
-
-    def koin_version= "3.1.2"
-    implementation "io.insert-koin:koin-android:$koin_version"
-    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
-
     implementation "no.nordicsemi.android.common:theme:1.0.0"
 
     implementation "no.nordicsemi.android:ble-common:2.3.1"

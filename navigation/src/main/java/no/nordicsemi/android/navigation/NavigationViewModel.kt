@@ -15,8 +15,9 @@ class NavigationViewModel @Inject constructor(
 ) : ViewModel() {
 
     val destination = navigationManager.navigationDestination.map {
-        delay(50) //delay to make two consecutive emissions working
-        it
+        it.also {
+            delay(50) //delay to make two consecutive emissions working
+        }
     }.stateIn(viewModelScope, SharingStarted.Lazily, NavigationDestinationComposeHelper(InitialDestination))
 
     fun navigateUp() {

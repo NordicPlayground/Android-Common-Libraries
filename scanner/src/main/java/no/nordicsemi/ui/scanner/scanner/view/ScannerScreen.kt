@@ -2,11 +2,14 @@ package no.nordicsemi.ui.scanner.scanner.view
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.ui.scanner.R
@@ -32,8 +35,10 @@ internal fun ScannerScreen(
 
         val showSearchDialog = remember { mutableStateOf(true) }
 
-        ScanEmptyView(requireLocation) {
-            showSearchDialog.value = true
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            ScanEmptyView(requireLocation) {
+                showSearchDialog.value = true
+            }
         }
 
         if (showSearchDialog.value) {

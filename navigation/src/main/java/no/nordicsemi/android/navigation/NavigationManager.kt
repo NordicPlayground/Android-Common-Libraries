@@ -53,5 +53,5 @@ class NavigationManager @Inject constructor() {
         _navigationDestination.value = NavigationDestinationComposeHelper(destination)
     }
 
-    fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]
+    fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]?.argument
 }

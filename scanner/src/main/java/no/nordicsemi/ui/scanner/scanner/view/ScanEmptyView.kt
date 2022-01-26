@@ -24,7 +24,7 @@ import no.nordicsemi.ui.scanner.R
 internal fun ScanEmptyView(requireLocation: Boolean, showDialog: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 16.dp)
+        modifier = Modifier.padding(16.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),

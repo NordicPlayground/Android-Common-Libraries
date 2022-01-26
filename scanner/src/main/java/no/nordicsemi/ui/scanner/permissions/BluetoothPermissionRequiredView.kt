@@ -10,6 +10,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,59 +26,65 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import no.nordicsemi.ui.scanner.R
-import no.nordicsemi.ui.scanner.navigation.view.FindDeviceCloseResult
-import no.nordicsemi.ui.scanner.navigation.view.FindDeviceFlowStatus
 import no.nordicsemi.ui.scanner.ui.AppBar
 
 @SuppressLint("InlinedApi")
 @Composable
 internal fun BluetoothPermissionRequiredView(
     isDeniedForever: Boolean,
-    onEvent: (PermissionsViewEvent) -> Unit
+    onEvent: (PermissionsViewEvent) -> Unit,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column {
         AppBar(stringResource(id = R.string.bluetooth)) { onEvent(NavigateUp) }
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
-        )
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+                contentDescription = "",
+                modifier = Modifier.padding(16.dp)
+            )
 
-        Text(
-            text = stringResource(id = R.string.bluetooth_permission_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
+            Text(
+                text = stringResource(id = R.string.bluetooth_permission_title),
+                color = MaterialTheme.colorScheme.secondary
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = stringResource(id = R.string.bluetooth_permission_info),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            textAlign = TextAlign.Center
-        )
+            Text(
+                text = stringResource(id = R.string.bluetooth_permission_info),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                textAlign = TextAlign.Center
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        val requiredPermissions = arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
+            val requiredPermissions =
+                arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
 
-        val launcher = rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { onEvent(RefreshNavigation) }
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { onEvent(RefreshNavigation) }
 
-        val context = LocalContext.current
-        if (!isDeniedForever) {
-            Button(onClick = { launcher.launch(requiredPermissions) }) {
-                Text(text = stringResource(id = R.string.action_grant_permission))
+            val context = LocalContext.current
+            if (!isDeniedForever) {
+                Button(onClick = { launcher.launch(requiredPermissions) }) {
+                    Text(text = stringResource(id = R.string.action_grant_permission))
+                }
+            } else {
+                Button(onClick = { openPermissionSettings(context) }) {
+                    Text(text = stringResource(id = R.string.action_settings))
+                }
             }
-        } else {
-            Button(onClick = { openPermissionSettings(context) }) {
-                Text(text = stringResource(id = R.string.action_settings))
-            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
