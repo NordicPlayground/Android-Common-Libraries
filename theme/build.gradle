@@ -34,12 +34,12 @@ android {
 
 dependencies {
 
-    implementation "androidx.compose.material3:material3:1.0.0-alpha03"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha04"
     implementation 'com.google.android.material:material:1.6.0-alpha02'
 
     implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
     def compose_version = "1.1.0-rc01"
 

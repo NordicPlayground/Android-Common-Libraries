@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import no.nordicsemi.android.material.you.Card
+import no.nordicsemi.android.material.you.CheckboxFallback
 import no.nordicsemi.android.material.you.CircularProgressIndicator
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.R
@@ -75,7 +76,7 @@ internal fun StringListView(config: StringListDialogConfig) {
             ) {
                 config.filterItems.forEachIndexed { i, item ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = item.isChecked, onCheckedChange = {
+                        CheckboxFallback(checked = item.isChecked, onCheckedChange = {
                             config.onFilterItemCheckChanged(i)
                         })
                         Spacer(modifier = Modifier.height(4.dp))
