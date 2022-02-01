@@ -2,6 +2,7 @@ package no.nordicsemi.ui.scanner.ui
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -77,12 +78,7 @@ internal fun StringListView(config: StringListDialogConfig) {
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.8f)
-                    .verticalScroll(rememberScrollState())
-            ) {
-
+            Column(modifier = Modifier.fillMaxHeight(0.8f)) {
                 when (val result = config.result) {
                     is ErrorResult -> ErrorSection()
                     is LoadingResult -> LoadingSection()
@@ -119,40 +115,43 @@ private fun DevicesSection(
     items: List<DiscoveredBluetoothDevice>,
     config: StringListDialogConfig
 ) {
-    items.forEach {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .clickable { config.onResult(ItemSelectedResult(it)) }
-                .padding(8.dp),
-        ) {
+    LazyColumn {
+        items(items.size) { i ->
+            val device = items[i]
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .clickable { config.onResult(ItemSelectedResult(device)) }
+                    .padding(8.dp),
+            ) {
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                config.leftIcon?.let {
-                    Image(
-                        painter = painterResource(it),
-                        contentDescription = "Content image",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
-                        modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.tertiary,
-                                shape = CircleShape
-                            )
-                            .padding(8.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.size(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    config.leftIcon?.let {
+                        Image(
+                            painter = painterResource(it),
+                            contentDescription = "Content image",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    shape = CircleShape
+                                )
+                                .padding(8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
 
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = it.displayName(),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(text = it.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = device.displayName(),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
             }
+            Spacer(modifier = Modifier.height(8.dp))
         }
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
