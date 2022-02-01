@@ -2,11 +2,15 @@ package no.nordicsemi.ui.scanner.scanner.viewmodel
 
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.LocalDataProvider
+import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesRepository
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
@@ -30,15 +34,16 @@ internal class ScannerViewModel @Inject constructor(
     )
 
     val devices = config.combine(devicesRepository.getDevices()) { config, result ->
-        (result as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
+        val devices = (result.discoveredDevices as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
             val newItems = it.value.filter {
-                !config.filterUuidRequired || it.scanResult.scanRecord?.serviceUuids?.contains(uuid) ?: false
+                !config.filterUuidRequired || it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) ?: false
             }.filter {
                 !config.filterNearbyOnly || it.rssi >= FILTER_RSSI
             }
-            SuccessResult(newItems)
-        } ?: result
-    }
+            SuccessResult(newItems.filter { !result.bondedDevices.contains(it) })
+        } ?: result.discoveredDevices
+        result.copy(discoveredDevices = devices)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, AllDevices())
 
     fun setFilterUuid(uuid: ParcelUuid) {
         this.uuid = uuid

@@ -1,5 +1,6 @@
 package no.nordicsemi.ui.scanner
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -17,10 +18,11 @@ fun ScanResult.toDiscoveredBluetoothDevice(): DiscoveredBluetoothDevice {
     )
 }
 
+@SuppressLint("MissingPermission")
 @Parcelize
 data class DiscoveredBluetoothDevice(
     val device: BluetoothDevice,
-    val scanResult: ScanResult,
+    val scanResult: ScanResult? = null,
     val name: String? = null,
     val lastScanResult: ScanResult? = null,
     val rssi: Int = 0,
@@ -66,6 +68,7 @@ data class DiscoveredBluetoothDevice(
     fun displayName(): String {
         return when {
             name?.isNotEmpty() == true -> name
+            device.name?.isNotEmpty() == true -> device.name
             else -> "Unknown"
         }
     }

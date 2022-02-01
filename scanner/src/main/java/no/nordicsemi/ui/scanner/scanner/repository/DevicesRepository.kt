@@ -2,7 +2,9 @@ package no.nordicsemi.ui.scanner.scanner.repository
 
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.map
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanResult
@@ -19,7 +21,7 @@ internal class DevicesRepository @Inject constructor(
     private val devicesDataStore: DevicesDataStore
 ) {
 
-    fun getDevices() = callbackFlow<DeviceResource<List<DiscoveredBluetoothDevice>>> {
+    fun getDevices(): Flow<AllDevices> = callbackFlow<DeviceResource<List<DiscoveredBluetoothDevice>>> {
         val scanCallback: ScanCallback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 // This callback will be called only if the scan report delay is not set or is set to 0.
@@ -66,7 +68,7 @@ internal class DevicesRepository @Inject constructor(
         awaitClose {
             scanner.stopScan(scanCallback)
         }
-    }
+    }.map { AllDevices(devicesDataStore.bondedDevices, it) }
 
     fun clear() {
         devicesDataStore.clear()

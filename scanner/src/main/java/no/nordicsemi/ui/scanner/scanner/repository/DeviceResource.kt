@@ -1,5 +1,20 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
+import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
+
+internal data class AllDevices(
+    val bondedDevices: List<DiscoveredBluetoothDevice> = emptyList(),
+    val discoveredDevices: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
+) {
+    fun size(): Int {
+        return bondedDevices.size + when (discoveredDevices) {
+            is ErrorResult -> 0
+            is LoadingResult -> 0
+            is SuccessResult -> discoveredDevices.value.size
+        }
+    }
+}
+
 internal sealed class DeviceResource<T> {
 
     companion object {

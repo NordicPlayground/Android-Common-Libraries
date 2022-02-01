@@ -16,7 +16,6 @@ import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.permissions.DeviceSelected
 import no.nordicsemi.ui.scanner.permissions.NavigateUp
 import no.nordicsemi.ui.scanner.permissions.PermissionsViewEvent
-import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource
 import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.ui.scanner.ui.*
 
@@ -56,7 +55,7 @@ internal fun ShowSearchDialog(
     onEvent: (PermissionsViewEvent) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>()
-    val result = viewModel.devices.collectAsState(DeviceResource.createLoading()).value
+    val result = viewModel.devices.collectAsState().value
 
     val uuidIsCheckedFilter = rememberSaveable { mutableStateOf(false) }
     val nearbyIsCheckedFilter = rememberSaveable { mutableStateOf(false) }

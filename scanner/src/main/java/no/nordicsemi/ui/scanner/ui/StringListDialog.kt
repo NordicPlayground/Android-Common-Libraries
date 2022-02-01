@@ -22,6 +22,7 @@ import no.nordicsemi.android.material.you.Card
 import no.nordicsemi.android.material.you.CheckboxFallback
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.R
+import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.ErrorResult
 import no.nordicsemi.ui.scanner.scanner.repository.LoadingResult
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
@@ -79,10 +80,10 @@ internal fun StringListView(config: StringListDialogConfig) {
             }
 
             Column(modifier = Modifier.fillMaxHeight(0.8f)) {
-                when (val result = config.result) {
+                when (config.result.discoveredDevices) {
                     is ErrorResult -> ErrorSection()
                     is LoadingResult -> LoadingSection()
-                    is SuccessResult -> DevicesSection(result.value, config)
+                    is SuccessResult -> DevicesSection(config.result, config)
                 }.exhaustive
             }
 
@@ -112,45 +113,78 @@ private fun LoadingSection() {
 
 @Composable
 private fun DevicesSection(
-    items: List<DiscoveredBluetoothDevice>,
+    items: AllDevices,
     config: StringListDialogConfig
 ) {
-    LazyColumn {
-        items(items.size) { i ->
-            val device = items[i]
-            Column(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .clickable { config.onResult(ItemSelectedResult(device)) }
-                    .padding(8.dp),
-            ) {
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    config.leftIcon?.let {
-                        Image(
-                            painter = painterResource(it),
-                            contentDescription = "Content image",
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                    shape = CircleShape
-                                )
-                                .padding(8.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(8.dp))
+        if (items.bondedDevices.isNotEmpty()) {
+            item {
+                Text(
+                    text = "Bonded devices",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+            items(items.bondedDevices.size) { i ->
+                DeviceItem(device = items.bondedDevices[i], config = config)
+            }
+        }
 
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = device.displayName(),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
-                    }
+        val discoveredDevices = items.discoveredDevices as? SuccessResult
+
+        discoveredDevices?.let {
+            val devices = it.value
+            if (devices.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Discovered devices",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+
+                items(devices.size) { i ->
+                    DeviceItem(device = devices[i], config = config)
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+private fun DeviceItem(
+    device: DiscoveredBluetoothDevice,
+    config: StringListDialogConfig
+) {
+    Column(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .clickable { config.onResult(ItemSelectedResult(device)) }
+            .padding(8.dp),
+    ) {
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            config.leftIcon?.let {
+                Image(
+                    painter = painterResource(it),
+                    contentDescription = "Content image",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.tertiary,
+                            shape = CircleShape
+                        )
+                        .padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = device.displayName(),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+            }
         }
     }
 }
