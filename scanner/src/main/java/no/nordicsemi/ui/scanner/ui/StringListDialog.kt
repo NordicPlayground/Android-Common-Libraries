@@ -1,22 +1,10 @@
 package no.nordicsemi.ui.scanner.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import no.nordicsemi.android.material.you.Card
 import no.nordicsemi.android.material.you.CheckboxFallback
-import no.nordicsemi.android.material.you.CircularProgressIndicator
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.scanner.repository.ErrorResult
@@ -57,18 +44,12 @@ internal fun StringListView(config: StringListDialogConfig) {
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+            Text(
+                text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
+                style = MaterialTheme.typography.titleLarge
+            )
 
-            if (config.filterItems.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

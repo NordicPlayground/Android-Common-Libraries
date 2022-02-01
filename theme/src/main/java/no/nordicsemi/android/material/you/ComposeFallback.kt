@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -60,11 +58,6 @@ fun Card(
     ) {
         content()
     }
-}
-
-@Composable
-fun CircularProgressIndicator() {
-    Icon(Icons.Default.HourglassTop, "Work in progress.")
 }
 
 data class RadioGroupViewEntity(
