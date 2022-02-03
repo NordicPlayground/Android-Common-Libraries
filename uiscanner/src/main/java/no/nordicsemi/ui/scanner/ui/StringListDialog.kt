@@ -37,15 +37,12 @@ internal fun StringListDialog(config: StringListDialogConfig) {
 @Composable
 internal fun StringListView(config: StringListDialogConfig) {
     Card(
-        modifier = Modifier.height(350.dp),
         backgroundColor = MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(10.dp),
-        elevation = 0.dp
+        elevation = 0.dp,
+        modifier = Modifier.padding(vertical = 54.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
                 style = MaterialTheme.typography.titleLarge
@@ -53,10 +50,7 @@ internal fun StringListView(config: StringListDialogConfig) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 config.filterItems.forEachIndexed { i, item ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CheckboxFallback(checked = item.isChecked, onCheckedChange = {
@@ -79,7 +73,7 @@ internal fun StringListView(config: StringListDialogConfig) {
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            Column(modifier = Modifier.fillMaxHeight(0.8f)) {
+            Column(modifier = Modifier.weight(1f)) {
                 when (config.result.discoveredDevices) {
                     is ErrorResult -> ErrorSection()
                     is LoadingResult -> LoadingSection()
@@ -121,7 +115,7 @@ private fun DevicesSection(
         if (items.bondedDevices.isNotEmpty()) {
             item {
                 Text(
-                    text = "Bonded devices",
+                    text = stringResource(id = R.string.bonded_devices),
                     style = MaterialTheme.typography.titleLarge
                 )
             }
@@ -137,7 +131,7 @@ private fun DevicesSection(
             if (devices.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Discovered devices",
+                        text = stringResource(id = R.string.discovered_devices),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -179,10 +173,19 @@ private fun DeviceItem(
             Spacer(modifier = Modifier.size(8.dp))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = device.displayName(),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                val deviceName = device.displayName()
+                if (deviceName != null) {
+                    Text(
+                        text = deviceName,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.device_no_name),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
                 Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
             }
         }

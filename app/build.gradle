@@ -46,11 +46,9 @@ android {
 }
 
 dependencies {
-    implementation project(":scanner")
+    implementation project(":uiscanner")
     implementation project(":theme")
     implementation project(":navigation")
-
-    implementation "no.nordicsemi.android.common:theme:1.0.0"
 
     implementation "no.nordicsemi.android:ble-common:2.3.1"
     implementation 'androidx.lifecycle:lifecycle-service:2.4.0'

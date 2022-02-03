@@ -5,7 +5,7 @@ import no.nordicsemi.android.navigation.ComposeDestinations
 import no.nordicsemi.android.navigation.DestinationId
 import no.nordicsemi.ui.scanner.navigation.view.FindDeviceScreen
 
-val ScannerDestinationId = DestinationId("scanner-destination")
+val ScannerDestinationId = DestinationId("uiscanner-destination")
 
 private val ScannerDestination = ComposeDestination(ScannerDestinationId) { FindDeviceScreen() }
 

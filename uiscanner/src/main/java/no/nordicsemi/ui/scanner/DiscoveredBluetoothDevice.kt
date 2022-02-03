@@ -65,11 +65,11 @@ data class DiscoveredBluetoothDevice(
         device.createBond()
     }
 
-    fun displayName(): String {
+    fun displayName(): String? {
         return when {
             name?.isNotEmpty() == true -> name
             device.name?.isNotEmpty() == true -> device.name
-            else -> "Unknown"
+            else -> null
         }
     }
 

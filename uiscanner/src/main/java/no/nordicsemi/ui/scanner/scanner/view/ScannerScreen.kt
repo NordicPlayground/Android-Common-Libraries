@@ -57,7 +57,7 @@ internal fun ShowSearchDialog(
     val viewModel = hiltViewModel<ScannerViewModel>()
     val result = viewModel.devices.collectAsState().value
 
-    val uuidIsCheckedFilter = rememberSaveable { mutableStateOf(false) }
+    val uuidIsCheckedFilter = rememberSaveable { mutableStateOf(true) }
     val nearbyIsCheckedFilter = rememberSaveable { mutableStateOf(false) }
 
     val uuidFilter = FilterItem(

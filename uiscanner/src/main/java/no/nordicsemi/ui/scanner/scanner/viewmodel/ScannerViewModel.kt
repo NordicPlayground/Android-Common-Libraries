@@ -28,7 +28,7 @@ internal class ScannerViewModel @Inject constructor(
 
     private val config = MutableStateFlow(
         DevicesScanFilter(
-            filterUuidRequired = false,
+            filterUuidRequired = true,
             filterNearbyOnly = false
         )
     )
