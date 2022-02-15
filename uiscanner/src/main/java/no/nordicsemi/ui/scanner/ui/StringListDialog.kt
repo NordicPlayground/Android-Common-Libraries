@@ -43,10 +43,20 @@ internal fun StringListView(config: StringListDialogConfig) {
         modifier = Modifier.padding(vertical = 54.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
-                style = MaterialTheme.typography.titleLarge
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.weight(1f)
+                )
+
+                if (config.isRunning()) {
+                    CircularProgressIndicator(modifier = Modifier.size(30.dp))
+                }
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -101,7 +111,7 @@ private fun LoadingSection() {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        CircularProgressIndicator()
+
     }
 }
 

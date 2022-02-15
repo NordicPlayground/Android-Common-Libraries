@@ -5,6 +5,8 @@ import androidx.compose.ui.text.AnnotatedString
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.DeviceResource
+import no.nordicsemi.ui.scanner.scanner.repository.LoadingResult
+import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
 
 internal data class StringListDialogConfig(
     val title: AnnotatedString? = null,
@@ -15,7 +17,12 @@ internal data class StringListDialogConfig(
     val isLoading: Boolean = true,
     val onFilterItemCheckChanged: (Int) -> Unit,
     val onResult: (StringListDialogResult) -> Unit
-)
+) {
+
+    fun isRunning(): Boolean {
+        return result.discoveredDevices is LoadingResult || result.discoveredDevices is SuccessResult
+    }
+}
 
 internal data class FilterItem(
     val text: String,
