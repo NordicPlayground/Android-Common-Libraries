@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +15,7 @@ import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.permissions.DeviceSelected
 import no.nordicsemi.ui.scanner.permissions.NavigateUp
 import no.nordicsemi.ui.scanner.permissions.PermissionsViewEvent
+import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.ui.scanner.ui.*
 
@@ -28,6 +28,7 @@ internal fun ScannerScreen(
         setFilterUuid(uuid)
     }
     val requireLocation = viewModel.dataProvider.locationState.collectAsState().value
+    val config = viewModel.config.collectAsState().value
 
     Column {
         AppBar(stringResource(id = R.string.scanner_screen)) { onEvent(NavigateUp) }
@@ -43,6 +44,7 @@ internal fun ScannerScreen(
         if (showSearchDialog.value) {
             ShowSearchDialog(
                 { showSearchDialog.value = false },
+                config,
                 onEvent
             )
         }
@@ -52,22 +54,23 @@ internal fun ScannerScreen(
 @Composable
 internal fun ShowSearchDialog(
     hideDialog: () -> Unit,
+    config: DevicesScanFilter,
     onEvent: (PermissionsViewEvent) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>()
     val result = viewModel.devices.collectAsState().value
 
-    val uuidIsCheckedFilter = rememberSaveable { mutableStateOf(true) }
-    val nearbyIsCheckedFilter = rememberSaveable { mutableStateOf(false) }
+    val uuidIsCheckedFilter = config.filterUuidRequired
+    val nearbyIsCheckedFilter = config.filterNearbyOnly
 
     val uuidFilter = FilterItem(
         stringResource(id = R.string.filter_uuid),
-        uuidIsCheckedFilter.value,
+        uuidIsCheckedFilter,
         R.drawable.ic_filter_uuid
     )
     val nearbyFilter = FilterItem(
         stringResource(id = R.string.filter_nearby),
-        nearbyIsCheckedFilter.value,
+        nearbyIsCheckedFilter,
         R.drawable.ic_filter_nearby
     )
     val filters = listOf(uuidFilter, nearbyFilter)
@@ -79,11 +82,9 @@ internal fun ShowSearchDialog(
         leftIcon = R.drawable.ic_bluetooth,
         onFilterItemCheckChanged = {
             if (it == 0) {
-                uuidIsCheckedFilter.value = !uuidIsCheckedFilter.value
-                viewModel.filterByUuid(uuidIsCheckedFilter.value)
+                viewModel.filterByUuid(!uuidIsCheckedFilter)
             } else {
-                nearbyIsCheckedFilter.value = !nearbyIsCheckedFilter.value
-                viewModel.filterByDistance(nearbyIsCheckedFilter.value)
+                viewModel.filterByDistance(!nearbyIsCheckedFilter)
             }
         }
     ) {

@@ -26,7 +26,7 @@ internal class ScannerViewModel @Inject constructor(
 
     private lateinit var uuid: ParcelUuid
 
-    private val config = MutableStateFlow(
+    val config = MutableStateFlow(
         DevicesScanFilter(
             filterUuidRequired = true,
             filterNearbyOnly = false
