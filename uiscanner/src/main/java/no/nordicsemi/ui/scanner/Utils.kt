@@ -45,14 +45,18 @@ class Utils @Inject constructor(
             return adapter != null && adapter.isEnabled
         }
 
-    fun isBluetoothScanPermissionGranted(): Boolean {
+    fun areNecessaryBluetoothPermissionsGranted(): Boolean {
+        return isBluetoothScanPermissionGranted() && isBluetoothConnectPermissionGranted()
+    }
+
+    private fun isBluetoothScanPermissionGranted(): Boolean {
         return if (!dataProvider.isSOrAbove) true else ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.BLUETOOTH_SCAN
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun isBluetoothConnectPermissionGranted(): Boolean {
+    private fun isBluetoothConnectPermissionGranted(): Boolean {
         return if (!dataProvider.isSOrAbove) true else ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.BLUETOOTH_CONNECT

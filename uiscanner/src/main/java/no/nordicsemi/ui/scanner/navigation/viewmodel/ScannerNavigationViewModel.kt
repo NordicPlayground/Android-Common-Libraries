@@ -57,7 +57,7 @@ internal class ScannerNavigationViewModel @Inject constructor(
         return when {
             !utils.isBluetoothAvailable() -> BluetoothNotAvailableDestination
             !utils.isLocationPermissionGranted() -> LocationPermissionRequiredDestination
-            !utils.isBluetoothConnectPermissionGranted() -> BluetoothPermissionRequiredDestination
+            !utils.areNecessaryBluetoothPermissionsGranted() -> BluetoothPermissionRequiredDestination
             !utils.isBleEnabled -> BluetoothDisabledDestination
             device == null -> PeripheralDeviceRequiredDestination
             else -> null
