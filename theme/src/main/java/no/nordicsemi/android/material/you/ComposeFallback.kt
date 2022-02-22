@@ -83,3 +83,18 @@ fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButton
         }
     }
 }
+
+@Composable
+fun HorizontalLabelRadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButtonItem) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        viewEntity.items.onEachIndexed { i, it ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButtonFallback(selected = it.isChecked, onClick = { onItemClick(it) })
+                Text(text = it.label, style = MaterialTheme.typography.labelMedium)
+            }
+        }
+    }
+}
