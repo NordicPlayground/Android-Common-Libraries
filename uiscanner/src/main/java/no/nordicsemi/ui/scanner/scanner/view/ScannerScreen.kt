@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +34,7 @@ internal fun ScannerScreen(
     Column {
         AppBar(stringResource(id = R.string.scanner_screen)) { onEvent(NavigateUp) }
 
-        val showSearchDialog = remember { mutableStateOf(true) }
+        val showSearchDialog = rememberSaveable { mutableStateOf(true) }
 
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             ScanEmptyView(requireLocation) {
