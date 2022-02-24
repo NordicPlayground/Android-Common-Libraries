@@ -1,0 +1,84 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'kotlin-kapt'
+apply from: rootProject.file("gradle/git-tag-version.gradle")
+
+group = GROUP
+
+android {
+    compileSdk  31
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    /**
+     * There is an issue with recomposition performance when data objects doesn't belong to the module
+     * when composition is enabled, because those objects cannot be properly compared for the changes.
+     * Better to leave enabled for all modules.
+     */
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion kotlin_version
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
+}
+
+dependencies {
+    implementation project(":theme")
+    implementation project(":uiscanner")
+
+    implementation "no.nordicsemi.android:ble-ktx:2.4.0-beta01"
+    implementation "no.nordicsemi.android:ble-common:2.4.0.beta02"
+    implementation "no.nordicsemi.android:log-timber:2.3.0"
+
+    implementation "androidx.lifecycle:lifecycle-service:2.4.1"
+
+    implementation "com.google.dagger:hilt-android:2.40.4"
+    kapt "com.google.dagger:hilt-compiler:2.40.4"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
+}
+
+// === Maven Central configuration ===
+// The following file exists only when Android BLE Library project is opened, but not
+// when the module is loaded to a different project.
+if (rootProject.file('gradle/publish-module.gradle').exists()) {
+    ext {
+        POM_ARTIFACT_ID = 'service'
+        POM_NAME = 'Nordic library for Android class supporting using service as a base for BleManager.'
+        POM_PACKAGING = 'aar'
+    }
+    apply from: rootProject.file('gradle/publish-module.gradle')
+}

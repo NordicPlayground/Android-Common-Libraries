@@ -9,5 +9,6 @@ rootProject.name = "Common Libraries"
 
 include ':app'
 include ':theme'
+include ':service'
 include ':uiscanner'
 include ':navigation'
