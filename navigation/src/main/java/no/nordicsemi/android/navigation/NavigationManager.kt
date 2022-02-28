@@ -10,7 +10,7 @@ import javax.inject.Singleton
 @Singleton
 class NavigationManager @Inject constructor() {
 
-    private val _navigationDestination = MutableStateFlow(NavigationDestinationComposeHelper(InitialDestination))
+    private val _navigationDestination = MutableStateFlow(ConsumableNavigationDestination(InitialDestination))
     val navigationDestination = _navigationDestination.asStateFlow()
 
     private val arguments = mutableMapOf<DestinationId, DestinationArgument>()
@@ -50,7 +50,7 @@ class NavigationManager @Inject constructor() {
     }
 
     private fun postDestination(destination: NavigationDestination) {
-        _navigationDestination.value = NavigationDestinationComposeHelper(destination)
+        _navigationDestination.value = ConsumableNavigationDestination(destination)
     }
 
     fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]?.argument

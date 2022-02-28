@@ -1,6 +1,6 @@
 package no.nordicsemi.android.navigation
 
-data class NavigationDestinationComposeHelper(
+data class ConsumableNavigationDestination(
     val destination: NavigationDestination,
     val isConsumed: Boolean = false
 )

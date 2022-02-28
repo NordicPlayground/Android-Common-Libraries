@@ -13,16 +13,11 @@ import androidx.navigation.compose.rememberNavController
 fun NavigationView(destinations: ComposeDestinations) {
     val navController = rememberNavController()
     val viewModel: NavigationViewModel = hiltViewModel()
-    viewModel.navController = navController
 
     val activity = LocalContext.current as Activity
-    BackHandler {
-        if (navController.backQueue.size > 2) {
-            viewModel.navigateUp()
-        } else {
-            activity.finish()
-        }
-    }
+    viewModel.navigationWrapper = NavigationWrapper(activity, navController)
+
+    BackHandler { viewModel.navigateUp() }
 
     NavHost(
         navController = navController,
