@@ -5,6 +5,7 @@
 
     <string name="filter_uuid">UUID</string>
     <string name="filter_nearby">Nearby</string>
+    <string name="filter_name">Name</string>
 
     <string name="devices">Scanning</string>
     <string name="dialog">Dialog</string>

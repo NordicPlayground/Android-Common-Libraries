@@ -1,6 +1,8 @@
 package no.nordicsemi.ui.scanner.ui
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.google.accompanist.flowlayout.FlowRow
 import no.nordicsemi.android.material.you.Card
 import no.nordicsemi.android.material.you.CheckboxFallback
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
@@ -60,7 +63,7 @@ internal fun StringListView(config: StringListDialogConfig) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(modifier = Modifier.fillMaxWidth()) {
+            FlowRow {
                 config.filterItems.forEachIndexed { i, item ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CheckboxFallback(checked = item.isChecked, onCheckedChange = {

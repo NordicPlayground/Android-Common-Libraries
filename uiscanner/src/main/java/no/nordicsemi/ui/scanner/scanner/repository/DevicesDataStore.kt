@@ -33,6 +33,7 @@ class DevicesDataStore @Inject constructor(
 }
 
 internal data class DevicesScanFilter(
-    val filterUuidRequired: Boolean,
-    val filterNearbyOnly: Boolean
+    val filterUuidRequired: Boolean?,
+    val filterNearbyOnly: Boolean,
+    val filterWithNames: Boolean
 )

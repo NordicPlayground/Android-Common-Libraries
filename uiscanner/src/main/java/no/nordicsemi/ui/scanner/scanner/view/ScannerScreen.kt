@@ -7,7 +7,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,7 +21,7 @@ import no.nordicsemi.ui.scanner.ui.*
 
 @Composable
 internal fun ScannerScreen(
-    uuid: ParcelUuid,
+    uuid: ParcelUuid?,
     onEvent: (PermissionsViewEvent) -> Unit
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>().apply {
@@ -63,31 +62,39 @@ internal fun ShowSearchDialog(
 
     val uuidIsCheckedFilter = config.filterUuidRequired
     val nearbyIsCheckedFilter = config.filterNearbyOnly
+    val nameCheckedFilter = config.filterWithNames
 
-    val uuidFilter = FilterItem(
-        stringResource(id = R.string.filter_uuid),
-        uuidIsCheckedFilter,
-        R.drawable.ic_filter_uuid
-    )
+    val uuidFilter = uuidIsCheckedFilter?.let {
+        FilterItem(
+            stringResource(id = R.string.filter_uuid),
+            it,
+            R.drawable.ic_filter_uuid
+        ) {
+            viewModel.filterByUuid(!uuidIsCheckedFilter)
+        }
+    }
     val nearbyFilter = FilterItem(
         stringResource(id = R.string.filter_nearby),
         nearbyIsCheckedFilter,
         R.drawable.ic_filter_nearby
-    )
-    val filters = listOf(uuidFilter, nearbyFilter)
+    ) {
+        viewModel.filterByDistance(!nearbyIsCheckedFilter)
+    }
+    val nameFilter = FilterItem(
+        stringResource(id = R.string.filter_name),
+        nameCheckedFilter,
+        R.drawable.ic_face
+    ) {
+        viewModel.filterByName(!nameCheckedFilter)
+    }
+    val filters = listOfNotNull(uuidFilter, nearbyFilter, nameFilter)
 
     val config = StringListDialogConfig(
         title = stringResource(id = R.string.devices).toAnnotatedString(),
         result = result,
         filterItems = filters,
         leftIcon = R.drawable.ic_bluetooth,
-        onFilterItemCheckChanged = {
-            if (it == 0) {
-                viewModel.filterByUuid(!uuidIsCheckedFilter)
-            } else {
-                viewModel.filterByDistance(!nearbyIsCheckedFilter)
-            }
-        }
+        onFilterItemCheckChanged = { filters[it].onClick() }
     ) {
         when (it) {
             FlowCanceled -> hideDialog()

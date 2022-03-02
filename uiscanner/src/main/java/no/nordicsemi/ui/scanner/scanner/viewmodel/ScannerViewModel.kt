@@ -24,29 +24,39 @@ internal class ScannerViewModel @Inject constructor(
     private val devicesRepository: DevicesRepository,
 ) : ViewModel() {
 
-    private lateinit var uuid: ParcelUuid
+    private var uuid: ParcelUuid? = null
 
     val config = MutableStateFlow(
         DevicesScanFilter(
             filterUuidRequired = true,
-            filterNearbyOnly = false
+            filterNearbyOnly = false,
+            filterWithNames = true
         )
     )
 
     val devices = config.combine(devicesRepository.getDevices()) { config, result ->
         val devices = (result.discoveredDevices as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
             val newItems = it.value.filter {
-                !config.filterUuidRequired || it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) ?: false
+                if (uuid == null) {
+                    true
+                } else {
+                    config.filterUuidRequired == false || it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) ?: false
+                }
             }.filter {
                 !config.filterNearbyOnly || it.rssi >= FILTER_RSSI
+            }.filter {
+                !config.filterWithNames || !it.displayName().isNullOrBlank()
             }
             SuccessResult(newItems.filter { !result.bondedDevices.contains(it) })
         } ?: result.discoveredDevices
         result.copy(discoveredDevices = devices)
     }.stateIn(viewModelScope, SharingStarted.Lazily, AllDevices())
 
-    fun setFilterUuid(uuid: ParcelUuid) {
+    fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
+        if (uuid == null) {
+            config.value = config.value.copy(filterUuidRequired = null)
+        }
     }
 
     fun filterByUuid(uuidRequired: Boolean) {
@@ -55,6 +65,10 @@ internal class ScannerViewModel @Inject constructor(
 
     fun filterByDistance(nearbyOnly: Boolean) {
         config.value = config.value.copy(filterNearbyOnly = nearbyOnly)
+    }
+
+    fun filterByName(nameRequired: Boolean) {
+        config.value = config.value.copy(filterWithNames = nameRequired)
     }
 
     override fun onCleared() {

@@ -28,5 +28,6 @@ internal data class FilterItem(
     val text: String,
     val isChecked: Boolean = false,
     @DrawableRes
-    val icon: Int? = null
+    val icon: Int? = null,
+    val onClick: () -> Unit
 )

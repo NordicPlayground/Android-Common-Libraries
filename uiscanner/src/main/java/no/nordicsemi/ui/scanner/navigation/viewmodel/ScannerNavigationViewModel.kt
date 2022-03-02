@@ -21,8 +21,8 @@ internal class ScannerNavigationViewModel @Inject constructor(
     private val navigationManager: NavigationManager
 ) : ViewModel() {
 
-    val args = navigationManager.getImmediateArgument(ScannerDestinationId) as UUIDArgument
-    val filterId = ParcelUuid(args.value)
+    val args = navigationManager.getImmediateArgument(ScannerDestinationId) as UUIDArgument?
+    val filterId = args?.value?.let { ParcelUuid(it) }
     val destination = MutableStateFlow(getNextScreenDestination())
 
     private var device: DiscoveredBluetoothDevice? = null
