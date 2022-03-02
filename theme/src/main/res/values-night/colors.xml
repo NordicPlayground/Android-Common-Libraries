@@ -14,7 +14,7 @@
     <color name="md_theme_onTertiaryContainer">#670016</color>
     <color name="md_theme_error">#FFB4A9</color>
     <color name="md_theme_errorContainer">#930006</color>
-    <color name="md_theme_onError">#680003</color>
+    <color name="md_theme_onError">@android:color/black</color>
     <color name="md_theme_onErrorContainer">#FFDAD4</color>
     <color name="md_theme_background">#191C1E</color>
     <color name="md_theme_onBackground">#E1E2E5</color>

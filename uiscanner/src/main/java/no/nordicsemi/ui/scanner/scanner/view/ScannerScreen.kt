@@ -83,7 +83,7 @@ internal fun ShowSearchDialog(
     val nameFilter = FilterItem(
         stringResource(id = R.string.filter_name),
         nameCheckedFilter,
-        R.drawable.ic_face
+        R.drawable.ic_filter_face
     ) {
         viewModel.filterByName(!nameCheckedFilter)
     }
