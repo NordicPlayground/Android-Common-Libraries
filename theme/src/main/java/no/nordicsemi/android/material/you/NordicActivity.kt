@@ -9,7 +9,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 abstract class NordicActivity : ComponentActivity() {
 
-    private var coldStart = true
+    companion object {
+        private var coldStart = true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
