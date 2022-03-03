@@ -2,15 +2,11 @@ package no.nordicsemi.ui.scanner.scanner.view
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.navigation.doNothing
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.permissions.DeviceSelected
 import no.nordicsemi.ui.scanner.permissions.NavigateUp
@@ -33,17 +29,9 @@ internal fun ScannerScreen(
     Column {
         AppBar(stringResource(id = R.string.scanner_screen)) { onEvent(NavigateUp) }
 
-        val showSearchDialog = rememberSaveable { mutableStateOf(true) }
-
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            ScanEmptyView(requireLocation) {
-                showSearchDialog.value = true
-            }
-        }
-
-        if (showSearchDialog.value) {
+        Column {
             ShowSearchDialog(
-                { showSearchDialog.value = false },
+                requireLocation,
                 config,
                 onEvent
             )
@@ -53,7 +41,7 @@ internal fun ScannerScreen(
 
 @Composable
 internal fun ShowSearchDialog(
-    hideDialog: () -> Unit,
+    isLocationRequired: Boolean,
     config: DevicesScanFilter,
     onEvent: (PermissionsViewEvent) -> Unit,
 ) {
@@ -67,23 +55,20 @@ internal fun ShowSearchDialog(
     val uuidFilter = uuidIsCheckedFilter?.let {
         FilterItem(
             stringResource(id = R.string.filter_uuid),
-            it,
-            R.drawable.ic_filter_uuid
+            it
         ) {
             viewModel.filterByUuid(!uuidIsCheckedFilter)
         }
     }
     val nearbyFilter = FilterItem(
         stringResource(id = R.string.filter_nearby),
-        nearbyIsCheckedFilter,
-        R.drawable.ic_filter_nearby
+        nearbyIsCheckedFilter
     ) {
         viewModel.filterByDistance(!nearbyIsCheckedFilter)
     }
     val nameFilter = FilterItem(
         stringResource(id = R.string.filter_name),
-        nameCheckedFilter,
-        R.drawable.ic_filter_face
+        nameCheckedFilter
     ) {
         viewModel.filterByName(!nameCheckedFilter)
     }
@@ -97,11 +82,11 @@ internal fun ShowSearchDialog(
         onFilterItemCheckChanged = { filters[it].onClick() }
     ) {
         when (it) {
-            FlowCanceled -> hideDialog()
+            FlowCanceled -> doNothing()
             is ItemSelectedResult -> {
                 onEvent(DeviceSelected(it.value))
             }
         }
     }
-    StringListDialog(config)
+    DevicesListView(isLocationRequired, config)
 }

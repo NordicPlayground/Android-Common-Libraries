@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import no.nordicsemi.ui.scanner.R
 
 @Composable
-internal fun ScanEmptyView(requireLocation: Boolean, showDialog: () -> Unit) {
+internal fun ScanEmptyView(requireLocation: Boolean) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(vertical = 32.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
@@ -55,10 +55,6 @@ internal fun ScanEmptyView(requireLocation: Boolean, showDialog: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
         } else {
             Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        Button(onClick = { showDialog() }) {
-            Text(text = stringResource(id = R.string.action_try_again))
         }
     }
 }

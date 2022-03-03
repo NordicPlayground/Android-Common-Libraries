@@ -1,4 +1,4 @@
-package no.nordicsemi.ui.scanner.ui
+package no.nordicsemi.ui.scanner.scanner.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,21 +29,22 @@ import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.ErrorResult
 import no.nordicsemi.ui.scanner.scanner.repository.LoadingResult
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
+import no.nordicsemi.ui.scanner.ui.*
+import no.nordicsemi.ui.scanner.ui.StringListDialogConfig
 
 @Composable
-internal fun StringListDialog(config: StringListDialogConfig) {
+internal fun DevicesListDialog(requireLocation: Boolean, config: StringListDialogConfig) {
     Dialog(onDismissRequest = { config.onResult(FlowCanceled) }) {
-        StringListView(config)
+        DevicesListView(requireLocation, config)
     }
 }
 
 @Composable
-internal fun StringListView(config: StringListDialogConfig) {
+internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogConfig) {
     Card(
         backgroundColor = MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(10.dp),
         elevation = 0.dp,
-        modifier = Modifier.padding(vertical = 54.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -51,7 +52,7 @@ internal fun StringListView(config: StringListDialogConfig) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = config.title ?: stringResource(id = R.string.dialog).toAnnotatedString(),
+                    text = stringResource(id = R.string.filters),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f)
                 )
@@ -86,35 +87,18 @@ internal fun StringListView(config: StringListDialogConfig) {
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-            Column(modifier = Modifier.weight(1f)) {
-                when (config.result.discoveredDevices) {
-                    is ErrorResult -> ErrorSection()
-                    is LoadingResult -> LoadingSection()
-                    is SuccessResult -> DevicesSection(config.result, config)
-                }.exhaustive
-            }
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                TextButton(onClick = { config.onResult(FlowCanceled) }) {
-                    Text(
-                        text = stringResource(id = R.string.cancel),
-                    )
+            if (config.result.size() == 0) {
+                ScanEmptyView(requireLocation)
+            } else {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    when (config.result.discoveredDevices) {
+                        is LoadingResult -> ScanEmptyView(requireLocation)
+                        is SuccessResult -> DevicesSection(config.result, config)
+                        is ErrorResult -> ErrorSection()
+                    }.exhaustive
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun LoadingSection() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-
     }
 }
 
