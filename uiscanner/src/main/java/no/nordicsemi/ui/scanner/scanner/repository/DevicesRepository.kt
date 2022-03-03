@@ -21,54 +21,59 @@ internal class DevicesRepository @Inject constructor(
     private val devicesDataStore: DevicesDataStore
 ) {
 
-    fun getDevices(): Flow<AllDevices> = callbackFlow<DeviceResource<List<DiscoveredBluetoothDevice>>> {
-        val scanCallback: ScanCallback = object : ScanCallback() {
-            override fun onScanResult(callbackType: Int, result: ScanResult) {
-                // This callback will be called only if the scan report delay is not set or is set to 0.
+    fun getDevices(): Flow<AllDevices> =
+        callbackFlow<DeviceResource<List<DiscoveredBluetoothDevice>>> {
+            val scanCallback: ScanCallback = object : ScanCallback() {
+                override fun onScanResult(callbackType: Int, result: ScanResult) {
+                    // This callback will be called only if the scan report delay is not set or is set to 0.
 
-                // If the packet has been obtained while Location was disabled, mark Location as not required
-                if (utils.isLocationPermissionRequired && !utils.isLocationEnabled()) {
-                    dataProvider.isLocationPermissionRequired = false
+                    // If the packet has been obtained while Location was disabled, mark Location as not required
+                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled()) {
+                        dataProvider.isLocationPermissionRequired = false
+                    }
+                    if (result.isConnectable) {
+                        devicesDataStore.addNewDevice(result)
+
+                        trySend(DeviceResource.createSuccess(devicesDataStore.devices))
+                    }
                 }
-                devicesDataStore.addNewDevice(result)
 
-                trySend(DeviceResource.createSuccess(devicesDataStore.devices))
+                override fun onBatchScanResults(results: List<ScanResult>) {
+                    // This callback will be called only if the report delay set above is greater then 0.
+
+                    // If the packet has been obtained while Location was disabled, mark Location as not required
+                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled()) {
+                        dataProvider.isLocationPermissionRequired = false
+                    }
+                    val newResults = results.filter { it.isConnectable }
+                    newResults.forEach {
+                        devicesDataStore.addNewDevice(it)
+                    }
+                    if (newResults.isNotEmpty()) {
+                        trySend(DeviceResource.createSuccess(devicesDataStore.devices))
+                    }
+                }
+
+                override fun onScanFailed(errorCode: Int) {
+                    trySend(DeviceResource.createError(errorCode))
+                }
             }
 
-            override fun onBatchScanResults(results: List<ScanResult>) {
-                // This callback will be called only if the report delay set above is greater then 0.
+            trySend(DeviceResource.createLoading())
 
-                // If the packet has been obtained while Location was disabled, mark Location as not required
-                if (utils.isLocationPermissionRequired && !utils.isLocationEnabled()) {
-                    dataProvider.isLocationPermissionRequired = false
-                }
-                results.forEach {
-                    devicesDataStore.addNewDevice(it)
+            val settings = ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setLegacy(false)
+                .setReportDelay(500)
+                .setUseHardwareBatchingIfSupported(false)
+                .build()
+            val scanner = BluetoothLeScannerCompat.getScanner()
+            scanner.startScan(null, settings, scanCallback)
 
-                }
-                trySend(DeviceResource.createSuccess(devicesDataStore.devices))
+            awaitClose {
+                scanner.stopScan(scanCallback)
             }
-
-            override fun onScanFailed(errorCode: Int) {
-                trySend(DeviceResource.createError(errorCode))
-            }
-        }
-
-        trySend(DeviceResource.createLoading())
-
-        val settings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-            .setLegacy(false)
-            .setReportDelay(500)
-            .setUseHardwareBatchingIfSupported(false)
-            .build()
-        val scanner = BluetoothLeScannerCompat.getScanner()
-        scanner.startScan(null, settings, scanCallback)
-
-        awaitClose {
-            scanner.stopScan(scanCallback)
-        }
-    }.map { AllDevices(devicesDataStore.bondedDevices, it) }
+        }.map { AllDevices(devicesDataStore.bondedDevices, it) }
 
     fun clear() {
         devicesDataStore.clear()
