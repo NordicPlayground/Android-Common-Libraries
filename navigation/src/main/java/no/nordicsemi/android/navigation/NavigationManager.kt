@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -64,9 +65,13 @@ class NavigationManager @Inject constructor(
     fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]?.argument
 
     fun openLink(link: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link)).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        try {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link)).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(browserIntent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        context.startActivity(browserIntent)
     }
 }
