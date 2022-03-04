@@ -1,5 +1,10 @@
 package no.nordicsemi.android.navigation
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,7 +13,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NavigationManager @Inject constructor() {
+class NavigationManager @Inject constructor(
+    @ApplicationContext
+    private val context: Context
+) {
 
     private val _navigationDestination = MutableStateFlow(ConsumableNavigationDestination(InitialDestination))
     val navigationDestination = _navigationDestination.asStateFlow()
@@ -54,4 +62,11 @@ class NavigationManager @Inject constructor() {
     }
 
     fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]?.argument
+
+    fun openLink(link: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link)).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(browserIntent)
+    }
 }
