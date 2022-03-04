@@ -2,6 +2,7 @@ package no.nordicsemi.android.material.you
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +12,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.material.textfield.TextInputLayout
 
 @Composable
-fun TextField(text: String, hint: String, onTextChanged: (String) -> Unit) {
+fun TextField(
+    text: String,
+    hint: String,
+    onlyDigits: Boolean = false,
+    onTextChanged: (String) -> Unit
+) {
     AndroidView(
         modifier = Modifier.fillMaxWidth(),
         factory = { createEditText(it, hint, onTextChanged) },
@@ -19,6 +25,9 @@ fun TextField(text: String, hint: String, onTextChanged: (String) -> Unit) {
             it.editText?.apply {
                 setText(text)
                 setSelection(text.length)
+                if (onlyDigits) {
+                    inputType = InputType.TYPE_CLASS_NUMBER
+                }
             }
         }
     )
