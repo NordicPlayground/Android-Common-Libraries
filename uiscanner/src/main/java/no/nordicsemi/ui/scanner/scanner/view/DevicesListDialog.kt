@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.flowlayout.FlowRow
-import no.nordicsemi.android.material.you.Card
 import no.nordicsemi.android.material.you.CheckboxFallback
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.R
@@ -29,8 +28,10 @@ import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.ErrorResult
 import no.nordicsemi.ui.scanner.scanner.repository.LoadingResult
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
-import no.nordicsemi.ui.scanner.ui.*
+import no.nordicsemi.ui.scanner.ui.FlowCanceled
+import no.nordicsemi.ui.scanner.ui.ItemSelectedResult
 import no.nordicsemi.ui.scanner.ui.StringListDialogConfig
+import no.nordicsemi.ui.scanner.ui.exhaustive
 
 @Composable
 internal fun DevicesListDialog(requireLocation: Boolean, config: StringListDialogConfig) {
@@ -41,12 +42,11 @@ internal fun DevicesListDialog(requireLocation: Boolean, config: StringListDialo
 
 @Composable
 internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogConfig) {
-    Card(
-        backgroundColor = MaterialTheme.colorScheme.background,
-        shape = RoundedCornerShape(10.dp),
-        elevation = 0.dp,
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
+
+        item { Spacer(modifier = Modifier.size(16.dp)) }
+
+        item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -61,9 +61,9 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
                     CircularProgressIndicator(modifier = Modifier.size(30.dp))
                 }
             }
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
+        item {
             FlowRow {
                 config.filterItems.forEachIndexed { i, item ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -82,60 +82,52 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
                     }
                 }
             }
-
-            if (config.filterItems.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-
-            if (config.result.size() == 0) {
-                ScanEmptyView(requireLocation)
-            } else {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    when (config.result.discoveredDevices) {
-                        is LoadingResult -> ScanEmptyView(requireLocation)
-                        is SuccessResult -> DevicesSection(config.result, config)
-                        is ErrorResult -> ErrorSection()
-                    }.exhaustive
-                }
-            }
         }
+
+        if (config.result.size() == 0) {
+            item { ScanEmptyView(requireLocation) }
+        } else {
+            when (config.result.discoveredDevices) {
+                is LoadingResult -> item { ScanEmptyView(requireLocation) }
+                is SuccessResult -> DevicesSection(config.result, config)
+                is ErrorResult -> item { ErrorSection() }
+            }.exhaustive
+        }
+
+        item { Spacer(modifier = Modifier.size(16.dp)) }
     }
 }
 
-@Composable
-private fun DevicesSection(
+private fun LazyListScope.DevicesSection(
     items: AllDevices,
     config: StringListDialogConfig
 ) {
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    if (items.bondedDevices.isNotEmpty()) {
+        item {
+            Text(
+                text = stringResource(id = R.string.bonded_devices),
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+        items(items.bondedDevices.size) { i ->
+            DeviceItem(device = items.bondedDevices[i], config = config)
+        }
+    }
 
-        if (items.bondedDevices.isNotEmpty()) {
+    val discoveredDevices = items.discoveredDevices as? SuccessResult
+
+    discoveredDevices?.let {
+        val devices = it.value
+        if (devices.isNotEmpty()) {
             item {
                 Text(
-                    text = stringResource(id = R.string.bonded_devices),
+                    text = stringResource(id = R.string.discovered_devices),
                     style = MaterialTheme.typography.titleLarge
                 )
             }
-            items(items.bondedDevices.size) { i ->
-                DeviceItem(device = items.bondedDevices[i], config = config)
-            }
-        }
 
-        val discoveredDevices = items.discoveredDevices as? SuccessResult
-
-        discoveredDevices?.let {
-            val devices = it.value
-            if (devices.isNotEmpty()) {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.discovered_devices),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
-
-                items(devices.size) { i ->
-                    DeviceItem(device = devices[i], config = config)
-                }
+            items(devices.size) { i ->
+                DeviceItem(device = devices[i], config = config)
             }
         }
     }

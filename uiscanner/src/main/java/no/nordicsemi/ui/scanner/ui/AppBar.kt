@@ -33,6 +33,9 @@ fun AppBar(text: String, onNavigationButtonClick: () -> Unit) {
                     contentDescription = stringResource(id = R.string.navigation_item_accessibility),
                 )
             }
+        },
+        actions = {
+
         }
     )
 }

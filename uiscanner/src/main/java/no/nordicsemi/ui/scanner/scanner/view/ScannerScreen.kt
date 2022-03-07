@@ -27,24 +27,20 @@ internal fun ScannerScreen(
     val config = viewModel.config.collectAsState().value
 
     Column {
+        val dialogConfig = createConfig(config, onEvent)
+
         AppBar(stringResource(id = R.string.scanner_screen)) { onEvent(NavigateUp) }
 
-        Column {
-            ShowSearchDialog(
-                requireLocation,
-                config,
-                onEvent
-            )
-        }
+        DevicesListView(requireLocation, dialogConfig)
     }
 }
 
 @Composable
-internal fun ShowSearchDialog(
-    isLocationRequired: Boolean,
+private fun createConfig(
     config: DevicesScanFilter,
-    onEvent: (PermissionsViewEvent) -> Unit,
-) {
+    onEvent: (PermissionsViewEvent) -> Unit
+): StringListDialogConfig {
+
     val viewModel = hiltViewModel<ScannerViewModel>()
     val result = viewModel.devices.collectAsState().value
 
@@ -74,7 +70,7 @@ internal fun ShowSearchDialog(
     }
     val filters = listOfNotNull(uuidFilter, nearbyFilter, nameFilter)
 
-    val config = StringListDialogConfig(
+    return StringListDialogConfig(
         title = stringResource(id = R.string.devices).toAnnotatedString(),
         result = result,
         filterItems = filters,
@@ -83,10 +79,7 @@ internal fun ShowSearchDialog(
     ) {
         when (it) {
             FlowCanceled -> doNothing()
-            is ItemSelectedResult -> {
-                onEvent(DeviceSelected(it.value))
-            }
+            is ItemSelectedResult -> onEvent(DeviceSelected(it.value))
         }
     }
-    DevicesListView(isLocationRequired, config)
 }
