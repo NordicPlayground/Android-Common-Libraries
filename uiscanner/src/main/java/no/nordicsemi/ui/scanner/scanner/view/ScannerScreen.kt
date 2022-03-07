@@ -29,7 +29,7 @@ internal fun ScannerScreen(
     Column {
         val dialogConfig = createConfig(config, onEvent)
 
-        AppBar(stringResource(id = R.string.scanner_screen)) { onEvent(NavigateUp) }
+        AppBar(stringResource(id = R.string.scanner_screen), dialogConfig.isRunning()) { onEvent(NavigateUp) }
 
         DevicesListView(requireLocation, dialogConfig)
     }

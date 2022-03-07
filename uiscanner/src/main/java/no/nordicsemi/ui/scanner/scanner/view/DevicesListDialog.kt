@@ -56,10 +56,6 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.weight(1f)
                 )
-
-                if (config.isRunning()) {
-                    CircularProgressIndicator(modifier = Modifier.size(30.dp))
-                }
             }
         }
 

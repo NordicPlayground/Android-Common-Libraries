@@ -14,7 +14,6 @@ internal data class StringListDialogConfig(
     val leftIcon: Int? = null,
     val result: AllDevices,
     val filterItems: List<FilterItem> = emptyList(),
-    val isLoading: Boolean = true,
     val onFilterItemCheckChanged: (Int) -> Unit,
     val onResult: (StringListDialogResult) -> Unit
 ) {
