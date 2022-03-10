@@ -1,5 +1,6 @@
 package no.nordicsemi.ui.scanner.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -35,7 +36,7 @@ fun AppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick:
         actions = {
             if (showProgress) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(30.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp).size(30.dp),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
