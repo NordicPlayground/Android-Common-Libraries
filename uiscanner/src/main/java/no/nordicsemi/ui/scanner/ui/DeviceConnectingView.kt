@@ -26,7 +26,7 @@ import no.nordicsemi.ui.scanner.R
 @Composable
 fun DeviceConnectingView(navigateUp: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenSection {
