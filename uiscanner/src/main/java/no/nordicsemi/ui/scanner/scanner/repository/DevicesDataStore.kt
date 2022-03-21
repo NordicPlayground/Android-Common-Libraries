@@ -1,6 +1,7 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
 import android.bluetooth.BluetoothAdapter
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
@@ -19,9 +20,10 @@ class DevicesDataStore @Inject constructor(
     val data = MutableStateFlow(devices.toList())
 
     fun addNewDevice(scanResult: ScanResult) {
-        data.value.find { it.device == scanResult.device }
-            ?.apply { update(scanResult) }
-            ?: scanResult.toDiscoveredBluetoothDevice().also { devices.add(it) }
+        devices.firstOrNull { it.device.address == scanResult.device.address }?.let {
+            val i = devices.indexOf(it)
+            devices.set(i, it.update(scanResult))
+        } ?: scanResult.toDiscoveredBluetoothDevice().also { devices.add(it) }
 
         data.value = devices.toList()
     }
