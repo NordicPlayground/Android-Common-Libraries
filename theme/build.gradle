@@ -30,6 +30,7 @@ android {
     buildFeatures {
         compose true
     }
+    namespace 'no.nordicsemi.android.material.you'
 }
 
 dependencies {

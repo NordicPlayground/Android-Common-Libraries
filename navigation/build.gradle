@@ -35,6 +35,7 @@ android {
     hilt {
         enableExperimentalClasspathAggregation = true
     }
+    namespace 'no.nordicsemi.android.navigation'
 }
 
 dependencies {

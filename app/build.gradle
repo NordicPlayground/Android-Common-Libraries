@@ -43,6 +43,7 @@ android {
     buildFeatures {
         compose true
     }
+    namespace 'no.nordicsemi.android.common.test'
 }
 
 dependencies {
