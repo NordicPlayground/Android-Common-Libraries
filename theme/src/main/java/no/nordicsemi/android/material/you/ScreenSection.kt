@@ -4,34 +4,33 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ScreenSection(onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
+fun ScreenSection(
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     Card(
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-        shape = RoundedCornerShape(16.dp),
-        elevation = 0.dp,
+        modifier = modifier,
     ) {
-
-        val modifier = if (onClick != null) {
-            Modifier
+        val columnModifier = if (onClick != null) {
+            modifier
                 .clickable { onClick.invoke() }
                 .fillMaxWidth()
                 .padding(16.dp)
         } else {
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         }
 
         Column(
-            modifier = modifier,
+            modifier = columnModifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()

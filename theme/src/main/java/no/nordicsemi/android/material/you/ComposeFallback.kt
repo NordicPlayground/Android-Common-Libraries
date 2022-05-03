@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,19 +41,20 @@ fun RadioButtonFallback(
     RadioButton(selected, onClick, modifier, enabled, interactionSource, colors)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Card(
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    shape: Shape = RoundedCornerShape(10.dp),
-    elevation: Dp = 4.dp,
+    modifier: Modifier,
     content: @Composable () -> Unit
 ) {
-    Surface(
+    OutlinedCard(
         modifier = modifier,
-        color = backgroundColor,
-        shape = shape,
-        shadowElevation = elevation,
+        colors = DefaultCardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            disabledContainerColor = MaterialTheme.colorScheme.background,
+            disabledContentColor = MaterialTheme.colorScheme.onBackground
+        )
     ) {
         content()
     }
@@ -85,7 +85,10 @@ fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButton
 }
 
 @Composable
-fun HorizontalLabelRadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButtonItem) -> Unit) {
+fun HorizontalLabelRadioButtonGroup(
+    viewEntity: RadioGroupViewEntity,
+    onItemClick: (RadioButtonItem) -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
