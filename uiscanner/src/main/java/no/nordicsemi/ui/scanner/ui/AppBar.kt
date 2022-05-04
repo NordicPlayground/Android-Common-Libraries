@@ -30,6 +30,7 @@ fun AppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick:
                 Icon(
                     Icons.Default.ArrowBack,
                     contentDescription = stringResource(id = R.string.navigation_item_accessibility),
+                    tint = MaterialTheme.colorScheme.onSecondary,
                 )
             }
         },
