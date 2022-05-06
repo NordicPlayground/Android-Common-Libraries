@@ -3,9 +3,8 @@ package no.nordicsemi.android.material.you
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -36,7 +35,15 @@ fun PagerView(viewEntity: PagerViewEntity) {
         val coroutineScope = rememberCoroutineScope()
 
         TabRow(
-            selectedTabIndex = tabIndex
+            selectedTabIndex = tabIndex,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            indicator = @Composable { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            },
         ) {
             viewEntity.items.forEachIndexed { index, item ->
                 Tab(

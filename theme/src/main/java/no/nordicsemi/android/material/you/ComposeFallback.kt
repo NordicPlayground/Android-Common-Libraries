@@ -49,12 +49,14 @@ fun Card(
 ) {
     OutlinedCard(
         modifier = modifier,
-        colors = DefaultCardColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            disabledContainerColor = MaterialTheme.colorScheme.background,
-            disabledContentColor = MaterialTheme.colorScheme.onBackground
-        )
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+//        colors = DefaultCardColors(
+//            containerColor = MaterialTheme.colorScheme.background,
+//            contentColor = MaterialTheme.colorScheme.onBackground,
+//            disabledContainerColor = MaterialTheme.colorScheme.background,
+//            disabledContentColor = MaterialTheme.colorScheme.onBackground
+//        )
     ) {
         content()
     }
