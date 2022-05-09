@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -36,7 +37,7 @@ fun PagerView(viewEntity: PagerViewEntity) {
 
         TabRow(
             selectedTabIndex = tabIndex,
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = colorResource(id = R.color.appBarColor),
             contentColor = MaterialTheme.colorScheme.onPrimary,
             indicator = @Composable { tabPositions ->
                 TabRowDefaults.Indicator(
