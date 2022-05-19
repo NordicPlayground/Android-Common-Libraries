@@ -19,6 +19,7 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package no.nordicsemi.ui.scanner
 
 import android.Manifest
@@ -32,11 +33,11 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 class Utils @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val dataProvider: LocalDataProvider,
-    private val bleAdapter: BluetoothAdapter?
 ) {
 
     val isBleEnabled: Boolean
@@ -45,56 +46,53 @@ class Utils @Inject constructor(
             return adapter != null && adapter.isEnabled
         }
 
-    fun areNecessaryBluetoothPermissionsGranted(): Boolean {
-        return isBluetoothScanPermissionGranted() && isBluetoothConnectPermissionGranted()
-    }
+    val isLocationEnabled: Boolean
+        get() = if (dataProvider.isMarshmallowOrAbove) {
+            val lm = context.getSystemService(LocationManager::class.java)
+            LocationManagerCompat.isLocationEnabled(lm)
+        } else true
 
-    private fun isBluetoothScanPermissionGranted(): Boolean {
-        return if (!dataProvider.isSOrAbove) true else ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.BLUETOOTH_SCAN
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun isBluetoothConnectPermissionGranted(): Boolean {
-        return if (!dataProvider.isSOrAbove) true else ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.BLUETOOTH_CONNECT
-        ) == PackageManager.PERMISSION_GRANTED
-    }// Location is required only for Android 6-11.
+    val isBluetoothAvailable: Boolean
+        get() = context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
 
     val isLocationPermissionRequired: Boolean
-        get() =// Location is required only for Android 6-11.
-            dataProvider.isMarshmallowOrAbove && !dataProvider.isSOrAbove
+        get() = dataProvider.isMarshmallowOrAbove && !dataProvider.isSOrAbove
 
-    fun isLocationPermissionGranted(): Boolean {
-        return !isLocationPermissionRequired || (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
-    }
+    val isBluetoothScanPermissionGranted: Boolean
+        get() = !dataProvider.isSOrAbove ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.BLUETOOTH_SCAN
+                ) == PackageManager.PERMISSION_GRANTED
+
+    val isBluetoothConnectPermissionGranted: Boolean
+        get() = !dataProvider.isSOrAbove ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) == PackageManager.PERMISSION_GRANTED
+
+    val isLocationPermissionGranted: Boolean
+        get() = !isLocationPermissionRequired ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+
+    val areNecessaryBluetoothPermissionsGranted: Boolean
+        get() = isBluetoothScanPermissionGranted && isBluetoothConnectPermissionGranted
 
     fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
-        return (!isLocationPermissionGranted() // Location permission must be denied
-                && dataProvider.bluetoothPermissionRequested
-                && !activity.shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
-                ) // This method should return false
+        return dataProvider.isSOrAbove &&
+               !isBluetoothScanPermissionGranted && // Bluetooth Scan permission must be denied
+               dataProvider.bluetoothPermissionRequested && // Permission must have been requested before
+               !activity.shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
     }
 
     fun isLocationPermissionDeniedForever(activity: Activity): Boolean {
-        return (!isLocationPermissionGranted() // Location permission must be denied
-                && dataProvider.locationPermissionRequested // Permission must have been requested before
-                && !activity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-                ) // This method should return false
-    }
-
-    fun isBluetoothAvailable(): Boolean {
-        return bleAdapter != null
-    }
-
-    fun isLocationEnabled(): Boolean {
-        if (dataProvider.isMarshmallowOrAbove) {
-            val lm = context.getSystemService(LocationManager::class.java)
-            return LocationManagerCompat.isLocationEnabled(lm)
-        }
-        return true
+        return dataProvider.isMarshmallowOrAbove &&
+               !isLocationPermissionGranted // Location permission must be denied
+               && dataProvider.locationPermissionRequested // Permission must have been requested before
+               && !activity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 }
