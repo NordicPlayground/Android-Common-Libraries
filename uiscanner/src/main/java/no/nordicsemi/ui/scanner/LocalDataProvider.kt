@@ -20,6 +20,7 @@ private const val PREFS_LOCATION_REQUIRED = "location_required"
 private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
 private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_requested"
 
+@Suppress("unused")
 @SuppressLint("AnnotateVersionCheck")
 @Singleton
 class LocalDataProvider @Inject constructor(

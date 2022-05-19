@@ -7,17 +7,7 @@ import kotlinx.parcelize.Parcelize
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.bonding.repository.BondingState
 
-fun ScanResult.toDiscoveredBluetoothDevice(): DiscoveredBluetoothDevice {
-    return DiscoveredBluetoothDevice(
-        device = device,
-        scanResult = this,
-        name = if (scanRecord != null) scanRecord!!.deviceName else null,
-        previousRssi = rssi,
-        rssi = rssi,
-        highestRssi = rssi
-    )
-}
-
+@Suppress("unused")
 @SuppressLint("MissingPermission")
 @Parcelize
 data class DiscoveredBluetoothDevice(
@@ -93,4 +83,15 @@ data class DiscoveredBluetoothDevice(
         }
         return super.equals(other)
     }
+}
+
+fun ScanResult.toDiscoveredBluetoothDevice(): DiscoveredBluetoothDevice {
+    return DiscoveredBluetoothDevice(
+        device = device,
+        scanResult = this,
+        name = if (scanRecord != null) scanRecord!!.deviceName else null,
+        previousRssi = rssi,
+        rssi = rssi,
+        highestRssi = rssi
+    )
 }
