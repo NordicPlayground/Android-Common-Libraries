@@ -8,18 +8,18 @@ apply from: rootProject.file("gradle/git-tag-version.gradle")
 group = GROUP
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            consumerProguardFiles "theme-proguard-rules.pro"
+            consumerProguardFiles "uiscanner-proguard-rules.pro"
         }
     }
 
@@ -40,15 +40,14 @@ android {
 
 dependencies {
     implementation project(":theme")
-    implementation project(":navigation")
+    api project(":navigation")
 
-    implementation "androidx.navigation:navigation-compose:2.4.1"
-
-    implementation "androidx.compose.material3:material3:1.0.0-alpha09"
-
-    def compose_version = "1.1.1"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha12"
+    implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 
     implementation "androidx.compose.ui:ui:$compose_version"
+    // Required for Compose Preview
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material design icons
@@ -58,16 +57,11 @@ dependencies {
     implementation "androidx.activity:activity-compose:1.4.0"
 
     // Brings the new BluetoothLeScanner API to older platforms
-    implementation "no.nordicsemi.android.support.v18:scanner:1.6.0"
-    implementation "androidx.compose.ui:ui-tooling:1.1.0"
+    api "no.nordicsemi.android.support.v18:scanner:1.6.0"
 
-    implementation "com.google.dagger:hilt-android:2.40.4"
+    api "com.google.dagger:hilt-android:2.40.4"
     kapt "com.google.dagger:hilt-compiler:2.40.4"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
-
-    implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 }
 
 // === Maven Central configuration ===

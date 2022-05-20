@@ -28,7 +28,7 @@ internal class DevicesRepository @Inject constructor(
                     // This callback will be called only if the scan report delay is not set or is set to 0.
 
                     // If the packet has been obtained while Location was disabled, mark Location as not required
-                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled()) {
+                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled) {
                         dataProvider.isLocationPermissionRequired = false
                     }
                     if (result.isConnectable) {
@@ -42,7 +42,7 @@ internal class DevicesRepository @Inject constructor(
                     // This callback will be called only if the report delay set above is greater then 0.
 
                     // If the packet has been obtained while Location was disabled, mark Location as not required
-                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled()) {
+                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled) {
                         dataProvider.isLocationPermissionRequired = false
                     }
                     val newResults = results.filter { it.isConnectable }

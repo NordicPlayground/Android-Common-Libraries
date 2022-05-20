@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nordicsemi.android.material.you
 
 import androidx.annotation.DrawableRes

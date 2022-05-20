@@ -24,6 +24,7 @@ class PagerViewItem(
     val drawView: @Composable () -> Unit,
 )
 
+@Suppress("unused")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PagerView(viewEntity: PagerViewEntity) {

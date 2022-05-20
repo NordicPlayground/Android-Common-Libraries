@@ -9,4 +9,5 @@ val ScannerDestinationId = DestinationId("uiscanner-destination")
 
 private val ScannerDestination = ComposeDestination(ScannerDestinationId) { FindDeviceScreen() }
 
+@Suppress("unused")
 val ScannerDestinations = ComposeDestinations(listOf(ScannerDestination))

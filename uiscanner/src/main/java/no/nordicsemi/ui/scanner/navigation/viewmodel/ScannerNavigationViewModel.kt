@@ -55,9 +55,9 @@ internal class ScannerNavigationViewModel @Inject constructor(
 
     private fun getNextScreenDestination(): NavDestination? {
         return when {
-            !utils.isBluetoothAvailable() -> BluetoothNotAvailableDestination
-            !utils.isLocationPermissionGranted() -> LocationPermissionRequiredDestination
-            !utils.areNecessaryBluetoothPermissionsGranted() -> BluetoothPermissionRequiredDestination
+            !utils.isBluetoothAvailable -> BluetoothNotAvailableDestination
+            !utils.isLocationPermissionGranted -> LocationPermissionRequiredDestination
+            !utils.areNecessaryBluetoothPermissionsGranted -> BluetoothPermissionRequiredDestination
             !utils.isBleEnabled -> BluetoothDisabledDestination
             device == null -> PeripheralDeviceRequiredDestination
             else -> null

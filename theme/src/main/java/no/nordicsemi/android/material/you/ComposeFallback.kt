@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nordicsemi.android.material.you
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -5,15 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,14 +46,12 @@ fun Card(
 ) {
     OutlinedCard(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground,
-//        colors = DefaultCardColors(
-//            containerColor = MaterialTheme.colorScheme.background,
-//            contentColor = MaterialTheme.colorScheme.onBackground,
-//            disabledContainerColor = MaterialTheme.colorScheme.background,
-//            disabledContentColor = MaterialTheme.colorScheme.onBackground
-//        )
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            disabledContainerColor = MaterialTheme.colorScheme.background,
+            disabledContentColor = MaterialTheme.colorScheme.onBackground
+        )
     ) {
         content()
     }

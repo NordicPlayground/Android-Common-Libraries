@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nordicsemi.android.navigation
 
 import androidx.compose.runtime.Composable

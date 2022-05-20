@@ -14,6 +14,7 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
+@Suppress("unused")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Tutorial(items: List<@Composable () -> Unit>, onFinish: () -> Unit) {
