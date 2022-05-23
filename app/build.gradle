@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation project(":uilogger")
     implementation project(":uiscanner")
     implementation project(":theme")
     implementation project(":navigation")
