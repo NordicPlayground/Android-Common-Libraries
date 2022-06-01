@@ -1,0 +1,103 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.protobuf'
+apply from: rootProject.file("gradle/git-tag-version.gradle")
+
+group = GROUP
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.14.0'
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+android {
+    namespace 'no.nordicsemi.analytics'
+
+    compileSdk 32
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 32
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            consumerProguardFiles "analytics-rules.pro"
+        }
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerVersion kotlin_version
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
+}
+
+dependencies {
+    implementation project(":theme")
+    api project(":navigation")
+
+    implementation "androidx.compose.material3:material3:1.0.0-alpha12"
+    implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
+
+    implementation "androidx.compose.ui:ui:$compose_version"
+    // Required for Compose Preview
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    // Material design icons
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:1.4.0"
+
+    api "com.google.dagger:hilt-android:2.40.4"
+    kapt "com.google.dagger:hilt-compiler:2.40.4"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+
+    implementation "androidx.datastore:datastore:1.0.0"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation "com.google.protobuf:protobuf-javalite:3.18.0"
+
+    implementation platform('com.google.firebase:firebase-bom:29.2.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+}
+
+// === Maven Central configuration ===
+// The following file exists only when Android BLE Library project is opened, but not
+// when the module is loaded to a different project.
+if (rootProject.file('gradle/publish-module.gradle').exists()) {
+    ext {
+        POM_ARTIFACT_ID = 'analytics'
+        POM_NAME = 'Nordic library for analytics.'
+        POM_PACKAGING = 'aar'
+    }
+    apply from: rootProject.file('gradle/publish-module.gradle')
+}

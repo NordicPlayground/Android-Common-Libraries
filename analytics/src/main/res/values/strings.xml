@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="analytics_dialog_title">Help us improve!</string>
+    <string name="analytics_dialog_info">You can help us improve our application! We want to collect anonymized data on how the application is used. \n\n You can always change this later in the settings.</string>
+    <string name="analytics_dialog_accept">Accept</string>
+    <string name="analytics_dialog_decline">Decline</string>
+
+    <string name="analytics_switch_title">Analytics permission</string>
+</resources>
