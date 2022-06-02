@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="analytics_dialog_title">Help us improve!</string>
-    <string name="analytics_dialog_info">You can help us improve our application! We want to collect anonymized data on how the application is used. \n\n You can always change this later in the settings.</string>
+    <string name="analytics_dialog_title">Help us improve our application!</string>
+    <string name="analytics_dialog_info">
+You can help improve our application by sending - Nordic Semiconductor anonymous statistics on how you interact with the app. You can enable/disable this feature at any time in Settings.
+\n\n
+<b>What kind of information do we collect?</b>
+\n\n
+We collect only anonymous information about user interaction with the application e.g. we may want to check how often some feature is used by measuring number of clicks on a button which opens the feature.
+\n\n
+Data provided by the user like file names or provided in a text input are never collected.
+\n\n
+<b>How do we use this information? </b>
+\n\n
+The information is used to analyze an user interaction with the application and determine areas of improvement.
+\n\n
+<b>How is this information processed and shared?</b>
+\n\n
+Firebase is used for collecting and processing data. All data collected is anonymous and no personal data is ever collected. IP address is set to anonymized when using Firebase.
+\n\n
+We do not share the data to any third-party companies or individuals other than Google.
+    </string>
     <string name="analytics_dialog_accept">Accept</string>
     <string name="analytics_dialog_decline">Decline</string>
+
+    <string name="analytics_switch_dialog_title">Help us improve!</string>
+    <string name="analytics_switch_dialog_permission">Analytics permission</string>
+    <string name="analytics_switch_dialog_button">Dismiss</string>
+    <string name="analytics_permission_button">Click this button to change analytics permission settings.</string>
 
     <string name="analytics_switch_title">Analytics permission</string>
 </resources>

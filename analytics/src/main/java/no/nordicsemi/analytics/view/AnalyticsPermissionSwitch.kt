@@ -24,7 +24,7 @@ import no.nordicsemi.analytics.viewmodel.AnalyticsPermissionViewModel
 @Composable
 fun AnalyticsPermissionSwitch() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val state = viewModel.permissionData.collectAsState(initial = AnalyticsPermissionData(false, false)).value
+    val state = viewModel.permissionData.collectAsState(initial = AnalyticsPermissionData()).value
 
     Row(
         modifier = Modifier
