@@ -75,7 +75,7 @@ fun AnalyticsPermissionSwitchDialog(showDialog: MutableState<Boolean>) {
                     Text(stringResource(id = R.string.analytics_switch_dialog_button))
                 }
             },
-            modifier = Modifier.fillMaxHeight(0.8f).fillMaxWidth(0.8f)
+            modifier = Modifier.fillMaxHeight(0.9f).fillMaxWidth(0.95f)
         )
     }
 }

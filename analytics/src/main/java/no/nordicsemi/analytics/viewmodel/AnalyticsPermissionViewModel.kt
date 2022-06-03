@@ -3,39 +3,32 @@ package no.nordicsemi.analytics.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import no.nordicsemi.analytics.repository.AnalyticsPermissionRepository
+import no.nordicsemi.analytics.NordicAnalytics
 import javax.inject.Inject
 
 @HiltViewModel
 class AnalyticsPermissionViewModel @Inject constructor(
-    private val repository: AnalyticsPermissionRepository
+    private val analytics: NordicAnalytics
 ) : ViewModel() {
 
-    val permissionData = repository.permissionData
+    val permissionData = analytics.permissionData
 
     fun onConfirmButtonClick() {
         viewModelScope.launch {
-            repository.onPermissionGranted()
+            analytics.setAnalyticsEnabled(true)
         }
     }
 
     fun onDeclineButtonClick() {
         viewModelScope.launch {
-            repository.onPermissionDenied()
+            analytics.setAnalyticsEnabled(false)
         }
     }
 
     fun onPermissionChanged() {
         viewModelScope.launch {
-            permissionData.firstOrNull()?.let {
-                if (it.isPermissionGranted) {
-                    repository.onPermissionDenied()
-                } else {
-                    repository.onPermissionGranted()
-                }
-            }
+            analytics.switchAnalyticsEnabled()
         }
     }
 }

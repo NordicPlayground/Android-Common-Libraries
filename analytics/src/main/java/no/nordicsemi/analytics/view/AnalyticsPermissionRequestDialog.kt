@@ -43,7 +43,7 @@ fun AnalyticsPermissionRequestDialog() {
                     Text(stringResource(id = R.string.analytics_dialog_decline))
                 }
             },
-            modifier = Modifier.fillMaxHeight(0.8f).fillMaxWidth(0.8f)
+            modifier = Modifier.fillMaxHeight(0.9f).fillMaxWidth(0.95f)
         )
     }
 }

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,7 +21,6 @@ class AnalyticsPermissionRepository @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) {
-
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = FILE)
 
     private val hasBeenGranted = booleanPreferencesKey(HAS_BEEN_GRANTED)

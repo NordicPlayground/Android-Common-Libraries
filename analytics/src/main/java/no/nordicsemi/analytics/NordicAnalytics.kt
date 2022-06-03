@@ -21,6 +21,7 @@ class NordicAnalytics @Inject constructor(
     private val repository: AnalyticsPermissionRepository
 ) {
 
+    val permissionData = repository.permissionData
     private val firebase by lazy { FirebaseAnalytics.getInstance(context) }
 
     fun logEvent(@Size(min = 1L,max = 40L) name: String, params: Bundle?) {
@@ -32,5 +33,20 @@ class NordicAnalytics @Inject constructor(
                     firebase.logEvent(name, params)
                 }
         }
+    }
+
+    suspend fun switchAnalyticsEnabled() {
+        repository.permissionData.firstOrNull()?.let {
+            setAnalyticsEnabled(!it.isPermissionGranted)
+        }
+    }
+
+    suspend fun setAnalyticsEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
+            repository.onPermissionGranted()
+        } else {
+            repository.onPermissionDenied()
+        }
+        firebase.setAnalyticsCollectionEnabled(isEnabled)
     }
 }
