@@ -2,6 +2,7 @@ package no.nordicsemi.analytics.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -73,7 +74,8 @@ fun AnalyticsPermissionSwitchDialog(showDialog: MutableState<Boolean>) {
                 TextButton(onClick = { showDialog.value = false }) {
                     Text(stringResource(id = R.string.analytics_switch_dialog_button))
                 }
-            }
+            },
+            modifier = Modifier.fillMaxHeight(0.8f).fillMaxWidth(0.8f)
         )
     }
 }

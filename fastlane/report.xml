@@ -5,12 +5,12 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000200529">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000167157">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: publishToSonatype closeAndReleaseSonatypeStagingRepository" time="188.214677318">
+      <testcase classname="fastlane.lanes" name="1: publishToSonatype closeAndReleaseSonatypeStagingRepository" time="134.952079492">
         
       </testcase>
     

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="analytics_dialog_title">Help us improve our application!</string>
+    <string name="analytics_dialog_title">Help us improve!</string>
     <string name="analytics_dialog_info" formatted="false">You can help improve our application by sending - Nordic Semiconductor anonymous statistics on how you interact with the app. You can enable/disable this feature at any time in Settings.
 \n\n&lt;b&gt;What kind of information do we collect?&lt;/b&gt;
 \n\nWe collect only anonymous information about user interaction with the application e.g. we may want to check how often some feature is used by measuring number of clicks on a button which opens the feature.

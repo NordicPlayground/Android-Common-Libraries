@@ -1,5 +1,7 @@
 package no.nordicsemi.analytics.view
 
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -40,7 +42,8 @@ fun AnalyticsPermissionRequestDialog() {
                 TextButton(onClick = { viewModel.onDeclineButtonClick() }) {
                     Text(stringResource(id = R.string.analytics_dialog_decline))
                 }
-            }
+            },
+            modifier = Modifier.fillMaxHeight(0.8f).fillMaxWidth(0.8f)
         )
     }
 }
