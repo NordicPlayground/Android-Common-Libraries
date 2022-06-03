@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import no.nordicsemi.android.material.you.parseBold
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.ui.AppBar
 
@@ -55,7 +56,7 @@ internal fun LocationPermissionRequiredView(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.location_permission_info),
+                text = stringResource(id = R.string.location_permission_info).parseBold(),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()

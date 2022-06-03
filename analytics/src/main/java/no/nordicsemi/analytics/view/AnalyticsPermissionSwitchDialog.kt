@@ -3,6 +3,8 @@ package no.nordicsemi.analytics.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -18,6 +20,7 @@ import no.nordicsemi.analytics.R
 import no.nordicsemi.analytics.repository.AnalyticsPermissionData
 import no.nordicsemi.analytics.viewmodel.AnalyticsPermissionViewModel
 import no.nordicsemi.android.material.you.CheckboxFallback
+import no.nordicsemi.android.material.you.parseBold
 
 @Composable
 fun AnalyticsPermissionButton() {
@@ -60,8 +63,9 @@ fun AnalyticsPermissionSwitchDialog(showDialog: MutableState<Boolean>) {
                         )
                     }
                     Text(
-                        text = stringResource(id = R.string.analytics_dialog_info),
-                        style = MaterialTheme.typography.bodySmall
+                        text = stringResource(id = R.string.analytics_dialog_info).parseBold(),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.verticalScroll(rememberScrollState())
                     )
                 }
             },

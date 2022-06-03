@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.material.you.parseBold
 import no.nordicsemi.ui.scanner.R
 
 @Composable
@@ -39,7 +40,7 @@ internal fun ScanEmptyView(requireLocation: Boolean) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = stringResource(id = R.string.no_device_guide_info))
+        Text(text = stringResource(id = R.string.no_device_guide_info).parseBold())
 
         if (requireLocation) {
             Spacer(modifier = Modifier.height(8.dp))

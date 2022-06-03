@@ -61,29 +61,20 @@ android {
 
 dependencies {
     implementation project(":theme")
-    api project(":navigation")
 
     implementation "androidx.compose.material3:material3:1.0.0-alpha12"
-    implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 
     implementation "androidx.compose.ui:ui:$compose_version"
     // Required for Compose Preview
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
-    // Material design icons
-    implementation "androidx.compose.material:material-icons-core:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    // Integration with activities
-    implementation "androidx.activity:activity-compose:1.4.0"
 
     api "com.google.dagger:hilt-android:2.40.4"
     kapt "com.google.dagger:hilt-compiler:2.40.4"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
-    implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "com.google.protobuf:protobuf-javalite:3.18.0"
 
     implementation platform('com.google.firebase:firebase-bom:29.2.1')
     implementation 'com.google.firebase:firebase-analytics'
