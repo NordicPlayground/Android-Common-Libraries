@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val FILE = "UART_CONFIGURATION"
+private const val FILE = "ANALYTICS_PERMISSION"
 private const val HAS_BEEN_GRANTED = "HAS_BEEN_GRANTED"
 private const val WAS_INFO_SHOWN = "WAS_INFO_SHOWN"
 
