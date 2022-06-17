@@ -1,4 +1,4 @@
-package no.nordicsemi.android.material.you
+package no.nordicsemi.android.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -76,6 +76,7 @@ fun NordicTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = colorScheme,
         typography = nordicTypography,
-        content = content
+        content = content,
+
     )
 }

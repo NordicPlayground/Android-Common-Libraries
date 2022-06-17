@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import no.nordicsemi.android.material.you.parseBold
+import no.nordicsemi.android.theme.parseBold
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.ui.AppBar
 

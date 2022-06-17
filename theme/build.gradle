@@ -7,7 +7,7 @@ plugins {
 group = GROUP
 
 android {
-    namespace 'no.nordicsemi.android.material.you'
+    namespace 'no.nordicsemi.android.theme'
     compileSdk 32
 
     defaultConfig {

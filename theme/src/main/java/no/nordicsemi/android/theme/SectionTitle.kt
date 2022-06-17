@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package no.nordicsemi.android.material.you
+package no.nordicsemi.android.theme
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

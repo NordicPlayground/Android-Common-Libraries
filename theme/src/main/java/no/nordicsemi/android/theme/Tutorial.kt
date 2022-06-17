@@ -1,4 +1,4 @@
-package no.nordicsemi.android.material.you
+package no.nordicsemi.android.theme
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button

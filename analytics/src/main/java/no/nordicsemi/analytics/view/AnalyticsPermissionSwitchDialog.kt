@@ -20,8 +20,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.analytics.R
 import no.nordicsemi.analytics.repository.AnalyticsPermissionData
 import no.nordicsemi.analytics.viewmodel.AnalyticsPermissionViewModel
-import no.nordicsemi.android.material.you.CheckboxFallback
-import no.nordicsemi.android.material.you.parseBold
+import no.nordicsemi.android.theme.CheckboxFallback
+import no.nordicsemi.android.theme.parseBold
 
 @Composable
 fun AnalyticsPermissionButton() {

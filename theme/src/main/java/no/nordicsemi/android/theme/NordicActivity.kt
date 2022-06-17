@@ -1,4 +1,4 @@
-package no.nordicsemi.android.material.you
+package no.nordicsemi.android.theme
 
 import android.os.Build
 import android.os.Bundle

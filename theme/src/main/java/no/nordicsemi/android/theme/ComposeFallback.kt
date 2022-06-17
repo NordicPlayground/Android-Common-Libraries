@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package no.nordicsemi.android.material.you
+package no.nordicsemi.android.theme
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package no.nordicsemi.android.material.you
+package no.nordicsemi.android.theme
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
