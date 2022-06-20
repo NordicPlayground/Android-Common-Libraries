@@ -104,6 +104,10 @@ data class DiscoveredBluetoothDevice(
         }
     }
 
+    fun displayNameOrAddress(): String {
+        return displayName() ?: displayAddress()
+    }
+
     override fun hashCode(): Int {
         return device.hashCode()
     }
