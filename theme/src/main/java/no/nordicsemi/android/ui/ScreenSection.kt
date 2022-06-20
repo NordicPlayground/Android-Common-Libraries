@@ -29,48 +29,42 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.logger
+package no.nordicsemi.android.theme
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
-private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
-private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
-
-class LoggerAppRunner @Inject constructor(
-    @ApplicationContext
-    private val context: Context
+@Composable
+fun ScreenSection(
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    content: @Composable () -> Unit
 ) {
-
-    fun runLogger() {
-        val packageManger = context.packageManager
-
-        val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
-        if (intent != null) {
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(intent)
+    Card(
+        modifier = modifier,
+    ) {
+        val columnModifier = if (onClick != null) {
+            modifier
+                .clickable { onClick.invoke() }
+                .fillMaxWidth()
+                .padding(16.dp)
         } else {
-            val launchIntent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
-            launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(launchIntent)
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         }
-    }
 
-    fun runLogger(uri: Uri?) {
-        val packageManger = context.packageManager
-
-        val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
-
-        val targetUri = if (intent != null && uri != null) {
-            uri
-        } else {
-            Uri.parse(LOGGER_LINK)
+        Column(
+            modifier = columnModifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            content()
         }
-        val launchIntent = Intent(Intent.ACTION_VIEW, targetUri)
-        launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(launchIntent)
     }
 }

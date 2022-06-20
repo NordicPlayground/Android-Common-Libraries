@@ -29,48 +29,41 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.logger
+package no.nordicsemi.android.theme
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import android.os.Build
+import android.os.Bundle
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
+import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
-private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
-private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
+abstract class NordicActivity : ComponentActivity() {
 
-class LoggerAppRunner @Inject constructor(
-    @ApplicationContext
-    private val context: Context
-) {
-
-    fun runLogger() {
-        val packageManger = context.packageManager
-
-        val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
-        if (intent != null) {
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(intent)
-        } else {
-            val launchIntent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
-            launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(launchIntent)
-        }
+    companion object {
+        private var coldStart = true
     }
 
-    fun runLogger(uri: Uri?) {
-        val packageManger = context.packageManager
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
+        super.onCreate(savedInstanceState)
 
-        val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.appBarColor)
 
-        val targetUri = if (intent != null && uri != null) {
-            uri
-        } else {
-            Uri.parse(LOGGER_LINK)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val splashScreen = installSplashScreen()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (coldStart) {
+                    coldStart = false
+                    val then = System.currentTimeMillis()
+                    splashScreen.setKeepOnScreenCondition {
+                        val now = System.currentTimeMillis()
+                        now < then + 900
+                    }
+                }
+            }
         }
-        val launchIntent = Intent(Intent.ACTION_VIEW, targetUri)
-        launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(launchIntent)
     }
 }
