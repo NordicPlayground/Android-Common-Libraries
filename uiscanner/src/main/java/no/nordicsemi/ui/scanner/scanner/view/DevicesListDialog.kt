@@ -39,8 +39,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +71,7 @@ internal fun DevicesListDialog(requireLocation: Boolean, config: StringListDialo
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogConfig) {
     LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
@@ -78,34 +80,25 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
 
         item {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = stringResource(id = R.string.filters),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
-
-        item {
-            FlowRow {
                 config.filterItems.forEachIndexed { i, item ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        CheckboxFallback(checked = item.isChecked, onCheckedChange = {
-                            config.onFilterItemCheckChanged(i)
-                        })
-                        Spacer(modifier = Modifier.height(4.dp))
-                        item.icon?.let {
-                            Image(
-                                painter = painterResource(id = it),
-                                contentDescription = ""
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = item.text)
-                    }
+                    ElevatedFilterChip(
+                        selected = item.isChecked,
+                        onClick = { config.onFilterItemCheckChanged(i) },
+                        label = { Text(text = item.text) },
+                        leadingIcon = {
+                            item.icon?.let {
+                                Image(
+                                    painter = painterResource(id = it),
+                                    contentDescription = ""
+                                )
+                            }
+                        },
+                        selectedIcon = { Icon(Icons.Default.Done, contentDescription = "")}
+                    )
                 }
             }
         }

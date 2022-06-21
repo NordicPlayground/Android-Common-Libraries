@@ -31,9 +31,14 @@
 
 package no.nordicsemi.ui.scanner.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.buildAnnotatedString
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import no.nordicsemi.android.navigation.ParcelableArgument
 import no.nordicsemi.android.navigation.SuccessDestinationResult
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
