@@ -76,7 +76,7 @@ internal fun DevicesListDialog(requireLocation: Boolean, config: StringListDialo
 internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogConfig) {
     LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
 
-        item { Spacer(modifier = Modifier.size(16.dp)) }
+        item { Spacer(modifier = Modifier.size(8.dp)) }
 
         item {
             Row(
@@ -125,7 +125,8 @@ private fun LazyListScope.DevicesSection(
         item {
             Text(
                 text = stringResource(id = R.string.bonded_devices),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
         items(items.bondedDevices.size) { i ->
@@ -141,7 +142,8 @@ private fun LazyListScope.DevicesSection(
             item {
                 Text(
                     text = stringResource(id = R.string.discovered_devices),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
 
