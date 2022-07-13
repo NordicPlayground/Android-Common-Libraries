@@ -32,11 +32,13 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
 import android.bluetooth.BluetoothAdapter
+import android.os.ParcelUuid
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.toDiscoveredBluetoothDevice
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 

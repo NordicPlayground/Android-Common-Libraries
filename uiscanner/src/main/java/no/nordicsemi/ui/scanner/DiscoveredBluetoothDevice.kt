@@ -33,10 +33,13 @@ package no.nordicsemi.ui.scanner
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
+import android.os.ParcelUuid
 import android.os.Parcelable
+import android.util.Log
 import kotlinx.parcelize.Parcelize
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.bonding.repository.BondingState
+import java.util.*
 
 @Suppress("unused")
 @SuppressLint("MissingPermission")
@@ -48,7 +51,7 @@ data class DiscoveredBluetoothDevice(
     val lastScanResult: ScanResult? = null,
     val rssi: Int = 0,
     val previousRssi: Int = 0,
-    val highestRssi: Int = 0,
+    val highestRssi: Int = 0
 ) : Parcelable {
 
     fun hasRssiLevelChanged(): Boolean {
@@ -57,6 +60,14 @@ data class DiscoveredBluetoothDevice(
         val oldLevel =
             if (previousRssi <= 10) 0 else if (previousRssi <= 28) 1 else if (previousRssi <= 45) 2 else if (previousRssi <= 65) 3 else 4
         return newLevel != oldLevel
+    }
+
+    fun isProvisioned(): Boolean? {
+        //Wi-Fi provisioning related data
+        val parcelUuid = ParcelUuid(UUID.fromString("14387800-130c-49e7-b877-2881c89cb258"))
+        return scanResult?.scanRecord?.serviceData?.get(parcelUuid)?.get(2)?.let {
+            it == 0x01.toByte()
+        }
     }
 
     fun update(scanResult: ScanResult): DiscoveredBluetoothDevice {

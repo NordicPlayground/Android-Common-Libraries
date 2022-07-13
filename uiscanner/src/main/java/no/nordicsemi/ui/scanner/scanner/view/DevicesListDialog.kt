@@ -41,6 +41,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.WifiFind
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -182,7 +183,9 @@ private fun DeviceItem(
             }
             Spacer(modifier = Modifier.size(8.dp))
 
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
                 val deviceName = device.displayName()
                 if (deviceName != null) {
                     Text(
@@ -197,6 +200,18 @@ private fun DeviceItem(
                     )
                 }
                 Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+            }
+
+            if (device.isProvisioned() != null) {
+                val icon = if (device.isProvisioned() == true) {
+                    R.drawable.ic_wifi_ok
+                } else {
+                    R.drawable.ic_no_wifi
+                }
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = null,
+                )
             }
         }
     }
