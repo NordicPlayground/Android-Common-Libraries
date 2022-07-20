@@ -31,14 +31,12 @@
 
 package no.nordicsemi.ui.scanner.scanner.repository
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
-import android.os.ParcelUuid
-import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.toDiscoveredBluetoothDevice
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,8 +45,6 @@ class DevicesDataStore @Inject constructor(
     private val bleAdapter: BluetoothAdapter
 ) {
 
-    val bondedDevices
-        get() = bleAdapter.bondedDevices.map { DiscoveredBluetoothDevice(it) }
     val devices = mutableListOf<DiscoveredBluetoothDevice>()
     val data = MutableStateFlow(devices.toList())
 

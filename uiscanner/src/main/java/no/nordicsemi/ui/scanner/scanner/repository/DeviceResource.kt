@@ -32,17 +32,21 @@
 package no.nordicsemi.ui.scanner.scanner.repository
 
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.ui.scanner.bonding.repository.BondingState
 
 internal data class AllDevices(
-    val bondedDevices: List<DiscoveredBluetoothDevice> = emptyList(),
-    val discoveredDevices: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
+    val devices: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
 ) {
+    val bondedDevices: List<DiscoveredBluetoothDevice> = (devices as? SuccessResult)?.let {
+        it.value.filter { it.getBondingState() == BondingState.BONDED }
+    } ?: emptyList()
+
+    val discoveredDevices: List<DiscoveredBluetoothDevice> = (devices as? SuccessResult)?.let {
+        it.value.filter { it.getBondingState() != BondingState.BONDED }
+    } ?: emptyList()
+
     fun size(): Int {
-        return bondedDevices.size + when (discoveredDevices) {
-            is ErrorResult -> 0
-            is LoadingResult -> 0
-            is SuccessResult -> discoveredDevices.value.size
-        }
+        return bondedDevices.size + discoveredDevices.size
     }
 }
 

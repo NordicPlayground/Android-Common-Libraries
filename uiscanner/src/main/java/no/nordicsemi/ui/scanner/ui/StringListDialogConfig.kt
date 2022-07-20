@@ -50,7 +50,7 @@ internal data class StringListDialogConfig(
 ) {
 
     fun isRunning(): Boolean {
-        return result.discoveredDevices is LoadingResult || result.discoveredDevices is SuccessResult
+        return result.devices is LoadingResult || result.devices is SuccessResult
     }
 }
 

@@ -31,7 +31,9 @@
 
 package no.nordicsemi.ui.scanner.scanner.viewmodel
 
+import android.annotation.SuppressLint
 import android.os.ParcelUuid
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,22 +68,29 @@ internal class ScannerViewModel @Inject constructor(
     )
 
     val devices = config.combine(devicesRepository.getDevices()) { config, result ->
-        val devices = (result.discoveredDevices as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
-            val newItems = it.value.filter {
-                if (uuid == null) {
-                    true
-                } else {
-                    config.filterUuidRequired == false || it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) ?: false
-                }
-            }.filter {
-                !config.filterNearbyOnly || it.rssi >= FILTER_RSSI
-            }.filter {
-                !config.filterWithNames || !it.displayName().isNullOrBlank()
-            }
-            SuccessResult(newItems.filter { !result.bondedDevices.contains(it) })
-        } ?: result.discoveredDevices
-        result.copy(discoveredDevices = devices)
+        val devices = (result.devices as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
+            SuccessResult(it.value.applyFilters(config))
+        } ?: result.devices
+
+        result.copy(devices = devices)
     }.stateIn(viewModelScope, SharingStarted.Lazily, AllDevices())
+
+    @SuppressLint("MissingPermission")
+    private fun List<DiscoveredBluetoothDevice>.applyFilters(config: DevicesScanFilter): List<DiscoveredBluetoothDevice> {
+        return this.filter {
+            if (uuid == null) {
+                true
+            } else {
+                config.filterUuidRequired == false
+                        || it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
+                        || it.device.uuids?.contains(uuid) == true
+            }
+        }.filter {
+            !config.filterNearbyOnly || it.rssi >= FILTER_RSSI
+        }.filter {
+            !config.filterWithNames || !it.displayName().isNullOrBlank()
+        }
+    }
 
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid

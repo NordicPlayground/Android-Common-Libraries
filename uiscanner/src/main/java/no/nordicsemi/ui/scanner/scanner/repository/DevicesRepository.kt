@@ -104,7 +104,7 @@ internal class DevicesRepository @Inject constructor(
             awaitClose {
                 scanner.stopScan(scanCallback)
             }
-        }.map { AllDevices(devicesDataStore.bondedDevices, it) }
+        }.map { AllDevices(it) }
 
     fun clear() {
         devicesDataStore.clear()

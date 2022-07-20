@@ -98,7 +98,7 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
                                 )
                             }
                         },
-                        selectedIcon = { Icon(Icons.Default.Done, contentDescription = "")}
+                        selectedIcon = { Icon(Icons.Default.Done, contentDescription = "") }
                     )
                 }
             }
@@ -107,7 +107,7 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
         if (config.result.size() == 0) {
             item { ScanEmptyView(requireLocation) }
         } else {
-            when (config.result.discoveredDevices) {
+            when (config.result.devices) {
                 is LoadingResult -> item { ScanEmptyView(requireLocation) }
                 is SuccessResult -> DevicesSection(config.result, config)
                 is ErrorResult -> item { ErrorSection() }
@@ -135,22 +135,19 @@ private fun LazyListScope.DevicesSection(
         }
     }
 
-    val discoveredDevices = items.discoveredDevices as? SuccessResult
+    val devices = items.discoveredDevices
 
-    discoveredDevices?.let {
-        val devices = it.value
-        if (devices.isNotEmpty()) {
-            item {
-                Text(
-                    text = stringResource(id = R.string.discovered_devices),
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+    if (devices.isNotEmpty()) {
+        item {
+            Text(
+                text = stringResource(id = R.string.discovered_devices),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
 
-            items(devices.size) { i ->
-                DeviceItem(device = devices[i], config = config)
-            }
+        items(devices.size) { i ->
+            DeviceItem(device = devices[i], config = config)
         }
     }
 }
@@ -183,9 +180,11 @@ private fun DeviceItem(
             }
             Spacer(modifier = Modifier.size(8.dp))
 
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
                 val deviceName = device.displayName()
                 if (deviceName != null) {
                     Text(
