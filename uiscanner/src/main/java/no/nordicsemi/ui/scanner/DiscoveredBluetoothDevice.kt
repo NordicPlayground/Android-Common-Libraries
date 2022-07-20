@@ -62,12 +62,8 @@ data class DiscoveredBluetoothDevice(
         return newLevel != oldLevel
     }
 
-    fun isProvisioned(): Boolean? {
-        //Wi-Fi provisioning related data
-        val parcelUuid = ParcelUuid(UUID.fromString("14387800-130c-49e7-b877-2881c89cb258"))
-        return scanResult?.scanRecord?.serviceData?.get(parcelUuid)?.get(2)?.let {
-            it == 0x01.toByte()
-        }
+    fun provisioningData(): ProvisioningData? {
+        return scanResult?.let { ProvisioningData.create(it) }
     }
 
     fun update(scanResult: ScanResult): DiscoveredBluetoothDevice {

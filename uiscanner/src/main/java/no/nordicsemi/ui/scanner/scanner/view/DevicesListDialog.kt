@@ -33,6 +33,7 @@ package no.nordicsemi.ui.scanner.scanner.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,7 +55,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.flowlayout.FlowRow
 import no.nordicsemi.android.theme.CheckboxFallback
+import no.nordicsemi.android.theme.view.RssiIcon
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.ui.scanner.ProvisioningData
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.ErrorResult
@@ -201,17 +204,38 @@ private fun DeviceItem(
                 Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
             }
 
-            if (device.isProvisioned() != null) {
-                val icon = if (device.isProvisioned() == true) {
-                    R.drawable.ic_wifi_ok
-                } else {
-                    R.drawable.ic_no_wifi
-                }
-                Icon(
-                    painter = painterResource(id = icon),
-                    contentDescription = null,
-                )
+            device.provisioningData()?.let {
+                ProvisioningSection(it)
             }
+        }
+    }
+}
+
+@Composable
+private fun ProvisioningSection(data: ProvisioningData) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Text(
+            text = stringResource(id = R.string.version, data.version),
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        Spacer(modifier = Modifier.size(8.dp))
+
+        if (data.isConnected) {
+            RssiIcon(rssi = data.rssi)
+        } else if (data.isProvisioned) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_wifi_error),
+                contentDescription = null,
+            )
+        } else {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_no_wifi),
+                contentDescription = null,
+            )
         }
     }
 }

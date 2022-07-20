@@ -101,4 +101,5 @@
 
     <string name="disconnect">Disconnect</string>
     <string name="go_up">Back</string>
+    <string name="version">ProvVer: %s</string>
 </resources>
