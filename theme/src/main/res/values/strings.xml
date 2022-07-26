@@ -32,6 +32,7 @@
 
 <resources>
     <string name="navigation_item_accessibility">App bar navigation back icon.</string>
+    <string name="progress_icon">Icon indicating progress or result of the selected stage.</string>
 
     <string name="cd_rssi">Image representing signal strength.</string>
     <string name="dbm">%d dBm</string>
