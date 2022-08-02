@@ -35,10 +35,7 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,8 +52,9 @@ import no.nordicsemi.ui.scanner.R
 @Composable
 internal fun ScanEmptyView(requireLocation: Boolean) {
     Column(
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(vertical = 32.dp)
+        modifier = Modifier.padding(32.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_bluetooth_disabled),

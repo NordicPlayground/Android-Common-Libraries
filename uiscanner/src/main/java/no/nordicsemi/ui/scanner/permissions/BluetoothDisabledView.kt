@@ -35,13 +35,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -62,9 +56,10 @@ import no.nordicsemi.ui.scanner.ui.AppBar
 @Composable
 internal fun BluetoothDisabledView(onEvent: (PermissionsViewEvent) -> Unit) {
     Column {
-        AppBar(stringResource(id = R.string.bluetooth)) { onEvent(NavigateUp) }
+        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(NavigateUp) }
 
         Column(
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
         ) {

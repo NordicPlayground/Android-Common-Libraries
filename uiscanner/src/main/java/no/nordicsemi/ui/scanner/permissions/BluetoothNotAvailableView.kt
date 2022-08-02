@@ -51,9 +51,10 @@ import no.nordicsemi.ui.scanner.ui.AppBar
 @Composable
 internal fun BluetoothNotAvailableView(onEvent: (PermissionsViewEvent) -> Unit) {
     Column {
-        AppBar(stringResource(id = R.string.bluetooth)) { onEvent(NavigateUp) }
+        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(NavigateUp) }
 
         Column(
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
         ) {

@@ -64,15 +64,13 @@ internal fun LocationPermissionRequiredView(
     onEvent: (PermissionsViewEvent) -> Unit
 ) {
     Column {
-        AppBar(stringResource(id = R.string.location)) {
-            onEvent(NavigateUp)
-        }
+        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(NavigateUp) }
 
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.ic_location_off),
                 contentDescription = "",
