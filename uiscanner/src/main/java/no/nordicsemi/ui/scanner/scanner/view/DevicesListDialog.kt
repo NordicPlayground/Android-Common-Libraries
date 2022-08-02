@@ -33,17 +33,15 @@ package no.nordicsemi.ui.scanner.scanner.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.WifiFind
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,67 +50,30 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import com.google.accompanist.flowlayout.FlowRow
-import no.nordicsemi.android.theme.CheckboxFallback
-import no.nordicsemi.android.theme.view.RssiIcon
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.ui.scanner.ProvisioningData
 import no.nordicsemi.ui.scanner.R
-import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
 import no.nordicsemi.ui.scanner.scanner.repository.ErrorResult
 import no.nordicsemi.ui.scanner.scanner.repository.LoadingResult
+import no.nordicsemi.ui.scanner.scanner.repository.ScanningState
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
-import no.nordicsemi.ui.scanner.ui.FlowCanceled
-import no.nordicsemi.ui.scanner.ui.ItemSelectedResult
-import no.nordicsemi.ui.scanner.ui.StringListDialogConfig
 import no.nordicsemi.ui.scanner.ui.exhaustive
 
 @Composable
-internal fun DevicesListDialog(requireLocation: Boolean, config: StringListDialogConfig) {
-    Dialog(onDismissRequest = { config.onResult(FlowCanceled) }) {
-        DevicesListView(requireLocation, config)
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogConfig) {
-    LazyColumn(contentPadding = PaddingValues(horizontal = 16.dp)) {
-
+internal fun DevicesListView(
+    requireLocation: Boolean,
+    devices: ScanningState,
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    onClick: (DiscoveredBluetoothDevice) -> Unit,
+) {
+    LazyColumn(contentPadding = PaddingValues(horizontal = 8.dp)) {
         item { Spacer(modifier = Modifier.size(8.dp)) }
 
-        item {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                config.filterItems.forEachIndexed { i, item ->
-                    ElevatedFilterChip(
-                        selected = item.isChecked,
-                        onClick = { config.onFilterItemCheckChanged(i) },
-                        label = { Text(text = item.text) },
-                        leadingIcon = {
-                            item.icon?.let {
-                                Image(
-                                    painter = painterResource(id = it),
-                                    contentDescription = ""
-                                )
-                            }
-                        },
-                        selectedIcon = { Icon(Icons.Default.Done, contentDescription = "") }
-                    )
-                }
-            }
-        }
-
-        if (config.result.size() == 0) {
+        if (devices.isEmpty()) {
             item { ScanEmptyView(requireLocation) }
         } else {
-            when (config.result.devices) {
+            when (devices.result) {
                 is LoadingResult -> item { ScanEmptyView(requireLocation) }
-                is SuccessResult -> DevicesSection(config.result, config)
+                is SuccessResult -> items(devices, onClick, deviceView)
                 is ErrorResult -> item { ErrorSection() }
             }.exhaustive
         }
@@ -121,96 +82,102 @@ internal fun DevicesListView(requireLocation: Boolean, config: StringListDialogC
     }
 }
 
-private fun LazyListScope.DevicesSection(
-    items: AllDevices,
-    config: StringListDialogConfig
+private fun LazyListScope.items(
+    devices: ScanningState,
+    onClick: (DiscoveredBluetoothDevice) -> Unit,
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
 ) {
-    if (items.bondedDevices.isNotEmpty()) {
+    val bondedDevices = devices.bonded
+    val discoveredDevices = devices.discovered
+
+    if (bondedDevices.isNotEmpty()) {
         item {
             Text(
                 text = stringResource(id = R.string.bonded_devices),
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
         }
-        items(items.bondedDevices.size) { i ->
-            DeviceItem(device = items.bondedDevices[i], config = config)
+        items(bondedDevices) { device ->
+            ClickableDeviceItem(device = device, onClick = onClick, deviceView = deviceView)
         }
     }
 
-    val devices = items.discoveredDevices
-
-    if (devices.isNotEmpty()) {
+    if (discoveredDevices.isNotEmpty()) {
         item {
             Text(
                 text = stringResource(id = R.string.discovered_devices),
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
         }
 
-        items(devices.size) { i ->
-            DeviceItem(device = devices[i], config = config)
+        items(discoveredDevices) { device ->
+            ClickableDeviceItem(device = device, onClick = onClick, deviceView = deviceView)
         }
     }
 }
 
 @Composable
-private fun DeviceItem(
+private fun ClickableDeviceItem(
     device: DiscoveredBluetoothDevice,
-    config: StringListDialogConfig
+    onClick: (DiscoveredBluetoothDevice) -> Unit,
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .clickable { config.onResult(ItemSelectedResult(device)) }
-            .padding(8.dp),
-    ) {
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            config.leftIcon?.let {
-                Image(
-                    painter = painterResource(it),
-                    contentDescription = "Content image",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiary),
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.tertiary,
-                            shape = CircleShape
-                        )
-                        .padding(8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.size(8.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                val deviceName = device.displayName()
-                if (deviceName != null) {
-                    Text(
-                        text = deviceName,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                } else {
-                    Text(
-                        text = stringResource(id = R.string.device_no_name),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                }
-                Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
-            }
-
-            device.provisioningData()?.let {
-                ProvisioningSection(it)
-            }
-        }
+    Box(modifier = Modifier
+        .clip(RoundedCornerShape(10.dp))
+        .clickable { onClick(device) }
+        .padding(horizontal = 8.dp, vertical = 8.dp)) {
+        deviceView(device)
     }
 }
 
+@Composable
+fun DeviceItem(
+    device: DiscoveredBluetoothDevice,
+    modifier: Modifier = Modifier,
+    extras: @Composable (DiscoveredBluetoothDevice) -> Unit = {},
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically)
+    {
+        Image(
+            painter = painterResource(R.drawable.ic_bluetooth),
+            contentDescription = "Content image",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = CircleShape
+                )
+                .padding(8.dp)
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            device.displayName()?.let { name ->
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            } ?: Text(
+                text = stringResource(id = R.string.device_no_name),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.outline
+            )
+            Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+        }
+
+        extras(device)
+    }
+}
+/*
 @Composable
 private fun ProvisioningSection(data: ProvisioningData) {
     Row(
@@ -239,7 +206,7 @@ private fun ProvisioningSection(data: ProvisioningData) {
         }
     }
 }
-
+*/
 @Composable
 private fun ErrorSection() {
     Text(

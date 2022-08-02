@@ -52,7 +52,7 @@ internal class DevicesRepository @Inject constructor(
     private val devicesDataStore: DevicesDataStore
 ) {
 
-    fun getDevices(): Flow<AllDevices> =
+    fun getDevices(): Flow<ScanningState> =
         callbackFlow<DeviceResource<List<DiscoveredBluetoothDevice>>> {
             val scanCallback: ScanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult) {
@@ -104,7 +104,7 @@ internal class DevicesRepository @Inject constructor(
             awaitClose {
                 scanner.stopScan(scanCallback)
             }
-        }.map { AllDevices(it) }
+        }.map { ScanningState(it) }
 
     fun clear() {
         devicesDataStore.clear()

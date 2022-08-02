@@ -33,7 +33,6 @@ package no.nordicsemi.ui.scanner.scanner.viewmodel
 
 import android.annotation.SuppressLint
 import android.os.ParcelUuid
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +42,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.LocalDataProvider
-import no.nordicsemi.ui.scanner.scanner.repository.AllDevices
+import no.nordicsemi.ui.scanner.scanner.repository.ScanningState
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesRepository
 import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.repository.SuccessResult
@@ -68,12 +67,12 @@ internal class ScannerViewModel @Inject constructor(
     )
 
     val devices = config.combine(devicesRepository.getDevices()) { config, result ->
-        val devices = (result.devices as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
+        val devices = (result.result as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
             SuccessResult(it.value.applyFilters(config))
-        } ?: result.devices
+        } ?: result.result
 
-        result.copy(devices = devices)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, AllDevices())
+        result.copy(result = devices)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, ScanningState())
 
     @SuppressLint("MissingPermission")
     private fun List<DiscoveredBluetoothDevice>.applyFilters(config: DevicesScanFilter): List<DiscoveredBluetoothDevice> {
@@ -99,16 +98,8 @@ internal class ScannerViewModel @Inject constructor(
         }
     }
 
-    fun filterByUuid(uuidRequired: Boolean) {
-        config.value = config.value.copy(filterUuidRequired = uuidRequired)
-    }
-
-    fun filterByDistance(nearbyOnly: Boolean) {
-        config.value = config.value.copy(filterNearbyOnly = nearbyOnly)
-    }
-
-    fun filterByName(nameRequired: Boolean) {
-        config.value = config.value.copy(filterWithNames = nameRequired)
+    fun setFilter(config: DevicesScanFilter) {
+        this.config.value = config
     }
 
     override fun onCleared() {

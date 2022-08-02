@@ -34,19 +34,21 @@ package no.nordicsemi.ui.scanner.scanner.repository
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.bonding.repository.BondingState
 
-internal data class AllDevices(
-    val devices: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
+internal data class ScanningState(
+    val result: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
 ) {
-    val bondedDevices: List<DiscoveredBluetoothDevice> = (devices as? SuccessResult)?.let {
-        it.value.filter { it.getBondingState() == BondingState.BONDED }
-    } ?: emptyList()
+    val all: List<DiscoveredBluetoothDevice> = (result as? SuccessResult)?.value ?: emptyList()
 
-    val discoveredDevices: List<DiscoveredBluetoothDevice> = (devices as? SuccessResult)?.let {
-        it.value.filter { it.getBondingState() != BondingState.BONDED }
-    } ?: emptyList()
+    val bonded: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() == BondingState.BONDED }
 
-    fun size(): Int {
-        return bondedDevices.size + discoveredDevices.size
+    val discovered: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() != BondingState.BONDED }
+
+    fun size(): Int = bonded.size + discovered.size
+
+    fun isEmpty(): Boolean = all.isEmpty()
+
+    fun isRunning(): Boolean {
+        return result is LoadingResult || result is SuccessResult
     }
 }
 
@@ -59,7 +61,7 @@ internal sealed class DeviceResource<T> {
     }
 }
 
-internal class LoadingResult <T> : DeviceResource<T>()
+internal class LoadingResult<T> : DeviceResource<T>()
 
 internal data class SuccessResult<T>(val value: T) : DeviceResource<T>()
 

@@ -50,12 +50,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.navigation.viewmodel.*
 import no.nordicsemi.ui.scanner.permissions.*
+import no.nordicsemi.ui.scanner.scanner.view.DeviceItem
 import no.nordicsemi.ui.scanner.scanner.view.ScannerScreen
 
 @Composable
-fun FindDeviceScreen() {
+fun FindDeviceScreen(
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit = { DeviceItem(it) },
+) {
     val viewModel = hiltViewModel<ScannerNavigationViewModel>()
 
     val destination = viewModel.destination.collectAsState().value
@@ -88,24 +92,33 @@ fun FindDeviceScreen() {
                 ),
                 onEvent
             )
-            PeripheralDeviceRequiredDestination -> ScannerScreen(viewModel.filterId, onEvent)
+            PeripheralDeviceRequiredDestination -> ScannerScreen(viewModel.filterId, onEvent, deviceView)
+            else -> {
+                // Not possible, no view
+            }
         }
     }
 
-    registerReceiver(IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
-    registerReceiver(IntentFilter(MODE_CHANGED_ACTION))
+    ReceiverEffect(IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+        onEvent(RefreshNavigation)
+    }
+    ReceiverEffect(IntentFilter(MODE_CHANGED_ACTION)) {
+        onEvent(RefreshNavigation)
+    }
 }
 
 @SuppressLint("ComposableNaming")
 @Composable
-private fun registerReceiver(intentFilter: IntentFilter) {
-    val viewModel = hiltViewModel<ScannerNavigationViewModel>()
+private fun ReceiverEffect(
+    intentFilter: IntentFilter,
+    onBroadcastReceived: () -> Unit,
+) {
     val context = LocalContext.current
 
     DisposableEffect(context) {
         val broadcast = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                viewModel.onEvent(RefreshNavigation)
+                onBroadcastReceived()
             }
         }
 

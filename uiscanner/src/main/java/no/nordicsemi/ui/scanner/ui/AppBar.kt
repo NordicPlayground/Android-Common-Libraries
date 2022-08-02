@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.ui.scanner.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick: () -> Unit) {
 
