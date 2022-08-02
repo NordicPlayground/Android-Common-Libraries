@@ -67,12 +67,12 @@ internal fun FilterView(
     ) {
         config.filterUuidRequired?.let {
             ElevatedFilterChip(
-                selected = it,
+                selected = !it,
                 onClick = { onChanged(config.copy(filterUuidRequired = !it)) },
                 label = { Text(text = stringResource(id = R.string.filter_uuid),) },
                 modifier = Modifier.padding(end = 8.dp),
                 leadingIcon = {
-                    if (it) {
+                    if (!it) {
                         Icon(Icons.Default.Done, contentDescription = "")
                     } else {
                         Icon(Icons.Default.Widgets, contentDescription = "")
