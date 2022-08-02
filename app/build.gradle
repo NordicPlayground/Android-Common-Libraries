@@ -29,8 +29,7 @@ android {
      * Better to leave enabled for all modules.
      */
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion kotlin_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 
     buildFeatures {

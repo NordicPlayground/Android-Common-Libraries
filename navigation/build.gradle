@@ -25,8 +25,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion kotlin_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 
     buildFeatures {
@@ -48,8 +47,8 @@ dependencies {
     // Brings the new BluetoothLeScanner API to older platforms
     implementation "no.nordicsemi.android.support.v18:scanner:1.6.0"
 
-    api "com.google.dagger:hilt-android:2.40.4"
-    kapt "com.google.dagger:hilt-compiler:2.40.4"
+    api "com.google.dagger:hilt-android:2.43.1"
+    kapt "com.google.dagger:hilt-compiler:2.43.1"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
 

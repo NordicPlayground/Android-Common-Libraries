@@ -46,8 +46,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion kotlin_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 
     buildFeatures {
@@ -70,8 +69,8 @@ dependencies {
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
 
-    api "com.google.dagger:hilt-android:2.40.4"
-    kapt "com.google.dagger:hilt-compiler:2.40.4"
+    api "com.google.dagger:hilt-android:2.43.1"
+    kapt "com.google.dagger:hilt-compiler:2.43.1"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     implementation "androidx.datastore:datastore-preferences:1.0.0"
