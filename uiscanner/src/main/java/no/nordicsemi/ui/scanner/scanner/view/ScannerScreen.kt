@@ -32,28 +32,16 @@
 package no.nordicsemi.ui.scanner.scanner.view
 
 import android.os.ParcelUuid
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Label
-import androidx.compose.material.icons.filled.Widgets
-import androidx.compose.material.icons.filled.Wifi
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.ui.scanner.R
 import no.nordicsemi.ui.scanner.permissions.DeviceSelected
 import no.nordicsemi.ui.scanner.permissions.NavigateUp
 import no.nordicsemi.ui.scanner.permissions.PermissionsViewEvent
-import no.nordicsemi.ui.scanner.scanner.repository.DevicesScanFilter
 import no.nordicsemi.ui.scanner.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.ui.scanner.ui.AppBar
 
@@ -77,71 +65,6 @@ internal fun ScannerScreen(
         }
         DevicesListView(requireLocation, result, deviceView) {
             onEvent(DeviceSelected(it))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun FilterView(
-    config: DevicesScanFilter,
-    onChanged: (DevicesScanFilter) -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colorResource(id = R.color.appBarColor))
-            .padding(start = 56.dp)
-    ) {
-        config.filterUuidRequired?.let {
-            ElevatedFilterChip(
-                selected = it,
-                onClick = { onChanged(config.copy(filterUuidRequired = !it)) },
-                label = { Text(text = stringResource(id = R.string.filter_uuid),) },
-                modifier = Modifier.padding(end = 8.dp),
-                leadingIcon = {
-                    if (it) {
-                        Icon(Icons.Default.Done, contentDescription = "")
-                    } else {
-                        Icon(Icons.Default.Widgets, contentDescription = "")
-                    }
-                },
-            )
-        }
-        with(config.filterNearbyOnly) {
-            ElevatedFilterChip(
-                selected = this,
-                onClick = { onChanged(config.copy(filterNearbyOnly = !this)) },
-                label = { Text(text = stringResource(id = R.string.filter_nearby),) },
-                modifier = Modifier.padding(end = 8.dp),
-                leadingIcon = {
-                    if (this) {
-                        Icon(Icons.Default.Done, contentDescription = "")
-                    } else {
-                        Icon(Icons.Default.Wifi, contentDescription = "")
-                    }
-                },
-                colors = FilterChipDefaults.elevatedFilterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-            )
-        }
-        with(config.filterWithNames) {
-            ElevatedFilterChip(
-                selected = this,
-                onClick = { onChanged(config.copy(filterWithNames = !this)) },
-                label = { Text(text = stringResource(id = R.string.filter_name),) },
-                modifier = Modifier.padding(end = 8.dp),
-                leadingIcon = {
-                    if (this) {
-                        Icon(Icons.Default.Done, contentDescription = "")
-                    } else {
-                        Icon(Icons.Default.Label, contentDescription = "")
-                    }
-                },
-            )
         }
     }
 }

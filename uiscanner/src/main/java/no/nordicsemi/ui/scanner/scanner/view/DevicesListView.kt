@@ -31,23 +31,17 @@
 
 package no.nordicsemi.ui.scanner.scanner.view
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.ui.scanner.DiscoveredBluetoothDevice
@@ -133,50 +127,13 @@ private fun ClickableDeviceItem(
 }
 
 @Composable
-fun DeviceItem(
-    device: DiscoveredBluetoothDevice,
-    modifier: Modifier = Modifier,
-    extras: @Composable (DiscoveredBluetoothDevice) -> Unit = {},
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically)
-    {
-        Image(
-            painter = painterResource(R.drawable.ic_bluetooth),
-            contentDescription = "Content image",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = CircleShape
-                )
-                .padding(8.dp)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            device.displayName()?.let { name ->
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            } ?: Text(
-                text = stringResource(id = R.string.device_no_name),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.outline
-            )
-            Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
-        }
-
-        extras(device)
-    }
+private fun ErrorSection() {
+    Text(
+        text = stringResource(id = R.string.scan_failed),
+        color = MaterialTheme.colorScheme.error
+    )
 }
+
 /*
 @Composable
 private fun ProvisioningSection(data: ProvisioningData) {
@@ -207,10 +164,3 @@ private fun ProvisioningSection(data: ProvisioningData) {
     }
 }
 */
-@Composable
-private fun ErrorSection() {
-    Text(
-        text = stringResource(id = R.string.scan_failed),
-        color = MaterialTheme.colorScheme.error
-    )
-}
