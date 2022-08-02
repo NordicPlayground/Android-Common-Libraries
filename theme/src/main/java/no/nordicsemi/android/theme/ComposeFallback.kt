@@ -103,7 +103,7 @@ fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButton
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        viewEntity.items.onEachIndexed { i, it ->
+        viewEntity.items.onEach {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 RadioButtonFallback(selected = it.isChecked, onClick = { onItemClick(it) })
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)
@@ -121,7 +121,7 @@ fun HorizontalLabelRadioButtonGroup(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        viewEntity.items.onEachIndexed { i, it ->
+        viewEntity.items.onEach {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButtonFallback(selected = it.isChecked, onClick = { onItemClick(it) })
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)
