@@ -24,8 +24,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion kotlin_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 
     buildFeatures {
@@ -42,7 +41,7 @@ dependencies {
     implementation project(":theme")
     api project(":navigation")
 
-    implementation "androidx.compose.material3:material3:1.0.0-alpha12"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha15"
     implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -54,13 +53,13 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Integration with activities
-    implementation "androidx.activity:activity-compose:1.4.0"
+    implementation "androidx.activity:activity-compose:1.5.1"
 
     // Brings the new BluetoothLeScanner API to older platforms
     api "no.nordicsemi.android.support.v18:scanner:1.6.0"
 
-    api "com.google.dagger:hilt-android:2.40.4"
-    kapt "com.google.dagger:hilt-compiler:2.40.4"
+    api "com.google.dagger:hilt-android:2.43.1"
+    kapt "com.google.dagger:hilt-compiler:2.43.1"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
 
