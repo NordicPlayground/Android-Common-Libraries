@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.scanner.viewmodel
+package no.nordicsemi.android.common.ui.scanner.viewmodel
 
 import android.annotation.SuppressLint
 import android.os.ParcelUuid
@@ -42,10 +42,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.LocalDataProvider
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.ScanningState
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.DevicesRepository
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.DevicesScanFilter
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.SuccessResult
+import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
+import no.nordicsemi.android.common.ui.scanner.repository.DevicesRepository
+import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
+import no.nordicsemi.android.common.ui.scanner.repository.SuccessResult
 import javax.inject.Inject
 
 private const val FILTER_RSSI = -50 // [dBm]

@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.scanner.view
+package no.nordicsemi.android.common.ui.scanner.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +49,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.DevicesScanFilter
+import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

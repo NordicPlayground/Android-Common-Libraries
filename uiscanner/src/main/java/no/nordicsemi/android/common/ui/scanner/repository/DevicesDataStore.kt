@@ -28,8 +28,38 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package no.nordicsemi.android.common.ui.scanner.scanner.viewmodel
 
-enum class ScannerState {
-    IDLE, IN_PROGRESS, ERROR
+package no.nordicsemi.android.common.ui.scanner.repository
+
+import kotlinx.coroutines.flow.MutableStateFlow
+import no.nordicsemi.android.support.v18.scanner.ScanResult
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.toDiscoveredBluetoothDevice
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class DevicesDataStore @Inject constructor() {
+    val devices = mutableListOf<DiscoveredBluetoothDevice>()
+    val data = MutableStateFlow(devices.toList())
+
+    fun addNewDevice(scanResult: ScanResult) {
+        devices.firstOrNull { it.device == scanResult.device }?.let { device ->
+            val i = devices.indexOf(device)
+            devices.set(i, device.update(scanResult))
+        } ?: scanResult.toDiscoveredBluetoothDevice().also { devices.add(it) }
+
+        data.value = devices.toList()
+    }
+
+    fun clear() {
+        devices.clear()
+        data.value = devices
+    }
 }
+
+internal data class DevicesScanFilter(
+    val filterUuidRequired: Boolean?,
+    val filterNearbyOnly: Boolean,
+    val filterWithNames: Boolean
+)

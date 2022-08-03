@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.scanner.view
+package no.nordicsemi.android.common.ui.scanner.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -46,10 +46,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.ErrorResult
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.LoadingResult
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.ScanningState
-import no.nordicsemi.android.common.ui.scanner.scanner.repository.SuccessResult
+import no.nordicsemi.android.common.ui.scanner.repository.ErrorResult
+import no.nordicsemi.android.common.ui.scanner.repository.LoadingResult
+import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
+import no.nordicsemi.android.common.ui.scanner.repository.SuccessResult
 import no.nordicsemi.android.common.ui.scanner.ui.exhaustive
 
 @Composable

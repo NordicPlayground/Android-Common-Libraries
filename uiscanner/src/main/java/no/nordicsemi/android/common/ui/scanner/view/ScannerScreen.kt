@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.scanner.view
+package no.nordicsemi.android.common.ui.scanner.view
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
@@ -42,7 +42,7 @@ import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.permissions.DeviceSelected
 import no.nordicsemi.android.common.ui.scanner.permissions.NavigateUp
 import no.nordicsemi.android.common.ui.scanner.permissions.PermissionsViewEvent
-import no.nordicsemi.android.common.ui.scanner.scanner.viewmodel.ScannerViewModel
+import no.nordicsemi.android.common.ui.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.ui.scanner.ui.AppBar
 
 @Composable

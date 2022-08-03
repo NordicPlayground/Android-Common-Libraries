@@ -29,68 +29,66 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.scanner.view
+package no.nordicsemi.android.common.ui.scanner.view
 
-import android.content.Context
-import android.content.Intent
-import android.provider.Settings
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.theme.parseBold
 import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 
 @Composable
-internal fun ScanEmptyView(requireLocation: Boolean) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(32.dp)
-    ) {
+fun DeviceItem(
+    device: DiscoveredBluetoothDevice,
+    modifier: Modifier = Modifier,
+    extras: @Composable (DiscoveredBluetoothDevice) -> Unit = {},
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically)
+    {
         Image(
-            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
+            painter = painterResource(R.drawable.ic_bluetooth),
+            contentDescription = "Content image",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.secondary,
+                    shape = CircleShape
+                )
+                .padding(8.dp)
         )
 
-        Text(
-            text = stringResource(id = R.string.no_device_guide_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
+        Spacer(modifier = Modifier.width(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = stringResource(id = R.string.no_device_guide_info).parseBold())
-
-        if (requireLocation) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(text = stringResource(id = R.string.no_device_guide_location_info))
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val context = LocalContext.current
-            Button(onClick = { openLocationSettings(context) }) {
-                Text(text = stringResource(id = R.string.action_location_settings))
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-        } else {
-            Spacer(modifier = Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            device.displayName()?.let { name ->
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            } ?: Text(
+                text = stringResource(id = R.string.device_no_name),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.outline
+            )
+            Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
         }
-    }
-}
 
-private fun openLocationSettings(context: Context) {
-    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    context.startActivity(intent)
+        extras(device)
+    }
 }

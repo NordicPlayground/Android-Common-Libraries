@@ -31,7 +31,6 @@
 
 package no.nordicsemi.android.common.ui.scanner.navigation.view
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
@@ -53,8 +52,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.navigation.viewmodel.*
 import no.nordicsemi.android.common.ui.scanner.permissions.*
-import no.nordicsemi.android.common.ui.scanner.scanner.view.DeviceItem
-import no.nordicsemi.android.common.ui.scanner.scanner.view.ScannerScreen
+import no.nordicsemi.android.common.ui.scanner.view.DeviceItem
+import no.nordicsemi.android.common.ui.scanner.view.ScannerScreen
 
 @Composable
 fun FindDeviceScreen(
