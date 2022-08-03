@@ -29,20 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.scanner.repository
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import no.nordicsemi.android.support.v18.scanner.ScanResult
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.toDiscoveredBluetoothDevice
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MainActivity : AppCompatActivity() {
+@Singleton
+class DevicesDataStore @Inject constructor() {
+    val devices = mutableListOf<DiscoveredBluetoothDevice>()
+    val data = MutableStateFlow(devices.toList())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    fun addNewDevice(scanResult: ScanResult) {
+        devices.firstOrNull { it.device == scanResult.device }?.let { device ->
+            val i = devices.indexOf(device)
+            devices.set(i, device.update(scanResult))
+        } ?: scanResult.toDiscoveredBluetoothDevice().also { devices.add(it) }
 
-        setContent {
-            NordicTheme { }
-        }
+        data.value = devices.toList()
+    }
+
+    fun clear() {
+        devices.clear()
+        data.value = devices
     }
 }
+
+internal data class DevicesScanFilter(
+    val filterUuidRequired: Boolean?,
+    val filterNearbyOnly: Boolean,
+    val filterWithNames: Boolean
+)

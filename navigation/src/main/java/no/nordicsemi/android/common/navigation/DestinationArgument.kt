@@ -29,20 +29,32 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+@file:Suppress("unused")
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+package no.nordicsemi.android.common.navigation
 
-class MainActivity : AppCompatActivity() {
+import android.os.Parcelable
+import java.util.*
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+data class DestinationArgument(
+    val destinationId: DestinationId,
+    val argument: Argument
+)
 
-        setContent {
-            NordicTheme { }
-        }
-    }
-}
+sealed class Argument
+
+data class StringDestinationArgument(
+    val value: String,
+) : Argument()
+
+data class UUIDArgument(
+    val value: UUID,
+) : Argument()
+
+data class ParcelableArgument(
+    val value: Parcelable,
+) : Argument()
+
+data class AnyArgument(
+    val value: Any,
+) : Argument()

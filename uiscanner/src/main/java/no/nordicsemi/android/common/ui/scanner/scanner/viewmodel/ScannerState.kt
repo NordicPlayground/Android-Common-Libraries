@@ -28,21 +28,8 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package no.nordicsemi.android.common.ui.scanner.scanner.viewmodel
 
-package no.nordicsemi.android.common.test
-
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
-
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
-        }
-    }
+enum class ScannerState {
+    IDLE, IN_PROGRESS, ERROR
 }

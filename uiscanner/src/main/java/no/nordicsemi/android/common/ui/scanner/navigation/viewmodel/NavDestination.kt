@@ -29,20 +29,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.navigation.viewmodel
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+internal sealed class NavDestination(val id: String)
 
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
-        }
-    }
-}
+internal object LocationPermissionRequiredDestination : NavDestination("location-permission-not-granted")
+internal object BluetoothPermissionRequiredDestination : NavDestination("bluetooth-permission-not-granted")
+internal object BluetoothNotAvailableDestination : NavDestination("bluetooth-not-available")
+internal object BluetoothDisabledDestination : NavDestination("bluetooth-not-enabled")
+internal object PeripheralDeviceRequiredDestination : NavDestination("device-not-selected")

@@ -29,20 +29,17 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.logger
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 
-class MainActivity : AppCompatActivity() {
+@AssistedFactory
+interface NordicLoggerFactory {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
-        }
-    }
+    fun create(
+        @Assisted("appName") appName: String,
+        @Assisted("profile") profile: String?,
+        @Assisted("key") key: String
+    ): NordicLogger
 }

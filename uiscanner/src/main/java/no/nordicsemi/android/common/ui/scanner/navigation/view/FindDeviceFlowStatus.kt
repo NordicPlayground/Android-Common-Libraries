@@ -29,20 +29,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.navigation.view
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 
-class MainActivity : AppCompatActivity() {
+sealed class FindDeviceFlowStatus
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+data class FindDeviceSuccessResult(val device: DiscoveredBluetoothDevice) : FindDeviceFlowStatus()
 
-        setContent {
-            NordicTheme { }
-        }
-    }
-}
+object FindDeviceCloseResult : FindDeviceFlowStatus()

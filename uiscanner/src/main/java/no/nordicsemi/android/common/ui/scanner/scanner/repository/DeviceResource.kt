@@ -29,20 +29,40 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.scanner.repository
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.bonding.repository.BondingState
 
-class MainActivity : AppCompatActivity() {
+internal data class ScanningState(
+    val result: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
+) {
+    val all: List<DiscoveredBluetoothDevice> = (result as? SuccessResult)?.value ?: emptyList()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    val bonded: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() == BondingState.BONDED }
 
-        setContent {
-            NordicTheme { }
-        }
+    val discovered: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() != BondingState.BONDED }
+
+    fun size(): Int = bonded.size + discovered.size
+
+    fun isEmpty(): Boolean = all.isEmpty()
+
+    fun isRunning(): Boolean {
+        return result is LoadingResult || result is SuccessResult
     }
 }
+
+internal sealed class DeviceResource<T> {
+
+    companion object {
+        fun <T> createLoading() = LoadingResult<T>()
+        fun <T> createSuccess(value: T) = SuccessResult(value)
+        fun <T> createError(errorCode: Int) = ErrorResult<T>(errorCode)
+    }
+}
+
+internal class LoadingResult<T> : DeviceResource<T>()
+
+internal data class SuccessResult<T>(val value: T) : DeviceResource<T>()
+
+internal data class ErrorResult<T>(val errorCode: Int) : DeviceResource<T>()

@@ -29,20 +29,23 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+@file:Suppress("unused")
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+package no.nordicsemi.android.common.navigation
 
-class MainActivity : AppCompatActivity() {
+import androidx.compose.runtime.Composable
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class ComposeDestinations(val values: List<ComposeDestination>) {
+    constructor(destination: ComposeDestination) : this(listOf(destination))
 
-        setContent {
-            NordicTheme { }
-        }
+    operator fun plus(other: ComposeDestinations): ComposeDestinations {
+        return ComposeDestinations(this.values + other.values)
     }
+}
+
+data class ComposeDestination(
+    val id: DestinationId,
+    val draw: @Composable () -> Unit
+) {
+    constructor(id: String, draw: @Composable () -> Unit) : this(DestinationId(id), draw)
 }

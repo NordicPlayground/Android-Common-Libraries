@@ -29,20 +29,42 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.scanner.view
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.os.ParcelUuid
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.ui.scanner.permissions.DeviceSelected
+import no.nordicsemi.android.common.ui.scanner.permissions.NavigateUp
+import no.nordicsemi.android.common.ui.scanner.permissions.PermissionsViewEvent
+import no.nordicsemi.android.common.ui.scanner.scanner.viewmodel.ScannerViewModel
+import no.nordicsemi.android.common.ui.scanner.ui.AppBar
 
-class MainActivity : AppCompatActivity() {
+@Composable
+internal fun ScannerScreen(
+    uuid: ParcelUuid?,
+    onEvent: (PermissionsViewEvent) -> Unit,
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+) {
+    val viewModel = hiltViewModel<ScannerViewModel>().apply {
+        setFilterUuid(uuid)
+    }
+    val requireLocation = viewModel.dataProvider.locationState.collectAsState().value
+    val result = viewModel.devices.collectAsState().value
+    val config = viewModel.config.collectAsState().value
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
+    Column {
+        AppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onEvent(NavigateUp) }
+        FilterView(config) {
+            viewModel.setFilter(it)
+        }
+        DevicesListView(requireLocation, result, deviceView) {
+            onEvent(DeviceSelected(it))
         }
     }
 }

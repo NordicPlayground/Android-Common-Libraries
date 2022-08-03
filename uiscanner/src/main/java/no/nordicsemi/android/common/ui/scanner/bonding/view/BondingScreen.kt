@@ -29,20 +29,28 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.bonding.view
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.ui.scanner.bonding.repository.BondingState
+import no.nordicsemi.android.common.ui.scanner.bonding.viewmodel.BondingViewModel
+import no.nordicsemi.android.common.ui.scanner.ui.exhaustive
 
-class MainActivity : AppCompatActivity() {
+@Composable
+fun BondingScreen(finishAction: () -> Unit) {
+    val viewModel = hiltViewModel<BondingViewModel>()
+    val state = viewModel.state.collectAsState().value
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
-        }
+    LaunchedEffect("start") {
+        viewModel.bondDevice()
     }
+
+    when (state) {
+        BondingState.BONDING -> BondingInProgressView()
+        BondingState.BONDED -> finishAction()
+        BondingState.NONE -> BondingErrorView()
+    }.exhaustive
 }

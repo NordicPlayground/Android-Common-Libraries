@@ -29,20 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.bonding.repository
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.bluetooth.BluetoothDevice
 
-class MainActivity : AppCompatActivity() {
+enum class BondingState {
+    NONE, BONDING, BONDED;
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
+    companion object {
+        fun create(value: Int): BondingState {
+            return when (value) {
+                BluetoothDevice.BOND_BONDED -> BONDED
+                BluetoothDevice.BOND_BONDING -> BONDING
+                BluetoothDevice.BOND_NONE -> NONE
+                else -> throw IllegalArgumentException("Cannot create BondingState for the value: $value")
+            }
         }
+    }
+}
+
+fun BluetoothDevice.getBondingState(): BondingState {
+    return when (bondState) {
+        BluetoothDevice.BOND_BONDED -> BondingState.BONDED
+        BluetoothDevice.BOND_BONDING -> BondingState.BONDING
+        else -> BondingState.NONE
     }
 }

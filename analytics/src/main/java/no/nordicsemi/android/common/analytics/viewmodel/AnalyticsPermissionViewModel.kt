@@ -29,20 +29,36 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.analytics.viewmodel
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import no.nordicsemi.android.common.analytics.NordicAnalytics
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+@HiltViewModel
+class AnalyticsPermissionViewModel @Inject constructor(
+    private val analytics: NordicAnalytics
+) : ViewModel() {
+    val permissionData = analytics.permissionData
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    fun onConfirmButtonClick() {
+        viewModelScope.launch {
+            analytics.setAnalyticsEnabled(true)
+        }
+    }
 
-        setContent {
-            NordicTheme { }
+    fun onDeclineButtonClick() {
+        viewModelScope.launch {
+            analytics.setAnalyticsEnabled(false)
+        }
+    }
+
+    fun onPermissionChanged() {
+        viewModelScope.launch {
+            analytics.switchAnalyticsEnabled()
         }
     }
 }

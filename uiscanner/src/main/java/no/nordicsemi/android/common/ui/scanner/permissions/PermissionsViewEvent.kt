@@ -29,20 +29,14 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.permissions
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 
-class MainActivity : AppCompatActivity() {
+internal sealed class PermissionsViewEvent
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+internal object RefreshNavigation : PermissionsViewEvent()
 
-        setContent {
-            NordicTheme { }
-        }
-    }
-}
+internal object NavigateUp : PermissionsViewEvent()
+
+internal data class DeviceSelected(val device: DiscoveredBluetoothDevice) : PermissionsViewEvent()

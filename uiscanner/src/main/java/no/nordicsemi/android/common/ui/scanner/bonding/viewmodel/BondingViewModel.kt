@@ -29,20 +29,43 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.bonding.viewmodel
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.bluetooth.BluetoothDevice
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import no.nordicsemi.android.common.ui.scanner.bonding.repository.BondingStateObserver
+import no.nordicsemi.android.common.ui.scanner.bonding.repository.BondingState
+import no.nordicsemi.android.common.ui.scanner.bonding.repository.getBondingState
 
-class MainActivity : AppCompatActivity() {
+class BondingViewModel(
+    private val device: BluetoothDevice,
+    private val bondingStateObserver: BondingStateObserver
+) : ViewModel() {
+    val state = MutableStateFlow(device.getBondingState())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    init {
+        bondingStateObserver.events.onEach { event ->
+            event.device?.let {
+                if (it == device) {
+                    state.tryEmit(event.bondState)
+                } else {
+                    state.tryEmit(BondingState.NONE)
+                }
+            } ?: state.tryEmit(event.bondState)
+        }.launchIn(viewModelScope)
+        bondingStateObserver.startObserving()
+    }
 
-        setContent {
-            NordicTheme { }
-        }
+    fun bondDevice() {
+        device.createBond()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        bondingStateObserver.stopObserving()
     }
 }

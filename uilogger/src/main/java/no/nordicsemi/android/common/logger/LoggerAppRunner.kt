@@ -29,20 +29,48 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.logger
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
+private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class LoggerAppRunner @Inject constructor(
+    @ApplicationContext
+    private val context: Context
+) {
 
-        setContent {
-            NordicTheme { }
+    fun runLogger() {
+        val packageManger = context.packageManager
+
+        val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
+        if (intent != null) {
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intent)
+        } else {
+            val launchIntent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
+            launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(launchIntent)
         }
+    }
+
+    fun runLogger(uri: Uri?) {
+        val packageManger = context.packageManager
+
+        val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
+
+        val targetUri = if (intent != null && uri != null) {
+            uri
+        } else {
+            Uri.parse(LOGGER_LINK)
+        }
+        val launchIntent = Intent(Intent.ACTION_VIEW, targetUri)
+        launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(launchIntent)
     }
 }

@@ -29,20 +29,35 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.navigation
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+@HiltViewModel
+class NavigationViewModel @Inject constructor(
+    private val navigationManager: NavigationManager,
+) : ViewModel() {
+    var navigationWrapper: NavigationWrapper? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    init {
+        navigationManager.navigationDestination.onEach { destination ->
+            navigationWrapper?.let {
+                it.consumeEvent(destination)
+                consumeLastEvent()
+            }
+        }.launchIn(viewModelScope)
+    }
 
-        setContent {
-            NordicTheme { }
-        }
+    fun navigateUp() {
+        navigationManager.navigateUp()
+    }
+
+    private fun consumeLastEvent() {
+        navigationManager.consumeLastEvent()
     }
 }

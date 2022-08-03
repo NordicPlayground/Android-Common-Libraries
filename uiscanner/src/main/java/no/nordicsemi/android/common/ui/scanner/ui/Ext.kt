@@ -29,20 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.ui
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.buildAnnotatedString
+import kotlinx.coroutines.flow.MutableStateFlow
+import no.nordicsemi.android.common.navigation.ParcelableArgument
+import no.nordicsemi.android.common.navigation.SuccessDestinationResult
+import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 
-class MainActivity : AppCompatActivity() {
+@Composable
+fun String.toAnnotatedString() = buildAnnotatedString {
+    append(this@toAnnotatedString)
+}
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
-        }
+fun <T> MutableStateFlow<T>.updateIfDifferent(newValue: T) {
+    if (value != newValue) {
+        value = newValue
     }
+}
+
+val <T> T.exhaustive: Any
+    get() = this as Any
+
+fun SuccessDestinationResult.getDevice(): DiscoveredBluetoothDevice {
+    return (argument as ParcelableArgument).value as DiscoveredBluetoothDevice
 }

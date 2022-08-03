@@ -29,20 +29,53 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.analytics
 
+import android.content.Context
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.util.Log
+import androidx.annotation.Size
+import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
+import no.nordicsemi.android.common.analytics.repository.AnalyticsPermissionRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MainActivity : AppCompatActivity() {
+private const val LOG_TAG = "ANALYTICS"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+@Singleton
+class NordicAnalytics @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val repository: AnalyticsPermissionRepository
+) {
+    val permissionData = repository.permissionData
+    private val firebase by lazy { FirebaseAnalytics.getInstance(context) }
 
-        setContent {
-            NordicTheme { }
+    fun logEvent(@Size(min = 1L, max = 40L) name: String, params: Bundle?) {
+        runBlocking {
+            repository.permissionData.firstOrNull()
+                ?.takeIf { it.isPermissionGranted }
+                ?.runCatching {
+                    Log.d(LOG_TAG, "name: $name, params: $params")
+                    firebase.logEvent(name, params)
+                }
         }
+    }
+
+    suspend fun switchAnalyticsEnabled() {
+        repository.permissionData.firstOrNull()?.let {
+            setAnalyticsEnabled(!it.isPermissionGranted)
+        }
+    }
+
+    suspend fun setAnalyticsEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
+            repository.onPermissionGranted()
+        } else {
+            repository.onPermissionDenied()
+        }
+        firebase.setAnalyticsCollectionEnabled(isEnabled)
     }
 }

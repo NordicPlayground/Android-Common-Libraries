@@ -8,11 +8,12 @@ apply from: rootProject.file("gradle/git-tag-version.gradle")
 group = GROUP
 
 android {
-    compileSdk 32
+    namespace 'no.nordicsemi.android.common.ui.scanner'
+    compileSdkVersion android_api_version
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdkVersion android_min_api_version
+        targetSdkVersion android_api_version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,7 +35,7 @@ android {
     hilt {
         enableExperimentalClasspathAggregation = true
     }
-    namespace 'no.nordicsemi.ui.scanner'
+    namespace 'no.nordicsemi.android.common.ui.scanner'
 }
 
 dependencies {
