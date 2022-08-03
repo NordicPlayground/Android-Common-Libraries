@@ -57,7 +57,7 @@ import no.nordicsemi.android.common.ui.scanner.view.ScannerScreen
 
 @Composable
 fun FindDeviceScreen(
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit = { DeviceItem(it) },
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerNavigationViewModel>()
 
