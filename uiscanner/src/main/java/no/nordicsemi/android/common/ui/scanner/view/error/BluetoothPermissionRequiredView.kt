@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.permissions
+package no.nordicsemi.android.common.ui.scanner.view.error
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -58,15 +58,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.ui.AppBar
+import no.nordicsemi.android.common.ui.scanner.view.event.Event
 
 @SuppressLint("InlinedApi")
 @Composable
 internal fun BluetoothPermissionRequiredView(
     isDeniedForever: Boolean,
-    onEvent: (PermissionsViewEvent) -> Unit,
+    onEvent: (Event) -> Unit,
 ) {
     Column {
-        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(NavigateUp) }
+        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(Event.NavigateUp) }
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -102,7 +103,7 @@ internal fun BluetoothPermissionRequiredView(
 
             val launcher = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions()
-            ) { onEvent(RefreshNavigation) }
+            ) { onEvent(Event.RefreshNavigation) }
 
             val context = LocalContext.current
             if (!isDeniedForever) {

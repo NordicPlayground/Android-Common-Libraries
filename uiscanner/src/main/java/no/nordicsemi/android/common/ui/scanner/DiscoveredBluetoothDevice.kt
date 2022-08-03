@@ -36,7 +36,6 @@ import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import no.nordicsemi.android.support.v18.scanner.ScanResult
-import no.nordicsemi.android.common.ui.scanner.bonding.repository.BondingState
 
 @Suppress("unused")
 @SuppressLint("MissingPermission")
@@ -77,13 +76,7 @@ data class DiscoveredBluetoothDevice(
         return device.address == scanResult.device.address
     }
 
-    fun getBondingState(): BondingState {
-        return when (device.bondState) {
-            BluetoothDevice.BOND_BONDED -> BondingState.BONDED
-            BluetoothDevice.BOND_BONDING -> BondingState.BONDING
-            else -> BondingState.NONE
-        }
-    }
+    fun getBondingState(): Int = device.bondState
 
     fun createBond() {
         device.createBond()

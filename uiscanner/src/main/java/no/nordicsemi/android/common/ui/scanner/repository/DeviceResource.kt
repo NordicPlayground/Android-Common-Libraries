@@ -31,17 +31,17 @@
 
 package no.nordicsemi.android.common.ui.scanner.repository
 
+import android.bluetooth.BluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.bonding.repository.BondingState
 
 internal data class ScanningState(
     val result: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
 ) {
     val all: List<DiscoveredBluetoothDevice> = (result as? SuccessResult)?.value ?: emptyList()
 
-    val bonded: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() == BondingState.BONDED }
+    val bonded: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() == BluetoothDevice.BOND_BONDED }
 
-    val discovered: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() != BondingState.BONDED }
+    val discovered: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() != BluetoothDevice.BOND_BONDED }
 
     fun size(): Int = bonded.size + discovered.size
 

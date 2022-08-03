@@ -39,10 +39,7 @@ import no.nordicsemi.android.common.navigation.*
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.ScannerDestinationId
 import no.nordicsemi.android.common.ui.scanner.Utils
-import no.nordicsemi.android.common.ui.scanner.permissions.DeviceSelected
-import no.nordicsemi.android.common.ui.scanner.permissions.NavigateUp
-import no.nordicsemi.android.common.ui.scanner.permissions.PermissionsViewEvent
-import no.nordicsemi.android.common.ui.scanner.permissions.RefreshNavigation
+import no.nordicsemi.android.common.ui.scanner.view.event.Event
 import no.nordicsemi.android.common.ui.scanner.ui.exhaustive
 import javax.inject.Inject
 
@@ -57,11 +54,11 @@ internal class ScannerNavigationViewModel @Inject constructor(
 
     private var device: DiscoveredBluetoothDevice? = null
 
-    fun onEvent(event: PermissionsViewEvent) {
+    fun onEvent(event: Event) {
         when (event) {
-            NavigateUp -> navigationManager.navigateUp(ScannerDestinationId, CancelDestinationResult(ScannerDestinationId))
-            RefreshNavigation -> refreshNavigation()
-            is DeviceSelected -> onDeviceSelected(event.device)
+            Event.NavigateUp -> navigationManager.navigateUp(ScannerDestinationId, CancelDestinationResult(ScannerDestinationId))
+            Event.RefreshNavigation -> refreshNavigation()
+            is Event.DeviceSelected -> onDeviceSelected(event.device)
         }.exhaustive
     }
 

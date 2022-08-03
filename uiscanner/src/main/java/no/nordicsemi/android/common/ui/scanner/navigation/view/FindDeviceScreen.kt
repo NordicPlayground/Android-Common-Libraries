@@ -51,9 +51,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.navigation.viewmodel.*
-import no.nordicsemi.android.common.ui.scanner.permissions.*
-import no.nordicsemi.android.common.ui.scanner.view.DeviceItem
+import no.nordicsemi.android.common.ui.scanner.view.error.*
 import no.nordicsemi.android.common.ui.scanner.view.ScannerScreen
+import no.nordicsemi.android.common.ui.scanner.view.event.Event
 
 @Composable
 fun FindDeviceScreen(
@@ -65,9 +65,9 @@ fun FindDeviceScreen(
 
     val context = LocalContext.current
     val activity = context as Activity
-    BackHandler { viewModel.onEvent(NavigateUp) }
+    BackHandler { viewModel.onEvent(Event.NavigateUp) }
 
-    val onEvent = { event: PermissionsViewEvent ->
+    val onEvent = { event: Event ->
         viewModel.onEvent(event)
     }
 
@@ -99,10 +99,10 @@ fun FindDeviceScreen(
     }
 
     ReceiverEffect(IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-        onEvent(RefreshNavigation)
+        onEvent(Event.RefreshNavigation)
     }
     ReceiverEffect(IntentFilter(MODE_CHANGED_ACTION)) {
-        onEvent(RefreshNavigation)
+        onEvent(Event.RefreshNavigation)
     }
 }
 

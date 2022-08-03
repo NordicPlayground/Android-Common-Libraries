@@ -39,16 +39,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.permissions.DeviceSelected
-import no.nordicsemi.android.common.ui.scanner.permissions.NavigateUp
-import no.nordicsemi.android.common.ui.scanner.permissions.PermissionsViewEvent
+import no.nordicsemi.android.common.ui.scanner.view.event.Event
 import no.nordicsemi.android.common.ui.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.ui.scanner.ui.AppBar
 
 @Composable
 internal fun ScannerScreen(
     uuid: ParcelUuid?,
-    onEvent: (PermissionsViewEvent) -> Unit,
+    onEvent: (Event) -> Unit,
     deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>().apply {
@@ -59,12 +57,12 @@ internal fun ScannerScreen(
     val config = viewModel.config.collectAsState().value
 
     Column {
-        AppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onEvent(NavigateUp) }
+        AppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onEvent(Event.NavigateUp) }
         FilterView(config) {
             viewModel.setFilter(it)
         }
         DevicesListView(requireLocation, result, deviceView) {
-            onEvent(DeviceSelected(it))
+            onEvent(Event.DeviceSelected(it))
         }
     }
 }

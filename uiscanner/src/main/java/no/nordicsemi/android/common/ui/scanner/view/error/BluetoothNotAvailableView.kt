@@ -29,35 +29,63 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.bonding.view
+package no.nordicsemi.android.common.ui.scanner.view.error
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.ui.scanner.ui.AppBar
+import no.nordicsemi.android.common.ui.scanner.view.event.Event
 
 @Composable
-internal fun BondingErrorView() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.bonding_error),
-            textAlign = TextAlign.Center
-        )
+internal fun BluetoothNotAvailableView(onEvent: (Event) -> Unit) {
+    Column {
+        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(Event.NavigateUp) }
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+                contentDescription = "",
+                modifier = Modifier.padding(16.dp)
+            )
+
+            Text(
+                text = stringResource(id = R.string.bluetooth_not_available_title),
+                color = MaterialTheme.colorScheme.secondary,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(id = R.string.bluetooth_not_available_info),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
 @Preview
 @Composable
-private fun BondingErrorViewPreview() {
-    BondingErrorView()
+private fun BluetoothNotAvailableView_Preview() {
+    BluetoothNotAvailableView { }
 }

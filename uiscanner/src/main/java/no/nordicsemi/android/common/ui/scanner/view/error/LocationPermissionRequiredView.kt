@@ -29,11 +29,15 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.permissions
+package no.nordicsemi.android.common.ui.scanner.view.error
 
-import android.bluetooth.BluetoothAdapter
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -47,49 +51,68 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import no.nordicsemi.android.common.theme.parseBold
 import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.ui.AppBar
+import no.nordicsemi.android.common.ui.scanner.view.event.Event
 
 @Composable
-internal fun BluetoothDisabledView(onEvent: (PermissionsViewEvent) -> Unit) {
+internal fun LocationPermissionRequiredView(
+    isDeniedForever: Boolean,
+    onEvent: (Event) -> Unit
+) {
     Column {
-        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(NavigateUp) }
+        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(Event.NavigateUp) }
 
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+                painter = painterResource(id = R.drawable.ic_location_off),
                 contentDescription = "",
                 modifier = Modifier.padding(16.dp)
             )
 
             Text(
-                text = stringResource(id = R.string.bluetooth_disabled_title),
+                text = stringResource(id = R.string.location_permission_title),
                 color = MaterialTheme.colorScheme.secondary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.bluetooth_disabled_info),
+                text = stringResource(id = R.string.location_permission_info).parseBold(),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                textAlign = TextAlign.Center
+                    .padding(16.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val context = LocalContext.current
-            Button(onClick = { enableBluetooth(context) }) {
-                Text(text = stringResource(id = R.string.action_enable))
+            val requiredPermissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { onEvent(Event.RefreshNavigation) }
+
+            if (!isDeniedForever) {
+                Button(onClick = { launcher.launch(requiredPermissions) }) {
+                    Text(text = stringResource(id = R.string.action_grant_permission))
+                }
+            } else {
+                val context = LocalContext.current
+                Button(onClick = { openPermissionSettings(context) }) {
+                    Text(text = stringResource(id = R.string.action_settings))
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -97,12 +120,19 @@ internal fun BluetoothDisabledView(onEvent: (PermissionsViewEvent) -> Unit) {
     }
 }
 
-private fun enableBluetooth(context: Context) {
-    context.startActivity(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+private fun openPermissionSettings(context: Context) {
+    ContextCompat.startActivity(
+        context,
+        Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", context.packageName, null)
+        ),
+        null
+    )
 }
 
 @Preview
 @Composable
-private fun BluetoothDisabledView_Preview() {
-    BluetoothDisabledView { }
+private fun LocationPermissionRequiredView_Preview() {
+    LocationPermissionRequiredView(true) { }
 }
