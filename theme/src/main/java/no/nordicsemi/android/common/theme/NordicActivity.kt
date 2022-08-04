@@ -29,20 +29,41 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.theme
 
+import android.os.Build
 import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
+import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
-class MainActivity : AppCompatActivity() {
+abstract class NordicActivity : ComponentActivity() {
+
+    companion object {
+        private var coldStart = true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
-        setContent {
-            NordicTheme { }
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.appBarColor)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val splashScreen = installSplashScreen()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (coldStart) {
+                    coldStart = false
+                    val then = System.currentTimeMillis()
+                    splashScreen.setKeepOnScreenCondition {
+                        val now = System.currentTimeMillis()
+                        now < then + 900
+                    }
+                }
+            }
         }
     }
 }

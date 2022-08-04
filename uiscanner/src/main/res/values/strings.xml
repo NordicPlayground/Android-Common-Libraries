@@ -35,7 +35,7 @@
     <string name="location">Location</string>
 
     <string name="filters">Filters</string>
-    <string name="filter_uuid">UUID</string>
+    <string name="filter_uuid">All</string>
     <string name="filter_nearby">Nearby</string>
     <string name="filter_name">Name</string>
 
@@ -49,12 +49,14 @@
 
     <string name="scan_failed">We were not able to download list of available devices. Please try again.</string>
     <string name="scanner_screen">Scanner</string>
+    <string name="scanner_error">Scanning failed</string>
 
     <string name="action_grant_permission">Grant permission</string>
     <string name="action_settings">Settings</string>
     <string name="action_enable">Enable</string>
     <string name="action_try_again">Try again</string>
     <string name="action_location_settings">Location settings</string>
+    <string name="action_go_up">Back</string>
 
     <string name="location_permission_title">LOCATION PERMISSION REQUIRED</string>
     <string name="location_permission_info">From Android 6.0 Marshmallow until Android 11 the application
@@ -69,15 +71,14 @@
     <string name="bluetooth_permission_info">The app needs to scan and connect to Bluetooth LE devices.</string>
 
     <string name="bluetooth_disabled_title">BLUETOOTH DISABLED</string>
-    <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off. Click the button below to enable it.</string>
+    <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off.\nClick the button below to enable it.</string>
 
     <string name="bluetooth_not_available_title">BLUETOOTH NOT AVAILABLE</string>
     <string name="bluetooth_not_available_info">Bluetooth is not available on your phone. We cannot provide you the feature.</string>
 
     <string name="no_device_guide_title">CAN\'T SEE YOUR DEVICE?</string>
-    <string name="no_device_guide_info">1. Make sure the DK is <b>turned on</b> and is connected to
-		a power source using a micro USB cable or a coin cell is plugged in.\n\n2. Make sure the
-		appropriate firmware and SoftDevice are flashed.</string>
+    <string name="no_device_guide_info">1. Make sure the device is <b>turned on</b> and is connected to
+		a power source.\n\n2. Make sure the appropriate firmware and SoftDevice are flashed.</string>
     <string name="no_device_guide_location_info">3. Location is turned off. Most Android phones
         require it in order to scan for Bluetooth LE devices. If you are sure your
         device is advertising and it doesn\'t show up here, click the button below to
@@ -95,11 +96,7 @@
     <string name="device_reason_link_loss">Device signal has been lost.</string>
     <string name="device_reason_missing_service">Device was disconnected, because required services are missing.</string>
 
-    <string name="device_connecting">Connecting...</string>
+    <string name="device_connecting">Connecting…</string>
     <string name="device_explanation">The mobile is trying to connect to peripheral device.</string>
-    <string name="device_please_wait">Please wait...</string>
-
-    <string name="disconnect">Disconnect</string>
-    <string name="go_up">Back</string>
-    <string name="version">ProvVer: %d</string>
+    <string name="device_please_wait">Please wait…</string>
 </resources>

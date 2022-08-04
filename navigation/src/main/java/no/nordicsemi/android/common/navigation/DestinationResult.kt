@@ -29,20 +29,17 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.navigation
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
-
-class MainActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
-        }
-    }
+sealed class DestinationResult {
+    abstract val destinationId: DestinationId
 }
+
+class CancelDestinationResult(
+    override val destinationId: DestinationId,
+) : DestinationResult()
+
+data class SuccessDestinationResult(
+    override val destinationId: DestinationId,
+    val argument: Argument,
+) : DestinationResult()

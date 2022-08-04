@@ -8,12 +8,12 @@ apply from: rootProject.file("gradle/git-tag-version.gradle")
 group = GROUP
 
 android {
-    namespace 'no.nordicsemi.android.navigation'
-    compileSdk 32
+    namespace 'no.nordicsemi.android.common.navigation'
+    compileSdk android_api_version
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdk android_min_api_version
+        targetSdk android_api_version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

@@ -29,20 +29,33 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.navigation
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.app.Activity
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
-class MainActivity : AppCompatActivity() {
+@Composable
+fun NavigationView(destinations: ComposeDestinations) {
+    val navController = rememberNavController()
+    val viewModel: NavigationViewModel = hiltViewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    val activity = LocalContext.current as Activity
+    viewModel.navigationWrapper = NavigationWrapper(activity, navController)
 
-        setContent {
-            NordicTheme { }
+    BackHandler { viewModel.navigateUp() }
+
+    NavHost(
+        navController = navController,
+        startDestination = destinations.values[0].id.name
+    ) {
+        destinations.values.forEach { destination ->
+            composable(destination.id.name) { destination.draw() }
         }
     }
 }

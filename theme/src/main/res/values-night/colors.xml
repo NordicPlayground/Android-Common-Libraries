@@ -37,7 +37,7 @@
     <color name="md_theme_onPrimaryContainer">#FFF</color>
     <color name="md_theme_secondary">#00A9CE</color>
     <color name="md_theme_onSecondary">#FFF</color>
-    <color name="md_theme_secondaryContainer">#333f48</color>
+    <color name="md_theme_secondaryContainer">#00A9CE</color>
     <color name="md_theme_onSecondaryContainer">#FFF</color>
     <color name="md_theme_tertiary">#670016</color>
     <color name="md_theme_onTertiary">#FFB2B6</color>

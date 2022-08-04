@@ -29,20 +29,34 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.navigation
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import android.app.Activity
+import androidx.navigation.NavHostController
+import java.lang.ref.WeakReference
 
-class MainActivity : AppCompatActivity() {
+internal data class NavigationWrapper(
+    val activity: WeakReference<Activity>,
+    val navController: NavHostController,
+) {
+    constructor(activity: Activity, navController: NavHostController) : this(WeakReference(activity), navController)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    fun consumeEvent(destination: ConsumableNavigationDestination) {
+        if (destination.isConsumed) {
+            return
+        }
+        when (val dest = destination.destination) {
+            BackDestination -> navigateBack()
+            is ForwardDestination -> navController.navigate(dest.id.name)
+            InitialDestination -> doNothing() // Needed because collectAsState() requires initial state.
+        }
+    }
 
-        setContent {
-            NordicTheme { }
+    private fun navigateBack() {
+        if (navController.backQueue.size > 2) {
+            navController.navigateUp()
+        } else {
+            activity.get()?.finish()
         }
     }
 }

@@ -29,20 +29,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.navigation.ComposeDestination
+import no.nordicsemi.android.common.navigation.ComposeDestinations
+import no.nordicsemi.android.common.navigation.DestinationId
+import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 
-class MainActivity : AppCompatActivity() {
+val ScannerDestinationId = DestinationId("uiscanner-destination")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            NordicTheme { }
+private val ScannerDestination = ComposeDestination(ScannerDestinationId) {
+    FindDeviceScreen {
+        DeviceListItem(it) {
+            // No extra parameters. The extra parameter can be used to display additional data
+            // on the right side of the item.
         }
     }
 }
+
+val ScannerDestinations = ComposeDestinations(listOf(ScannerDestination))

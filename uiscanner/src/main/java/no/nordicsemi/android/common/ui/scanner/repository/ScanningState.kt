@@ -29,20 +29,27 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.repository
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
-class MainActivity : AppCompatActivity() {
+internal sealed class ScanningState {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    object Loading : ScanningState()
 
-        setContent {
-            NordicTheme { }
-        }
+    data class Error(val errorCode: Int) : ScanningState()
+
+    data class DevicesDiscovered(val devices: List<DiscoveredBluetoothDevice>) : ScanningState() {
+        val bonded: List<DiscoveredBluetoothDevice> = devices.filter { it.isBonded }
+
+        val notBonded: List<DiscoveredBluetoothDevice> = devices.filter { !it.isBonded }
+
+        fun size(): Int = bonded.size + notBonded.size
+
+        fun isEmpty(): Boolean = devices.isEmpty()
+    }
+
+    fun isRunning(): Boolean {
+        return this is Loading || this is Error
     }
 }

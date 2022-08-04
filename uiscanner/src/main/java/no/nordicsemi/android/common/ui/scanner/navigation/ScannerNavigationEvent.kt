@@ -29,20 +29,16 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.test
+package no.nordicsemi.android.common.ui.scanner.navigation
 
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
-class MainActivity : AppCompatActivity() {
+internal sealed class ScannerNavigationEvent {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    internal object Refresh : ScannerNavigationEvent()
 
-        setContent {
-            NordicTheme { }
-        }
-    }
+    internal object NavigateUp : ScannerNavigationEvent()
+
+    internal data class DeviceSelected(val device: DiscoveredBluetoothDevice) : ScannerNavigationEvent()
+
 }

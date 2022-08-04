@@ -7,12 +7,12 @@ plugins {
 group = GROUP
 
 android {
-    namespace 'no.nordicsemi.android.theme'
-    compileSdk 32
+    namespace 'no.nordicsemi.android.common.theme'
+    compileSdk android_api_version
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdk android_min_api_version
+        targetSdk android_api_version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
