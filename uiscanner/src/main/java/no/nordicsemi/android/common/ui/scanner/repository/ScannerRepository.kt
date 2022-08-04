@@ -35,24 +35,22 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
+import no.nordicsemi.android.common.ui.scanner.LocalDataProvider
+import no.nordicsemi.android.common.ui.scanner.Utils
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.LocalDataProvider
-import no.nordicsemi.android.common.ui.scanner.Utils
 import javax.inject.Inject
 
 @ViewModelScoped
-internal class DevicesRepository @Inject constructor(
+internal class ScannerRepository @Inject constructor(
     private val utils: Utils,
     private val dataProvider: LocalDataProvider,
     private val devicesDataStore: DevicesDataStore
 ) {
-    fun getDevices(): Flow<ScanningState> =
-        callbackFlow<DeviceResource<List<DiscoveredBluetoothDevice>>> {
+    fun getScannerState(): Flow<ScanningState> =
+        callbackFlow {
             val scanCallback: ScanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult) {
                     // This callback will be called only if the scan report delay is not set or is set to 0.
@@ -64,7 +62,7 @@ internal class DevicesRepository @Inject constructor(
                     if (result.isConnectable) {
                         devicesDataStore.addNewDevice(result)
 
-                        trySend(DeviceResource.createSuccess(devicesDataStore.devices))
+                        trySend(ScanningState.DevicesDiscovered(devicesDataStore.devices))
                     }
                 }
 
@@ -80,16 +78,16 @@ internal class DevicesRepository @Inject constructor(
                         devicesDataStore.addNewDevice(it)
                     }
                     if (newResults.isNotEmpty()) {
-                        trySend(DeviceResource.createSuccess(devicesDataStore.devices))
+                        trySend(ScanningState.DevicesDiscovered(devicesDataStore.devices))
                     }
                 }
 
                 override fun onScanFailed(errorCode: Int) {
-                    trySend(DeviceResource.createError(errorCode))
+                    trySend(ScanningState.Error(errorCode))
                 }
             }
 
-            trySend(DeviceResource.createLoading())
+            trySend(ScanningState.Loading)
 
             val settings = ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -103,7 +101,7 @@ internal class DevicesRepository @Inject constructor(
             awaitClose {
                 scanner.stopScan(scanCallback)
             }
-        }.map { ScanningState(it) }
+        }
 
     fun clear() {
         devicesDataStore.clear()

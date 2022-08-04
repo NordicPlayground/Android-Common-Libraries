@@ -76,7 +76,7 @@ fun DeviceItem(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            device.displayName()?.let { name ->
+            device.displayName?.let { name ->
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium
@@ -86,7 +86,7 @@ fun DeviceItem(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.outline
             )
-            Text(text = device.displayAddress(), style = MaterialTheme.typography.bodyMedium)
+            Text(text = device.address, style = MaterialTheme.typography.bodyMedium)
         }
 
         extras(device)

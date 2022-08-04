@@ -44,45 +44,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.repository.ErrorResult
-import no.nordicsemi.android.common.ui.scanner.repository.LoadingResult
+import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.common.ui.scanner.repository.SuccessResult
 import no.nordicsemi.android.common.ui.scanner.ui.exhaustive
 
 @Composable
 internal fun DevicesListView(
     requireLocation: Boolean,
-    devices: ScanningState,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    state: ScanningState,
+    row: @Composable (DiscoveredBluetoothDevice) -> Unit,
     onClick: (DiscoveredBluetoothDevice) -> Unit,
 ) {
     LazyColumn(contentPadding = PaddingValues(horizontal = 8.dp)) {
         item { Spacer(modifier = Modifier.size(8.dp)) }
 
-        if (devices.isEmpty()) {
-            item { ScanEmptyView(requireLocation) }
-        } else {
-            when (devices.result) {
-                is LoadingResult -> item { ScanEmptyView(requireLocation) }
-                is SuccessResult -> items(devices, onClick, deviceView)
-                is ErrorResult -> item { ErrorSection() }
-            }.exhaustive
-        }
+        when (state) {
+            is ScanningState.Loading -> item { ScanEmptyView(requireLocation) }
+            is ScanningState.DevicesDiscovered -> {
+                if (state.isEmpty()) {
+                    item { ScanEmptyView(requireLocation) }
+                } else {
+                    items(state, onClick, row)
+                }
+            }
+            is ScanningState.Error -> item { ErrorSection() }
+        }.exhaustive
 
         item { Spacer(modifier = Modifier.size(16.dp)) }
     }
 }
 
 private fun LazyListScope.items(
-    devices: ScanningState,
+    devices: ScanningState.DevicesDiscovered,
     onClick: (DiscoveredBluetoothDevice) -> Unit,
     deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
 ) {
     val bondedDevices = devices.bonded
-    val discoveredDevices = devices.discovered
+    val discoveredDevices = devices.notBonded
 
     if (bondedDevices.isNotEmpty()) {
         item {
@@ -93,7 +92,7 @@ private fun LazyListScope.items(
             )
         }
         items(bondedDevices) { device ->
-            ClickableDeviceItem(device = device, onClick = onClick, deviceView = deviceView)
+            ClickableDeviceItem(device, onClick, deviceView)
         }
     }
 
@@ -107,7 +106,7 @@ private fun LazyListScope.items(
         }
 
         items(discoveredDevices) { device ->
-            ClickableDeviceItem(device = device, onClick = onClick, deviceView = deviceView)
+            ClickableDeviceItem(device, onClick, deviceView)
         }
     }
 }

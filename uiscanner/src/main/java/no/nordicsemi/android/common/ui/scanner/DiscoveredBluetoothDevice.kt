@@ -36,6 +36,7 @@ import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import no.nordicsemi.android.support.v18.scanner.ScanResult
+import java.lang.Integer.max
 
 @Suppress("unused")
 @SuppressLint("MissingPermission")
@@ -44,11 +45,13 @@ data class DiscoveredBluetoothDevice(
     val device: BluetoothDevice,
     val scanResult: ScanResult? = null,
     val name: String? = null,
+    val hadName: Boolean = name != null,
     val lastScanResult: ScanResult? = null,
     val rssi: Int = 0,
     val previousRssi: Int = 0,
-    val highestRssi: Int = 0
+    val highestRssi: Int = max(rssi, previousRssi),
 ) : Parcelable {
+
     fun hasRssiLevelChanged(): Boolean {
         val newLevel =
             if (rssi <= 10) 0 else if (rssi <= 28) 1 else if (rssi <= 45) 2 else if (rssi <= 65) 3 else 4
@@ -61,52 +64,42 @@ data class DiscoveredBluetoothDevice(
         return scanResult?.let { ProvisioningData.create(it) }
     }
 
-    fun update(scanResult: ScanResult): DiscoveredBluetoothDevice {
-        return copy(
-            device = scanResult.device,
-            lastScanResult = scanResult,
-            name = scanResult.scanRecord?.deviceName,
-            previousRssi = rssi,
-            rssi = scanResult.rssi,
-            highestRssi = if (highestRssi > rssi) highestRssi else rssi
-        )
-    }
+    fun update(scanResult: ScanResult): DiscoveredBluetoothDevice = copy(
+        device = scanResult.device,
+        lastScanResult = scanResult,
+        name = scanResult.scanRecord?.deviceName,
+        hadName = hadName || name != null,
+        previousRssi = rssi,
+        rssi = scanResult.rssi,
+        highestRssi = if (highestRssi > rssi) highestRssi else rssi
+    )
 
-    fun matches(scanResult: ScanResult): Boolean {
-        return device.address == scanResult.device.address
-    }
-
-    fun getBondingState(): Int = device.bondState
+    fun matches(scanResult: ScanResult) = device.address == scanResult.device.address
 
     fun createBond() {
         device.createBond()
     }
 
-    fun displayName(): String? {
-        return when {
+    val displayName: String?
+        get() = when {
             name?.isNotEmpty() == true -> name
             device.name?.isNotEmpty() == true -> device.name
             else -> null
         }
-    }
 
-    fun address(): String {
-        return device.address
-    }
+    val address: String
+        get() = device.address
 
-    fun displayAddress(): String {
-        return when {
-            else -> device.address
-        }
-    }
+    val displayNameOrAddress: String
+        get() = displayName ?: address
 
-    fun displayNameOrAddress(): String {
-        return displayName() ?: displayAddress()
-    }
+    val bondingState: Int
+        get() = device.bondState
 
-    override fun hashCode(): Int {
-        return device.hashCode()
-    }
+    val isBonded: Boolean
+        get() = bondingState == BluetoothDevice.BOND_BONDED
+
+    override fun hashCode() = device.hashCode()
 
     override fun equals(other: Any?): Boolean {
         if (other is DiscoveredBluetoothDevice) {
@@ -119,8 +112,7 @@ data class DiscoveredBluetoothDevice(
 fun ScanResult.toDiscoveredBluetoothDevice() = DiscoveredBluetoothDevice(
     device = device,
     scanResult = this,
-    name = if (scanRecord != null) scanRecord!!.deviceName else null,
+    name = scanRecord?.deviceName,
     previousRssi = rssi,
-    rssi = rssi,
-    highestRssi = rssi
+    rssi = rssi
 )

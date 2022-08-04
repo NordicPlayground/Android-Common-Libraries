@@ -40,12 +40,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.LocalDataProvider
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.common.ui.scanner.repository.DevicesRepository
+import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
-import no.nordicsemi.android.common.ui.scanner.repository.SuccessResult
 import javax.inject.Inject
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -53,7 +51,7 @@ private const val FILTER_RSSI = -50 // [dBm]
 @HiltViewModel
 internal class ScannerViewModel @Inject constructor(
     val dataProvider: LocalDataProvider,
-    private val devicesRepository: DevicesRepository,
+    private val scannerRepository: ScannerRepository,
 ) : ViewModel() {
     private var uuid: ParcelUuid? = null
 
@@ -65,30 +63,25 @@ internal class ScannerViewModel @Inject constructor(
         )
     )
 
-    val devices = config.combine(devicesRepository.getDevices()) { config, result ->
-        val devices = (result.result as? SuccessResult<List<DiscoveredBluetoothDevice>>)?.let {
-            SuccessResult(it.value.applyFilters(config))
-        } ?: result.result
-
-        result.copy(result = devices)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, ScanningState())
-
-    @SuppressLint("MissingPermission")
-    private fun List<DiscoveredBluetoothDevice>.applyFilters(config: DevicesScanFilter): List<DiscoveredBluetoothDevice> {
-        return this.filter {
-            if (uuid == null) {
-                true
-            } else {
-                config.filterUuidRequired == false
-                        || it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
-                        || it.device.uuids?.contains(uuid) == true
-            }
-        }.filter {
-            !config.filterNearbyOnly || it.rssi >= FILTER_RSSI
-        }.filter {
-            !config.filterWithNames || !it.displayName().isNullOrBlank()
+    val devices = config.combine(scannerRepository.getScannerState()) { config, result ->
+        when (result) {
+            is ScanningState.DevicesDiscovered -> result.applyFilters(config)
+            else -> result
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
+
+    private fun ScanningState.DevicesDiscovered.applyFilters(config: DevicesScanFilter) =
+        ScanningState.DevicesDiscovered(
+            devices.filter {
+                uuid == null ||
+                config.filterUuidRequired == false ||
+                it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
+            }.filter {
+                !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI
+            }.filter {
+                !config.filterWithNames || it.hadName
+            }
+        )
 
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
@@ -103,6 +96,6 @@ internal class ScannerViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        devicesRepository.clear()
+        scannerRepository.clear()
     }
 }

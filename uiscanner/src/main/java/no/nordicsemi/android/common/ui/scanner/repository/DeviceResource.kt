@@ -31,38 +31,25 @@
 
 package no.nordicsemi.android.common.ui.scanner.repository
 
-import android.bluetooth.BluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 
-internal data class ScanningState(
-    val result: DeviceResource<List<DiscoveredBluetoothDevice>> = LoadingResult()
-) {
-    val all: List<DiscoveredBluetoothDevice> = (result as? SuccessResult)?.value ?: emptyList()
+internal sealed class ScanningState {
 
-    val bonded: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() == BluetoothDevice.BOND_BONDED }
+    object Loading : ScanningState()
 
-    val discovered: List<DiscoveredBluetoothDevice> = all.filter { it.getBondingState() != BluetoothDevice.BOND_BONDED }
+    data class Error(val errorCode: Int) : ScanningState()
 
-    fun size(): Int = bonded.size + discovered.size
+    data class DevicesDiscovered(val devices: List<DiscoveredBluetoothDevice>) : ScanningState() {
+        val bonded: List<DiscoveredBluetoothDevice> = devices.filter { it.isBonded }
 
-    fun isEmpty(): Boolean = all.isEmpty()
+        val notBonded: List<DiscoveredBluetoothDevice> = devices.filter { !it.isBonded }
+
+        fun size(): Int = bonded.size + notBonded.size
+
+        fun isEmpty(): Boolean = devices.isEmpty()
+    }
 
     fun isRunning(): Boolean {
-        return result is LoadingResult || result is SuccessResult
+        return this is Loading || this is Error
     }
 }
-
-internal sealed class DeviceResource<T> {
-
-    companion object {
-        fun <T> createLoading() = LoadingResult<T>()
-        fun <T> createSuccess(value: T) = SuccessResult(value)
-        fun <T> createError(errorCode: Int) = ErrorResult<T>(errorCode)
-    }
-}
-
-internal class LoadingResult<T> : DeviceResource<T>()
-
-internal data class SuccessResult<T>(val value: T) : DeviceResource<T>()
-
-internal data class ErrorResult<T>(val errorCode: Int) : DeviceResource<T>()
