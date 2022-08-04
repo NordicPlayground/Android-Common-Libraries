@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'no.nordicsemi.android.common.test'
-    compileSdkVersion android_api_version
+    compileSdk android_api_version
 
     defaultConfig {
         applicationId "no.nordicsemi.android.common.test"
-        minSdkVersion android_min_api_version
-        targetSdkVersion android_api_version
+        minSdk android_min_api_version
+        targetSdk android_api_version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -29,11 +29,11 @@ protobuf {
 
 android {
     namespace 'no.nordicsemi.android.common.analytics'
-    compileSdkVersion android_api_version
+    compileSdk android_api_version
 
     defaultConfig {
-        minSdkVersion android_min_api_version
-        targetSdkVersion android_api_version
+        minSdk android_min_api_version
+        targetSdk android_api_version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
