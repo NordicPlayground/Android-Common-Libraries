@@ -44,7 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.analytics.R
-import no.nordicsemi.android.common.analytics.repository.AnalyticsPermissionData
+import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewModel
 import no.nordicsemi.android.common.theme.parseBold
 

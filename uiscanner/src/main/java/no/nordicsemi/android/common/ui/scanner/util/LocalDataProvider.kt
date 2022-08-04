@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner
+package no.nordicsemi.android.common.ui.scanner.util
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -54,9 +54,8 @@ private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_r
 @Suppress("unused")
 @SuppressLint("AnnotateVersionCheck")
 @Singleton
-class LocalDataProvider @Inject constructor(
-    @ApplicationContext
-    private val context: Context,
+internal class LocalDataProvider @Inject constructor(
+    @ApplicationContext private val context: Context,
 ) {
     val locationState = MutableStateFlow(isLocationRequiredAndEnabled())
 

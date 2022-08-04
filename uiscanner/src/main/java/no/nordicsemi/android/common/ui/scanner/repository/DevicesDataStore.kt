@@ -33,13 +33,13 @@ package no.nordicsemi.android.common.ui.scanner.repository
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import no.nordicsemi.android.support.v18.scanner.ScanResult
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.toDiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.model.toDiscoveredBluetoothDevice
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DevicesDataStore @Inject constructor() {
+internal class DevicesDataStore @Inject constructor() {
     val devices = mutableListOf<DiscoveredBluetoothDevice>()
     val data = MutableStateFlow(devices.toList())
 

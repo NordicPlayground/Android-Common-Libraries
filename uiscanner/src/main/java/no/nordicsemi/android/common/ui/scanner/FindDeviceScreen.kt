@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.navigation.view
+package no.nordicsemi.android.common.ui.scanner
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -49,11 +49,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.navigation.viewmodel.*
-import no.nordicsemi.android.common.ui.scanner.view.error.*
-import no.nordicsemi.android.common.ui.scanner.view.ScannerScreen
-import no.nordicsemi.android.common.ui.scanner.view.event.Event
+import no.nordicsemi.android.common.ui.scanner.main.ScannerScreen
+import no.nordicsemi.android.common.ui.scanner.main.error.BluetoothDisabledView
+import no.nordicsemi.android.common.ui.scanner.main.error.BluetoothNotAvailableView
+import no.nordicsemi.android.common.ui.scanner.main.error.BluetoothPermissionRequiredView
+import no.nordicsemi.android.common.ui.scanner.main.error.LocationPermissionRequiredView
+import no.nordicsemi.android.common.ui.scanner.navigation.BluetoothDisabledDestination
+import no.nordicsemi.android.common.ui.scanner.navigation.BluetoothNotAvailableDestination
+import no.nordicsemi.android.common.ui.scanner.navigation.BluetoothPermissionRequiredDestination
+import no.nordicsemi.android.common.ui.scanner.navigation.LocationPermissionRequiredDestination
+import no.nordicsemi.android.common.ui.scanner.navigation.PeripheralDeviceRequiredDestination
+import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
 
 @Composable
 fun FindDeviceScreen(
@@ -65,9 +73,9 @@ fun FindDeviceScreen(
 
     val context = LocalContext.current
     val activity = context as Activity
-    BackHandler { viewModel.onEvent(Event.NavigateUp) }
+    BackHandler { viewModel.onEvent(ScannerNavigationEvent.NavigateUp) }
 
-    val onEvent = { event: Event ->
+    val onEvent = { event: ScannerNavigationEvent ->
         viewModel.onEvent(event)
     }
 
@@ -99,10 +107,10 @@ fun FindDeviceScreen(
     }
 
     ReceiverEffect(IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-        onEvent(Event.RefreshNavigation)
+        onEvent(ScannerNavigationEvent.Refresh)
     }
     ReceiverEffect(IntentFilter(MODE_CHANGED_ACTION)) {
-        onEvent(Event.RefreshNavigation)
+        onEvent(ScannerNavigationEvent.Refresh)
     }
 }
 

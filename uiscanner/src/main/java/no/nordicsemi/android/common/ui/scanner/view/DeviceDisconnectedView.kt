@@ -29,17 +29,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.ui
+package no.nordicsemi.android.common.ui.scanner.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HourglassTop
+import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -54,15 +50,21 @@ import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.ScreenSection
 import no.nordicsemi.android.common.ui.scanner.R
 
+enum class Reason {
+    USER, UNKNOWN, LINK_LOSS, MISSING_SERVICE
+}
+
 @Composable
-fun DeviceConnectingView(navigateUp: () -> Unit) {
+fun DeviceDisconnectedView(reason: Reason, navigateUp: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenSection {
             Icon(
-                imageVector = Icons.Default.HourglassTop,
+                imageVector = Icons.Default.HighlightOff,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier
@@ -76,37 +78,36 @@ fun DeviceConnectingView(navigateUp: () -> Unit) {
             Spacer(modifier = Modifier.size(16.dp))
 
             Text(
-                text = stringResource(id = R.string.device_connecting),
+                text = stringResource(id = R.string.device_disconnected),
                 style = MaterialTheme.typography.titleMedium
             )
 
             Spacer(modifier = Modifier.size(16.dp))
 
+            val text = when (reason) {
+                Reason.USER -> stringResource(id = R.string.device_reason_user)
+                Reason.LINK_LOSS -> stringResource(id = R.string.device_reason_link_loss)
+                Reason.MISSING_SERVICE -> stringResource(id = R.string.device_reason_missing_service)
+                Reason.UNKNOWN -> stringResource(id = R.string.device_reason_unknown)
+            }
+
             Text(
-                text = stringResource(id = R.string.device_explanation),
+                text = text,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.device_please_wait),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
             )
         }
 
         Spacer(modifier = Modifier.size(16.dp))
 
         Button(onClick = { navigateUp() }) {
-            Text(text = stringResource(id = R.string.disconnect))
+            Text(text = stringResource(id = R.string.action_go_up))
         }
     }
 }
 
 @Preview
 @Composable
-fun DeviceConnectingView_Preview() {
+fun DeviceDisconnectedView_Preview() {
     DeviceConnectingView { }
 }

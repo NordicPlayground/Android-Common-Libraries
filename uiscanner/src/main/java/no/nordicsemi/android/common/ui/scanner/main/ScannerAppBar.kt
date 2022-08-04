@@ -29,63 +29,55 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.view.error
+package no.nordicsemi.android.common.ui.scanner.main
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.ui.AppBar
-import no.nordicsemi.android.common.ui.scanner.view.event.Event
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun BluetoothNotAvailableView(onEvent: (Event) -> Unit) {
-    Column {
-        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(Event.NavigateUp) }
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-                contentDescription = "",
-                modifier = Modifier.padding(16.dp)
-            )
-
-            Text(
-                text = stringResource(id = R.string.bluetooth_not_available_title),
-                color = MaterialTheme.colorScheme.secondary,
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.bluetooth_not_available_info),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
+internal fun ScannerAppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick: () -> Unit) {
+    SmallTopAppBar(
+        title = { Text(text) },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+            containerColor = colorResource(id = R.color.appBarColor),
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+        ),
+        navigationIcon = {
+            IconButton(onClick = { onNavigationButtonClick() }) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = stringResource(id = R.string.navigation_item_accessibility),
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        },
+        actions = {
+            if (showProgress) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(horizontal = 16.dp).size(30.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
+    )
 }
 
 @Preview
 @Composable
-private fun BluetoothNotAvailableView_Preview() {
-    BluetoothNotAvailableView { }
+private fun ScannerAppBarPreview() {
+    ScannerAppBar(text = "Test") { }
 }

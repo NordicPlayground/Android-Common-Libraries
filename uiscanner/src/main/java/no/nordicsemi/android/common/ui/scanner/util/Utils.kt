@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner
+package no.nordicsemi.android.common.ui.scanner.util
 
 import android.Manifest
 import android.app.Activity
@@ -42,10 +42,9 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
-class Utils @Inject constructor(
-    @ApplicationContext
-    private val context: Context,
+@Suppress("MemberVisibilityCanBePrivate")
+internal class Utils @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val dataProvider: LocalDataProvider,
 ) {
     val isBleEnabled: Boolean

@@ -35,7 +35,7 @@ import android.app.Activity
 import androidx.navigation.NavHostController
 import java.lang.ref.WeakReference
 
-data class NavigationWrapper(
+internal data class NavigationWrapper(
     val activity: WeakReference<Activity>,
     val navController: NavHostController,
 ) {

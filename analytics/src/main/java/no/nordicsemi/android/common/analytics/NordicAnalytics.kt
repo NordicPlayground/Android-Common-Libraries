@@ -46,9 +46,9 @@ import javax.inject.Singleton
 private const val LOG_TAG = "ANALYTICS"
 
 @Singleton
-class NordicAnalytics @Inject constructor(
+class NordicAnalytics @Inject internal constructor(
     @ApplicationContext private val context: Context,
-    private val repository: AnalyticsPermissionRepository
+    private val repository: AnalyticsPermissionRepository,
 ) {
     val permissionData = repository.permissionData
     private val firebase by lazy { FirebaseAnalytics.getInstance(context) }

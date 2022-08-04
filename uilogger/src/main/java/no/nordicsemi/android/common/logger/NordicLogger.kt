@@ -42,17 +42,12 @@ import no.nordicsemi.android.log.Logger
 import no.nordicsemi.android.log.annotation.LogLevel
 
 class NordicLogger @AssistedInject constructor(
-    @ApplicationContext
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val appRunner: LoggerAppRunner,
-    @Assisted("appName")
-    private val appName: String,
-    @Assisted("profile")
-    private val profile: String?,
-    @Assisted("key")
-    private val key: String,
+    @Assisted("appName") private val appName: String,
+    @Assisted("profile") private val profile: String?,
+    @Assisted("key") private val key: String,
 ) {
-
     private var logSession: LogSession? = null
 
     fun log(@LogLevel level: Int, message: String) {

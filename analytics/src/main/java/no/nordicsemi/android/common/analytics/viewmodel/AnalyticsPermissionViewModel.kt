@@ -39,7 +39,7 @@ import no.nordicsemi.android.common.analytics.NordicAnalytics
 import javax.inject.Inject
 
 @HiltViewModel
-class AnalyticsPermissionViewModel @Inject constructor(
+internal class AnalyticsPermissionViewModel @Inject constructor(
     private val analytics: NordicAnalytics
 ) : ViewModel() {
     val permissionData = analytics.permissionData

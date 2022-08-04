@@ -45,11 +45,10 @@ import javax.inject.Singleton
 
 @Singleton
 class NavigationManager @Inject constructor(
-    @ApplicationContext
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) {
     private val _navigationDestination = MutableStateFlow(ConsumableNavigationDestination(InitialDestination))
-    val navigationDestination = _navigationDestination.asStateFlow()
+    internal val navigationDestination = _navigationDestination.asStateFlow()
 
     private val arguments = mutableMapOf<DestinationId, DestinationArgument>()
     private val results = mutableMapOf<DestinationId, DestinationResult>()

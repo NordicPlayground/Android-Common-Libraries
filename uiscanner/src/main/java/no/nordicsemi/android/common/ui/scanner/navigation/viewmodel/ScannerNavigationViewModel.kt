@@ -36,11 +36,10 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import no.nordicsemi.android.common.navigation.*
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.ScannerDestinationId
-import no.nordicsemi.android.common.ui.scanner.Utils
-import no.nordicsemi.android.common.ui.scanner.view.event.Event
-import no.nordicsemi.android.common.ui.scanner.ui.exhaustive
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.navigation.*
+import no.nordicsemi.android.common.ui.scanner.util.Utils
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,12 +53,15 @@ internal class ScannerNavigationViewModel @Inject constructor(
 
     private var device: DiscoveredBluetoothDevice? = null
 
-    fun onEvent(event: Event) {
+    fun onEvent(event: ScannerNavigationEvent) {
         when (event) {
-            Event.NavigateUp -> navigationManager.navigateUp(ScannerDestinationId, CancelDestinationResult(ScannerDestinationId))
-            Event.RefreshNavigation -> refreshNavigation()
-            is Event.DeviceSelected -> onDeviceSelected(event.device)
-        }.exhaustive
+            ScannerNavigationEvent.NavigateUp -> navigationManager.navigateUp(
+                ScannerDestinationId, CancelDestinationResult(
+                    ScannerDestinationId
+                ))
+            ScannerNavigationEvent.Refresh -> refreshNavigation()
+            is ScannerNavigationEvent.DeviceSelected -> onDeviceSelected(event.device)
+        }
     }
 
     private fun onDeviceSelected(device: DiscoveredBluetoothDevice) {
@@ -80,7 +82,7 @@ internal class ScannerNavigationViewModel @Inject constructor(
         }
     }
 
-    private fun getNextScreenDestination(): NavDestination? {
+    private fun getNextScreenDestination(): ScannerNavigationDestination? {
         return when {
             !utils.isBluetoothAvailable -> BluetoothNotAvailableDestination
             !utils.isLocationPermissionGranted -> LocationPermissionRequiredDestination

@@ -29,12 +29,14 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner
+package no.nordicsemi.android.common.ui.scanner.model
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import no.nordicsemi.android.common.navigation.ParcelableArgument
+import no.nordicsemi.android.common.navigation.SuccessDestinationResult
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.lang.Integer.max
 
@@ -58,10 +60,6 @@ data class DiscoveredBluetoothDevice(
         val oldLevel =
             if (previousRssi <= 10) 0 else if (previousRssi <= 28) 1 else if (previousRssi <= 45) 2 else if (previousRssi <= 65) 3 else 4
         return newLevel != oldLevel
-    }
-
-    fun provisioningData(): ProvisioningData? {
-        return scanResult?.let { ProvisioningData.create(it) }
     }
 
     fun update(scanResult: ScanResult): DiscoveredBluetoothDevice = copy(
@@ -116,3 +114,5 @@ fun ScanResult.toDiscoveredBluetoothDevice() = DiscoveredBluetoothDevice(
     previousRssi = rssi,
     rssi = rssi
 )
+
+fun SuccessDestinationResult.getDevice() = (argument as ParcelableArgument).value as DiscoveredBluetoothDevice

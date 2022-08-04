@@ -29,10 +29,9 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.view.error
+package no.nordicsemi.android.common.ui.scanner.main.error
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -52,22 +51,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import no.nordicsemi.android.common.theme.parseBold
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.ui.AppBar
-import no.nordicsemi.android.common.ui.scanner.view.event.Event
+import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
+import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
 
-@SuppressLint("InlinedApi")
 @Composable
-internal fun BluetoothPermissionRequiredView(
+internal fun LocationPermissionRequiredView(
     isDeniedForever: Boolean,
-    onEvent: (Event) -> Unit,
+    onEvent: (ScannerNavigationEvent) -> Unit
 ) {
     Column {
-        AppBar(stringResource(id = R.string.scanner_error)) { onEvent(Event.NavigateUp) }
+        ScannerAppBar(stringResource(id = R.string.scanner_error)) { onEvent(ScannerNavigationEvent.NavigateUp) }
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -75,42 +73,43 @@ internal fun BluetoothPermissionRequiredView(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+                painter = painterResource(id = R.drawable.ic_location_off),
                 contentDescription = "",
                 modifier = Modifier.padding(16.dp)
             )
 
             Text(
-                text = stringResource(id = R.string.bluetooth_permission_title),
+                text = stringResource(id = R.string.location_permission_title),
                 color = MaterialTheme.colorScheme.secondary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.bluetooth_permission_info),
+                text = stringResource(id = R.string.location_permission_info).parseBold(),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-                textAlign = TextAlign.Center
+                    .padding(16.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val requiredPermissions =
-                arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
+            val requiredPermissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
 
             val launcher = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions()
-            ) { onEvent(Event.RefreshNavigation) }
+            ) { onEvent(ScannerNavigationEvent.Refresh) }
 
-            val context = LocalContext.current
             if (!isDeniedForever) {
                 Button(onClick = { launcher.launch(requiredPermissions) }) {
                     Text(text = stringResource(id = R.string.action_grant_permission))
                 }
             } else {
+                val context = LocalContext.current
                 Button(onClick = { openPermissionSettings(context) }) {
                     Text(text = stringResource(id = R.string.action_settings))
                 }
@@ -134,6 +133,6 @@ private fun openPermissionSettings(context: Context) {
 
 @Preview
 @Composable
-private fun BluetoothPermissionRequiredView_Preview() {
-    BluetoothPermissionRequiredView(false) { }
+private fun LocationPermissionRequiredView_Preview() {
+    LocationPermissionRequiredView(true) { }
 }

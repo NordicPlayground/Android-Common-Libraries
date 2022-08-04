@@ -56,6 +56,7 @@
     <string name="action_enable">Enable</string>
     <string name="action_try_again">Try again</string>
     <string name="action_location_settings">Location settings</string>
+    <string name="action_go_up">Back</string>
 
     <string name="location_permission_title">LOCATION PERMISSION REQUIRED</string>
     <string name="location_permission_info">From Android 6.0 Marshmallow until Android 11 the application
@@ -98,8 +99,4 @@
     <string name="device_connecting">Connecting…</string>
     <string name="device_explanation">The mobile is trying to connect to peripheral device.</string>
     <string name="device_please_wait">Please wait…</string>
-
-    <string name="disconnect">Disconnect</string>
-    <string name="go_up">Back</string>
-    <string name="version">ProvVer: %d</string>
 </resources>

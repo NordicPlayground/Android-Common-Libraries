@@ -39,6 +39,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
+import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,7 +48,7 @@ private const val HAS_BEEN_GRANTED = "HAS_BEEN_GRANTED"
 private const val WAS_INFO_SHOWN = "WAS_INFO_SHOWN"
 
 @Singleton
-class AnalyticsPermissionRepository @Inject constructor(
+internal class AnalyticsPermissionRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = FILE)

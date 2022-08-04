@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.ui
+package no.nordicsemi.android.common.ui.scanner.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

@@ -44,7 +44,6 @@ class LoggerAppRunner @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) {
-
     fun runLogger() {
         val packageManger = context.packageManager
 

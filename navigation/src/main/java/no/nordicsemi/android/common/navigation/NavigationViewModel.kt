@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class NavigationViewModel @Inject constructor(
+internal class NavigationViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
 ) : ViewModel() {
     var navigationWrapper: NavigationWrapper? = null

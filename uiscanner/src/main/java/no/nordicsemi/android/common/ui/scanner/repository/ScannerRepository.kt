@@ -35,8 +35,8 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.ui.scanner.LocalDataProvider
-import no.nordicsemi.android.common.ui.scanner.Utils
+import no.nordicsemi.android.common.ui.scanner.util.LocalDataProvider
+import no.nordicsemi.android.common.ui.scanner.util.Utils
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanResult

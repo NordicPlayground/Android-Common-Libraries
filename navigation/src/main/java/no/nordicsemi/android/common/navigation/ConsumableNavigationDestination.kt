@@ -31,7 +31,7 @@
 
 package no.nordicsemi.android.common.navigation
 
-data class ConsumableNavigationDestination(
+internal data class ConsumableNavigationDestination(
     val destination: NavigationDestination,
     val isConsumed: Boolean = false
 )

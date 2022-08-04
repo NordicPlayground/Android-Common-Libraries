@@ -29,40 +29,16 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.view
+package no.nordicsemi.android.common.ui.scanner.navigation
 
-import android.os.ParcelUuid
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.view.event.Event
-import no.nordicsemi.android.common.ui.scanner.viewmodel.ScannerViewModel
-import no.nordicsemi.android.common.ui.scanner.ui.AppBar
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
-@Composable
-internal fun ScannerScreen(
-    uuid: ParcelUuid?,
-    onEvent: (Event) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
-) {
-    val viewModel = hiltViewModel<ScannerViewModel>().apply {
-        setFilterUuid(uuid)
-    }
-    val requireLocation = viewModel.dataProvider.locationState.collectAsState().value
-    val result = viewModel.devices.collectAsState().value
-    val config = viewModel.config.collectAsState().value
+internal sealed class ScannerNavigationEvent {
 
-    Column {
-        AppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onEvent(Event.NavigateUp) }
-        FilterView(config) {
-            viewModel.setFilter(it)
-        }
-        DevicesListView(requireLocation, result, deviceView) {
-            onEvent(Event.DeviceSelected(it))
-        }
-    }
+    internal object Refresh : ScannerNavigationEvent()
+
+    internal object NavigateUp : ScannerNavigationEvent()
+
+    internal data class DeviceSelected(val device: DiscoveredBluetoothDevice) : ScannerNavigationEvent()
+
 }

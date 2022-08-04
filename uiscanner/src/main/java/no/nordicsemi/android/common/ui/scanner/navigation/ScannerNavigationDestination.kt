@@ -29,12 +29,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.navigation.viewmodel
+package no.nordicsemi.android.common.ui.scanner.navigation
 
-internal sealed class NavDestination(val id: String)
+internal sealed class ScannerNavigationDestination(val id: String)
 
-internal object LocationPermissionRequiredDestination : NavDestination("location-permission-not-granted")
-internal object BluetoothPermissionRequiredDestination : NavDestination("bluetooth-permission-not-granted")
-internal object BluetoothNotAvailableDestination : NavDestination("bluetooth-not-available")
-internal object BluetoothDisabledDestination : NavDestination("bluetooth-not-enabled")
-internal object PeripheralDeviceRequiredDestination : NavDestination("device-not-selected")
+internal object LocationPermissionRequiredDestination : ScannerNavigationDestination("location-permission-not-granted")
+internal object BluetoothPermissionRequiredDestination : ScannerNavigationDestination("bluetooth-permission-not-granted")
+internal object BluetoothNotAvailableDestination : ScannerNavigationDestination("bluetooth-not-available")
+internal object BluetoothDisabledDestination : ScannerNavigationDestination("bluetooth-not-enabled")
+internal object PeripheralDeviceRequiredDestination : ScannerNavigationDestination("device-not-selected")

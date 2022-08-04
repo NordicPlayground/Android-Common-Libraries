@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner
+package no.nordicsemi.android.common.ui.scanner.di
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
@@ -43,12 +43,11 @@ import dagger.hilt.components.SingletonComponent
 @Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
-class ScannerHiltModule {
+internal class ScannerHiltModule {
 
     @Provides
     fun provideBluetoothAdapter(
-        @ApplicationContext
-        context: Context
+        @ApplicationContext context: Context
     ): BluetoothAdapter {
         val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         return manager.adapter

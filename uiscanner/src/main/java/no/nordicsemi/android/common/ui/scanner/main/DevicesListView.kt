@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.view
+package no.nordicsemi.android.common.ui.scanner.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -44,10 +44,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.ui.scanner.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.common.ui.scanner.ui.exhaustive
 
 @Composable
 internal fun DevicesListView(
@@ -69,7 +68,7 @@ internal fun DevicesListView(
                 }
             }
             is ScanningState.Error -> item { ErrorSection() }
-        }.exhaustive
+        }
 
         item { Spacer(modifier = Modifier.size(16.dp)) }
     }
@@ -132,34 +131,3 @@ private fun ErrorSection() {
         color = MaterialTheme.colorScheme.error
     )
 }
-
-/*
-@Composable
-private fun ProvisioningSection(data: ProvisioningData) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Text(
-            text = stringResource(id = R.string.version, data.version),
-            style = MaterialTheme.typography.labelMedium
-        )
-
-        Spacer(modifier = Modifier.size(8.dp))
-
-        if (data.isConnected) {
-            RssiIcon(rssi = data.rssi)
-        } else if (data.isProvisioned) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_wifi_error),
-                contentDescription = null,
-            )
-        } else {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_no_wifi),
-                contentDescription = null,
-            )
-        }
-    }
-}
-*/

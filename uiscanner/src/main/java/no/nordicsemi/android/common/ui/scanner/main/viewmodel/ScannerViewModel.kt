@@ -29,9 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.viewmodel
+package no.nordicsemi.android.common.ui.scanner.main.viewmodel
 
-import android.annotation.SuppressLint
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,10 +39,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import no.nordicsemi.android.common.ui.scanner.LocalDataProvider
-import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
+import no.nordicsemi.android.common.ui.scanner.util.LocalDataProvider
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
+import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
+import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import javax.inject.Inject
 
 private const val FILTER_RSSI = -50 // [dBm]

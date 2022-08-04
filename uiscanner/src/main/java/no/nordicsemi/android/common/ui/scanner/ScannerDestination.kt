@@ -34,14 +34,13 @@ package no.nordicsemi.android.common.ui.scanner
 import no.nordicsemi.android.common.navigation.ComposeDestination
 import no.nordicsemi.android.common.navigation.ComposeDestinations
 import no.nordicsemi.android.common.navigation.DestinationId
-import no.nordicsemi.android.common.ui.scanner.navigation.view.FindDeviceScreen
-import no.nordicsemi.android.common.ui.scanner.view.DeviceItem
+import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 
 val ScannerDestinationId = DestinationId("uiscanner-destination")
 
 private val ScannerDestination = ComposeDestination(ScannerDestinationId) {
     FindDeviceScreen {
-        DeviceItem(it) {
+        DeviceListItem(it) {
             // No extra parameters. The extra parameter can be used to display additional data
             // on the right side of the item.
         }
