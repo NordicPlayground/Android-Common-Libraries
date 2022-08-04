@@ -48,8 +48,8 @@
     <string name="discovered_devices">Discovered devices</string>
 
     <string name="scan_failed">We were not able to download list of available devices. Please try again.</string>
-    <string name="scanner_screen">Scanning for devices…</string>
-    <string name="scanner_error">Error</string>
+    <string name="scanner_screen">Scanner</string>
+    <string name="scanner_error">Scanning failed</string>
 
     <string name="action_grant_permission">Grant permission</string>
     <string name="action_settings">Settings</string>
