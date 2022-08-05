@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Black navigation bar. -->
+        <item name="android:navigationBarColor">@android:color/black</item>
+        <!-- Use white status bar text on any theme. -->
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- The default cutoff has to be set so that nothing is drawn in landscape mode
+             on the cutoff area.
+         -->
+        <item name="android:windowLayoutInDisplayCutoutMode">default</item>
+    </style>
+</resources>
