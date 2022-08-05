@@ -32,7 +32,6 @@
 package no.nordicsemi.android.common.logger
 
 import android.content.Context
-import android.util.Log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -51,20 +50,19 @@ class NordicLogger @AssistedInject constructor(
 
     fun log(@LogLevel level: Int, message: String) {
         val logSession = getLogger()
-        if (logSession != null) {
-            Logger.log(logSession, level, message)
-        }
-        val logPriority = if (level <= Log.ASSERT) level else Log.INFO
-        Log.println(logPriority, appName, message)
+        Logger.log(logSession, level, message)
     }
 
     fun openLogger() {
         appRunner.runLogger(logSession?.sessionUri)
     }
 
+    fun restartSession() {
+        logSession = null
+    }
+
     private fun getLogger(): LogSession? {
         logSession = logSession ?: Logger.newSession(context, profile, key, appName)
-        logSession?.sessionsUri
         return logSession
     }
 }
