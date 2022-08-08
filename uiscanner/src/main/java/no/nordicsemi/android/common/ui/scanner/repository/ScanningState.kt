@@ -50,6 +50,6 @@ internal sealed class ScanningState {
     }
 
     fun isRunning(): Boolean {
-        return this is Loading || this is Error
+        return this is Loading || this is DevicesDiscovered
     }
 }
