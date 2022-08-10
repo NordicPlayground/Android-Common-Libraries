@@ -29,9 +29,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.main.error
+package no.nordicsemi.android.common.permission.view
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -54,69 +55,66 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.R
 import no.nordicsemi.android.common.theme.parseBold
-import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
-import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
 
 @Composable
-internal fun LocationPermissionRequiredView(
-    isDeniedForever: Boolean,
-    onEvent: (ScannerNavigationEvent) -> Unit
+fun LocationPermissionRequiredView(
+    onPermissionChanged: () -> Unit
 ) {
-    Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_error)) { onEvent(ScannerNavigationEvent.NavigateUp) }
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_location_off),
+            contentDescription = "",
+            modifier = Modifier.padding(16.dp)
+        )
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_location_off),
-                contentDescription = "",
-                modifier = Modifier.padding(16.dp)
-            )
+        Text(
+            text = stringResource(id = R.string.location_permission_title),
+            color = MaterialTheme.colorScheme.secondary
+        )
 
-            Text(
-                text = stringResource(id = R.string.location_permission_title),
-                color = MaterialTheme.colorScheme.secondary
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(id = R.string.location_permission_info).parseBold(),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
 
-            Text(
-                text = stringResource(id = R.string.location_permission_info).parseBold(),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        val requiredPermissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
 
-            val requiredPermissions = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { onPermissionChanged() }
 
-            val launcher = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { onEvent(ScannerNavigationEvent.Refresh) }
-
-            if (!isDeniedForever) {
-                Button(onClick = { launcher.launch(requiredPermissions) }) {
-                    Text(text = stringResource(id = R.string.action_grant_permission))
-                }
-            } else {
-                val context = LocalContext.current
-                Button(onClick = { openPermissionSettings(context) }) {
-                    Text(text = stringResource(id = R.string.action_settings))
-                }
+        if (!viewModel.isLocationPermissionDeniedForever(LocalContext.current as Activity)) {
+            Button(onClick = { launcher.launch(requiredPermissions) }) {
+                Text(text = stringResource(id = R.string.action_grant_permission))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
+        } else {
+            val context = LocalContext.current
+            Button(onClick = { openPermissionSettings(context) }) {
+                Text(text = stringResource(id = R.string.action_settings))
+            }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -134,5 +132,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun LocationPermissionRequiredView_Preview() {
-    LocationPermissionRequiredView(true) { }
+    LocationPermissionRequiredView { }
 }

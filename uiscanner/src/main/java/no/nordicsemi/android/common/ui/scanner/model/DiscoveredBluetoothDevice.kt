@@ -31,17 +31,13 @@
 
 package no.nordicsemi.android.common.ui.scanner.model
 
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import no.nordicsemi.android.common.navigation.ParcelableArgument
-import no.nordicsemi.android.common.navigation.SuccessDestinationResult
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.lang.Integer.max
 
 @Suppress("unused")
-@SuppressLint("MissingPermission")
 @Parcelize
 data class DiscoveredBluetoothDevice(
     val device: BluetoothDevice,
@@ -114,5 +110,3 @@ fun ScanResult.toDiscoveredBluetoothDevice() = DiscoveredBluetoothDevice(
     previousRssi = rssi,
     rssi = rssi
 )
-
-fun SuccessDestinationResult.getDevice() = (argument as ParcelableArgument).value as DiscoveredBluetoothDevice

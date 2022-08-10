@@ -29,40 +29,32 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.main
+package no.nordicsemi.android.common.permission
 
-import android.os.ParcelUuid
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
-import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
+import no.nordicsemi.android.common.permission.manager.BluetoothPermissionResult
+import no.nordicsemi.android.common.permission.manager.InternetPermissionResult
+import no.nordicsemi.android.common.permission.manager.PermissionUtils
+import javax.inject.Inject
 
-@Composable
-internal fun ScannerScreen(
-    uuid: ParcelUuid?,
-    onEvent: (ScannerNavigationEvent) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+class PermissionManager @Inject internal constructor(
+    private val utils: PermissionUtils
 ) {
-    val viewModel = hiltViewModel<ScannerViewModel>().apply {
-        setFilterUuid(uuid)
-    }
-    val requireLocation = viewModel.dataProvider.locationState.collectAsState().value
-    val result = viewModel.devices.collectAsState().value
-    val config = viewModel.config.collectAsState().value
 
-    Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onEvent(
-            ScannerNavigationEvent.NavigateUp) }
-        FilterView(config) {
-            viewModel.setFilter(it)
+    fun checkBluetooth(): BluetoothPermissionResult {
+        return when {
+            !utils.isBluetoothAvailable -> BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE
+            !utils.isLocationPermissionGranted -> BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED
+            !utils.areNecessaryBluetoothPermissionsGranted -> BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED
+            !utils.isBleEnabled -> BluetoothPermissionResult.BLUETOOTH_DISABLED
+            else -> BluetoothPermissionResult.ALL_GOOD
         }
-        DevicesListView(requireLocation, result, deviceView) {
-            onEvent(ScannerNavigationEvent.DeviceSelected(it))
+    }
+
+    fun checkInternet(): InternetPermissionResult {
+        return if (utils.isInternetEnabled) {
+            InternetPermissionResult.INTERNET_DISABLED
+        } else {
+            InternetPermissionResult.ALL_GOOD
         }
     }
 }

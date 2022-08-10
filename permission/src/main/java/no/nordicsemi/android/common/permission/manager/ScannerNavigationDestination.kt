@@ -29,12 +29,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.navigation
+package no.nordicsemi.android.common.permission.manager
 
-internal sealed class ScannerNavigationDestination(val id: String)
+sealed interface PermissionResult
 
-internal object LocationPermissionRequiredDestination : ScannerNavigationDestination("location-permission-not-granted")
-internal object BluetoothPermissionRequiredDestination : ScannerNavigationDestination("bluetooth-permission-not-granted")
-internal object BluetoothNotAvailableDestination : ScannerNavigationDestination("bluetooth-not-available")
-internal object BluetoothDisabledDestination : ScannerNavigationDestination("bluetooth-not-enabled")
-internal object PeripheralDeviceRequiredDestination : ScannerNavigationDestination("device-not-selected")
+enum class BluetoothPermissionResult : PermissionResult {
+    LOCATION_PERMISSION_REQUIRED,
+    BLUETOOTH_PERMISSION_REQUIRED,
+    BLUETOOTH_NOT_AVAILABLE,
+    BLUETOOTH_DISABLED,
+    ALL_GOOD
+}
+
+enum class InternetPermissionResult : PermissionResult {
+    INTERNET_DISABLED,
+    ALL_GOOD
+}

@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.util
+package no.nordicsemi.android.common.permission.manager
 
 import android.Manifest
 import android.app.Activity
@@ -37,16 +37,34 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate")
-internal class Utils @Inject constructor(
+internal class PermissionUtils @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataProvider: LocalDataProvider,
 ) {
+    val isInternetEnabled: Boolean
+        get() {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val nw      = connectivityManager.activeNetwork ?: return false
+            val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+            return when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                //for other device how are able to connect with Ethernet
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ||
+                //for check internet over Bluetooth
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+                else -> false
+            }
+        }
+
     val isBleEnabled: Boolean
         get() {
             val adapter = BluetoothAdapter.getDefaultAdapter()

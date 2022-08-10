@@ -29,10 +29,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.main.error
+package no.nordicsemi.android.common.permission.view
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -56,68 +57,65 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
-import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.R
 
 @SuppressLint("InlinedApi")
 @Composable
-internal fun BluetoothPermissionRequiredView(
-    isDeniedForever: Boolean,
-    onEvent: (ScannerNavigationEvent) -> Unit,
+fun BluetoothPermissionRequiredView(
+    onPermissionChanged: () -> Unit
 ) {
-    Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_error)) { onEvent(ScannerNavigationEvent.NavigateUp) }
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+            contentDescription = "",
+            modifier = Modifier.padding(16.dp)
+        )
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-                contentDescription = "",
-                modifier = Modifier.padding(16.dp)
-            )
+        Text(
+            text = stringResource(id = R.string.bluetooth_permission_title),
+            color = MaterialTheme.colorScheme.secondary
+        )
 
-            Text(
-                text = stringResource(id = R.string.bluetooth_permission_title),
-                color = MaterialTheme.colorScheme.secondary
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(id = R.string.bluetooth_permission_info),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textAlign = TextAlign.Center
+        )
 
-            Text(
-                text = stringResource(id = R.string.bluetooth_permission_info),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                textAlign = TextAlign.Center
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        val requiredPermissions =
+            arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
 
-            val requiredPermissions =
-                arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { onPermissionChanged() }
 
-            val launcher = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { onEvent(ScannerNavigationEvent.Refresh) }
-
-            val context = LocalContext.current
-            if (!isDeniedForever) {
-                Button(onClick = { launcher.launch(requiredPermissions) }) {
-                    Text(text = stringResource(id = R.string.action_grant_permission))
-                }
-            } else {
-                Button(onClick = { openPermissionSettings(context) }) {
-                    Text(text = stringResource(id = R.string.action_settings))
-                }
+        val context = LocalContext.current
+        if (!viewModel.isBluetoothScanPermissionDeniedForever(LocalContext.current as Activity)) {
+            Button(onClick = { launcher.launch(requiredPermissions) }) {
+                Text(text = stringResource(id = R.string.action_grant_permission))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
+        } else {
+            Button(onClick = { openPermissionSettings(context) }) {
+                Text(text = stringResource(id = R.string.action_settings))
+            }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -135,5 +133,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun BluetoothPermissionRequiredView_Preview() {
-    BluetoothPermissionRequiredView(false) { }
+    BluetoothPermissionRequiredView { }
 }

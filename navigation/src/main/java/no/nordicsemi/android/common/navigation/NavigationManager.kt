@@ -35,11 +35,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -50,18 +47,8 @@ class NavigationManager @Inject constructor(
     private val _navigationDestination = MutableStateFlow(ConsumableNavigationDestination(InitialDestination))
     internal val navigationDestination = _navigationDestination.asStateFlow()
 
-    private val arguments = mutableMapOf<DestinationId, DestinationArgument>()
-    private val results = mutableMapOf<DestinationId, DestinationResult>()
-
-    val recentArgument = MutableSharedFlow<DestinationArgument>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-
-    val recentResult = MutableSharedFlow<DestinationResult>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val arguments = mutableMapOf<DestinationId, NavigationArgument>()
+    private val results = mutableMapOf<DestinationId, NavigationResult>()
 
     fun consumeLastEvent() {
         _navigationDestination.value = _navigationDestination.value.copy(isConsumed = true)
@@ -71,18 +58,13 @@ class NavigationManager @Inject constructor(
         postDestination(BackDestination)
     }
 
-    fun navigateUp(destinationId: DestinationId, args: DestinationResult) {
-        results[destinationId] = args
-        recentResult.tryEmit(args)
+    fun navigateUp(result: NavigationResult) {
+        results[result.destinationId] = result
         postDestination(BackDestination)
     }
 
-    fun navigateTo(destination: DestinationId, args: Argument? = null) {
-        args?.let {
-            val destinationArgument = DestinationArgument(destination, args)
-            arguments[destination] = destinationArgument
-            recentArgument.tryEmit(destinationArgument)
-        }
+    fun navigateTo(destination: DestinationId, args: NavigationArgument? = null) {
+        args?.let { arguments[destination] = args }
         postDestination(ForwardDestination(destination))
     }
 
@@ -90,7 +72,9 @@ class NavigationManager @Inject constructor(
         _navigationDestination.value = ConsumableNavigationDestination(destination)
     }
 
-    fun getImmediateArgument(destinationId: DestinationId) = arguments[destinationId]?.argument
+    fun getArgument(destinationId: DestinationId) = arguments[destinationId]
+
+    fun getResult(destinationId: DestinationId) = results[destinationId]
 
     fun openLink(link: String) {
         try {

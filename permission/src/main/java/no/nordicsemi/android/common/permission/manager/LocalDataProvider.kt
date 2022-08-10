@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.util
+package no.nordicsemi.android.common.permission.manager
 
 import android.annotation.SuppressLint
 import android.content.Context

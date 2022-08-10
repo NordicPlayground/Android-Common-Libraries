@@ -45,7 +45,7 @@ class ComposeDestinations(val values: List<ComposeDestination>) {
 
 data class ComposeDestination(
     val id: DestinationId,
-    val draw: @Composable () -> Unit
+    val draw: @Composable (NavigationManager) -> Unit
 ) {
-    constructor(id: String, draw: @Composable () -> Unit) : this(DestinationId(id), draw)
+    constructor(id: String, draw: @Composable (NavigationManager) -> Unit) : this(DestinationId(id), draw)
 }
