@@ -51,9 +51,7 @@ class NordicLogger @AssistedInject constructor(
 
     fun log(@LogLevel level: Int, message: String) {
         val logSession = getLogger()
-        if (logSession != null) {
-            Logger.log(logSession, level, message)
-        }
+        Logger.log(logSession, level, message)
         val logPriority = if (level <= Log.ASSERT) level else Log.INFO
         Log.println(logPriority, appName, message)
     }
