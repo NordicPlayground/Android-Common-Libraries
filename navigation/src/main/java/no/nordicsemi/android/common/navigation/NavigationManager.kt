@@ -35,6 +35,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -50,6 +52,16 @@ class NavigationManager @Inject constructor(
     private val arguments = mutableMapOf<DestinationId, NavigationArgument>()
     private val results = mutableMapOf<DestinationId, NavigationResult>()
 
+    val recentArgument = MutableSharedFlow<NavigationArgument>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    val recentResult = MutableSharedFlow<NavigationResult>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
     fun consumeLastEvent() {
         _navigationDestination.value = _navigationDestination.value.copy(isConsumed = true)
     }
@@ -60,11 +72,15 @@ class NavigationManager @Inject constructor(
 
     fun navigateUp(result: NavigationResult) {
         results[result.destinationId] = result
+        recentResult.tryEmit(result)
         postDestination(BackDestination)
     }
 
     fun navigateTo(destination: DestinationId, args: NavigationArgument? = null) {
-        args?.let { arguments[destination] = args }
+        args?.let {
+            arguments[destination] = args
+            recentArgument.tryEmit(args)
+        }
         postDestination(ForwardDestination(destination))
     }
 
