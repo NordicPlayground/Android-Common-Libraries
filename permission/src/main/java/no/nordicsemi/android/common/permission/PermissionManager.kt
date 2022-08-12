@@ -4,8 +4,11 @@ import android.app.Activity
 import kotlinx.coroutines.flow.StateFlow
 import no.nordicsemi.android.common.permission.manager.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.manager.InternetPermissionResult
+import no.nordicsemi.android.common.permission.manager.PermissionResult
 
 interface PermissionManager {
+
+    val permissionResult: StateFlow<PermissionResult>
 
     val bluetoothPermission: StateFlow<BluetoothPermissionResult>
 
@@ -24,4 +27,6 @@ interface PermissionManager {
     fun checkBluetooth()
 
     fun checkInternet()
+
+    fun refresh()
 }

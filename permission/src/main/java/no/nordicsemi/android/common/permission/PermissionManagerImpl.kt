@@ -32,10 +32,8 @@
 package no.nordicsemi.android.common.permission
 
 import android.app.Activity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import no.nordicsemi.android.common.permission.manager.BluetoothPermissionResult
-import no.nordicsemi.android.common.permission.manager.InternetPermissionResult
+import kotlinx.coroutines.flow.*
+import no.nordicsemi.android.common.permission.manager.*
 import no.nordicsemi.android.common.permission.manager.LocalDataProvider
 import no.nordicsemi.android.common.permission.manager.PermissionUtils
 import javax.inject.Inject
@@ -46,11 +44,15 @@ internal class PermissionManagerImpl @Inject internal constructor(
     private val utils: PermissionUtils,
     private val dataProvider: LocalDataProvider,
 ) : PermissionManager {
+
     private val _bluetoothPermission = MutableStateFlow(BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED)
     override val bluetoothPermission = _bluetoothPermission.asStateFlow()
 
     private val _internetPermission = MutableStateFlow(InternetPermissionResult.INTERNET_DISABLED)
     override val internetPermission = _internetPermission.asStateFlow()
+
+    private val _permissionResult: MutableStateFlow<PermissionResult> = MutableStateFlow(InternetPermissionResult.INTERNET_DISABLED)
+    override val permissionResult: StateFlow<PermissionResult> = _permissionResult.asStateFlow()
 
     init {
         checkBluetooth()
@@ -94,5 +96,10 @@ internal class PermissionManagerImpl @Inject internal constructor(
         } else {
             InternetPermissionResult.ALL_GOOD
         }
+    }
+
+    override fun refresh() {
+        checkBluetooth()
+        checkInternet()
     }
 }

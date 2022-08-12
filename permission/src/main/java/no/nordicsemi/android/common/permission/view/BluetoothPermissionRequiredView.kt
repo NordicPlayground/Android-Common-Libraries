@@ -59,6 +59,19 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.view.BackNavigationAppBar
+
+@Composable
+fun BluetoothPermissionRequiredScreen(
+    onNavigateBack: () -> Unit,
+    onPermissionChanged: () -> Unit
+) {
+    Column {
+        BackNavigationAppBar(stringResource(id = R.string.bluetooth_required_title), onNavigateBack)
+
+        BluetoothPermissionRequiredView(onPermissionChanged)
+    }
+}
 
 @SuppressLint("InlinedApi")
 @Composable

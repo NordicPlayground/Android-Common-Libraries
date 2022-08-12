@@ -46,6 +46,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.view.BackNavigationAppBar
+
+@Composable
+fun BluetoothNotAvailableScreen(
+    onNavigateBack: () -> Unit
+) {
+    Column {
+        BackNavigationAppBar(stringResource(id = R.string.bluetooth_required_title), onNavigateBack)
+
+        BluetoothNotAvailableView()
+    }
+}
 
 @Composable
 fun BluetoothNotAvailableView() {
