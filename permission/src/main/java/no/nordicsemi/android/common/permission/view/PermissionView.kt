@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.manager.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.manager.InternetPermissionResult
 
+//Intended for Internet & Bluetooth permission. Please be careful when extended.
 @Composable
 fun PermissionScreen(
     onNavigateBack: () -> Unit,

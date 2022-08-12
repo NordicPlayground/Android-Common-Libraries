@@ -59,7 +59,7 @@ abstract class NordicActivity : ComponentActivity() {
                     coldStart = false
                     val then = System.currentTimeMillis()
                     splashScreen.setKeepOnScreenCondition {
-                        val now = System.currentTimeMillis()
+                         val now = System.currentTimeMillis()
                         now < then + 900
                     }
                 }

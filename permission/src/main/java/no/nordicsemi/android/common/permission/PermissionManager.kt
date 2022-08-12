@@ -26,7 +26,5 @@ interface PermissionManager {
 
     fun checkBluetooth()
 
-    fun checkInternet()
-
     fun refresh()
 }

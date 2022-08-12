@@ -32,9 +32,8 @@
 package no.nordicsemi.android.common.permission
 
 import android.app.Activity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.*
 import no.nordicsemi.android.common.permission.manager.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,7 +55,10 @@ internal class PermissionManagerImpl @Inject internal constructor(
 
     init {
         checkBluetooth()
-        checkInternet()
+
+        utils.isInternetEnabled.onEach {
+            onInternetConnectionChanged(it)
+        }.launchIn(GlobalScope)
     }
 
     override val isLocationPermissionRequired = dataProvider.locationState
@@ -90,16 +92,15 @@ internal class PermissionManagerImpl @Inject internal constructor(
         }
     }
 
-    override fun checkInternet() {
-        _internetPermission.value = if (!utils.isInternetEnabled) {
-            InternetPermissionResult.INTERNET_DISABLED
-        } else {
+    private fun onInternetConnectionChanged(isConnected: Boolean) {
+        _internetPermission.value = if (isConnected) {
             InternetPermissionResult.ALL_GOOD
+        } else {
+            InternetPermissionResult.INTERNET_DISABLED
         }
     }
 
     override fun refresh() {
         checkBluetooth()
-        checkInternet()
     }
 }
