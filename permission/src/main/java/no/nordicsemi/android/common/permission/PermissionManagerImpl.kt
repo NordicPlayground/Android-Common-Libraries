@@ -32,10 +32,10 @@
 package no.nordicsemi.android.common.permission
 
 import android.app.Activity
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import no.nordicsemi.android.common.permission.manager.*
-import no.nordicsemi.android.common.permission.manager.LocalDataProvider
-import no.nordicsemi.android.common.permission.manager.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -91,7 +91,7 @@ internal class PermissionManagerImpl @Inject internal constructor(
     }
 
     override fun checkInternet() {
-        _internetPermission.value = if (utils.isInternetEnabled) {
+        _internetPermission.value = if (!utils.isInternetEnabled) {
             InternetPermissionResult.INTERNET_DISABLED
         } else {
             InternetPermissionResult.ALL_GOOD

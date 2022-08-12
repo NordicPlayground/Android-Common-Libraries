@@ -51,7 +51,7 @@ fun ScannerScreen(
     isLocationPermissionRequired: Boolean,
     onResult: (ScannerScreenResult) -> Unit,
     onDevicesDiscovered: () -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit = {},
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>().apply {
         setFilterUuid(uuid)
@@ -69,7 +69,11 @@ fun ScannerScreen(
     }
 
     Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onResult(ScannerResultCancel) }
+        ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) {
+            onResult(
+                ScannerResultCancel
+            )
+        }
         FilterView(config) {
             viewModel.setFilter(it)
         }
