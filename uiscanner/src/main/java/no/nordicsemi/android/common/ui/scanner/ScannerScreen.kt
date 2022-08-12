@@ -38,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.FilterView
 import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
@@ -51,7 +52,7 @@ fun ScannerScreen(
     isLocationPermissionRequired: Boolean,
     onResult: (ScannerScreenResult) -> Unit,
     onDevicesDiscovered: () -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit = {},
+    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit = { DeviceListItem(it) },
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>().apply {
         setFilterUuid(uuid)
