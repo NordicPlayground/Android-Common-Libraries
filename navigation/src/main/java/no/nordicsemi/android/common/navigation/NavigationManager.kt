@@ -53,11 +53,13 @@ class NavigationManager @Inject constructor(
     private val results = mutableMapOf<DestinationId, NavigationResult>()
 
     val recentArgument = MutableSharedFlow<NavigationArgument>(
+        replay = 1,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
     val recentResult = MutableSharedFlow<NavigationResult>(
+        replay = 1,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
@@ -71,9 +73,9 @@ class NavigationManager @Inject constructor(
     }
 
     fun navigateUp(result: NavigationResult) {
+        postDestination(BackDestination)
         results[result.destinationId] = result
         recentResult.tryEmit(result)
-        postDestination(BackDestination)
     }
 
     fun navigateTo(destination: DestinationId, args: NavigationArgument? = null) {
