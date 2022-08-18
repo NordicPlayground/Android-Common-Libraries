@@ -31,6 +31,7 @@
 
 package no.nordicsemi.android.common.theme.view
 
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,5 +44,10 @@ fun NordicText(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
-    MarkdownText(markdown = text, style = style, modifier = modifier)
+    MarkdownText(
+        markdown = text,
+        color = LocalContentColor.current,
+        style = style,
+        modifier = modifier
+    )
 }
