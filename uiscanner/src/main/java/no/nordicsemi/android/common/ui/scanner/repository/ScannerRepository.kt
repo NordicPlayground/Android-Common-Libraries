@@ -42,7 +42,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings
 import javax.inject.Inject
 
 @ViewModelScoped
-internal class ScannerRepository @Inject constructor(
+class ScannerRepository @Inject internal constructor(
     private val devicesDataStore: DevicesDataStore
 ) {
 

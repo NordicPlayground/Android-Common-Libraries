@@ -46,7 +46,7 @@ import no.nordicsemi.android.common.ui.scanner.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScannerAppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick: () -> Unit) {
+fun ScannerAppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick: () -> Unit) {
     SmallTopAppBar(
         title = { Text(text) },
         colors = TopAppBarDefaults.smallTopAppBarColors(
