@@ -64,7 +64,7 @@ fun DevicesListView(
                 if (state.isEmpty()) {
                     item { ScanEmptyView(requireLocation) }
                 } else {
-                    items(state, onClick, row)
+                    DevicesListItems(state, onClick, row)
                 }
             }
             is ScanningState.Error -> item { ErrorSection() }
@@ -74,7 +74,7 @@ fun DevicesListView(
     }
 }
 
-private fun LazyListScope.items(
+fun LazyListScope.DevicesListItems(
     devices: ScanningState.DevicesDiscovered,
     onClick: (DiscoveredBluetoothDevice) -> Unit,
     deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
