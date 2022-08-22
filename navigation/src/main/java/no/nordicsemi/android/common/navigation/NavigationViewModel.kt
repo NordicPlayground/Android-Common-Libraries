@@ -40,7 +40,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class NavigationViewModel @Inject constructor(
-    private val navigationManager: NavigationManager,
+    val navigationManager: NavigationManager,
 ) : ViewModel() {
     var navigationWrapper: NavigationWrapper? = null
 

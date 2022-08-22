@@ -29,40 +29,54 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.main
+package no.nordicsemi.android.common.ui.scanner
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
+import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
+import no.nordicsemi.android.common.ui.scanner.main.FilterView
+import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
 import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
+import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 
 @Composable
-internal fun ScannerScreen(
+fun ScannerScreen(
     uuid: ParcelUuid?,
-    onEvent: (ScannerNavigationEvent) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    isLocationPermissionRequired: Boolean,
+    onResult: (ScannerScreenResult) -> Unit,
+    onDevicesDiscovered: () -> Unit
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>().apply {
         setFilterUuid(uuid)
     }
-    val requireLocation = viewModel.dataProvider.locationState.collectAsState().value
+
     val result = viewModel.devices.collectAsState().value
     val config = viewModel.config.collectAsState().value
 
+    LaunchedEffect(result) {
+        (result as? ScanningState.DevicesDiscovered)?.let {
+            if (!it.isEmpty()) {
+                onDevicesDiscovered()
+            }
+        }
+    }
+
     Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) { onEvent(
-            ScannerNavigationEvent.NavigateUp) }
+        ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) {
+            onResult(
+                ScannerResultCancel
+            )
+        }
         FilterView(config) {
             viewModel.setFilter(it)
         }
-        DevicesListView(requireLocation, result, deviceView) {
-            onEvent(ScannerNavigationEvent.DeviceSelected(it))
+        DevicesListView(isLocationPermissionRequired, result) {
+            onResult(ScannerResultSuccess(it))
         }
     }
 }

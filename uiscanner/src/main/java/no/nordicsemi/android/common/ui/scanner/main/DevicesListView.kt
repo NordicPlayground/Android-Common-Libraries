@@ -49,10 +49,10 @@ import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 
 @Composable
-internal fun DevicesListView(
+fun DevicesListView(
     requireLocation: Boolean,
     state: ScanningState,
-    row: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    row: @Composable (DiscoveredBluetoothDevice) -> Unit = { DeviceListItem(it) },
     onClick: (DiscoveredBluetoothDevice) -> Unit,
 ) {
     LazyColumn(contentPadding = PaddingValues(horizontal = 8.dp)) {

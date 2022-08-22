@@ -33,7 +33,7 @@ package no.nordicsemi.android.common.ui.scanner.repository
 
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
-internal sealed class ScanningState {
+sealed class ScanningState {
 
     object Loading : ScanningState()
 

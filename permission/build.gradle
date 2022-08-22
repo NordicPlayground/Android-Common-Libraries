@@ -8,7 +8,7 @@ apply from: rootProject.file("gradle/git-tag-version.gradle")
 group = GROUP
 
 android {
-    namespace 'no.nordicsemi.android.common.ui.scanner'
+    namespace 'no.nordicsemi.android.common.permission'
     compileSdk android_api_version
 
     defaultConfig {
@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation project(":theme")
+    implementation project(":navigation")
 
     implementation "androidx.compose.material3:material3:1.0.0-alpha15"
     implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
@@ -67,8 +68,8 @@ dependencies {
 // when the module is loaded to a different project.
 if (rootProject.file('gradle/publish-module.gradle').exists()) {
     ext {
-        POM_ARTIFACT_ID = 'uiscanner'
-        POM_NAME = 'Nordic library for Android with UI screens utilizing uiscanner library.'
+        POM_ARTIFACT_ID = 'permission'
+        POM_NAME = 'Nordic library for checking required permissions.'
         POM_PACKAGING = 'aar'
     }
     apply from: rootProject.file('gradle/publish-module.gradle')

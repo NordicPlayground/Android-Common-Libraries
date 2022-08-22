@@ -35,8 +35,6 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.ui.scanner.util.LocalDataProvider
-import no.nordicsemi.android.common.ui.scanner.util.Utils
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanResult
@@ -44,21 +42,14 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings
 import javax.inject.Inject
 
 @ViewModelScoped
-internal class ScannerRepository @Inject constructor(
-    private val utils: Utils,
-    private val dataProvider: LocalDataProvider,
+class ScannerRepository @Inject internal constructor(
     private val devicesDataStore: DevicesDataStore
 ) {
+
     fun getScannerState(): Flow<ScanningState> =
         callbackFlow {
             val scanCallback: ScanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult) {
-                    // This callback will be called only if the scan report delay is not set or is set to 0.
-
-                    // If the packet has been obtained while Location was disabled, mark Location as not required
-                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled) {
-                        dataProvider.isLocationPermissionRequired = false
-                    }
                     if (result.isConnectable) {
                         devicesDataStore.addNewDevice(result)
 
@@ -67,12 +58,6 @@ internal class ScannerRepository @Inject constructor(
                 }
 
                 override fun onBatchScanResults(results: List<ScanResult>) {
-                    // This callback will be called only if the report delay set above is greater then 0.
-
-                    // If the packet has been obtained while Location was disabled, mark Location as not required
-                    if (utils.isLocationPermissionRequired && !utils.isLocationEnabled) {
-                        dataProvider.isLocationPermissionRequired = false
-                    }
                     val newResults = results.filter { it.isConnectable }
                     newResults.forEach {
                         devicesDataStore.addNewDevice(it)

@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import no.nordicsemi.android.common.ui.scanner.util.LocalDataProvider
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
@@ -49,8 +48,8 @@ private const val FILTER_RSSI = -50 // [dBm]
 
 @HiltViewModel
 internal class ScannerViewModel @Inject constructor(
-    val dataProvider: LocalDataProvider,
     private val scannerRepository: ScannerRepository,
+
 ) : ViewModel() {
     private var uuid: ParcelUuid? = null
 

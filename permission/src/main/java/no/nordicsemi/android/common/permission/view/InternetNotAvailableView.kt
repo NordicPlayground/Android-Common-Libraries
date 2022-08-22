@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.main.error
+package no.nordicsemi.android.common.permission.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -45,47 +45,57 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
-import no.nordicsemi.android.common.ui.scanner.navigation.ScannerNavigationEvent
+import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.view.BackNavigationAppBar
 
 @Composable
-internal fun BluetoothNotAvailableView(onEvent: (ScannerNavigationEvent) -> Unit) {
+fun InternetNotAvailableScreen(
+    onNavigateBack: () -> Unit
+) {
     Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_error)) { onEvent(ScannerNavigationEvent.NavigateUp) }
+        BackNavigationAppBar(stringResource(id = R.string.internet_required_title), onNavigateBack)
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-                contentDescription = "",
-                modifier = Modifier.padding(16.dp)
-            )
+        InternetNotAvailableView()
+    }
+}
 
-            Text(
-                text = stringResource(id = R.string.bluetooth_not_available_title),
-                color = MaterialTheme.colorScheme.secondary,
-            )
+@Composable
+fun InternetNotAvailableView() {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_wifi),
+            contentDescription = "",
+            modifier = Modifier.padding(16.dp)
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(id = R.string.internet_not_available_title),
+            color = MaterialTheme.colorScheme.secondary,
+        )
 
-            Text(
-                text = stringResource(id = R.string.bluetooth_not_available_info),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                textAlign = TextAlign.Center
-            )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-        }
+        Text(
+            text = stringResource(id = R.string.internet_not_available_info),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @Preview
 @Composable
 private fun BluetoothNotAvailableView_Preview() {
-    BluetoothNotAvailableView { }
+    BluetoothNotAvailableView()
 }

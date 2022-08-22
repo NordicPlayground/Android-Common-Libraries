@@ -29,22 +29,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner
+package no.nordicsemi.android.common.permission.manager
 
-import no.nordicsemi.android.common.navigation.ComposeDestination
-import no.nordicsemi.android.common.navigation.ComposeDestinations
-import no.nordicsemi.android.common.navigation.DestinationId
-import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
+sealed interface PermissionResult
 
-val ScannerDestinationId = DestinationId("uiscanner-destination")
-
-private val ScannerDestination = ComposeDestination(ScannerDestinationId) {
-    FindDeviceScreen {
-        DeviceListItem(it) {
-            // No extra parameters. The extra parameter can be used to display additional data
-            // on the right side of the item.
-        }
-    }
+enum class BluetoothPermissionResult : PermissionResult {
+    LOCATION_PERMISSION_REQUIRED,
+    BLUETOOTH_PERMISSION_REQUIRED,
+    BLUETOOTH_NOT_AVAILABLE,
+    BLUETOOTH_DISABLED,
+    ALL_GOOD
 }
 
-val ScannerDestinations = ComposeDestinations(listOf(ScannerDestination))
+enum class InternetPermissionResult : PermissionResult {
+    INTERNET_DISABLED,
+    ALL_GOOD
+}

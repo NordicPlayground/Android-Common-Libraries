@@ -29,12 +29,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.navigation
+package no.nordicsemi.android.common.theme.view
 
-internal sealed class ScannerNavigationDestination(val id: String)
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
-internal object LocationPermissionRequiredDestination : ScannerNavigationDestination("location-permission-not-granted")
-internal object BluetoothPermissionRequiredDestination : ScannerNavigationDestination("bluetooth-permission-not-granted")
-internal object BluetoothNotAvailableDestination : ScannerNavigationDestination("bluetooth-not-available")
-internal object BluetoothDisabledDestination : ScannerNavigationDestination("bluetooth-not-enabled")
-internal object PeripheralDeviceRequiredDestination : ScannerNavigationDestination("device-not-selected")
+@Composable
+fun NordicText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyMedium
+) {
+    MarkdownText(
+        markdown = text,
+        color = LocalContentColor.current,
+        style = style,
+        modifier = modifier
+    )
+}

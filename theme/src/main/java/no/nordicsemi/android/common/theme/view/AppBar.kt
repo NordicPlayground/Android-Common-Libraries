@@ -29,16 +29,36 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.navigation
+package no.nordicsemi.android.common.theme.view
 
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import no.nordicsemi.android.common.theme.R
 
-internal sealed class ScannerNavigationEvent {
-
-    internal object Refresh : ScannerNavigationEvent()
-
-    internal object NavigateUp : ScannerNavigationEvent()
-
-    internal data class DeviceSelected(val device: DiscoveredBluetoothDevice) : ScannerNavigationEvent()
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BackNavigationAppBar(text: String, onNavigationButtonClick: () -> Unit) {
+    SmallTopAppBar(
+        title = { Text(text) },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+            containerColor = colorResource(id = R.color.appBarColor),
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+        ),
+        navigationIcon = {
+            IconButton(onClick = { onNavigationButtonClick() }) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = stringResource(id = R.string.navigation_item_accessibility),
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                )
+            }
+        }
+    )
 }
