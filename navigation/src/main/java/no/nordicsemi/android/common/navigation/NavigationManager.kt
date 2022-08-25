@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+//FIXME It may not be thread save because of mutable objects in some scenarios.
 @Singleton
 class NavigationManager @Inject constructor(
     @ApplicationContext private val context: Context
