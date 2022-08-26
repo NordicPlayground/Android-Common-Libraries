@@ -35,34 +35,34 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+//FIXME It may not be thread save because of mutable objects in some scenarios.
 @Singleton
 class NavigationManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val _navigationDestination = MutableStateFlow(ConsumableNavigationDestination(InitialDestination))
+    private val _navigationDestination =
+        MutableStateFlow(ConsumableNavigationDestination(InitialDestination))
     internal val navigationDestination = _navigationDestination.asStateFlow()
 
     private val arguments = mutableMapOf<DestinationId, NavigationArgument>()
     private val results = mutableMapOf<DestinationId, NavigationResult>()
 
-    val recentArgument = MutableSharedFlow<NavigationArgument>(
-        replay = 1,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    val recentArgument = DestinationMapStateFlow(arguments.toMap())
 
-    val recentResult = MutableSharedFlow<NavigationResult>(
-        replay = 1,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val recentResult = DestinationMapStateFlow(results.toMap())
+
+    fun gerResultForIds(vararg ids: DestinationId): Flow<NavigationResult> {
+        return recentResult
+            .map { it.filter { it.key in ids } }
+            .map { it.map { it.value } }
+            .filter { it.isNotEmpty() }
+            .flatMapLatest { it.asFlow() }
+            .onEach { consumeResult(it) }
+    }
 
     fun consumeLastEvent() {
         _navigationDestination.value = _navigationDestination.value.copy(isConsumed = true)
@@ -75,15 +75,31 @@ class NavigationManager @Inject constructor(
     fun navigateUp(result: NavigationResult) {
         postDestination(BackDestination)
         results[result.destinationId] = result
-        recentResult.tryEmit(result)
+        recentResult.tryEmit(results)
     }
 
     fun navigateTo(destination: DestinationId, args: NavigationArgument? = null) {
         args?.let {
             arguments[destination] = args
-            recentArgument.tryEmit(args)
+            recentArgument.tryEmit(arguments)
         }
         postDestination(ForwardDestination(destination))
+    }
+
+    /**
+     * Consume argument and prevent from receiving it in the future.
+     */
+    fun consumeArgument(args: NavigationArgument) {
+        arguments.remove(args.destinationId)
+        recentArgument.tryEmit(arguments)
+    }
+
+    /**
+     * Consume result and prevent from receiving it in the future.
+     */
+    private fun consumeResult(result: NavigationResult) {
+        results.remove(result.destinationId)
+        recentResult.tryEmit(results)
     }
 
     private fun postDestination(destination: NavigationDestination) {
