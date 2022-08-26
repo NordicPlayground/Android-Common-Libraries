@@ -8,8 +8,8 @@ class DestinationMapStateFlow<T>(
 
     constructor(map: Map<DestinationId, T>) : this(MutableStateFlow(map))
 
-    override suspend fun emit(newValue: Map<DestinationId, T>) {
-        state.emit(newValue.toMap())
+    override suspend fun emit(value: Map<DestinationId, T>) {
+        state.emit(value.toMap())
     }
 
     override fun tryEmit(value: Map<DestinationId, T>): Boolean {
