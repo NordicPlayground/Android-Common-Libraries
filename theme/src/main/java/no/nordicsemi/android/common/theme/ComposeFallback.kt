@@ -50,7 +50,14 @@ fun CheckboxFallback(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: CheckboxColors = CheckboxDefaults.colors()
 ) {
-    Checkbox(checked, onCheckedChange, modifier, enabled, interactionSource, colors)
+    Checkbox(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier,
+        enabled = enabled,
+        colors = colors,
+        interactionSource = interactionSource
+    )
 }
 
 @Composable
@@ -62,7 +69,14 @@ fun RadioButtonFallback(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: RadioButtonColors = RadioButtonDefaults.colors()
 ) {
-    RadioButton(selected, onClick, modifier, enabled, interactionSource, colors)
+    RadioButton(
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        colors = colors,
+        interactionSource = interactionSource
+    )
 }
 
 @Composable

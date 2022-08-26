@@ -41,7 +41,7 @@ dependencies {
     implementation project(":theme")
     implementation project(":navigation")
 
-    implementation "androidx.compose.material3:material3:1.0.0-alpha15"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha16"
     implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 
     implementation "androidx.compose.ui:ui:$compose_version"
