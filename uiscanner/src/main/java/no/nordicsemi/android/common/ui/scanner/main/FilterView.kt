@@ -93,9 +93,6 @@ internal fun FilterView(
                         Icon(Icons.Default.Wifi, contentDescription = "")
                     }
                 },
-                colors = FilterChipDefaults.elevatedFilterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
             )
         }
         with(config.filterWithNames) {

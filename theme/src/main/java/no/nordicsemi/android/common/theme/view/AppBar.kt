@@ -46,7 +46,7 @@ fun BackNavigationAppBar(text: String, onNavigationButtonClick: () -> Unit) {
         title = { Text(text) },
         colors = TopAppBarDefaults.smallTopAppBarColors(
             scrolledContainerColor = MaterialTheme.colorScheme.primary,
-            containerColor = colorResource(id = R.color.appBarColor),
+            containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -56,7 +56,7 @@ fun BackNavigationAppBar(text: String, onNavigationButtonClick: () -> Unit) {
                 Icon(
                     Icons.Default.ArrowBack,
                     contentDescription = stringResource(id = R.string.navigation_item_accessibility),
-                    tint = MaterialTheme.colorScheme.onSecondary,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         }
