@@ -36,12 +36,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -69,9 +72,12 @@ fun BluetoothDisabledView() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
+            imageVector = Icons.Default.BluetoothDisabled,
+            contentDescription = null,
+            modifier = Modifier
+                .size(144.dp)
+                .padding(16.dp),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
         )
 
         Text(

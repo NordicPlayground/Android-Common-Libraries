@@ -35,6 +35,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,9 +71,11 @@ fun BluetoothNotAvailableView() {
             .verticalScroll(rememberScrollState())
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
+            imageVector = Icons.Default.BluetoothDisabled,
+            contentDescription = null,
+            modifier = Modifier
+                .size(144.dp)
+                .padding(16.dp),
         )
 
         Text(
