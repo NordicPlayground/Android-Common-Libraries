@@ -37,13 +37,9 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -51,44 +47,6 @@ internal class PermissionUtils @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dataProvider: LocalDataProvider,
 ) {
-
-
-    val isInternetEnabled = MutableStateFlow(false)
-
-    init {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        isInternetEnabled.value = checkInternetEnabled()
-        connectivityManager.registerDefaultNetworkCallback(object :
-            ConnectivityManager.NetworkCallback() {
-
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                isInternetEnabled.value = true
-            }
-
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                isInternetEnabled.value = false
-            }
-        })
-    }
-
-    private fun checkInternetEnabled(): Boolean{
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val nw = connectivityManager.activeNetwork ?: return false
-        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
-        return when {
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                    //for other device how are able to connect with Ethernet
-                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ||
-                    //for check internet over Bluetooth
-                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
-            else -> false
-        }
-    }
-
     val isBleEnabled: Boolean
         get() {
             val adapter = BluetoothAdapter.getDefaultAdapter()

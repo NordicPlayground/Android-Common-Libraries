@@ -42,6 +42,7 @@ import javax.inject.Singleton
 internal class PermissionManagerImpl @Inject internal constructor(
     private val utils: PermissionUtils,
     private val dataProvider: LocalDataProvider,
+    internetManager: InternetManager
 ) : PermissionManager {
 
     private val _bluetoothPermission = MutableStateFlow(BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED)
@@ -56,7 +57,7 @@ internal class PermissionManagerImpl @Inject internal constructor(
     init {
         checkBluetooth()
 
-        utils.isInternetEnabled.onEach {
+        internetManager.isNetworkAvailable().onEach {
             onInternetConnectionChanged(it)
         }.launchIn(GlobalScope)
     }
