@@ -51,17 +51,26 @@ class NavigationManager @Inject constructor(
     private val arguments = mutableMapOf<DestinationId, NavigationArgument>()
     private val results = mutableMapOf<DestinationId, NavigationResult>()
 
-    val recentArgument = DestinationMapStateFlow(arguments.toMap())
+    private val recentArgument = DestinationMapStateFlow(arguments.toMap())
 
     private val recentResult = DestinationMapStateFlow(results.toMap())
 
-    fun gerResultForIds(vararg ids: DestinationId): Flow<NavigationResult> {
+    fun getResultForIds(vararg ids: DestinationId): Flow<NavigationResult> {
         return recentResult
             .map { it.filter { it.key in ids } }
             .map { it.map { it.value } }
             .filter { it.isNotEmpty() }
             .flatMapLatest { it.asFlow() }
             .onEach { consumeResult(it) }
+    }
+
+    fun getArgumentForId(destinationId: DestinationId): Flow<NavigationArgument> {
+        return recentArgument
+            .map { it.filter { it.key == destinationId } }
+            .map { it.map { it.value } }
+            .filter { it.isNotEmpty() }
+            .flatMapLatest { it.asFlow() }
+            .onEach { consumeArgument(it) }
     }
 
     fun consumeLastEvent() {
