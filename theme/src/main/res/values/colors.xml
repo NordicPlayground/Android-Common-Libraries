@@ -58,7 +58,7 @@
     <color name="md_theme_inverseSurface">#2E3133</color>
     <color name="md_theme_primaryInverse">#57D5FC</color>
 
-    <color name="iconColor">@color/md_theme_onSecondaryContainer</color>
+    <color name="iconColor">@color/md_theme_onBackground</color>
 
     <color name="colorNordicLogo">@color/md_theme_primary</color>
     <color name="colorNordicLogoText">@android:color/black</color>
