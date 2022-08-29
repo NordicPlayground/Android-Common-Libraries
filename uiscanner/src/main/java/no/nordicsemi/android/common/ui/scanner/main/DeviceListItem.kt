@@ -35,13 +35,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
@@ -58,8 +59,8 @@ fun DeviceListItem(
         verticalAlignment = Alignment.CenterVertically)
     {
         Image(
-            painter = painterResource(R.drawable.ic_bluetooth),
-            contentDescription = "Content image",
+            imageVector = Icons.Default.Bluetooth,
+            contentDescription = "Bluetooth device",
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
             modifier = Modifier
                 .background(

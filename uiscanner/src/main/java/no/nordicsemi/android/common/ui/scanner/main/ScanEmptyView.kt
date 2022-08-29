@@ -36,6 +36,8 @@ import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -57,7 +59,7 @@ internal fun ScanEmptyView(requireLocation: Boolean) {
         modifier = Modifier.padding(32.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_bluetooth_disabled),
+            imageVector = Icons.Default.BluetoothDisabled,
             contentDescription = "",
             modifier = Modifier.padding(16.dp)
         )
