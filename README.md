@@ -2,18 +2,71 @@
 A libraries with Nordic's common code for Android apps.
 
 ## Theme
-The library may be found on Maven Central repository. Add it to your project by adding the following dependency:
-```Groovy
-implementation 'no.nordicsemi.android.common:theme:1.0.17'
+
+### Usage
+```groovy
+implementation 'no.nordicsemi.android.common:theme:<version>'
 ```
 
+### Content
 The library contains a few features which are necessary for theming Nordic Semiconductor apps:
+
 * Color palette adopted to the new Material You
 * Typography
-* Theme for dark and light mode
-* Abstract NordicActivity class which contain implementations for Nordic's splash screen animation.
-* Custom implementation of missing components from Material You compose library. The intention is to replace them in the future with the original implementation. Below components contains custom implementation:
-   - Card
-   - Checkbox
-   - CircularProgressIndicator - currently implemented as a static icon
-   - RadioButtonGroup & RadioButton
+* Nordic theme for dark and light mode
+* Abstract `NordicActivity` class which contain implementations for Nordic's splash screen animation.
+* `WizardStepComponent` for wizard-based app flow.
+* `CircularIcon` an icon with circular shape.
+
+## Permission
+
+### Usage
+```groovy
+implementation 'no.nordicsemi.android.common:permission:<version>'
+```
+
+### Content
+Classes and views related to managing permissions, including Bluetooth and Internet permissions.
+
+## Navigation
+
+### Usage
+```groovy
+implementation 'no.nordicsemi.android.common:navigation:<version>'
+```
+
+### Content
+Common navigation components for the app.
+
+## UI Scanner
+
+### Usage
+```groovy
+implementation 'no.nordicsemi.android.common:uiscanner:<version>'
+```
+
+### Content
+Common Bluetooth LE scanner screen.
+
+## UI Logger
+
+### Usage
+```groovy
+implementation 'no.nordicsemi.android.common:uilogger:<version>'
+```
+
+### Content
+Common classes related with logging to nRF Logger app.
+
+## Analytics
+
+### Usage
+```groovy
+implementation 'no.nordicsemi.android.common:analytics:<version>'
+```
+
+### Content
+Common views and classes related with gathering analytics data.
+
+
+
