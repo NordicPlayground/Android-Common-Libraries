@@ -1,10 +1,9 @@
 package no.nordicsemi.android.common.theme.view
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,23 +19,29 @@ enum class ProgressItemStatus {
 }
 
 @Composable
-fun ProgressItem(text: String, status: ProgressItemStatus) {
+fun ProgressItem(
+    text: String,
+    status: ProgressItemStatus,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit = {}
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(status.toImageRes()),
-            contentDescription = stringResource(id = R.string.progress_icon),
-            tint = status.toIconColor()
+            contentDescription = null,
+            tint = status.toIconColor(),
+            modifier = Modifier.padding(start = 8.dp, end = 24.dp),
         )
-        Spacer(modifier = Modifier.size(8.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = status.toTextColor(),
-            modifier = Modifier.padding(start = 16.dp)
-        )
+        Column {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = status.toTextColor(),
+            )
+            content()
+        }
     }
 }
 
@@ -44,7 +49,7 @@ fun ProgressItem(text: String, status: ProgressItemStatus) {
 private fun ProgressItemStatus.toIconColor(): Color {
     return when (this) {
         ProgressItemStatus.DISABLED -> MaterialTheme.colorScheme.surfaceVariant
-        ProgressItemStatus.WORKING -> MaterialTheme.colorScheme.onBackground
+        ProgressItemStatus.WORKING -> LocalContentColor.current
         ProgressItemStatus.SUCCESS -> colorResource(id = R.color.nordicGrass)
         ProgressItemStatus.ERROR -> MaterialTheme.colorScheme.error
     }
@@ -53,10 +58,10 @@ private fun ProgressItemStatus.toIconColor(): Color {
 @Composable
 private fun ProgressItemStatus.toTextColor(): Color {
     return when (this) {
-        ProgressItemStatus.DISABLED -> MaterialTheme.colorScheme.surfaceVariant
+        ProgressItemStatus.DISABLED -> LocalContentColor.current.copy(alpha = 0.38f)
         ProgressItemStatus.WORKING,
         ProgressItemStatus.SUCCESS,
-        ProgressItemStatus.ERROR -> MaterialTheme.colorScheme.onBackground
+        ProgressItemStatus.ERROR -> LocalContentColor.current
     }
 }
 

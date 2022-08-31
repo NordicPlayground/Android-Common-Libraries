@@ -31,6 +31,7 @@
 
 package no.nordicsemi.android.common.theme.view
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -41,7 +42,11 @@ import no.nordicsemi.android.common.theme.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BackNavigationAppBar(text: String, onNavigationButtonClick: () -> Unit) {
+fun NordicAppBar(
+    text: String,
+    onNavigationButtonClick: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
     SmallTopAppBar(
         title = { Text(text) },
         colors = TopAppBarDefaults.smallTopAppBarColors(
@@ -52,13 +57,16 @@ fun BackNavigationAppBar(text: String, onNavigationButtonClick: () -> Unit) {
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         navigationIcon = {
-            IconButton(onClick = { onNavigationButtonClick() }) {
-                Icon(
-                    Icons.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.navigation_item_accessibility),
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                )
+            onNavigationButtonClick?.let { action ->
+                IconButton(onClick = { action() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = stringResource(id = R.string.navigation_item_accessibility),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
             }
-        }
+        },
+        actions = actions,
     )
 }

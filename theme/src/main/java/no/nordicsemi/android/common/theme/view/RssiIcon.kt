@@ -24,7 +24,7 @@ fun RssiIcon(rssi: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = getImageRes(rssi)),
-            contentDescription = stringResource(id = R.string.cd_rssi)
+            contentDescription = null
         )
         Text(
             text = stringResource(id = R.string.dbm, rssi),

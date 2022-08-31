@@ -1,67 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2022, Nordic Semiconductor
-  ~ All rights reserved.
-  ~
-  ~ Redistribution and use in source and binary forms, with or without modification, are
-  ~ permitted provided that the following conditions are met:
-  ~
-  ~ 1. Redistributions of source code must retain the above copyright notice, this list of
-  ~ conditions and the following disclaimer.
-  ~
-  ~ 2. Redistributions in binary form must reproduce the above copyright notice, this list
-  ~ of conditions and the following disclaimer in the documentation and/or other materials
-  ~ provided with the distribution.
-  ~
-  ~ 3. Neither the name of the copyright holder nor the names of its contributors may be
-  ~ used to endorse or promote products derived from this software without specific prior
-  ~ written permission.
-  ~
-  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-  ~ TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-  ~ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-  ~ HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
-  ~ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-  ~ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-  ~ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  ~ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  -->
-
 <resources>
-    <color name="md_theme_primary">#00A9CE</color>
-    <color name="md_theme_onPrimary">#FFF</color>
-    <color name="md_theme_primaryContainer">#6AD1E3</color>
-    <color name="md_theme_onPrimaryContainer">#FFF</color>
-    <color name="md_theme_secondary">#00A9CE</color>
-    <color name="md_theme_onSecondary">#FFF</color>
-    <color name="md_theme_secondaryContainer">#00A9CE</color>
-    <color name="md_theme_onSecondaryContainer">#FFF</color>
-    <color name="md_theme_tertiary">#670016</color>
-    <color name="md_theme_onTertiary">#FFB2B6</color>
-    <color name="md_theme_tertiaryContainer">#FFB2B6</color>
-    <color name="md_theme_onTertiaryContainer">#670016</color>
-    <color name="md_theme_error">#FFB4A9</color>
-    <color name="md_theme_errorContainer">#930006</color>
-    <color name="md_theme_onError">@android:color/black</color>
-    <color name="md_theme_onErrorContainer">#FFDAD4</color>
-    <color name="md_theme_background">#191C1E</color>
-    <color name="md_theme_onBackground">#E1E2E5</color>
-    <color name="md_theme_surface">@android:color/black</color>
-    <color name="md_theme_onSurface">#E1E2E5</color>
-    <color name="md_theme_surfaceVariant">#40484B</color>
-    <color name="md_theme_onSurfaceVariant">#BFC8CC</color>
-    <color name="md_theme_outline">#899296</color>
-    <color name="md_theme_inverseOnSurface">#191C1E</color>
-    <color name="md_theme_inverseSurface">#E1E2E5</color>
-    <color name="md_theme_primaryInverse">#006780</color>
 
-    <color name="drawableColor">@color/md_theme_onBackground</color>
-    <color name="appBarColor">#FF333F48</color>
-    <color name="statusBarColor">@android:color/black</color>
+    <color name="appBarColor">@color/nordicDarkGray</color>
+    <color name="statusBarColor">@color/appBarColor</color>
 
-    <color name="colorNordicLogo">@android:color/white</color>
-    <color name="colorNordicLogoText">@android:color/white</color>
 </resources>

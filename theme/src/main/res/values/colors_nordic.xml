@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nordicBlue">#00A9CE</color>
+    <color name="nordicSky">#6AD1E3</color>
+    <color name="nordicBlueslate">#0033A0</color>
+    <color name="nordicLake">#0077C8</color>
+    <color name="nordicGrass">#D0DF00</color>
+    <color name="nordicSun">#FFCD00</color>
+    <color name="nordicRed">#EE2F4E</color>
+    <color name="nordicFall">#F58220</color>
+    <color name="nordicLightGray">#D9E1E2</color>
+    <color name="nordicMiddleGray">#768692</color>
+    <color name="nordicDarkGray">#333f48</color>
+</resources>

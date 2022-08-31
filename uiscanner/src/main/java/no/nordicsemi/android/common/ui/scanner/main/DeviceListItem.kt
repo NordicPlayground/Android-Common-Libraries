@@ -31,10 +31,7 @@
 
 package no.nordicsemi.android.common.ui.scanner.main
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material3.MaterialTheme
@@ -42,9 +39,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.view.CircularIcon
 import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
@@ -58,17 +56,7 @@ fun DeviceListItem(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically)
     {
-        Image(
-            imageVector = Icons.Default.Bluetooth,
-            contentDescription = "Bluetooth device",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = CircleShape
-                )
-                .padding(8.dp)
-        )
+        CircularIcon(Icons.Default.Bluetooth)
 
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -83,11 +71,14 @@ fun DeviceListItem(
                     style = MaterialTheme.typography.titleMedium
                 )
             } ?: Text(
-                text = stringResource(id = R.string.device_no_name),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.outline
+                    text = stringResource(id = R.string.device_no_name),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.alpha(0.7f)
+                )
+            Text(
+                text = device.address,
+                style = MaterialTheme.typography.bodyMedium
             )
-            Text(text = device.address, style = MaterialTheme.typography.bodyMedium)
         }
 
         extras(device)

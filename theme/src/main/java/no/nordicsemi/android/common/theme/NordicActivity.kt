@@ -49,7 +49,7 @@ abstract class NordicActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.appBarColor)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.statusBarColor)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val splashScreen = installSplashScreen()

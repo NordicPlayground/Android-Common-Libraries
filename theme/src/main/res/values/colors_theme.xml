@@ -31,7 +31,30 @@
   -->
 
 <resources>
-    <string name="navigation_item_accessibility">Back</string>
-
-    <string name="dbm">%d dBm</string>
+    <color name="md_theme_primary">@color/nordicBlue</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#B3EBFF</color>
+    <color name="md_theme_onPrimaryContainer">#001F29</color>
+    <color name="md_theme_secondary">@color/nordicLake</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">@color/nordicLake</color>
+    <color name="md_theme_onSecondaryContainer">#FFFFFF</color>
+    <color name="md_theme_tertiary">@color/nordicBlueslate</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#D0E4FF</color>
+    <color name="md_theme_onTertiaryContainer">#41000A</color>
+    <color name="md_theme_error">#BA1B1B</color>
+    <color name="md_theme_errorContainer">#FFDAD4</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410001</color>
+    <color name="md_theme_background">#F5F5F5</color>
+    <color name="md_theme_onBackground">#191C1E</color>
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_onSurface">#191C1E</color>
+    <color name="md_theme_surfaceVariant">#DCE4E8</color>
+    <color name="md_theme_onSurfaceVariant">#40484B</color>
+    <color name="md_theme_outline">#70787C</color>
+    <color name="md_theme_inverseOnSurface">#F0F1F4</color>
+    <color name="md_theme_inverseSurface">#2E3133</color>
+    <color name="md_theme_primaryInverse">#57D5FC</color>
 </resources>
