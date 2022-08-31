@@ -40,7 +40,7 @@ android {
 dependencies {
     implementation project(":theme")
 
-    implementation "androidx.compose.material3:material3:1.0.0-alpha16"
+    implementation "androidx.compose.material3:material3:1.0.0-beta01"
     implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 
     implementation "androidx.compose.ui:ui:$compose_version"
