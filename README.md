@@ -1,4 +1,4 @@
-# Android-Common-Libraries
+# Nordic Common Libraries for Android
 A libraries with Nordic's common code for Android apps.
 
 ## Theme
