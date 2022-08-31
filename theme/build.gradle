@@ -46,6 +46,7 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material You
     implementation "androidx.compose.material3:material3:1.0.0-alpha16"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 }
 
 // === Maven Central configuration ===
