@@ -39,14 +39,12 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,6 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.permission.view.internal.BigIcon
+import no.nordicsemi.android.common.permission.view.internal.Hint
+import no.nordicsemi.android.common.permission.view.internal.Title
 import no.nordicsemi.android.common.theme.parseBold
 import no.nordicsemi.android.common.theme.view.NordicAppBar
 
@@ -83,32 +84,20 @@ fun LocationPermissionRequiredView(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
     ) {
-        Image(
-            imageVector = Icons.Default.LocationOff,
-            contentDescription = null,
-            modifier = Modifier
-                .size(144.dp)
-                .padding(16.dp),
-        )
+        BigIcon(imageVector = Icons.Default.LocationOff)
 
-        Text(
-            text = stringResource(id = R.string.location_permission_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
+        Spacer(modifier = Modifier.size(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Title(text = stringResource(id = R.string.location_permission_title))
 
-        Text(
-            text = stringResource(id = R.string.location_permission_info).parseBold(),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
+        Spacer(modifier = Modifier.size(16.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Hint(text = stringResource(id = R.string.location_permission_info).parseBold())
+
+        Spacer(modifier = Modifier.size(16.dp))
 
         val requiredPermissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -129,8 +118,6 @@ fun LocationPermissionRequiredView(
                 Text(text = stringResource(id = R.string.action_settings))
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

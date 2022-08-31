@@ -29,18 +29,46 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.view
+package no.nordicsemi.android.common.permission.view.internal
 
-import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import no.nordicsemi.android.common.permission.PermissionManager
-import no.nordicsemi.android.common.permission.PermissionManagerImpl
-import javax.inject.Inject
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 
-/**
- * Needed for injecting to @Composable functions.
- */
-@HiltViewModel
-class PermissionViewModel @Inject internal constructor(
-    private val permissionManager: PermissionManagerImpl
-) : ViewModel(), PermissionManager by permissionManager
+@Composable
+internal fun Hint(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = LocalContentColor.current,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+) {
+    Text(
+        text = text,
+        color = color,
+        style = style,
+        modifier = modifier,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+internal fun Hint(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    color: Color = LocalContentColor.current,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+) {
+    Text(
+        text = text,
+        color = color,
+        style = style,
+        modifier = modifier,
+        textAlign = TextAlign.Center
+    )
+}

@@ -40,26 +40,26 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.permission.view.internal.BigIcon
+import no.nordicsemi.android.common.permission.view.internal.Hint
+import no.nordicsemi.android.common.permission.view.internal.Title
 import no.nordicsemi.android.common.theme.view.NordicAppBar
 
 @Composable
@@ -79,49 +79,38 @@ fun BluetoothPermissionRequiredScreen(
 fun BluetoothPermissionRequiredView(
     onPermissionChanged: () -> Unit
 ) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
     ) {
-        Image(
-            imageVector = Icons.Default.BluetoothDisabled,
-            contentDescription = null,
-            modifier = Modifier
-                .size(144.dp)
-                .padding(16.dp),
+        BigIcon(imageVector = Icons.Default.BluetoothDisabled)
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Title(text = stringResource(id = R.string.bluetooth_permission_title))
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Hint(text = stringResource(id = R.string.bluetooth_permission_info))
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+        val requiredPermissions = arrayOf(
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.BLUETOOTH_CONNECT
         )
-
-        Text(
-            text = stringResource(id = R.string.bluetooth_permission_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = stringResource(id = R.string.bluetooth_permission_info),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        val requiredPermissions =
-            arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
 
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { onPermissionChanged() }
 
+        val viewModel = hiltViewModel<PermissionViewModel>()
         val context = LocalContext.current
-        if (!viewModel.isBluetoothScanPermissionDeniedForever(LocalContext.current as Activity)) {
+        if (!viewModel.isBluetoothScanPermissionDeniedForever(context as Activity)) {
             Button(onClick = { launcher.launch(requiredPermissions) }) {
                 Text(text = stringResource(id = R.string.action_grant_permission))
             }
@@ -130,8 +119,6 @@ fun BluetoothPermissionRequiredView(
                 Text(text = stringResource(id = R.string.action_settings))
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
