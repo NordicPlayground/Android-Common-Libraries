@@ -66,7 +66,7 @@ class PermissionViewModel @Inject internal constructor(
     }
 
     fun markBluetoothPermissionRequested() {
-        bluetoothManager.markLocationPermissionRequested()
+        bluetoothManager.markBluetoothPermissionRequested()
     }
 
     fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
