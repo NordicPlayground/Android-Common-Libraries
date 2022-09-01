@@ -34,8 +34,8 @@ package no.nordicsemi.android.common.permission.view
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.permission.manager.BluetoothPermissionResult
-import no.nordicsemi.android.common.permission.manager.InternetPermissionResult
+import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
+import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
 
 //Intended for Internet & Bluetooth permission. Please be careful when extended.
 @Composable
@@ -49,9 +49,9 @@ fun PermissionScreen(
 
     when (bluetoothPermissionState) {
         BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED ->
-            LocationPermissionRequiredScreen(onNavigateBack) { viewModel.refresh()}
+            LocationPermissionRequiredScreen(onNavigateBack)
         BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED ->
-            BluetoothPermissionRequiredScreen(onNavigateBack) { viewModel.refresh() }
+            BluetoothPermissionRequiredScreen(onNavigateBack)
         BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE ->
             BluetoothNotAvailableScreen(onNavigateBack)
         BluetoothPermissionResult.BLUETOOTH_DISABLED ->
@@ -74,9 +74,9 @@ fun BluetoothPermissionScreen(
 
     when (bluetoothPermissionState) {
         BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED ->
-            LocationPermissionRequiredScreen(onNavigateBack) { viewModel.refresh() }
+            LocationPermissionRequiredScreen(onNavigateBack)
         BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED ->
-            BluetoothPermissionRequiredScreen(onNavigateBack) { viewModel.refresh() }
+            BluetoothPermissionRequiredScreen(onNavigateBack)
         BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE ->
             BluetoothNotAvailableScreen(onNavigateBack)
         BluetoothPermissionResult.BLUETOOTH_DISABLED ->

@@ -47,7 +47,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,20 +65,21 @@ import no.nordicsemi.android.common.theme.view.NordicAppBar
 @Composable
 fun BluetoothPermissionRequiredScreen(
     onNavigateBack: () -> Unit,
-    onPermissionChanged: () -> Unit
 ) {
     Column {
         NordicAppBar(stringResource(id = R.string.bluetooth_required_title), onNavigateBack)
 
-        BluetoothPermissionRequiredView(onPermissionChanged)
+        BluetoothPermissionRequiredView()
     }
 }
 
 @SuppressLint("InlinedApi")
 @Composable
-fun BluetoothPermissionRequiredView(
-    onPermissionChanged: () -> Unit
-) {
+fun BluetoothPermissionRequiredView() {
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val activity = LocalContext.current as Activity
+    var permissionDenied by remember { mutableStateOf(viewModel.isBluetoothScanPermissionDeniedForever(activity)) }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -106,16 +107,17 @@ fun BluetoothPermissionRequiredView(
 
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
-        ) { onPermissionChanged() }
+        ) {
+            viewModel.markBluetoothPermissionRequested()
+            permissionDenied = viewModel.isBluetoothScanPermissionDeniedForever(activity)
+        }
 
-        val viewModel = hiltViewModel<PermissionViewModel>()
-        val context = LocalContext.current
-        if (!viewModel.isBluetoothScanPermissionDeniedForever(context as Activity)) {
+        if (!permissionDenied) {
             Button(onClick = { launcher.launch(requiredPermissions) }) {
                 Text(text = stringResource(id = R.string.action_grant_permission))
             }
         } else {
-            Button(onClick = { openPermissionSettings(context) }) {
+            Button(onClick = { openPermissionSettings(activity) }) {
                 Text(text = stringResource(id = R.string.action_settings))
             }
         }
@@ -136,5 +138,5 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun BluetoothPermissionRequiredView_Preview() {
-    BluetoothPermissionRequiredView { }
+    BluetoothPermissionRequiredView()
 }

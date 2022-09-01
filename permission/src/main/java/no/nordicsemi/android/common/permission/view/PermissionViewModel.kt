@@ -31,10 +31,16 @@
 
 package no.nordicsemi.android.common.permission.view
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import no.nordicsemi.android.common.permission.PermissionManager
-import no.nordicsemi.android.common.permission.PermissionManagerImpl
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
+import no.nordicsemi.android.common.permission.bluetooth.BluetoothStateManager
+import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
+import no.nordicsemi.android.common.permission.internet.InternetStateManager
 import javax.inject.Inject
 
 /**
@@ -42,5 +48,32 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class PermissionViewModel @Inject internal constructor(
-    private val permissionManager: PermissionManagerImpl
-) : ViewModel(), PermissionManager by permissionManager
+    internetManager: InternetStateManager,
+    private val bluetoothManager: BluetoothStateManager,
+) : ViewModel() {
+
+    val bluetoothPermission = bluetoothManager.bluetoothState()
+        .stateIn(viewModelScope, SharingStarted.Lazily, BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE)
+
+    val locationPermission = bluetoothManager.locationState()
+        .stateIn(viewModelScope, SharingStarted.Lazily, false)
+
+    val internetPermission = internetManager.networkState()
+        .stateIn(viewModelScope, SharingStarted.Lazily, InternetPermissionResult.INTERNET_DISABLED)
+
+    fun markLocationPermissionRequested() {
+        bluetoothManager.markLocationPermissionRequested()
+    }
+
+    fun markBluetoothPermissionRequested() {
+        bluetoothManager.markLocationPermissionRequested()
+    }
+
+    fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
+        return bluetoothManager.isBluetoothScanPermissionDeniedForever(activity)
+    }
+
+    fun isLocationPermissionDeniedForever(activity: Activity): Boolean {
+        return bluetoothManager.isLocationPermissionDeniedForever(activity)
+    }
+}

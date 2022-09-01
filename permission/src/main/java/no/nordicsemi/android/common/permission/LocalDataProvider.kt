@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.manager
+package no.nordicsemi.android.common.permission
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -39,26 +39,19 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
-private const val PREFS_FILTER_UUID_REQUIRED = "filter_uuid"
-private const val PREFS_FILTER_NEARBY_ONLY = "filter_nearby"
 
-private const val PREFS_LOCATION_REQUIRED = "location_required"
 private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
 private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_requested"
 
 @Suppress("unused")
 @SuppressLint("AnnotateVersionCheck")
-@Singleton
-internal class LocalDataProvider @Inject constructor(
-    @ApplicationContext private val context: Context
+internal class LocalDataProvider(
+    private val context: Context
 ) {
-    val locationState = MutableStateFlow(isLocationRequiredAndEnabled())
-
     private val sharedPrefs: SharedPreferences
         get() = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -86,36 +79,19 @@ internal class LocalDataProvider @Inject constructor(
             sharedPrefs.edit().putBoolean(PREFS_BLUETOOTH_PERMISSION_REQUESTED, value).apply()
         }
 
-    var isLocationPermissionRequired: Boolean
+    val isLocationPermissionRequired: Boolean
         /**
-         * Location enabled is required on some phones running Android 6 - 11
+         * Location enabled is required on phones running Android 6 - 11
          * (for example on Nexus and Pixel devices). Initially, Samsung phones didn't require it,
          * but that has been fixed for those phones in Android 9.
          *
          * @return False if it is known that location is not required, true otherwise.
          */
-        get() = sharedPrefs.getBoolean(PREFS_LOCATION_REQUIRED, isMarshmallowOrAbove && !isSOrAbove)
-        /**
-         * When a Bluetooth LE packet is received while Location is disabled it means that Location
-         * is not required on this device in order to scan for LE devices. This is a case of Samsung
-         * phones, for example. Save this information for the future to keep the Location info hidden.
-         */
-        set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_LOCATION_REQUIRED, value).apply()
-        }
+        get() = isMarshmallowOrAbove && !isSOrAbove
 
     val isMarshmallowOrAbove: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 
     val isSOrAbove: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
-    private fun isLocationRequiredAndEnabled(): Boolean {
-        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm)
-    }
-
-    fun refreshLocationState() {
-        locationState.value = isLocationRequiredAndEnabled()
-    }
 }

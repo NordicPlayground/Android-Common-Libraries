@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.permission.manager
+package no.nordicsemi.android.common.permission.internet
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -9,13 +9,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class InternetManager @Inject constructor(
-    @ApplicationContext
-    private val context: Context
+@Singleton
+class InternetStateManager @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
 
-    fun isNetworkAvailable() = callbackFlow<Boolean> {
+    fun networkState() = callbackFlow {
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)

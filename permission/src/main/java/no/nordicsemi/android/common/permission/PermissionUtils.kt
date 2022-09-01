@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.manager
+package no.nordicsemi.android.common.permission
 
 import android.Manifest
 import android.app.Activity
@@ -43,8 +43,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate")
-internal class PermissionUtils @Inject constructor(
-    @ApplicationContext private val context: Context,
+internal class PermissionUtils(
+    private val context: Context,
     private val dataProvider: LocalDataProvider,
 ) {
     val isBleEnabled: Boolean
@@ -88,6 +88,14 @@ internal class PermissionUtils @Inject constructor(
 
     val areNecessaryBluetoothPermissionsGranted: Boolean
         get() = isBluetoothScanPermissionGranted && isBluetoothConnectPermissionGranted
+
+    fun markBluetoothPermissionRequested() {
+        dataProvider.bluetoothPermissionRequested = true
+    }
+
+    fun markLocationPermissionRequested() {
+        dataProvider.locationPermissionRequested = true
+    }
 
     fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
         return dataProvider.isSOrAbove &&
