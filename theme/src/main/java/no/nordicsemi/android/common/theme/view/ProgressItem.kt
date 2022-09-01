@@ -1,7 +1,6 @@
 package no.nordicsemi.android.common.theme.view
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -10,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.R
 
@@ -23,17 +22,19 @@ fun ProgressItem(
     text: String,
     status: ProgressItemStatus,
     modifier: Modifier = Modifier,
+    iconRightPadding: Dp = 16.dp,
     content: @Composable () -> Unit = {}
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(status.toImageRes()),
             contentDescription = null,
             tint = status.toIconColor(),
-            modifier = Modifier.padding(start = 8.dp, end = 24.dp),
         )
+        Spacer(modifier = Modifier.width(iconRightPadding))
         Column {
             Text(
                 text = text,
