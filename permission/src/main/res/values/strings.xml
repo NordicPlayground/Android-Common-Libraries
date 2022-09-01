@@ -14,10 +14,10 @@
     <string name="location_permission_info">From Android 6.0 Marshmallow until Android 11 the application
         requires Location permission in order to scan for Bluetooth Low Energy devices. This
         is because Bluetooth LE beacons, for example iBeacons or Eddystone, may be used to
-        determine the phone\'s and user\'s location.\n\n<b>nRF Connect Device Manager</b> will not use
-		this information in any way.\n\nOn Android 12 and above, a new Bluetooth Scan permission
-		could be requested with a flag that disables scanning for location, but on this system
-		version no scan results are returned without location enabled.</string>
+        determine the phone\'s and user\'s location.\n\nThe app will not use
+		this information in any way.\n\nOn Android 12 or newer a new Nearby permission
+		can be requested instead, without the need for location, but this system
+		version does not support that feature.</string>
 
     <string name="bluetooth_permission_title">BLUETOOTH PERMISSIONS REQUIRED</string>
     <string name="bluetooth_permission_info">The app needs to scan and connect to Bluetooth LE devices.</string>
