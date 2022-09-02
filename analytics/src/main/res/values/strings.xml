@@ -32,15 +32,15 @@
 
 <resources>
     <string name="analytics_dialog_title">Help us improve!</string>
-    <string name="analytics_dialog_info" formatted="false">You can help improve our application by sending - Nordic Semiconductor anonymous statistics on how you interact with the app. You can enable/disable this feature at any time in Settings.
+    <string name="analytics_dialog_info" formatted="false">You can help improve our application by sharing anonymous statistics on how you interact with the app. You can enable/disable this feature at any time in Settings.
 \n\n&lt;b&gt;What kind of information do we collect?&lt;/b&gt;
 \n\nWe collect only anonymous information about user interaction with the application e.g. we may want to check how often some feature is used by measuring number of clicks on a button which opens the feature.
-\n\nData provided by the user like file names or provided in a text input are never collected.
+\n\nData provided by the user are never collected.
 \n\n&lt;b&gt;How do we use this information? &lt;/b&gt;
 \n\nThe information is used to analyze an user interaction with the application and determine areas of improvement.
 \n\n&lt;b&gt;How is this information processed and shared?&lt;/b&gt;
 \n\nFirebase is used for collecting and processing data.
-\n\nWe do not share the data to any third-party companies or individuals other than Google.
+\n\nWe do not share the data to any third-party companies or individuals other than Google (Firebase).
     </string>
     <string name="analytics_dialog_accept">Accept</string>
     <string name="analytics_dialog_decline">Decline</string>
