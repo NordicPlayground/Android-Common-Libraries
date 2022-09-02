@@ -49,7 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.theme.ScreenSection
+import no.nordicsemi.android.common.theme.view.ScreenSection
 import no.nordicsemi.android.common.ui.scanner.R
 
 @Composable

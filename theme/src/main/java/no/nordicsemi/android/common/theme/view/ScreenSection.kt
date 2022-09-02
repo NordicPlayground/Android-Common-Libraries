@@ -29,12 +29,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.theme
+package no.nordicsemi.android.common.theme.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +47,7 @@ fun ScreenSection(
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
-    Card(
+    OutlinedCard(
         modifier = modifier,
     ) {
         val columnModifier = if (onClick != null) {

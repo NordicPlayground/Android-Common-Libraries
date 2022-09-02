@@ -29,73 +29,18 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.theme
+package no.nordicsemi.android.common.theme.view
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
-@Composable
-fun CheckboxFallback(
-    checked: Boolean,
-    onCheckedChange: ((Boolean) -> Unit)?,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: CheckboxColors = CheckboxDefaults.colors()
-) {
-    Checkbox(
-        checked = checked,
-        onCheckedChange = onCheckedChange,
-        modifier = modifier,
-        enabled = enabled,
-        colors = colors,
-        interactionSource = interactionSource
-    )
-}
-
-@Composable
-fun RadioButtonFallback(
-    selected: Boolean,
-    onClick: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: RadioButtonColors = RadioButtonDefaults.colors()
-) {
-    RadioButton(
-        selected = selected,
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        colors = colors,
-        interactionSource = interactionSource
-    )
-}
-
-@Composable
-fun Card(
-    modifier: Modifier,
-    content: @Composable () -> Unit
-) {
-    OutlinedCard(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            disabledContainerColor = MaterialTheme.colorScheme.background,
-            disabledContentColor = MaterialTheme.colorScheme.onBackground
-        )
-    ) {
-        content()
-    }
-}
 
 data class RadioGroupViewEntity(
     val items: List<RadioButtonItem>,
@@ -114,7 +59,7 @@ fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButton
     ) {
         viewEntity.items.onEach {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                RadioButtonFallback(selected = it.isChecked, onClick = { onItemClick(it) })
+                RadioButton(selected = it.isChecked, onClick = { onItemClick(it) })
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)
             }
         }
@@ -132,7 +77,7 @@ fun HorizontalLabelRadioButtonGroup(
     ) {
         viewEntity.items.onEach {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButtonFallback(selected = it.isChecked, onClick = { onItemClick(it) })
+                RadioButton(selected = it.isChecked, onClick = { onItemClick(it) })
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)
             }
         }
