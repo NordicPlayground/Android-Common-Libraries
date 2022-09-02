@@ -55,7 +55,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.PermissionViewModel
 import no.nordicsemi.android.common.permission.R
-import no.nordicsemi.android.common.theme.parseBold
+import no.nordicsemi.android.common.core.parseBold
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable

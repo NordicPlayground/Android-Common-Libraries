@@ -8,6 +8,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Common Libraries"
 
+include ':core'
 include ':app'
 include ':theme'
 include ':uiscanner'

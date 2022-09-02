@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.theme
+package no.nordicsemi.android.common.core
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -9,21 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 
-//Compose suffix to distinguish from native registerReceiver() methods.
 @SuppressLint("ComposableNaming")
 @Composable
-fun registerReceiverCompose(intentFilter: IntentFilter, onEvent: () -> Unit) {
+fun registerReceiver(intentFilter: IntentFilter, onEvent: (Intent?) -> Unit) {
     val context = LocalContext.current
 
     DisposableEffect(context) {
         val broadcast = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                onEvent()
+                onEvent(intent)
             }
         }
-
         context.registerReceiver(broadcast, intentFilter)
-
         onDispose {
             context.unregisterReceiver(broadcast)
         }

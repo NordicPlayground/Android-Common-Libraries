@@ -46,12 +46,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.analytics.R
 import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewModel
-import no.nordicsemi.android.common.theme.parseBold
+import no.nordicsemi.android.common.core.parseBold
 
 @Composable
 fun AnalyticsPermissionRequestDialog() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val data = viewModel.permissionData.collectAsState(AnalyticsPermissionData(false, false)).value
+    val data = viewModel.permissionData.collectAsState(
+        AnalyticsPermissionData(
+            isPermissionGranted = false,
+            wasInfoDialogShown = false,
+        )
+    ).value
 
     if (!data.wasInfoDialogShown) {
         AlertDialog(

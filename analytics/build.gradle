@@ -58,7 +58,7 @@ android {
 }
 
 dependencies {
-    implementation project(":theme")
+    implementation project(":core")
 
     implementation "androidx.compose.material3:material3:1.0.0-beta01"
 
