@@ -29,18 +29,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permission.util
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.location.LocationManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
-import androidx.core.location.LocationManagerCompat
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
 

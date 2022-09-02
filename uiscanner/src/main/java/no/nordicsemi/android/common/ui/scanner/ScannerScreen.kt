@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.RequireBluetooth
 import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.FilterView
 import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
@@ -45,7 +46,6 @@ import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
 @Composable
 fun ScannerScreen(
     uuid: ParcelUuid?,
-    isLocationPermissionRequired: Boolean,
     onResult: (ScannerScreenResult) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>().apply {
@@ -57,15 +57,15 @@ fun ScannerScreen(
 
     Column {
         ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) {
-            onResult(
-                ScannerResultCancel
-            )
+            onResult(ScanningCancelled)
         }
-        FilterView(config) {
-            viewModel.setFilter(it)
-        }
-        DevicesListView(isLocationPermissionRequired, result) {
-            onResult(ScannerResultSuccess(it))
+        RequireBluetooth { isLocationRequiredAndDisabled ->
+            FilterView(config) {
+                viewModel.setFilter(it)
+            }
+            DevicesListView(isLocationRequiredAndDisabled, result) {
+                onResult(DeviceSelected(it))
+            }
         }
     }
 }

@@ -11,8 +11,8 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permission.LocalDataProvider
-import no.nordicsemi.android.common.permission.PermissionUtils
+import no.nordicsemi.android.common.permission.util.LocalDataProvider
+import no.nordicsemi.android.common.permission.util.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 

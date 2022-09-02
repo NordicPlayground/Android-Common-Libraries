@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.view.internal
+package no.nordicsemi.android.common.theme.view.internal
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

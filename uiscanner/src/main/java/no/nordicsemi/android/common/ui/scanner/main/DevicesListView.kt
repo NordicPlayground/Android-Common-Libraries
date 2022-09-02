@@ -50,7 +50,7 @@ import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 
 @Composable
 fun DevicesListView(
-    requireLocation: Boolean,
+    isLocationRequiredAndDisabled: Boolean,
     state: ScanningState,
     row: @Composable (DiscoveredBluetoothDevice) -> Unit = { DeviceListItem(it) },
     onClick: (DiscoveredBluetoothDevice) -> Unit,
@@ -59,12 +59,12 @@ fun DevicesListView(
         item { Spacer(modifier = Modifier.size(8.dp)) }
 
         when (state) {
-            is ScanningState.Loading -> item { ScanEmptyView(requireLocation) }
+            is ScanningState.Loading -> item { ScanEmptyView(isLocationRequiredAndDisabled) }
             is ScanningState.DevicesDiscovered -> {
                 if (state.isEmpty()) {
-                    item { ScanEmptyView(requireLocation) }
+                    item { ScanEmptyView(isLocationRequiredAndDisabled) }
                 } else {
-                    DevicesListItems(state, onClick, row)
+                    DeviceListItems(state, onClick, row)
                 }
             }
             is ScanningState.Error -> item { ErrorSection() }
@@ -74,7 +74,8 @@ fun DevicesListView(
     }
 }
 
-fun LazyListScope.DevicesListItems(
+@Suppress("FunctionName")
+fun LazyListScope.DeviceListItems(
     devices: ScanningState.DevicesDiscovered,
     onClick: (DiscoveredBluetoothDevice) -> Unit,
     deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,

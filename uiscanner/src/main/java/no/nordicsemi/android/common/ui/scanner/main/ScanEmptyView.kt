@@ -34,59 +34,39 @@ package no.nordicsemi.android.common.ui.scanner.main
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BluetoothDisabled
+import androidx.compose.material.icons.filled.BluetoothSearching
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.parseBold
+import no.nordicsemi.android.common.theme.view.WarningView
 import no.nordicsemi.android.common.ui.scanner.R
 
 @Composable
 internal fun ScanEmptyView(requireLocation: Boolean) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(32.dp)
+    WarningView(
+        imageVector = Icons.Default.BluetoothSearching,
+        title = stringResource(id = R.string.no_device_guide_title),
+        hint = stringResource(id = R.string.no_device_guide_info) + if (requireLocation) {
+            "\n\n" + stringResource(id = R.string.no_device_guide_location_info)
+        } else {
+            ""
+        }.parseBold(),
     ) {
-        Image(
-            imageVector = Icons.Default.BluetoothDisabled,
-            contentDescription = "",
-            modifier = Modifier.padding(16.dp)
-        )
-
-        Text(
-            text = stringResource(id = R.string.no_device_guide_title),
-            color = MaterialTheme.colorScheme.secondary
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = stringResource(id = R.string.no_device_guide_info).parseBold())
-
         if (requireLocation) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(text = stringResource(id = R.string.no_device_guide_location_info))
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             val context = LocalContext.current
             Button(onClick = { openLocationSettings(context) }) {
                 Text(text = stringResource(id = R.string.action_location_settings))
             }
-            Spacer(modifier = Modifier.height(8.dp))
-        } else {
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

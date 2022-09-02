@@ -32,7 +32,6 @@
 package no.nordicsemi.android.common.permission.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -40,7 +39,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -48,58 +47,30 @@ import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.PermissionViewModel
 import no.nordicsemi.android.common.permission.R
-import no.nordicsemi.android.common.permission.view.internal.BigIcon
-import no.nordicsemi.android.common.permission.view.internal.Hint
-import no.nordicsemi.android.common.permission.view.internal.Title
-import no.nordicsemi.android.common.theme.view.NordicAppBar
+import no.nordicsemi.android.common.theme.view.WarningView
 
-@Composable
-fun BluetoothPermissionRequiredScreen(
-    onNavigateBack: () -> Unit,
-) {
-    Column {
-        NordicAppBar(stringResource(id = R.string.bluetooth_required_title), onNavigateBack)
-
-        BluetoothPermissionRequiredView()
-    }
-}
-
-@SuppressLint("InlinedApi")
 @Composable
 fun BluetoothPermissionRequiredView() {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val activity = LocalContext.current as Activity
     var permissionDenied by remember { mutableStateOf(viewModel.isBluetoothScanPermissionDeniedForever(activity)) }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    WarningView(
+        imageVector = Icons.Default.BluetoothDisabled,
+        title = stringResource(id = R.string.bluetooth_permission_title),
+        hint = stringResource(id = R.string.bluetooth_permission_info),
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
     ) {
-        BigIcon(imageVector = Icons.Default.BluetoothDisabled)
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Title(text = stringResource(id = R.string.bluetooth_permission_title))
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Hint(text = stringResource(id = R.string.bluetooth_permission_info))
-
-        Spacer(modifier = Modifier.size(16.dp))
-
         val requiredPermissions = arrayOf(
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.BLUETOOTH_CONNECT

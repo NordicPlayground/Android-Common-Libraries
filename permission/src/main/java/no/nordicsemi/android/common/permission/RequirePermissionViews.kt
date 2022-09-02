@@ -29,59 +29,46 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.view
+package no.nordicsemi.android.common.permission
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
+import no.nordicsemi.android.common.permission.view.*
 
-//Intended for Internet & Bluetooth permission. Please be careful when extended.
 @Composable
-fun PermissionScreen(
-    onNavigateBack: () -> Unit,
+fun RequireInternet(
     content: @Composable () -> Unit
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val bluetoothPermissionState = viewModel.bluetoothPermission.collectAsState().value
     val internetPermissionState = viewModel.internetPermission.collectAsState().value
 
-    when (bluetoothPermissionState) {
-        BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED ->
-            LocationPermissionRequiredScreen(onNavigateBack)
-        BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED ->
-            BluetoothPermissionRequiredScreen(onNavigateBack)
-        BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE ->
-            BluetoothNotAvailableScreen(onNavigateBack)
-        BluetoothPermissionResult.BLUETOOTH_DISABLED ->
-            BluetoothDisabledScreen(onNavigateBack)
-        BluetoothPermissionResult.ALL_GOOD ->
-            when (internetPermissionState) {
-                InternetPermissionResult.INTERNET_DISABLED -> InternetNotAvailableScreen(onNavigateBack)
-                InternetPermissionResult.ALL_GOOD -> content()
-            }
+    when (internetPermissionState) {
+        InternetPermissionResult.INTERNET_DISABLED -> InternetNotAvailableView()
+        InternetPermissionResult.ALL_GOOD -> content()
     }
 }
 
 @Composable
-fun BluetoothPermissionScreen(
-    onNavigateBack: () -> Unit,
-    content: @Composable () -> Unit
+fun RequireBluetooth(
+    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val bluetoothPermissionState = viewModel.bluetoothPermission.collectAsState().value
+    val isLocationRequiredAndDisabled = viewModel.locationPermission.collectAsState().value
 
     when (bluetoothPermissionState) {
         BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED ->
-            LocationPermissionRequiredScreen(onNavigateBack)
+            LocationPermissionRequiredView()
         BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED ->
-            BluetoothPermissionRequiredScreen(onNavigateBack)
+            BluetoothPermissionRequiredView()
         BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE ->
-            BluetoothNotAvailableScreen(onNavigateBack)
+            BluetoothNotAvailableView()
         BluetoothPermissionResult.BLUETOOTH_DISABLED ->
-            BluetoothDisabledScreen(onNavigateBack)
+            BluetoothDisabledView()
         BluetoothPermissionResult.ALL_GOOD ->
-            content()
+            content(isLocationRequiredAndDisabled)
     }
 }

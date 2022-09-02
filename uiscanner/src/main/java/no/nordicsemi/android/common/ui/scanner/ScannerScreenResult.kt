@@ -4,6 +4,6 @@ import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
 sealed interface ScannerScreenResult
 
-object ScannerResultCancel : ScannerScreenResult
+object ScanningCancelled : ScannerScreenResult
 
-data class ScannerResultSuccess(val device: DiscoveredBluetoothDevice) : ScannerScreenResult
+data class DeviceSelected(val device: DiscoveredBluetoothDevice) : ScannerScreenResult

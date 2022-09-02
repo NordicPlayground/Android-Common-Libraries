@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.view
+package no.nordicsemi.android.common.permission
 
 import android.app.Activity
 import androidx.lifecycle.ViewModel

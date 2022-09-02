@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permission.util
 
 import android.Manifest
 import android.app.Activity
@@ -39,8 +39,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate")
 internal class PermissionUtils(
