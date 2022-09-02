@@ -34,20 +34,14 @@ package no.nordicsemi.android.common.ui.scanner.main
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BluetoothSearching
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.theme.parseBold
+import no.nordicsemi.android.common.core.parseBold
 import no.nordicsemi.android.common.theme.view.WarningView
 import no.nordicsemi.android.common.ui.scanner.R
 
