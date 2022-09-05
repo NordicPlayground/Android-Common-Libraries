@@ -37,7 +37,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application>
+        <!-- Initially, analytics is disabled. -->
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+
+        <!-- We don't need Advertising ID nor Android ID. -->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false" />
+
     </application>
 
 </manifest>
