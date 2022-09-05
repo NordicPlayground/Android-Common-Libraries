@@ -31,6 +31,12 @@
 
 package no.nordicsemi.android.common.analytics
 
+/**
+ * Analytics configuration, stored in the shared preferences.
+ *
+ * @property isPermissionGranted Initially, analytics are disabled, user needs to Opt-In to enable.
+ * @property wasInfoDialogShown A flag indicating whether the info dialog has been shown.
+ */
 data class AnalyticsPermissionData(
     val isPermissionGranted: Boolean = false,
     val wasInfoDialogShown: Boolean = false
