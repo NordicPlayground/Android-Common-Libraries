@@ -35,6 +35,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -55,6 +56,7 @@ class NavigationManager @Inject constructor(
 
     private val recentResult = DestinationMapStateFlow(results.toMap())
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getResultForIds(vararg ids: DestinationId): Flow<NavigationResult> {
         return recentResult
             .map { it.filter { it.key in ids } }
@@ -64,6 +66,7 @@ class NavigationManager @Inject constructor(
             .onEach { consumeResult(it) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getArgumentForId(destinationId: DestinationId): Flow<NavigationArgument> {
         return recentArgument
             .map { it.filter { it.key == destinationId } }
@@ -98,7 +101,7 @@ class NavigationManager @Inject constructor(
     /**
      * Consume argument and prevent from receiving it in the future.
      */
-    fun consumeArgument(args: NavigationArgument) {
+    private fun consumeArgument(args: NavigationArgument) {
         arguments.remove(args.destinationId)
         recentArgument.tryEmit(arguments)
     }
