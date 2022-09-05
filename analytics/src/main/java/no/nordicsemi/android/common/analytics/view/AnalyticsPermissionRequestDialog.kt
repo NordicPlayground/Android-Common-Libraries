@@ -51,12 +51,7 @@ import no.nordicsemi.android.common.core.parseBold
 @Composable
 fun AnalyticsPermissionRequestDialog() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val data = viewModel.permissionData.collectAsState(
-        AnalyticsPermissionData(
-            isPermissionGranted = false,
-            wasInfoDialogShown = false,
-        )
-    ).value
+    val data = viewModel.permissionData.collectAsState(initial = AnalyticsPermissionData()).value
 
     if (!data.wasInfoDialogShown) {
         AlertDialog(

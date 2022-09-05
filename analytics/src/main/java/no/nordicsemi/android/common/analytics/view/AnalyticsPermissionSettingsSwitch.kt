@@ -32,14 +32,15 @@
 package no.nordicsemi.android.common.analytics.view
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -54,27 +55,36 @@ import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewM
 fun AnalyticsPermissionSwitch() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
     val state = viewModel.permissionData.collectAsState(initial = AnalyticsPermissionData()).value
+    var showDialog by rememberSaveable { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { viewModel.onPermissionChanged() }
+            .clickable { showDialog = true }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = stringResource(id = R.string.analytics_switch_title),
-            style = MaterialTheme.typography.titleLarge,
+        Column(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            Text(
+                text = stringResource(id = R.string.analytics_switch_title),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = stringResource(id = R.string.analytics_switch_description),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+
+        Checkbox(
+            checked = state.isPermissionGranted,
+            onCheckedChange = { viewModel.onPermissionChanged() },
         )
-
-        Checkbox(checked = state.isPermissionGranted, onCheckedChange = {
-            viewModel.onPermissionChanged()
-        })
     }
-}
 
-@Preview
-@Composable
-fun AnalyticsPermissionSwitch_Preview() {
-    AnalyticsPermissionSwitch()
+    if (showDialog) {
+        AnalyticsPermissionSwitchDialog(onDismiss = { showDialog = false })
+    }
 }

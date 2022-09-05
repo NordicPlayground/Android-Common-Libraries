@@ -38,33 +38,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import no.nordicsemi.android.common.analytics.R
 import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewModel
 import no.nordicsemi.android.common.core.parseBold
-
-@Composable
-fun AnalyticsPermissionButton() {
-    var showDialog by rememberSaveable { mutableStateOf(false) }
-
-    IconButton(onClick = { showDialog = true }) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_firebase),
-            contentDescription = stringResource(id = R.string.analytics_permission_button),
-            tint = MaterialTheme.colorScheme.onPrimary,
-        )
-    }
-    if (showDialog) {
-        AnalyticsPermissionSwitchDialog(onDismiss = { showDialog = false })
-    }
-}
 
 @Composable
 fun AnalyticsPermissionSwitchDialog(
