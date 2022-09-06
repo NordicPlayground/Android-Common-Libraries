@@ -60,15 +60,10 @@ fun RequireBluetooth(
     val isLocationRequiredAndDisabled = viewModel.locationPermission.collectAsState().value
 
     when (bluetoothPermissionState) {
-        BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED ->
-            LocationPermissionRequiredView()
-        BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED ->
-            BluetoothPermissionRequiredView()
-        BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE ->
-            BluetoothNotAvailableView()
-        BluetoothPermissionResult.BLUETOOTH_DISABLED ->
-            BluetoothDisabledView()
-        BluetoothPermissionResult.ALL_GOOD ->
-            content(isLocationRequiredAndDisabled)
+        BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE -> BluetoothNotAvailableView()
+        BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED -> LocationPermissionRequiredView()
+        BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED -> BluetoothPermissionRequiredView()
+        BluetoothPermissionResult.BLUETOOTH_DISABLED -> BluetoothDisabledView()
+        BluetoothPermissionResult.ALL_GOOD -> content(isLocationRequiredAndDisabled)
     }
 }

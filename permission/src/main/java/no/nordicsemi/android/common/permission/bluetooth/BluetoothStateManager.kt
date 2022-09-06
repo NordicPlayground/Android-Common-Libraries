@@ -69,9 +69,9 @@ class BluetoothStateManager @Inject constructor(
 
     private fun getBluetoothPermissionState() = when {
         !utils.isBluetoothAvailable -> BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE
-        !utils.isBleEnabled -> BluetoothPermissionResult.BLUETOOTH_DISABLED
         !utils.isLocationPermissionGranted -> BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED
         !utils.areNecessaryBluetoothPermissionsGranted -> BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED
+        !utils.isBleEnabled -> BluetoothPermissionResult.BLUETOOTH_DISABLED
         else -> BluetoothPermissionResult.ALL_GOOD
     }
 
