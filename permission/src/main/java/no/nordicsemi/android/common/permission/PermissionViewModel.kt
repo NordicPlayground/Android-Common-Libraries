@@ -36,6 +36,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothStateManager
@@ -59,6 +60,12 @@ class PermissionViewModel @Inject internal constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     val internetPermission = internetManager.networkState()
+        .map {
+            when (it) {
+                true -> InternetPermissionResult.ALL_GOOD
+                false -> InternetPermissionResult.INTERNET_DISABLED
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.Lazily, InternetPermissionResult.INTERNET_DISABLED)
 
     fun refreshPermission() {
