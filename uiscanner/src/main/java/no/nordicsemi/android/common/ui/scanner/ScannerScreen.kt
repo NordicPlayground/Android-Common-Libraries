@@ -28,13 +28,15 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package no.nordicsemi.android.common.ui.scanner
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.RequireBluetooth
@@ -48,23 +50,30 @@ fun ScannerScreen(
     uuid: ParcelUuid?,
     onResult: (ScannerScreenResult) -> Unit,
 ) {
-    val viewModel = hiltViewModel<ScannerViewModel>().apply {
-        setFilterUuid(uuid)
-    }
-
-    val result = viewModel.devices.collectAsState().value
-    val config = viewModel.config.collectAsState().value
+    val isLoading = rememberSaveable { mutableStateOf(false) }
 
     Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_screen), result.isRunning()) {
+        ScannerAppBar(stringResource(id = R.string.scanner_screen), isLoading.value) {
             onResult(ScanningCancelled)
         }
         RequireBluetooth { isLocationRequiredAndDisabled ->
+            val viewModel = hiltViewModel<ScannerViewModel>().apply {
+                setFilterUuid(uuid)
+            }
+
+            val result = viewModel.devices.collectAsState().value
+            val config = viewModel.config.collectAsState().value
+
             FilterView(config) {
                 viewModel.setFilter(it)
             }
+
             DevicesListView(isLocationRequiredAndDisabled, result) {
                 onResult(DeviceSelected(it))
+            }
+
+            LaunchedEffect(result.isRunning()) {
+                isLoading.value = result.isRunning()
             }
         }
     }

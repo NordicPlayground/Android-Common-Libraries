@@ -36,7 +36,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
-import no.nordicsemi.android.common.permission.view.*
+import no.nordicsemi.android.common.permission.view.BluetoothDisabledView
+import no.nordicsemi.android.common.permission.view.BluetoothNotAvailableView
+import no.nordicsemi.android.common.permission.view.BluetoothPermissionRequiredView
+import no.nordicsemi.android.common.permission.view.InternetNotAvailableView
+import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
 
 @Composable
 fun RequireInternet(

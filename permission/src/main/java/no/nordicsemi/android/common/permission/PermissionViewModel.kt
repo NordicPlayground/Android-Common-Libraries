@@ -61,6 +61,10 @@ class PermissionViewModel @Inject internal constructor(
     val internetPermission = internetManager.networkState()
         .stateIn(viewModelScope, SharingStarted.Lazily, InternetPermissionResult.INTERNET_DISABLED)
 
+    fun refreshPermission() {
+        bluetoothManager.refreshPermission()
+    }
+
     fun markLocationPermissionRequested() {
         bluetoothManager.markLocationPermissionRequested()
     }

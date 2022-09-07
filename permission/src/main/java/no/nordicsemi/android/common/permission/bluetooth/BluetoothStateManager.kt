@@ -16,6 +16,8 @@ import no.nordicsemi.android.common.permission.util.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val REFRESH_PERMISSIONS = "no.nordicsemi.android.common.permission.REFRESH_PERMISSIONS"
+
 @Singleton
 class BluetoothStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -26,12 +28,14 @@ class BluetoothStateManager @Inject constructor(
     fun bluetoothState() = callbackFlow {
         trySend(getBluetoothPermissionState())
 
+        //FIXME This is actually BLE enabled/disabled state. Not permission state.
         val bluetoothStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 trySend(getBluetoothPermissionState())
             }
         }
         context.registerReceiver(bluetoothStateChangeHandler, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        context.registerReceiver(bluetoothStateChangeHandler, IntentFilter(REFRESH_PERMISSIONS))
         awaitClose {
             context.unregisterReceiver(bluetoothStateChangeHandler)
         }
@@ -49,6 +53,11 @@ class BluetoothStateManager @Inject constructor(
         awaitClose {
             context.unregisterReceiver(locationStateChangeHandler)
         }
+    }
+
+    fun refreshPermission() {
+        val intent = Intent(REFRESH_PERMISSIONS)
+        context.sendBroadcast(intent)
     }
 
     fun markLocationPermissionRequested() {
