@@ -36,6 +36,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,10 +52,10 @@ fun ScannerScreen(
     uuid: ParcelUuid?,
     onResult: (ScannerScreenResult) -> Unit,
 ) {
-    val isLoading = rememberSaveable { mutableStateOf(false) }
+    var isScanning by rememberSaveable { mutableStateOf(false) }
 
     Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_screen), isLoading.value) {
+        ScannerAppBar(stringResource(id = R.string.scanner_screen), isScanning) {
             onResult(ScanningCancelled)
         }
         RequireBluetooth { isLocationRequiredAndDisabled ->
@@ -73,7 +75,7 @@ fun ScannerScreen(
             }
 
             LaunchedEffect(result.isRunning()) {
-                isLoading.value = result.isRunning()
+                isScanning = result.isRunning()
             }
         }
     }
