@@ -28,14 +28,16 @@ class BluetoothStateManager @Inject constructor(
     fun bluetoothState() = callbackFlow {
         trySend(getBluetoothPermissionState())
 
-        //FIXME This is actually BLE enabled/disabled state. Not permission state.
         val bluetoothStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 trySend(getBluetoothPermissionState())
             }
         }
-        context.registerReceiver(bluetoothStateChangeHandler, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
-        context.registerReceiver(bluetoothStateChangeHandler, IntentFilter(REFRESH_PERMISSIONS))
+        val filter = IntentFilter().apply {
+            addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
+            addAction(REFRESH_PERMISSIONS)
+        }
+        context.registerReceiver(bluetoothStateChangeHandler, filter)
         awaitClose {
             context.unregisterReceiver(bluetoothStateChangeHandler)
         }
