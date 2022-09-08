@@ -47,13 +47,14 @@ internal fun Hint(
     modifier: Modifier = Modifier,
     color: Color = LocalContentColor.current,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
+    textAlign: TextAlign? = TextAlign.Center,
 ) {
     Text(
         text = text,
         color = color,
         style = style,
         modifier = modifier,
-        textAlign = TextAlign.Justify
+        textAlign = textAlign
     )
 }
 
@@ -63,12 +64,13 @@ internal fun Hint(
     modifier: Modifier = Modifier,
     color: Color = LocalContentColor.current,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
+    textAlign: TextAlign? = TextAlign.Center,
 ) {
     Text(
         text = text,
         color = color,
         style = style,
         modifier = modifier,
-        textAlign = TextAlign.Justify
+        textAlign = textAlign
     )
 }

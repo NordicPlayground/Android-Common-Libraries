@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.view.internal.BigIcon
 import no.nordicsemi.android.common.theme.view.internal.Hint
@@ -19,6 +20,7 @@ fun WarningView(
     title: String,
     hint: String,
     modifier: Modifier = Modifier,
+    hintTextAlign: TextAlign? = TextAlign.Center,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Column(
@@ -34,7 +36,7 @@ fun WarningView(
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        Hint(text = hint)
+        Hint(text = hint, textAlign = hintTextAlign)
 
         Spacer(modifier = Modifier.size(16.dp))
 
@@ -48,6 +50,7 @@ fun WarningView(
     title: String,
     hint: AnnotatedString,
     modifier: Modifier = Modifier,
+    hintTextAlign: TextAlign? = TextAlign.Center,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Column(
@@ -63,7 +66,7 @@ fun WarningView(
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        Hint(text = hint)
+        Hint(text = hint, textAlign = hintTextAlign)
 
         Spacer(modifier = Modifier.size(16.dp))
 
