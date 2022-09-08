@@ -48,11 +48,10 @@ import javax.inject.Inject
  * Needed for injecting to @Composable functions.
  */
 @HiltViewModel
-class PermissionViewModel @Inject internal constructor(
+internal class PermissionViewModel @Inject internal constructor(
     internetManager: InternetStateManager,
     private val bluetoothManager: BluetoothStateManager,
 ) : ViewModel() {
-
     val bluetoothPermission = bluetoothManager.bluetoothState()
         .stateIn(viewModelScope, SharingStarted.Lazily, BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE)
 
