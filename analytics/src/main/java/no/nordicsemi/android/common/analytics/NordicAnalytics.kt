@@ -53,7 +53,7 @@ class NordicAnalytics @Inject internal constructor(
     val permissionData = repository.permissionData
     private val firebase by lazy { FirebaseAnalytics.getInstance(context) }
 
-    fun logEvent(@Size(min = 1L, max = 40L) name: String, params: Bundle?) {
+    fun logEvent(@Size(min = 1L, max = 40L) name: String, params: Bundle? = null) {
         runBlocking {
             repository.permissionData.firstOrNull()
                 ?.takeIf { it.isPermissionGranted }
