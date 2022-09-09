@@ -53,10 +53,6 @@ internal data class NavigationWrapper(
     }
 
     private fun navigateBack() {
-        if (navController.backQueue.size > 2) {
-            navController.navigateUp()
-        } else {
-            activity.get()?.finish()
-        }
+        navController.navigateUp()
     }
 }

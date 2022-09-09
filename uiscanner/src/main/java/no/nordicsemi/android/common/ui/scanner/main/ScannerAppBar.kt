@@ -33,38 +33,22 @@ package no.nordicsemi.android.common.ui.scanner.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.theme.view.NordicAppBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScannerAppBar(text: String, showProgress: Boolean = false, onNavigationButtonClick: () -> Unit) {
-    SmallTopAppBar(
-        title = { Text(text) },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            scrolledContainerColor = MaterialTheme.colorScheme.primary,
-            containerColor = colorResource(id = R.color.appBarColor),
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
-        navigationIcon = {
-            IconButton(onClick = { onNavigationButtonClick() }) {
-                Icon(
-                    Icons.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.navigation_item_accessibility),
-                    tint = MaterialTheme.colorScheme.onSecondary,
-                )
-            }
-        },
+internal fun ScannerAppBar(
+    text: String,
+    showProgress: Boolean = false,
+    onNavigationButtonClick: () -> Unit
+) {
+    NordicAppBar(
+        text = text,
+        onNavigationButtonClick = { onNavigationButtonClick() },
         actions = {
             if (showProgress) {
                 CircularProgressIndicator(
@@ -74,10 +58,4 @@ internal fun ScannerAppBar(text: String, showProgress: Boolean = false, onNaviga
             }
         },
     )
-}
-
-@Preview
-@Composable
-private fun ScannerAppBarPreview() {
-    ScannerAppBar(text = "Test") { }
 }

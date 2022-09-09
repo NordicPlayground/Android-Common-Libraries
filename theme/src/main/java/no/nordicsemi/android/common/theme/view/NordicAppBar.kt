@@ -47,7 +47,7 @@ fun NordicAppBar(
     onNavigationButtonClick: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    SmallTopAppBar(
+    TopAppBar(
         title = { Text(text) },
         colors = TopAppBarDefaults.smallTopAppBarColors(
             scrolledContainerColor = MaterialTheme.colorScheme.primary,

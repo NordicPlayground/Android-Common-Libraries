@@ -46,8 +46,8 @@ dependencies {
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
 
-    api "com.google.dagger:hilt-android:2.43.1"
-    kapt "com.google.dagger:hilt-compiler:2.43.1"
+    api "com.google.dagger:hilt-android:2.43.2"
+    kapt "com.google.dagger:hilt-compiler:2.43.2"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
 
