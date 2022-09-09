@@ -50,6 +50,6 @@
     <string name="analytics_switch_dialog_button">Dismiss</string>
     <string name="analytics_permission_button">Click this button to change analytics permission settings.</string>
 
-    <string name="analytics_switch_title">Google Analytics</string>
-    <string name="analytics_switch_description">Allow Nordic gather analytic data.</string>
+    <string name="analytics_switch_title">Share analytics data</string>
+    <string name="analytics_switch_description">Click to read what kind of data we may collect.</string>
 </resources>
