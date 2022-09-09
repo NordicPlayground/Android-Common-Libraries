@@ -38,22 +38,28 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import no.nordicsemi.android.common.analytics.R
-import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewModel
 import no.nordicsemi.android.common.core.parseBold
 
 @Composable
 fun AnalyticsPermissionRequestDialog() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val data = viewModel.permissionData.collectAsState(initial = AnalyticsPermissionData()).value
+    var show by rememberSaveable { mutableStateOf(false) }
 
-    if (!data.wasInfoDialogShown) {
+    LaunchedEffect(viewModel) {
+        viewModel.permissionData.collectLatest { permissionData ->
+            show = !permissionData.wasInfoDialogShown
+        }
+    }
+
+    if (show) {
         AlertDialog(
             onDismissRequest = { viewModel.onDeclineButtonClick() },
             title = { Text(stringResource(id = R.string.analytics_dialog_title)) },
@@ -73,7 +79,9 @@ fun AnalyticsPermissionRequestDialog() {
                     Text(stringResource(id = R.string.analytics_dialog_decline))
                 }
             },
-            modifier = Modifier.fillMaxHeight(0.9f).fillMaxWidth(0.95f)
+            modifier = Modifier
+                .fillMaxHeight(0.9f)
+                .fillMaxWidth(0.95f)
         )
     }
 }
