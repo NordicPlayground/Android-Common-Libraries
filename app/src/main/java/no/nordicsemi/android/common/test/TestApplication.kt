@@ -32,7 +32,7 @@
 package no.nordicsemi.android.common.test
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class TestApplication : Application() {
-
-}
+@HiltAndroidApp
+class TestApplication : Application()

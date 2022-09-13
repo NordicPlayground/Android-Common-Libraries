@@ -59,8 +59,8 @@ dependencies {
     // Brings the new BluetoothLeScanner API to older platforms
     api "no.nordicsemi.android.support.v18:scanner:1.6.0"
 
-    api "com.google.dagger:hilt-android:2.43.1"
-    kapt "com.google.dagger:hilt-compiler:2.43.1"
+    api "com.google.dagger:hilt-android:2.43.2"
+    kapt "com.google.dagger:hilt-compiler:2.43.2"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
 
