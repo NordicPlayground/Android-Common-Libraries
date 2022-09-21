@@ -69,16 +69,14 @@ internal class ScannerViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
 
     private fun ScanningState.DevicesDiscovered.applyFilters(config: DevicesScanFilter) =
-        ScanningState.DevicesDiscovered(
-            devices.filter {
+        ScanningState.DevicesDiscovered(devices
+            .filter {
                 uuid == null ||
                 config.filterUuidRequired == false ||
                 it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
-            }.filter {
-                !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI
-            }.filter {
-                !config.filterWithNames || it.hadName
             }
+            .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
+            .filter { !config.filterWithNames || it.hadName }
         )
 
     fun setFilterUuid(uuid: ParcelUuid?) {
