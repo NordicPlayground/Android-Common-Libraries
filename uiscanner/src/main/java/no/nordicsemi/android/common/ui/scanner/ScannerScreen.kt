@@ -50,21 +50,26 @@ import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
 @Composable
 fun ScannerScreen(
     uuid: ParcelUuid?,
+    allowBack: Boolean = true,
     onResult: (ScannerScreenResult) -> Unit,
 ) {
     var isScanning by rememberSaveable { mutableStateOf(false) }
 
     Column {
-        ScannerAppBar(stringResource(id = R.string.scanner_screen), isScanning) {
-            onResult(ScanningCancelled)
+        if (allowBack) {
+            ScannerAppBar(stringResource(id = R.string.scanner_screen), isScanning) {
+                onResult(ScanningCancelled)
+            }
+        } else {
+            ScannerAppBar(stringResource(id = R.string.scanner_screen), isScanning)
         }
         RequireBluetooth { isLocationRequiredAndDisabled ->
             val viewModel = hiltViewModel<ScannerViewModel>().apply {
                 setFilterUuid(uuid)
             }
 
-            val result = viewModel.devices.collectAsState().value
-            val config = viewModel.config.collectAsState().value
+            val result by viewModel.devices.collectAsState()
+            val config by viewModel.config.collectAsState()
 
             FilterView(config) {
                 viewModel.setFilter(it)

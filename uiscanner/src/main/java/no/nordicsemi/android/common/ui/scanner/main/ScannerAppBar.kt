@@ -44,11 +44,11 @@ import no.nordicsemi.android.common.theme.view.NordicAppBar
 internal fun ScannerAppBar(
     text: String,
     showProgress: Boolean = false,
-    onNavigationButtonClick: () -> Unit
+    onNavigationButtonClick: (() -> Unit)? = null,
 ) {
     NordicAppBar(
         text = text,
-        onNavigationButtonClick = { onNavigationButtonClick() },
+        onNavigationButtonClick = onNavigationButtonClick,
         actions = {
             if (showProgress) {
                 CircularProgressIndicator(
