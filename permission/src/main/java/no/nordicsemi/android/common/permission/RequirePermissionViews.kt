@@ -59,6 +59,7 @@ fun RequireInternet(
 
 @Composable
 fun RequireBluetooth(
+    scanning: Boolean = true,
     onChanged: ((Boolean) -> Unit)? = null,
     content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
 ) {
@@ -70,9 +71,15 @@ fun RequireBluetooth(
 
     when (bluetoothPermissionState) {
         BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE -> BluetoothNotAvailableView()
-        BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED -> LocationPermissionRequiredView()
         BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED -> BluetoothPermissionRequiredView()
         BluetoothPermissionResult.BLUETOOTH_DISABLED -> BluetoothDisabledView()
-        BluetoothPermissionResult.ALL_GOOD -> content(isLocationRequiredAndDisabled)
+        BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED -> {
+            if (scanning) {
+                LocationPermissionRequiredView()
+            } else {
+                content(false)
+            }
+        }
+        BluetoothPermissionResult.ALL_GOOD -> content(scanning && isLocationRequiredAndDisabled)
     }
 }
