@@ -53,7 +53,7 @@ internal class ScannerViewModel @Inject constructor(
 ) : ViewModel() {
     private var uuid: ParcelUuid? = null
 
-    val config = MutableStateFlow(
+    val filterConfig = MutableStateFlow(
         DevicesScanFilter(
             filterUuidRequired = true,
             filterNearbyOnly = false,
@@ -61,12 +61,14 @@ internal class ScannerViewModel @Inject constructor(
         )
     )
 
-    val devices = config.combine(scannerRepository.getScannerState()) { config, result ->
-        when (result) {
-            is ScanningState.DevicesDiscovered -> result.applyFilters(config)
-            else -> result
+    val state = filterConfig
+        .combine(scannerRepository.getScannerState()) { config, result ->
+            when (result) {
+                is ScanningState.DevicesDiscovered -> result.applyFilters(config)
+                else -> result
+            }
         }
-    }.stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
+        .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
 
     private fun ScanningState.DevicesDiscovered.applyFilters(config: DevicesScanFilter) =
         ScanningState.DevicesDiscovered(devices
@@ -82,12 +84,16 @@ internal class ScannerViewModel @Inject constructor(
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
         if (uuid == null) {
-            config.value = config.value.copy(filterUuidRequired = null)
+            filterConfig.value = filterConfig.value.copy(filterUuidRequired = null)
         }
     }
 
     fun setFilter(config: DevicesScanFilter) {
-        this.config.value = config
+        this.filterConfig.value = config
+    }
+
+    fun refresh() {
+        scannerRepository.clear()
     }
 
     override fun onCleared() {

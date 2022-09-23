@@ -32,10 +32,14 @@ package no.nordicsemi.android.common.ui.scanner
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import no.nordicsemi.android.common.permission.RequireBluetooth
 import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.FilterView
@@ -60,19 +64,28 @@ fun ScannerScreen(
         RequireBluetooth(
             onChanged = { isScanning = it }
         ) { isLocationRequiredAndDisabled ->
-            val viewModel = hiltViewModel<ScannerViewModel>().apply {
-                setFilterUuid(uuid)
-            }
+            val viewModel = hiltViewModel<ScannerViewModel>()
+                .apply { setFilterUuid(uuid) }
 
-            val result by viewModel.devices.collectAsState()
-            val config by viewModel.config.collectAsState()
+            val state by viewModel.state.collectAsState()
+            val config by viewModel.filterConfig.collectAsState()
 
             FilterView(config) {
                 viewModel.setFilter(it)
             }
 
-            DevicesListView(isLocationRequiredAndDisabled, result) {
-                onResult(DeviceSelected(it))
+            val swipeRefreshState = rememberSwipeRefreshState(false)
+
+            SwipeRefresh(
+                state = swipeRefreshState,
+                onRefresh = { viewModel.refresh() },
+            ) {
+                DevicesListView(
+                    isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
+                    state = state,
+                    modifier = Modifier.fillMaxSize(),
+                    onClick = { onResult(DeviceSelected(it)) }
+                )
             }
         }
     }

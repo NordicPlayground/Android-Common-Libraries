@@ -45,7 +45,6 @@ import javax.inject.Inject
 class ScannerRepository @Inject internal constructor(
     private val devicesDataStore: DevicesDataStore
 ) {
-
     fun getScannerState(): Flow<ScanningState> =
         callbackFlow {
             val scanCallback: ScanCallback = object : ScanCallback() {
