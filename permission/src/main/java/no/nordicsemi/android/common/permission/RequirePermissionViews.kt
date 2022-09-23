@@ -31,8 +31,7 @@
 
 package no.nordicsemi.android.common.permission
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
@@ -44,10 +43,13 @@ import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredVi
 
 @Composable
 fun RequireInternet(
+    onChanged: ((Boolean) -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val internetPermissionState = viewModel.internetPermission.collectAsState().value
+    val internetPermissionState by viewModel.internetPermission.collectAsState()
+
+    onChanged?.invoke(internetPermissionState == InternetPermissionResult.ALL_GOOD)
 
     when (internetPermissionState) {
         InternetPermissionResult.INTERNET_DISABLED -> InternetNotAvailableView()
@@ -57,11 +59,14 @@ fun RequireInternet(
 
 @Composable
 fun RequireBluetooth(
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit
+    onChanged: ((Boolean) -> Unit)? = null,
+    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val bluetoothPermissionState = viewModel.bluetoothPermission.collectAsState().value
-    val isLocationRequiredAndDisabled = viewModel.locationPermission.collectAsState().value
+    val bluetoothPermissionState by viewModel.bluetoothPermission.collectAsState()
+    val isLocationRequiredAndDisabled by viewModel.locationPermission.collectAsState()
+
+    onChanged?.invoke(bluetoothPermissionState == BluetoothPermissionResult.ALL_GOOD)
 
     when (bluetoothPermissionState) {
         BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE -> BluetoothNotAvailableView()

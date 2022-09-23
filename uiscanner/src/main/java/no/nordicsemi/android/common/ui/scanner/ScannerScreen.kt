@@ -32,12 +32,7 @@ package no.nordicsemi.android.common.ui.scanner
 
 import android.os.ParcelUuid
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,7 +57,9 @@ fun ScannerScreen(
         } else {
             ScannerAppBar(title, isScanning)
         }
-        RequireBluetooth { isLocationRequiredAndDisabled ->
+        RequireBluetooth(
+            onChanged = { isScanning = it }
+        ) { isLocationRequiredAndDisabled ->
             val viewModel = hiltViewModel<ScannerViewModel>().apply {
                 setFilterUuid(uuid)
             }
@@ -76,10 +73,6 @@ fun ScannerScreen(
 
             DevicesListView(isLocationRequiredAndDisabled, result) {
                 onResult(DeviceSelected(it))
-            }
-
-            LaunchedEffect(result.isRunning()) {
-                isScanning = result.isRunning()
             }
         }
     }
