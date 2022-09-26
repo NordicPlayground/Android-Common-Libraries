@@ -32,37 +32,66 @@
 package no.nordicsemi.android.common.logger
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
-import no.nordicsemi.android.log.LogSession
 import no.nordicsemi.android.log.Logger
 import no.nordicsemi.android.log.annotation.LogLevel
 
-class NordicLogger @AssistedInject constructor(
-    @ApplicationContext private val context: Context,
-    private val appRunner: LoggerAppRunner,
-    @Assisted("appName") private val appName: String,
-    @Assisted("profile") private val profile: String?,
-    @Assisted("key") private val key: String,
-) {
-    private var logSession: LogSession? = null
+private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
+private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
 
+/**
+ * Creates a new instance of the logger
+ *
+ * @param context the application context.
+ * @param profile The profile name. This name will be shown in nRF Logger next to the app's name,
+ *                e.g. nRF Toolbox "Proximity" in the navigation menu.
+ * @param key The key are use to group the logs. Usually, the key is the device MAC address.
+ * @param name An optional identifier for the log session, usually a device name.
+ */
+class NordicLogger @AssistedInject constructor(
+    @ApplicationContext val context: Context,
+    @Assisted("profile") profile: String?,
+    @Assisted("key") key: String,
+    @Assisted("name") name: String?,
+) {
+    private val logSession = Logger.newSession(context, profile, key, name)
+
+    /**
+     * Logs the given message with the given log level.
+     *
+     * If nRF Logger is not installed, this method does nothing.
+     */
     fun log(@LogLevel level: Int, message: String) {
-        val logSession = getLogger()
         Logger.log(logSession, level, message)
     }
 
-    fun openLogger() {
-        appRunner.runLogger(logSession?.sessionUri)
-    }
+    companion object {
 
-    fun restartSession() {
-        logSession = null
-    }
+        /**
+         * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
+         */
+        fun launch(context: Context, logger: NordicLogger? = null) {
+            val packageManger = context.packageManager
 
-    private fun getLogger(): LogSession? {
-        logSession = logSession ?: Logger.newSession(context, profile, key, appName)
-        return logSession
+            // Make sure nRF Logger is installed.
+            val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) ?: run {
+                with (Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))) {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(this)
+                }
+                return@launch
+            }
+
+            // Start nRF Logger and show the log session, or the main screen if session does not exist.
+            with (logger?.logSession?.sessionUri?.let { Intent(Intent.ACTION_VIEW, it) } ?: intent) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(this)
+            }
+        }
+
     }
 }
