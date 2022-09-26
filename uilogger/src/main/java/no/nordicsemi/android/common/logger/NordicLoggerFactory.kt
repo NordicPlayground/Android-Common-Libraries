@@ -37,9 +37,18 @@ import dagger.assisted.AssistedFactory
 @AssistedFactory
 interface NordicLoggerFactory {
 
+    /**
+     * Creates a new instance of the logger
+     *
+     * @param profile The profile name. This name will be shown in nRF Logger next to the app's name,
+     *                e.g. nRF Toolbox "Proximity" in the navigation menu.
+     * @param key The key are use to group the logs. Usually, the key is the device MAC address.
+     * @param name An optional identifier for the log session, usually a device name.
+     */
     fun create(
-        @Assisted("appName") appName: String,
         @Assisted("profile") profile: String?,
-        @Assisted("key") key: String
+        @Assisted("key") key: String,
+        @Assisted("name") name: String?,
     ): NordicLogger
+
 }
