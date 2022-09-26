@@ -42,7 +42,6 @@ dependencies {
     implementation project(":theme")
     implementation project(":navigation")
 
-    implementation "androidx.compose.material3:material3:1.0.0-beta02"
     implementation "com.google.accompanist:accompanist-flowlayout:0.26.2-beta"
 
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -50,11 +49,13 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
+    // Material 3
+    implementation "androidx.compose.material3:material3:1.0.0-beta03"
     // Material design icons
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Integration with activities
-    implementation "androidx.activity:activity-compose:1.6.0-rc02"
+    implementation "androidx.activity:activity-compose:1.6.0"
 
     // Brings the new BluetoothLeScanner API to older platforms
     api "no.nordicsemi.android.support.v18:scanner:1.6.0"
