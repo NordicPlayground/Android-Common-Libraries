@@ -93,5 +93,27 @@ class NordicLogger @AssistedInject constructor(
             }
         }
 
+        /**
+         * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
+         */
+        fun launch(context: Context, sessionUri: Uri? = null) {
+            val packageManger = context.packageManager
+
+            // Make sure nRF Logger is installed.
+            val intent = packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) ?: run {
+                with (Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))) {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(this)
+                }
+                return@launch
+            }
+
+            // Start nRF Logger and show the log session, or the main screen if session does not exist.
+            with (sessionUri?.let { Intent(Intent.ACTION_VIEW, it) } ?: intent) {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(this)
+            }
+        }
+
     }
 }
