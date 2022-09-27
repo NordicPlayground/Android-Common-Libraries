@@ -1,14 +1,15 @@
 package no.nordicsemi.android.common.theme.view
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.view.internal.BigIcon
 import no.nordicsemi.android.common.theme.view.internal.Hint
@@ -72,4 +73,14 @@ fun WarningView(
 
         content()
     }
+}
+
+@Preview
+@Composable
+fun WarningViewPreview() {
+    WarningView(
+        imageVector = Icons.Filled.Warning,
+        title = "Warning",
+        hint = "This is a warning",
+    )
 }

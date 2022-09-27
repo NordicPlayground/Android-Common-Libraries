@@ -48,8 +48,8 @@ import androidx.compose.ui.unit.sp
 fun SectionTitle(
     painter: Painter,
     title: String,
+    modifier: Modifier = Modifier,
     menu: @Composable (() -> Unit)? = null,
-    modifier: Modifier = Modifier.fillMaxWidth()
 ) {
     Row(
         modifier = modifier,
@@ -75,8 +75,8 @@ fun SectionTitle(
 fun SectionTitle(
     icon: ImageVector,
     title: String,
+    modifier: Modifier = Modifier,
     menu: @Composable (() -> Unit)? = null,
-    modifier: Modifier = Modifier.fillMaxWidth()
 ) {
     SectionTitle(
         painter = rememberVectorPainter(image = icon),

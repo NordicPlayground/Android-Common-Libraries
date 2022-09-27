@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.R
@@ -23,7 +25,7 @@ fun ProgressItem(
     status: ProgressItemStatus,
     modifier: Modifier = Modifier,
     iconRightPadding: Dp = 16.dp,
-    content: @Composable () -> Unit = {}
+    content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Row(
         modifier = modifier,
@@ -36,12 +38,13 @@ fun ProgressItem(
         )
         Spacer(modifier = Modifier.width(iconRightPadding))
         Column {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = status.toTextColor(),
-            )
-            content()
+            ProvideTextStyle(value = MaterialTheme.typography.bodyMedium) {
+                Text(
+                    text = text,
+                    color = status.toTextColor(),
+                )
+                content()
+            }
         }
     }
 }
@@ -73,5 +76,26 @@ private fun ProgressItemStatus.toImageRes(): Int {
         ProgressItemStatus.WORKING -> R.drawable.ic_arrow_right
         ProgressItemStatus.SUCCESS -> R.drawable.ic_check
         ProgressItemStatus.ERROR -> R.drawable.ic_cross
+    }
+}
+
+@Preview
+@Composable
+fun ProgressItemPreview() {
+    MaterialTheme {
+        ProgressItem(
+            text = "Uploading",
+            status = ProgressItemStatus.WORKING,
+        ) {
+            LinearProgressIndicator(
+                progress = 0.3f,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = "30%",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End
+            )
+        }
     }
 }
