@@ -33,6 +33,7 @@ package no.nordicsemi.android.common.theme.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedCard
@@ -45,14 +46,14 @@ import androidx.compose.ui.unit.dp
 fun ScreenSection(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     OutlinedCard(
         modifier = modifier,
     ) {
         val columnModifier = if (onClick != null) {
             modifier
-                .clickable { onClick.invoke() }
+                .clickable { onClick() }
                 .fillMaxWidth()
                 .padding(16.dp)
         } else {
