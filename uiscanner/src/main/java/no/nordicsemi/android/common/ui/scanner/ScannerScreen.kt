@@ -70,9 +70,10 @@ fun ScannerScreen(
             val state by viewModel.state.collectAsState()
             val config by viewModel.filterConfig.collectAsState()
 
-            FilterView(config) {
-                viewModel.setFilter(it)
-            }
+            FilterView(
+                config = config,
+                onChanged = { viewModel.setFilter(it) }
+            )
 
             val swipeRefreshState = rememberSwipeRefreshState(false)
 
