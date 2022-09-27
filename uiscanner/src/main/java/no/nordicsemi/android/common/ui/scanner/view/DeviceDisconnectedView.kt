@@ -109,5 +109,8 @@ fun DeviceDisconnectedView(reason: Reason, navigateUp: () -> Unit) {
 @Preview
 @Composable
 fun DeviceDisconnectedView_Preview() {
-    DeviceConnectingView { }
+    DeviceDisconnectedView(
+        reason = Reason.MISSING_SERVICE,
+        navigateUp = {}
+    )
 }

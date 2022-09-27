@@ -108,5 +108,7 @@ fun DeviceConnectingView(navigateUp: () -> Unit) {
 @Preview
 @Composable
 fun DeviceConnectingView_Preview() {
-    DeviceConnectingView { }
+    DeviceConnectingView(
+        navigateUp = {}
+    )
 }
