@@ -31,13 +31,13 @@
 
 package no.nordicsemi.android.common.ui.scanner.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.view.CircularIcon
 import no.nordicsemi.android.common.theme.view.ScreenSection
 import no.nordicsemi.android.common.ui.scanner.R
 
@@ -55,25 +56,17 @@ enum class Reason {
 }
 
 @Composable
-fun DeviceDisconnectedView(reason: Reason, navigateUp: () -> Unit) {
+fun DeviceDisconnectedView(
+    reason: Reason,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit = {},
+) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScreenSection {
-            Icon(
-                imageVector = Icons.Default.HighlightOff,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.secondary,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp)
-            )
+            CircularIcon(imageVector = Icons.Default.HighlightOff)
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -100,9 +93,7 @@ fun DeviceDisconnectedView(reason: Reason, navigateUp: () -> Unit) {
 
         Spacer(modifier = Modifier.size(16.dp))
 
-        Button(onClick = { navigateUp() }) {
-            Text(text = stringResource(id = R.string.action_go_up))
-        }
+        content()
     }
 }
 
@@ -111,6 +102,10 @@ fun DeviceDisconnectedView(reason: Reason, navigateUp: () -> Unit) {
 fun DeviceDisconnectedView_Preview() {
     DeviceDisconnectedView(
         reason = Reason.MISSING_SERVICE,
-        navigateUp = {}
+        content = {
+            Button(onClick = {}) {
+                Text(text = "Retry")
+            }
+        }
     )
 }

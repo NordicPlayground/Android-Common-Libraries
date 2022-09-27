@@ -32,19 +32,19 @@
 package no.nordicsemi.android.common.theme.view
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ScreenSection(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(16.dp),
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -52,21 +52,26 @@ fun ScreenSection(
         modifier = modifier,
     ) {
         val columnModifier = if (onClick != null) {
-            modifier
-                .clickable { onClick() }
-                .fillMaxWidth()
-                .padding(16.dp)
+            Modifier.clickable { onClick() }
         } else {
-            modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            Modifier
         }
 
         Column(
-            modifier = columnModifier,
+            modifier = columnModifier
+                .fillMaxWidth()
+                .padding(contentPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             content()
         }
+    }
+}
+
+@Preview
+@Composable
+fun ScreenSectionPreview() {
+    ScreenSection {
+        Text(text = "Test")
     }
 }
