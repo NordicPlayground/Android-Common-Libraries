@@ -41,16 +41,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.view.CircularIcon
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
 @Composable
 fun DeviceListItem(
-    device: DiscoveredBluetoothDevice,
+    name: String?,
+    address: String,
     modifier: Modifier = Modifier,
-    extras: @Composable (DiscoveredBluetoothDevice) -> Unit = {},
+    extras: @Composable () -> Unit = {},
 ) {
     Row(
         modifier = modifier,
@@ -65,7 +66,7 @@ fun DeviceListItem(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            device.displayName?.let { name ->
+            name?.let { name ->
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium
@@ -76,11 +77,20 @@ fun DeviceListItem(
                     modifier = Modifier.alpha(0.7f)
                 )
             Text(
-                text = device.address,
+                text = address,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
 
-        extras(device)
+        extras()
     }
+}
+
+@Preview
+@Composable
+fun DeviceListItemPreview() {
+    DeviceListItem(
+        name = "Device name",
+        address = "AA:BB:CC:DD:EE:FF"
+    )
 }

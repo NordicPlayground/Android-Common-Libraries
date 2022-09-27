@@ -54,7 +54,9 @@ fun DevicesListView(
     state: ScanningState,
     onClick: (DiscoveredBluetoothDevice) -> Unit,
     modifier: Modifier = Modifier,
-    row: @Composable (DiscoveredBluetoothDevice) -> Unit = { DeviceListItem(it) },
+    row: @Composable (DiscoveredBluetoothDevice) -> Unit = {
+        DeviceListItem(it.displayName, it.address)
+   },
 ) {
     LazyColumn(
         modifier = modifier,
