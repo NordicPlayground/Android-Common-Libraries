@@ -45,12 +45,14 @@ internal class NavigationViewModel @Inject constructor(
     var navigationWrapper: NavigationWrapper? = null
 
     init {
-        navigationManager.navigationDestination.onEach { destination ->
-            navigationWrapper?.let {
-                it.consumeEvent(destination)
-                consumeLastEvent()
+        navigationManager.navigationDestination
+            .onEach { destination ->
+                navigationWrapper?.let {
+                    it.consumeEvent(destination)
+                    consumeLastEvent()
+                }
             }
-        }.launchIn(viewModelScope)
+            .launchIn(viewModelScope)
     }
 
     fun navigateUp() {
