@@ -39,10 +39,6 @@
     <string name="filter_nearby">Nearby</string>
     <string name="filter_name">Name</string>
 
-    <string name="devices">Scanning</string>
-    <string name="dialog">Dialog</string>
-    <string name="cancel">Cancel</string>
-
     <string name="device_no_name">No name</string>
     <string name="bonded_devices">Bonded devices</string>
     <string name="discovered_devices">Discovered devices</string>
