@@ -33,7 +33,28 @@
     <string name="app_name">Nordic Test App</string>
 
     <string name="title_main">Nordic Test App</string>
-    <string name="description">This is a test app for testing various things.</string>
 
-    <string name="title_details">Details</string>
+    <string name="text_default">This is a sample text with default style.</string>
+
+    <string name="text_card_outlined">This is a text in Outlined Card.</string>
+    <string name="text_card">This is a text in a normal Card.</string>
+
+    <string name="wizard_step_completed">Completed</string>
+    <string name="wizard_text_completed">This has been completed</string>
+    <string name="wizard_step_current">Current</string>
+    <string name="wizard_text_current">This is current step</string>
+    <string name="wizard_step_in_progress">In progress…</string>
+    <string name="wizard_task_completed">Done</string>
+    <string name="wizard_task_in_progress">This is now ongoing…</string>
+    <string name="wizard_task_next">Next</string>
+    <string name="wizard_task_error">Error: Oh no!</string>
+    <string name="wizard_step_inactive">Inactive</string>
+    <string name="wizard_text_inactive">This is not yet available</string>
+
+    <string name="action_scanner">Open Scanner</string>
+    <string name="action_no_opr">Button</string>
+    <string name="action_disabled">Disabled</string>
+    <string name="action_destroy">Destroy</string>
+
+    <string name="option">Important option</string>
 </resources>

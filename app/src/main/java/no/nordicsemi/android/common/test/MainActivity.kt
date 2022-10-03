@@ -33,22 +33,14 @@ package no.nordicsemi.android.common.test
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dagger.hilt.android.AndroidEntryPoint
 import no.nordicsemi.android.common.navigation.*
 import no.nordicsemi.android.common.permission.RequireBluetooth
+import no.nordicsemi.android.common.test.view.mainDestinations
 import no.nordicsemi.android.common.theme.NordicActivity
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.NordicAppBar
@@ -67,42 +59,7 @@ class MainActivity : NordicActivity() {
     }
 }
 // --------------------------------------------------------------------------------
-val Main = DestinationId("main")
 
-val mainDestinations = ComposeDestinations(listOf(
-    ComposeDestination(Main) { navigationManager ->
-        MainScreen(navigationManager)
-     },
-))
-
-@Composable
-fun MainScreen(
-    navigationManager: NavigationManager,
-) {
-    Column {
-        NordicAppBar(
-            text = stringResource(id = R.string.title_main)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(text = stringResource(id = R.string.description))
-                Button(
-                    modifier = Modifier.padding(16.dp),
-                    onClick = { navigationManager.navigateTo(Details, DetailsParams(3)) },
-                ) {
-                    Text(text = "Click me")
-                }
-            }
-        }
-    }
-}
 
 // ---------------------------------------------------------------------------------------------
 val Details = DestinationId("details")
@@ -123,7 +80,7 @@ fun DetailsScreen(
 ) {
     Column {
         NordicAppBar(
-            text = stringResource(id = R.string.title_details),
+            text = "Kaczka",
             onNavigationButtonClick = { navigationManager.navigateUp() },
         )
         RequireBluetooth  {
