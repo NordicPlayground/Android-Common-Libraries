@@ -61,9 +61,7 @@ class MainActivity : NordicActivity() {
 
         setContent {
             NordicTheme {
-                Surface {
-                    NavigationView(mainDestinations + otherDestinations)
-                }
+                NavigationView(mainDestinations + otherDestinations)
             }
         }
     }

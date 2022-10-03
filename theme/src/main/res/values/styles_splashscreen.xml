@@ -32,11 +32,11 @@
 <resources>
 
     <!-- Splash screen customization per API. -->
-    <style name="AppTheme.SplashScreenBase">
+    <style name="NordicTheme.SplashScreenBase">
         <!-- Draw splash screen an window background. -->
         <item name="android:windowBackground">@drawable/ic_splash_screen</item>
     </style>
 
     <!-- Splash screen customization per API. -->
-    <style name="AppTheme.SplashScreen" parent="AppTheme.SplashScreenBase"/>
+    <style name="NordicTheme.SplashScreen" parent="NordicTheme.SplashScreenBase"/>
 </resources>
