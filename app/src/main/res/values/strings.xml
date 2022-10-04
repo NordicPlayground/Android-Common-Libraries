@@ -52,7 +52,7 @@
     <string name="wizard_text_inactive">This is not yet available</string>
 
     <string name="action_scanner">Open Scanner</string>
-    <string name="action_no_opr">Button</string>
+    <string name="action_no_op">Button</string>
     <string name="action_disabled">Disabled</string>
     <string name="action_destroy">Destroy</string>
 

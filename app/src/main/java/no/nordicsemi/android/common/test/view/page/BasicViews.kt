@@ -73,7 +73,7 @@ private fun Buttons() {
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Button(onClick = { }) {
-            Text(text = stringResource(id = R.string.action_no_opr))
+            Text(text = stringResource(id = R.string.action_no_op))
         }
 
         Button(

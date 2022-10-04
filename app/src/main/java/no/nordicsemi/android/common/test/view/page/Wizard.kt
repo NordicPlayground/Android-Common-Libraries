@@ -46,7 +46,7 @@ private fun Wizard() {
                 title = stringResource(id = R.string.wizard_step_completed),
                 state = WizardStepState.COMPLETED,
                 decor = WizardStepAction.Action(
-                    text = stringResource(id = R.string.action_no_opr),
+                    text = stringResource(id = R.string.action_no_op),
                     onClick = { }
                 ),
             ) {
@@ -57,7 +57,7 @@ private fun Wizard() {
                 title = stringResource(id = R.string.wizard_step_current),
                 state = WizardStepState.CURRENT,
                 decor = WizardStepAction.Action(
-                    text = stringResource(id = R.string.action_no_opr),
+                    text = stringResource(id = R.string.action_no_op),
                     onClick = { }
                 ),
             ) {
@@ -112,7 +112,7 @@ private fun Wizard() {
                 title = stringResource(id = R.string.wizard_step_inactive),
                 state = WizardStepState.INACTIVE,
                 decor = WizardStepAction.Action(
-                    text = stringResource(id = R.string.action_no_opr),
+                    text = stringResource(id = R.string.action_no_op),
                     dangerous = true,
                     onClick = { }
                 ),
