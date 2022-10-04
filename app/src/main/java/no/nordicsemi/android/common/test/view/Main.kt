@@ -16,6 +16,7 @@ import no.nordicsemi.android.common.navigation.NavigationManager
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.view.page.BasicsPage
 import no.nordicsemi.android.common.test.view.page.Connection
+import no.nordicsemi.android.common.test.view.page.Warning
 import no.nordicsemi.android.common.test.view.page.Wizard
 import no.nordicsemi.android.common.theme.view.NordicAppBar
 import no.nordicsemi.android.common.theme.view.PagerView
@@ -50,6 +51,7 @@ fun MainScreen(
             BasicsPage,
             Wizard,
             Connection,
+            Warning,
         ))
         PagerView(
             viewEntity = pages,

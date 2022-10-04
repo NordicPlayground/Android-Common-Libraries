@@ -57,4 +57,8 @@
     <string name="action_destroy">Destroy</string>
 
     <string name="option">Important option</string>
+
+    <string name="warning_title">No parachute</string>
+    <string name="warning_text">It\'s too late to do anything.</string>
+    <string name="warning_button">Try anyway.</string>
 </resources>

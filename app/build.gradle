@@ -58,6 +58,8 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.0.0-beta03"
     // Integration with activities
     implementation "androidx.activity:activity-compose:1.6.0"
+    // Extended icons
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
     implementation 'com.google.dagger:hilt-android:2.43.2'
     kapt 'com.google.dagger:hilt-compiler:2.43.2'
