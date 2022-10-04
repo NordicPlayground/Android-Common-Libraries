@@ -11,6 +11,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.internal.BigIcon
 import no.nordicsemi.android.common.theme.view.internal.Hint
 import no.nordicsemi.android.common.theme.view.internal.Title
@@ -27,7 +28,7 @@ fun WarningView(
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp),
+        modifier = modifier,
     ) {
         BigIcon(imageVector = imageVector)
 
@@ -57,7 +58,6 @@ fun WarningView(
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp),
     ) {
         BigIcon(imageVector = imageVector)
 
@@ -78,9 +78,11 @@ fun WarningView(
 @Preview
 @Composable
 fun WarningViewPreview() {
-    WarningView(
-        imageVector = Icons.Filled.Warning,
-        title = "Warning",
-        hint = "This is a warning",
-    )
+    NordicTheme {
+        WarningView(
+            imageVector = Icons.Filled.Warning,
+            title = "Warning",
+            hint = "This is a warning view",
+        )
+    }
 }
