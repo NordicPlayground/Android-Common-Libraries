@@ -34,7 +34,18 @@
 
     <string name="title_main">Nordic Test App</string>
 
-    <string name="text_default">This is a sample text with default style.</string>
+    <string name="text_title_small">Title Small</string>
+    <string name="text_title_medium">Title Medium</string>
+    <string name="text_title_large">Title Large</string>
+    <string name="text_body_small">Body Small</string>
+    <string name="text_body_medium">Body Medium</string>
+    <string name="text_body_large">Body Large (default)</string>
+    <string name="text_display_small">Display Small</string>
+    <string name="text_display_medium">Display Medium</string>
+    <string name="text_display_large">Display Large</string>
+    <string name="text_label_small">Label Small</string>
+    <string name="text_label_medium">Label Medium</string>
+    <string name="text_label_large">Label Large</string>
 
     <string name="text_card_outlined">This is a text in Outlined Card.</string>
     <string name="text_card">This is a text in a normal Card.</string>
@@ -60,5 +71,5 @@
 
     <string name="warning_title">No parachute</string>
     <string name="warning_text">It\'s too late to do anything.</string>
-    <string name="warning_button">Try anyway.</string>
+    <string name="warning_button">Try anyway</string>
 </resources>

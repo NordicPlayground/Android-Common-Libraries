@@ -3,6 +3,7 @@ package no.nordicsemi.android.common.test.view.page
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -12,12 +13,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
+import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 
 val BasicsPage = PagerViewItem("Basics") {
@@ -58,10 +61,18 @@ private fun BasicViews(
 
 @Composable
 private fun Device() {
-    DeviceListItem(
-        name = "Nordic Blinky",
-        address = "AA:BB:CC:DD:EE:FF",
-    )
+    Box(modifier = Modifier
+        .clip(RoundedCornerShape(10.dp))
+        .clickable { }
+        .padding(8.dp)
+    ) {
+        DeviceListItem(
+            name = "Nordic Blinky",
+            address = "AA:BB:CC:DD:EE:FF",
+        ) {
+            RssiIcon(rssi = -40)
+        }
+    }
 }
 
 @Composable
@@ -130,11 +141,6 @@ private fun OtherWidgets() {
 @Composable
 private fun BasicViews() {
     Column {
-        // Text samples
-        Text(text = stringResource(id = R.string.text_default))
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         Buttons()
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -14,10 +14,7 @@ import no.nordicsemi.android.common.navigation.ComposeDestinations
 import no.nordicsemi.android.common.navigation.DestinationId
 import no.nordicsemi.android.common.navigation.NavigationManager
 import no.nordicsemi.android.common.test.R
-import no.nordicsemi.android.common.test.view.page.BasicsPage
-import no.nordicsemi.android.common.test.view.page.Connection
-import no.nordicsemi.android.common.test.view.page.Warning
-import no.nordicsemi.android.common.test.view.page.Wizard
+import no.nordicsemi.android.common.test.view.page.*
 import no.nordicsemi.android.common.theme.view.NordicAppBar
 import no.nordicsemi.android.common.theme.view.PagerView
 import no.nordicsemi.android.common.theme.view.PagerViewEntity
@@ -49,6 +46,7 @@ fun MainScreen(
         )
         val pages = PagerViewEntity(listOf(
             BasicsPage,
+            Fonts,
             Wizard,
             Connection,
             Warning,
