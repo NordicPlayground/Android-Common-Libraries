@@ -74,7 +74,8 @@ fun PagerView(
         val tabIndex = pagerState.currentPage
         val coroutineScope = rememberCoroutineScope()
 
-        TabRow(
+        ScrollableTabRow(
+            edgePadding = 0.dp,
             selectedTabIndex = tabIndex,
             containerColor = colorResource(id = R.color.appBarColor),
             contentColor = MaterialTheme.colorScheme.onPrimary,
