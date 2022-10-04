@@ -4,8 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.CircularIcon
 import no.nordicsemi.android.common.theme.view.PagerViewItem
+import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 
 val BasicsPage = PagerViewItem("Basics") {
     BasicViews(
@@ -60,9 +58,10 @@ private fun BasicViews(
 
 @Composable
 private fun Device() {
-    Row {
-        CircularIcon(imageVector = Icons.Filled.Face)
-    }
+    DeviceListItem(
+        name = "Nordic Blinky",
+        address = "AA:BB:CC:DD:EE:FF",
+    )
 }
 
 @Composable
