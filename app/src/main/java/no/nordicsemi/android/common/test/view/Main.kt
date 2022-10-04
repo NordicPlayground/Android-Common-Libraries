@@ -1,6 +1,7 @@
 package no.nordicsemi.android.common.test.view
 
 import android.widget.Toast
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -249,16 +250,27 @@ private fun Wizard() {
                     text = stringResource(id = R.string.wizard_text_completed),
                     status = ProgressItemStatus.SUCCESS,
                 )
+
+                val infiniteTransition = rememberInfiniteTransition()
+                val progress by infiniteTransition.animateFloat(
+                    initialValue = 0.0f,
+                    targetValue = 1.0f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(10000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Restart
+                    )
+                )
+
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_task_in_progress),
                     status = ProgressItemStatus.WORKING,
                 ) {
                     LinearProgressIndicator(
-                        progress = 0.3f,
+                        progress = progress,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Text(
-                        text = "30%",
+                        text = "%.1f%%".format(progress * 100),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.End
                     )
