@@ -32,7 +32,7 @@
 package no.nordicsemi.android.common.theme.view
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -41,6 +41,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -56,13 +58,17 @@ class PagerViewItem(
     val drawView: @Composable () -> Unit,
 )
 
-@Suppress("unused")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun PagerView(viewEntity: PagerViewEntity) {
+fun PagerView(
+    viewEntity: PagerViewEntity,
+    modifier: Modifier = Modifier,
+    itemSpacing: Dp = 0.dp,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    verticalAlignment: Alignment.Vertical = Alignment.Top,
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier,
     ) {
         val pagerState = rememberPagerState()
         val tabIndex = pagerState.currentPage
@@ -97,6 +103,9 @@ fun PagerView(viewEntity: PagerViewEntity) {
         HorizontalPager(
             count = viewEntity.items.size,
             state = pagerState,
+            itemSpacing = itemSpacing,
+            contentPadding = contentPadding,
+            verticalAlignment = verticalAlignment,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
