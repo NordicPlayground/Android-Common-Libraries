@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.logger.view.LoggerAppBarIcon
+import androidx.compose.material3.ExperimentalMaterial3Api
 import no.nordicsemi.android.common.navigation.ComposeDestination
 import no.nordicsemi.android.common.navigation.ComposeDestinations
 import no.nordicsemi.android.common.navigation.DestinationId
@@ -41,6 +42,7 @@ val mainDestinations = ComposeDestinations(listOf(
     },
 ))
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navigationManager: NavigationManager,
