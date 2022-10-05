@@ -68,10 +68,12 @@ private fun Wizard() {
                 title = stringResource(id = R.string.wizard_step_in_progress),
                 state = WizardStepState.CURRENT,
                 decor = WizardStepAction.ProgressIndicator,
+                showVerticalDivider = false,
             ) {
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_text_completed),
                     status = ProgressItemStatus.SUCCESS,
+                    iconRightPadding = 24.dp,
                 )
 
                 val infiniteTransition = rememberInfiniteTransition()
@@ -87,6 +89,7 @@ private fun Wizard() {
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_task_in_progress),
                     status = ProgressItemStatus.WORKING,
+                    iconRightPadding = 24.dp,
                 ) {
                     LinearProgressIndicator(
                         progress = progress,
@@ -98,13 +101,17 @@ private fun Wizard() {
                         textAlign = TextAlign.End
                     )
                 }
+
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_task_next),
                     status = ProgressItemStatus.DISABLED,
+                    iconRightPadding = 24.dp,
                 )
+
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_task_error),
                     status = ProgressItemStatus.ERROR,
+                    iconRightPadding = 24.dp,
                 )
             }
             WizardStepComponent(
