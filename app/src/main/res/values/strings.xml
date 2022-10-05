@@ -71,5 +71,6 @@
 
     <string name="warning_title">No parachute</string>
     <string name="warning_text">It\'s too late to do anything.</string>
-    <string name="warning_button">Try anyway</string>
+    <string name="warning_normal">Try anyway</string>
+    <string name="warning_dangerous">Give up</string>
 </resources>
