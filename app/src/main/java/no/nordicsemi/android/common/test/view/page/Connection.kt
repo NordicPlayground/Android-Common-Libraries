@@ -1,5 +1,6 @@
 package no.nordicsemi.android.common.test.view.page
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -28,29 +29,42 @@ private fun Connection() {
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         NoDeviceView()
 
-        DeviceConnectingView {
-            Button(onClick = { }) {
+        DeviceConnectingView { padding ->
+            Button(
+                onClick = { },
+                modifier = Modifier.padding(padding),
+            ) {
                 Text(text = stringResource(id = R.string.action_no_op))
             }
         }
 
-        DeviceDisconnectedView(reason = Reason.LINK_LOSS) {
-            Button(onClick = { }) {
+        DeviceDisconnectedView(reason = Reason.LINK_LOSS) { padding ->
+            Button(
+                onClick = { },
+                modifier = Modifier.padding(padding),
+            ) {
                 Text(text = stringResource(id = R.string.action_no_op))
             }
         }
 
-        DeviceDisconnectedView(reason = Reason.MISSING_SERVICE) {
-            Button(onClick = { }) {
+        DeviceDisconnectedView(reason = Reason.MISSING_SERVICE) { padding ->
+            Button(
+                onClick = { },
+                modifier = Modifier.padding(padding),
+            ) {
                 Text(text = stringResource(id = R.string.action_no_op))
             }
         }
 
-        DeviceDisconnectedView(reason = Reason.USER) {
-            Button(onClick = { }) {
+        DeviceDisconnectedView(reason = Reason.USER) { padding ->
+            Button(
+                onClick = { },
+                modifier = Modifier.padding(padding),
+            ) {
                 Text(text = stringResource(id = R.string.action_no_op))
             }
         }

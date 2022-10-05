@@ -31,14 +31,12 @@
 
 package no.nordicsemi.android.common.ui.scanner.view
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,56 +46,61 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.view.CircularIcon
-import no.nordicsemi.android.common.theme.view.ScreenSection
 import no.nordicsemi.android.common.ui.scanner.R
 
 @Composable
 fun DeviceConnectingView(
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit = {}
+    content: @Composable ColumnScope.(PaddingValues) -> Unit = {}
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenSection {
-            CircularIcon(imageVector = Icons.Default.HourglassTop)
+        OutlinedCard(
+            modifier = Modifier
+                .widthIn(max = 460.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CircularIcon(imageVector = Icons.Default.HourglassTop)
 
-            Spacer(modifier = Modifier.size(16.dp))
+                Text(
+                    text = stringResource(id = R.string.device_connecting),
+                    style = MaterialTheme.typography.titleMedium
+                )
 
-            Text(
-                text = stringResource(id = R.string.device_connecting),
-                style = MaterialTheme.typography.titleMedium
-            )
+                Text(
+                    text = stringResource(id = R.string.device_explanation),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.device_explanation),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Spacer(modifier = Modifier.size(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.device_please_wait),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
+                Text(
+                    text = stringResource(id = R.string.device_please_wait),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.size(16.dp))
-
-        content()
+        content(PaddingValues(top = 16.dp))
     }
 }
 
 @Preview
 @Composable
 fun DeviceConnectingView_Preview() {
-    DeviceConnectingView {
-        Button(onClick = {}) {
+    DeviceConnectingView { padding ->
+        Button(
+            onClick = {},
+            modifier = Modifier.padding(padding)
+        ) {
             Text(text = "Cancel")
         }
     }

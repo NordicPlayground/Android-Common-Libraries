@@ -37,6 +37,7 @@ private fun BasicViews(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(
@@ -45,15 +46,9 @@ private fun BasicViews(
             Text(text = stringResource(id = R.string.action_scanner))
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Device()
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         BasicViews()
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Cards()
     }
