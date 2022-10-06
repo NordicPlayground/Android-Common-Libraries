@@ -42,26 +42,22 @@ dependencies {
     implementation project(":theme")
     implementation project(":navigation")
 
-    implementation "com.google.accompanist:accompanist-flowlayout:0.26.2-beta"
+    implementation "com.google.accompanist:accompanist-flowlayout:0.26.4-beta"
 
+    // Fundamental components of compose UI
     implementation "androidx.compose.ui:ui:$compose_version"
-    // Required for Compose Preview
+    // Previews
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material 3
-    implementation "androidx.compose.material3:material3:1.0.0-beta03"
+    implementation "androidx.compose.material3:material3:$material3_version"
     // Material design icons
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    // Integration with activities
-    implementation "androidx.activity:activity-compose:1.6.0"
 
-    // Brings the new BluetoothLeScanner API to older platforms
-    api "no.nordicsemi.android.support.v18:scanner:1.6.0"
-
-    api "com.google.dagger:hilt-android:2.43.2"
-    kapt "com.google.dagger:hilt-compiler:2.43.2"
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
 

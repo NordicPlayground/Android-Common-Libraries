@@ -59,22 +59,24 @@ android {
 
 dependencies {
     implementation project(":core")
+    implementation project(":theme")
 
-    implementation "androidx.compose.material3:material3:1.0.0-beta02"
-
+    // Fundamental components of compose UI
     implementation "androidx.compose.ui:ui:$compose_version"
-    // Required for Compose Preview
+    // Previews
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
-
-    api "com.google.dagger:hilt-android:2.43.2"
-    kapt "com.google.dagger:hilt-compiler:2.43.2"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-
+    // Material 3
+    implementation "androidx.compose.material3:material3:$material3_version"
+    // Data Store
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    implementation platform('com.google.firebase:firebase-bom:30.4.0')
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 }
