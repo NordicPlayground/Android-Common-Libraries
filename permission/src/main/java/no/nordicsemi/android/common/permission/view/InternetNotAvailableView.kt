@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
@@ -58,5 +59,7 @@ fun InternetNotAvailableView() {
 @Preview
 @Composable
 private fun BluetoothNotAvailableView_Preview() {
-    BluetoothNotAvailableView()
+    NordicTheme {
+        InternetNotAvailableView()
+    }
 }

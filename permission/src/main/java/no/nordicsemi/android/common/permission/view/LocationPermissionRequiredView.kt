@@ -60,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.core.parseBold
 import no.nordicsemi.android.common.permission.PermissionViewModel
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
@@ -68,6 +69,32 @@ fun LocationPermissionRequiredView() {
     val activity = LocalContext.current as Activity
     var permissionDenied by remember { mutableStateOf(viewModel.isLocationPermissionDeniedForever(activity)) }
 
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        viewModel.markLocationPermissionRequested()
+        permissionDenied = viewModel.isLocationPermissionDeniedForever(activity)
+        viewModel.refreshPermission()
+    }
+
+    LocationPermissionRequiredView(
+        permissionDenied = permissionDenied,
+        onGrantClicked = {
+            val requiredPermissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            launcher.launch(requiredPermissions)
+        },
+        onOpenSettingsClicked = { openPermissionSettings(activity) },
+    )
+}
+
+@Composable
+fun LocationPermissionRequiredView(
+    permissionDenied: Boolean,
+    onGrantClicked: () -> Unit,
+    onOpenSettingsClicked: () -> Unit,
+) {
     WarningView(
         imageVector = Icons.Default.LocationOff,
         title = stringResource(id = R.string.location_permission_title),
@@ -76,24 +103,12 @@ fun LocationPermissionRequiredView() {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        val requiredPermissions = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        val launcher = rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) {
-            viewModel.markLocationPermissionRequested()
-            permissionDenied = viewModel.isLocationPermissionDeniedForever(activity)
-            viewModel.refreshPermission()
-        }
-
         if (!permissionDenied) {
-            Button(onClick = { launcher.launch(requiredPermissions) }) {
+            Button(onClick = onGrantClicked) {
                 Text(text = stringResource(id = R.string.action_grant_permission))
             }
         } else {
-            Button(onClick = { openPermissionSettings(activity) }) {
+            Button(onClick = onOpenSettingsClicked) {
                 Text(text = stringResource(id = R.string.action_settings))
             }
         }
@@ -114,5 +129,11 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun LocationPermissionRequiredView_Preview() {
-    LocationPermissionRequiredView()
+    NordicTheme {
+        LocationPermissionRequiredView(
+            permissionDenied = false,
+            onGrantClicked = { },
+            onOpenSettingsClicked = { },
+        )
+    }
 }

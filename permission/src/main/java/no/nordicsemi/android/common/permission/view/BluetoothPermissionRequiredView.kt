@@ -59,6 +59,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permission.PermissionViewModel
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
@@ -114,5 +115,7 @@ private fun openPermissionSettings(context: Context) {
 @Preview
 @Composable
 private fun BluetoothPermissionRequiredView_Preview() {
-    BluetoothPermissionRequiredView()
+    NordicTheme {
+        BluetoothPermissionRequiredView()
+    }
 }

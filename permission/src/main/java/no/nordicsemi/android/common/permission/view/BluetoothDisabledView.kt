@@ -31,6 +31,7 @@
 
 package no.nordicsemi.android.common.permission.view
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -47,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
@@ -66,6 +68,7 @@ fun BluetoothDisabledView() {
     }
 }
 
+@SuppressLint("MissingPermission")
 private fun enableBluetooth(context: Context) {
     context.startActivity(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
 }
@@ -73,5 +76,7 @@ private fun enableBluetooth(context: Context) {
 @Preview
 @Composable
 private fun BluetoothDisabledView_Preview() {
-    BluetoothDisabledView()
+    NordicTheme {
+        BluetoothDisabledView()
+    }
 }
