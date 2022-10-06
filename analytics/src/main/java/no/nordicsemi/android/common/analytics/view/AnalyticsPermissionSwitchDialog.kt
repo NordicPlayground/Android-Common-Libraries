@@ -108,7 +108,7 @@ fun AnalyticsPermissionSwitchDialog(
 
 @Preview
 @Composable
-fun AnalyticsPermissionSwitchDialogPreview() {
+private fun AnalyticsPermissionSwitchDialogPreview() {
     var granted by rememberSaveable { mutableStateOf(false) }
 
     AnalyticsPermissionSwitchDialog(

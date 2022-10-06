@@ -84,7 +84,7 @@ private fun ProgressItemStatus.toImageRes(): Int {
 
 @Preview
 @Composable
-fun ProgressItemPreview_Working() {
+private fun ProgressItemPreview_Working() {
     NordicTheme {
         ProgressItem(
             text = "Uploading",
@@ -105,7 +105,7 @@ fun ProgressItemPreview_Working() {
 
 @Preview
 @Composable
-fun ProgressItemPreview_Success() {
+private fun ProgressItemPreview_Success() {
     NordicTheme {
         ProgressItem(
             text = "Completed",
@@ -116,7 +116,7 @@ fun ProgressItemPreview_Success() {
 
 @Preview
 @Composable
-fun ProgressItemPreview_Disabled() {
+private fun ProgressItemPreview_Disabled() {
     NordicTheme {
         ProgressItem(
             text = "Disabled",
@@ -127,7 +127,7 @@ fun ProgressItemPreview_Disabled() {
 
 @Preview
 @Composable
-fun ProgressItemPreview_Error() {
+private fun ProgressItemPreview_Error() {
     NordicTheme {
         ProgressItem(
             text = "Error: Too bad",

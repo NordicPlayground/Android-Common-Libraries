@@ -89,7 +89,7 @@ fun DeviceListItem(
 
 @Preview
 @Composable
-fun DeviceListItemPreview() {
+private fun DeviceListItemPreview() {
     DeviceListItem(
         name = "Device name",
         address = "AA:BB:CC:DD:EE:FF",

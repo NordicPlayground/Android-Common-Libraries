@@ -95,7 +95,7 @@ fun DeviceConnectingView(
 
 @Preview
 @Composable
-fun DeviceConnectingView_Preview() {
+private fun DeviceConnectingView_Preview() {
     DeviceConnectingView { padding ->
         Button(
             onClick = {},

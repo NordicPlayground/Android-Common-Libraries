@@ -69,7 +69,7 @@ fun WarningView(
 
 @Preview
 @Composable
-fun WarningViewPreview() {
+private fun WarningViewPreview() {
     NordicTheme {
         WarningView(
             imageVector = Icons.Filled.Warning,

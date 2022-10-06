@@ -101,7 +101,7 @@ fun DeviceDisconnectedView(
 
 @Preview
 @Composable
-fun DeviceDisconnectedView_Preview() {
+private fun DeviceDisconnectedView_Preview() {
     DeviceDisconnectedView(
         reason = Reason.MISSING_SERVICE,
         content = { padding ->

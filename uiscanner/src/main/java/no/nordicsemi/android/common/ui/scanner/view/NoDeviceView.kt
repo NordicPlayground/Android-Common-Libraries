@@ -46,6 +46,6 @@ fun NoDeviceView(
 
 @Preview
 @Composable
-fun NoDeviceView_Preview() {
+private fun NoDeviceView_Preview() {
     NoDeviceView()
 }
