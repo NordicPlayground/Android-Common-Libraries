@@ -42,10 +42,10 @@ dependencies {
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material 3
-    implementation "androidx.compose.material3:material3:1.0.0-rc01"
+    implementation "androidx.compose.material3:material3:$material3_version"
 
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
+    implementation "com.google.dagger:hilt-android:$dagger_version"
+    kapt "com.google.dagger:hilt-compiler:$dagger_version"
 }
 
 // === Maven Central configuration ===
