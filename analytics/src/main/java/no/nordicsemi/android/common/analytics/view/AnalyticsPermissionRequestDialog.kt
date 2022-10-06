@@ -42,6 +42,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import no.nordicsemi.android.common.analytics.R
@@ -53,6 +54,9 @@ fun AnalyticsPermissionRequestDialog() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
     var show by rememberSaveable { mutableStateOf(false) }
 
+    // The Launch Effect below prevents from blinking the dialog when the app is launched.
+    // The wasInfoDialogShown for a brief moment is set to false, even if the user has already
+    // seen the dialog. Only when the user setting is loaded, it is set to true.
     LaunchedEffect(viewModel) {
         viewModel.permissionData.collectLatest { permissionData ->
             show = !permissionData.wasInfoDialogShown
@@ -60,28 +64,48 @@ fun AnalyticsPermissionRequestDialog() {
     }
 
     if (show) {
-        AlertDialog(
-            onDismissRequest = { viewModel.onDeclineButtonClick() },
-            title = { Text(stringResource(id = R.string.analytics_dialog_title)) },
-            text = {
-                Text(
-                    text = stringResource(id = R.string.analytics_dialog_info).parseBold(),
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { viewModel.onConfirmButtonClick() }) {
-                    Text(stringResource(id = R.string.analytics_dialog_accept))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { viewModel.onDeclineButtonClick() }) {
-                    Text(stringResource(id = R.string.analytics_dialog_decline))
-                }
-            },
-            modifier = Modifier
-                .fillMaxHeight(0.9f)
-                .fillMaxWidth(0.95f)
+        AnalyticsPermissionRequestDialog(
+            onConfirm = { viewModel.onConfirmButtonClick() },
+            onDecline = { viewModel.onDeclineButtonClick() }
         )
     }
+}
+
+@Composable
+fun AnalyticsPermissionRequestDialog(
+    onConfirm: () -> Unit,
+    onDecline: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDecline,
+        title = { Text(stringResource(id = R.string.analytics_dialog_title)) },
+        text = {
+            Text(
+                text = stringResource(id = R.string.analytics_dialog_info).parseBold(),
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(stringResource(id = R.string.analytics_dialog_accept))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDecline ) {
+                Text(stringResource(id = R.string.analytics_dialog_decline))
+            }
+        },
+        modifier = Modifier
+            .fillMaxHeight(0.9f)
+            .fillMaxWidth(0.95f)
+    )
+}
+
+@Preview
+@Composable
+private fun AnalyticsPermissionRequestDialogPreview() {
+    AnalyticsPermissionRequestDialog(
+        onConfirm = {},
+        onDecline = {},
+    )
 }

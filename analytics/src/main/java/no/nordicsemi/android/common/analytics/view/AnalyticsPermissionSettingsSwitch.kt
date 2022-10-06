@@ -55,6 +55,18 @@ import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewM
 fun AnalyticsPermissionSwitch() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
     val state = viewModel.permissionData.collectAsState(initial = AnalyticsPermissionData()).value
+
+    AnalyticsPermissionSwitch(
+        granted = state.isPermissionGranted,
+        onChanged = { viewModel.onPermissionChanged(it) },
+    )
+}
+
+@Composable
+fun AnalyticsPermissionSwitch(
+    granted: Boolean,
+    onChanged: (Boolean) -> Unit,
+) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
     Row(
@@ -79,12 +91,23 @@ fun AnalyticsPermissionSwitch() {
         }
 
         Checkbox(
-            checked = state.isPermissionGranted,
-            onCheckedChange = { viewModel.onPermissionChanged() },
+            checked = granted,
+            onCheckedChange = onChanged,
         )
     }
 
     if (showDialog) {
         AnalyticsPermissionSwitchDialog(onDismiss = { showDialog = false })
     }
+}
+
+@Preview
+@Composable
+private fun AnalyticsPermissionSwitchPreview() {
+    var granted by rememberSaveable { mutableStateOf(false) }
+
+    AnalyticsPermissionSwitch(
+        granted = granted,
+        onChanged = { granted = it },
+    )
 }

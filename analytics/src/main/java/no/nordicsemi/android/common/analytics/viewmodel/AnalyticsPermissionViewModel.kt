@@ -56,9 +56,9 @@ internal class AnalyticsPermissionViewModel @Inject constructor(
         }
     }
 
-    fun onPermissionChanged() {
+    fun onPermissionChanged(enabled: Boolean) {
         viewModelScope.launch {
-            analytics.switchAnalyticsEnabled()
+            analytics.setAnalyticsEnabled(enabled)
         }
     }
 }

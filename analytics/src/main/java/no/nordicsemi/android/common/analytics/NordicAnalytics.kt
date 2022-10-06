@@ -64,12 +64,6 @@ class NordicAnalytics @Inject internal constructor(
         }
     }
 
-    suspend fun switchAnalyticsEnabled() {
-        repository.permissionData.firstOrNull()?.let {
-            setAnalyticsEnabled(!it.isPermissionGranted)
-        }
-    }
-
     suspend fun setAnalyticsEnabled(isEnabled: Boolean) {
         if (isEnabled) {
             repository.onPermissionGranted()

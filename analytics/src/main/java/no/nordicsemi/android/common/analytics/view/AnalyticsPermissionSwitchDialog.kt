@@ -38,11 +38,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import no.nordicsemi.android.common.analytics.R
@@ -54,10 +55,23 @@ fun AnalyticsPermissionSwitchDialog(
     onDismiss: () -> Unit
 ) {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val data = viewModel.permissionData.collectAsState(AnalyticsPermissionData()).value
+    val state by viewModel.permissionData.collectAsState(AnalyticsPermissionData())
 
+    AnalyticsPermissionSwitchDialog(
+        granted = state.isPermissionGranted,
+        onChanged = { viewModel.onPermissionChanged(it)},
+        onDismiss = onDismiss,
+    )
+}
+
+@Composable
+fun AnalyticsPermissionSwitchDialog(
+    granted: Boolean,
+    onChanged: (Boolean) -> Unit,
+    onDismiss: () -> Unit,
+) {
     AlertDialog(
-        onDismissRequest = { viewModel.onDeclineButtonClick() },
+        onDismissRequest = onDismiss,
         title = { Text(stringResource(id = R.string.analytics_switch_dialog_title)) },
         text = {
             Column {
@@ -70,8 +84,8 @@ fun AnalyticsPermissionSwitchDialog(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Checkbox(
-                        checked = data.isPermissionGranted,
-                        onCheckedChange = { viewModel.onPermissionChanged() }
+                        checked = granted,
+                        onCheckedChange = onChanged,
                     )
                 }
                 Text(
@@ -86,6 +100,20 @@ fun AnalyticsPermissionSwitchDialog(
                 Text(stringResource(id = R.string.analytics_switch_dialog_button))
             }
         },
-        modifier = Modifier.fillMaxHeight(0.9f).fillMaxWidth(0.95f)
+        modifier = Modifier
+            .fillMaxHeight(0.9f)
+            .fillMaxWidth(0.95f)
+    )
+}
+
+@Preview
+@Composable
+fun AnalyticsPermissionSwitchDialogPreview() {
+    var granted by rememberSaveable { mutableStateOf(false) }
+
+    AnalyticsPermissionSwitchDialog(
+        granted = granted,
+        onChanged = { granted = it },
+        onDismiss = {}
     )
 }
