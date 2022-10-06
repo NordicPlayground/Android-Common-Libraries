@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -32,12 +32,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler_version
     }
-
     buildFeatures {
         compose true
     }
 }
-
+hilt {
+    enableAggregatingTask = true
+}
 kapt {
     correctErrorTypes true
 }
@@ -62,6 +63,6 @@ dependencies {
     implementation "androidx.activity:activity-compose:1.6.0"
 
     implementation "com.google.dagger:hilt-android:$dagger_version"
-    kapt "com.google.dagger:hilt-compiler:$dagger_version"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 }
