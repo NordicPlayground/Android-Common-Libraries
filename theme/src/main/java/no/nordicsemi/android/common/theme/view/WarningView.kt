@@ -1,6 +1,9 @@
 package no.nordicsemi.android.common.theme.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
@@ -11,6 +14,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.internal.BigIcon
 import no.nordicsemi.android.common.theme.view.internal.Hint
 import no.nordicsemi.android.common.theme.view.internal.Title
@@ -25,21 +29,15 @@ fun WarningView(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp),
+        modifier = modifier,
     ) {
         BigIcon(imageVector = imageVector)
 
-        Spacer(modifier = Modifier.size(16.dp))
-
         Title(text = title)
 
-        Spacer(modifier = Modifier.size(16.dp))
-
         Hint(text = hint, textAlign = hintTextAlign)
-
-        Spacer(modifier = Modifier.size(16.dp))
 
         content()
     }
@@ -55,21 +53,15 @@ fun WarningView(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Column(
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp),
     ) {
         BigIcon(imageVector = imageVector)
 
-        Spacer(modifier = Modifier.size(16.dp))
-
         Title(text = title)
 
-        Spacer(modifier = Modifier.size(16.dp))
-
         Hint(text = hint, textAlign = hintTextAlign)
-
-        Spacer(modifier = Modifier.size(16.dp))
 
         content()
     }
@@ -78,9 +70,12 @@ fun WarningView(
 @Preview
 @Composable
 fun WarningViewPreview() {
-    WarningView(
-        imageVector = Icons.Filled.Warning,
-        title = "Warning",
-        hint = "This is a warning",
-    )
+    NordicTheme {
+        WarningView(
+            imageVector = Icons.Filled.Warning,
+            title = "Warning",
+            hint = "This is a warning view",
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
 }

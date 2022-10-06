@@ -31,11 +31,11 @@
   -->
 <resources>
     <!-- Base theme of the app -->
-    <style name="AppTheme.Base" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">@color/md_theme_surface</item>
+    <style name="NordicTheme.Base" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/md_theme_background</item>
     </style>
 
-    <style name="AppTheme" parent="AppTheme.Base"/>
+    <style name="NordicTheme" parent="NordicTheme.Base"/>
 
 
 </resources>

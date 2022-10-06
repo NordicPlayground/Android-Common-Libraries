@@ -89,7 +89,7 @@ fun WizardStepComponent(
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(color),
     showVerticalDivider: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier = modifier) {
         Row(
@@ -129,7 +129,7 @@ fun WizardStepComponent(
         ) {
             if (showVerticalDivider) {
                 VerticalDivider(
-                    modifier = Modifier.padding(start = 18.dp, end = 34.dp)
+                    modifier = Modifier.padding(start = 18.dp, end = 26.dp)
                 )
             }
 
@@ -137,7 +137,12 @@ fun WizardStepComponent(
                 LocalContentColor provides if (state == WizardStepState.INACTIVE)
                     contentColor.copy(alpha = 0.38f) else contentColor
             ) {
-                content()
+                Column(
+                    modifier = Modifier.padding(start = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    content()
+                }
             }
         }
     }

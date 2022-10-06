@@ -43,7 +43,7 @@
     <string name="bonded_devices">Bonded devices</string>
     <string name="discovered_devices">Discovered devices</string>
 
-    <string name="scan_failed">We were not able to download list of available devices. Please try again.</string>
+    <string name="scan_failed">Scanning failed with error %d.</string>
     <string name="scanner_screen">Scanner</string>
     <string name="scanner_error">Scanning failed</string>
     <string name="action_location_settings">Location settings</string>

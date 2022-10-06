@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.R
 
 enum class ProgressItemStatus {
@@ -36,7 +37,9 @@ fun ProgressItem(
             contentDescription = null,
             tint = status.toIconColor(),
         )
+
         Spacer(modifier = Modifier.width(iconRightPadding))
+
         Column {
             ProvideTextStyle(value = MaterialTheme.typography.bodyMedium) {
                 Text(
@@ -81,8 +84,8 @@ private fun ProgressItemStatus.toImageRes(): Int {
 
 @Preview
 @Composable
-fun ProgressItemPreview() {
-    MaterialTheme {
+fun ProgressItemPreview_Working() {
+    NordicTheme {
         ProgressItem(
             text = "Uploading",
             status = ProgressItemStatus.WORKING,
@@ -97,5 +100,38 @@ fun ProgressItemPreview() {
                 textAlign = TextAlign.End
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun ProgressItemPreview_Success() {
+    NordicTheme {
+        ProgressItem(
+            text = "Completed",
+            status = ProgressItemStatus.SUCCESS,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ProgressItemPreview_Disabled() {
+    NordicTheme {
+        ProgressItem(
+            text = "Disabled",
+            status = ProgressItemStatus.DISABLED,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ProgressItemPreview_Error() {
+    NordicTheme {
+        ProgressItem(
+            text = "Error: Too bad",
+            status = ProgressItemStatus.ERROR,
+        )
     }
 }

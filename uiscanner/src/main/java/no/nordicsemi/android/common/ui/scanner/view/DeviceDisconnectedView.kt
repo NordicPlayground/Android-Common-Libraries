@@ -31,14 +31,12 @@
 
 package no.nordicsemi.android.common.ui.scanner.view
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,7 +46,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.view.CircularIcon
-import no.nordicsemi.android.common.theme.view.ScreenSection
 import no.nordicsemi.android.common.ui.scanner.R
 
 enum class Reason {
@@ -59,41 +56,46 @@ enum class Reason {
 fun DeviceDisconnectedView(
     reason: Reason,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit = {},
+    content: @Composable ColumnScope.(PaddingValues) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScreenSection {
-            CircularIcon(imageVector = Icons.Default.HighlightOff)
+        OutlinedCard(
+            modifier = Modifier
+                .widthIn(max = 460.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CircularIcon(imageVector = Icons.Default.HighlightOff)
 
-            Spacer(modifier = Modifier.size(16.dp))
+                Text(
+                    text = stringResource(id = R.string.device_disconnected),
+                    style = MaterialTheme.typography.titleMedium
+                )
 
-            Text(
-                text = stringResource(id = R.string.device_disconnected),
-                style = MaterialTheme.typography.titleMedium
-            )
+                val text = when (reason) {
+                    Reason.USER -> stringResource(id = R.string.device_reason_user)
+                    Reason.LINK_LOSS -> stringResource(id = R.string.device_reason_link_loss)
+                    Reason.MISSING_SERVICE -> stringResource(id = R.string.device_reason_missing_service)
+                    Reason.UNKNOWN -> stringResource(id = R.string.device_reason_unknown)
+                }
 
-            Spacer(modifier = Modifier.size(16.dp))
-
-            val text = when (reason) {
-                Reason.USER -> stringResource(id = R.string.device_reason_user)
-                Reason.LINK_LOSS -> stringResource(id = R.string.device_reason_link_loss)
-                Reason.MISSING_SERVICE -> stringResource(id = R.string.device_reason_missing_service)
-                Reason.UNKNOWN -> stringResource(id = R.string.device_reason_unknown)
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium
-            )
         }
 
-        Spacer(modifier = Modifier.size(16.dp))
-
-        content()
+        content(PaddingValues(top = 16.dp))
     }
 }
 
@@ -102,8 +104,11 @@ fun DeviceDisconnectedView(
 fun DeviceDisconnectedView_Preview() {
     DeviceDisconnectedView(
         reason = Reason.MISSING_SERVICE,
-        content = {
-            Button(onClick = {}) {
+        content = { padding ->
+            Button(
+                onClick = {},
+                modifier = Modifier.padding(padding)
+            ) {
                 Text(text = "Retry")
             }
         }

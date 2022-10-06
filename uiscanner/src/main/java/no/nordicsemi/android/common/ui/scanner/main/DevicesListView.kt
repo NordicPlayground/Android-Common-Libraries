@@ -32,7 +32,9 @@
 package no.nordicsemi.android.common.ui.scanner.main
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -60,10 +62,8 @@ fun DevicesListView(
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 8.dp)
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp)
     ) {
-        item { Spacer(modifier = Modifier.size(8.dp)) }
-
         when (state) {
             is ScanningState.Loading -> item { ScanEmptyView(isLocationRequiredAndDisabled) }
             is ScanningState.DevicesDiscovered -> {
@@ -73,10 +73,8 @@ fun DevicesListView(
                     DeviceListItems(state, onClick, row)
                 }
             }
-            is ScanningState.Error -> item { ErrorSection() }
+            is ScanningState.Error -> item { ScanErrorView(state.errorCode) }
         }
-
-        item { Spacer(modifier = Modifier.size(16.dp)) }
     }
 }
 
@@ -126,15 +124,8 @@ private fun ClickableDeviceItem(
     Box(modifier = Modifier
         .clip(RoundedCornerShape(10.dp))
         .clickable { onClick(device) }
-        .padding(horizontal = 8.dp, vertical = 8.dp)) {
+        .padding(8.dp)
+    ) {
         deviceView(device)
     }
-}
-
-@Composable
-private fun ErrorSection() {
-    Text(
-        text = stringResource(id = R.string.scan_failed),
-        color = MaterialTheme.colorScheme.error
-    )
 }

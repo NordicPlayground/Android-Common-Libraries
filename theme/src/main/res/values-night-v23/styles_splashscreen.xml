@@ -31,7 +31,7 @@
   -->
 
 <resources>
-    <style name="AppTheme.SplashScreen" parent="AppTheme.SplashScreenBase">
+    <style name="NordicTheme.SplashScreen" parent="NordicTheme.SplashScreenBase">
         <!-- Use dark status bar text on dark theme. -->
         <item name="android:windowLightStatusBar">false</item>
     </style>

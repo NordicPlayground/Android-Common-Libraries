@@ -31,11 +31,14 @@
 
 package no.nordicsemi.android.common.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 
 @Composable
@@ -107,7 +110,19 @@ fun NordicTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = colorScheme,
         typography = nordicTypography,
-        content = content,
+    ) {
+        val background = colorScheme.background
 
-    )
+        CompositionLocalProvider(
+            LocalContentColor provides contentColorFor(background)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = background),
+            ) {
+                content()
+            }
+        }
+    }
 }

@@ -31,54 +31,17 @@
 
 package no.nordicsemi.android.common.ui.scanner.view
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HourglassTop
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.theme.view.CircularIcon
-import no.nordicsemi.android.common.theme.view.ScreenSection
-import no.nordicsemi.android.common.ui.scanner.R
 
 @Composable
 fun NoDeviceView(
     modifier: Modifier = Modifier,
 ) {
-    ScreenSection(
+    DeviceConnectingView(
         modifier = modifier
-    ) {
-        CircularIcon(imageVector = Icons.Default.HourglassTop)
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Text(
-            text = stringResource(id = R.string.device_connecting),
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Text(
-            text = stringResource(id = R.string.device_explanation),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Spacer(modifier = Modifier.size(16.dp))
-
-        Text(
-            text = stringResource(id = R.string.device_please_wait),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
-        )
-    }
+    )
 }
 
 @Preview

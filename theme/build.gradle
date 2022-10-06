@@ -35,8 +35,8 @@ android {
 dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0'
 
-    implementation "com.google.accompanist:accompanist-pager:0.26.2-beta"
-    implementation "com.google.accompanist:accompanist-pager-indicators:0.26.2-beta"
+    implementation "com.google.accompanist:accompanist-pager:0.26.4-beta"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.26.4-beta"
 
     implementation 'com.github.jeziellago:compose-markdown:0.3.0'
 
