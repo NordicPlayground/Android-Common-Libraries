@@ -29,14 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused")
+package no.nordicsemi.android.common.navigation.internal
 
-package no.nordicsemi.android.common.navigation
+import android.os.Bundle
+import androidx.core.net.toUri
+import androidx.navigation.*
 
-interface NavigationResult {
-    val destinationId: DestinationId
-}
+internal fun NavController.navigate(
+    route: String,
+    args: Bundle?,
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null
+) {
+    val routeLink = NavDeepLinkRequest
+        .Builder
+        .fromUri(NavDestination.createRoute(route).toUri())
+        .build()
 
-interface NavigationArgument {
-    val destinationId: DestinationId
+    val deepLinkMatch = graph.matchDeepLink(routeLink)
+    if (deepLinkMatch != null) {
+        val destination = deepLinkMatch.destination
+        val id = destination.id
+        navigate(id, args, navOptions, navigatorExtras)
+    } else {
+        navigate(route, navOptions, navigatorExtras)
+    }
 }

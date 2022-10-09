@@ -32,32 +32,85 @@
 package no.nordicsemi.android.common.navigation
 
 import android.app.Activity
+import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import no.nordicsemi.android.common.navigation.internal.NavigationPerformer
+import no.nordicsemi.android.common.navigation.internal.combine
+import no.nordicsemi.android.common.navigation.internal.navigate
 
+private const val argument = "argument"
+private const val query = "/?$argument={$argument}"
+
+/**
+ * A navigation view allows navigating between different destinations.
+ *
+ * Each destination may pass an argument to the next one. The argument is a [Bundle].
+ *
+ * @param destinations The list of possible destinations.
+ * @param router The navigation controller used to calculate target destinations.
+ */
 @Composable
-fun NavigationView(destinations: ComposeDestinations) {
-    val navController = rememberNavController()
-    val viewModel: NavigationViewModel = hiltViewModel()
+fun NavigationView(
+    destinations: NavigationDestinations,
+    router: Router = { _, _ -> null }
+) {
+    val navHostController = rememberNavController()
 
     val activity = LocalContext.current as Activity
-    viewModel.navigationWrapper = NavigationWrapper(activity, navController)
 
-    BackHandler { viewModel.navigateUp() }
+    // Create a combined navigator that will navigate between destinations.
+    val combinedRouter = router.combine(destinations.router)
+    val navigator = NavigationPerformer(combinedRouter,
+        onNavigateTo = { destination, argument ->
+            navHostController.navigate(destination + query, argument)
+        },
+        onNavigateUp = {
+            if (!navHostController.navigateUp()) {
+                activity.finish()
+            }
+        }
+    )
+
+    BackHandler { navigator.navigateUp() }
 
     NavHost(
-        navController = navController,
-        startDestination = destinations.values[0].id.name
+        navController = navHostController,
+        startDestination = destinations.values.first().id.name + query,
     ) {
         destinations.values.forEach { destination ->
-            composable(destination.id.name) {
-                destination.draw(viewModel.navigationManager)
+            composable(
+                route = destination.id.name + query,
+                arguments = listOf(
+                    navArgument(argument) {
+                        type = NavType.ParcelableType(Bundle::class.java)
+                        defaultValue = null
+                        nullable = true
+                    }
+                )
+            ) {
+                DestinationScreen(
+                    destination = destination,
+                    navigator = navigator.from(destination.id)
+                )
+                // The above does the same as:
+                //
+                // destination.content(navigator.from(destination.id))
+                //
+                // but looks like proper composable.
             }
         }
     }
 }
+
+@Composable
+private fun DestinationScreen(
+    destination: NavigationDestination,
+    navigator: Navigator,
+) = with(destination) { content(navigator) }

@@ -29,12 +29,71 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.navigation
 
-sealed class NavigationDestination
+import androidx.compose.runtime.Composable
+import no.nordicsemi.android.common.navigation.internal.combine
 
-object InitialDestination : NavigationDestination()
+/**
+ * A destination identifier.
+ */
+data class DestinationId(val name: String) {
+    override fun toString(): String = name
+}
 
-object BackDestination : NavigationDestination()
+/**
+ * A callback used to determine the next destination.
+ *
+ * Based on the current destination (from), a hint, and the optional arguments, the callback should
+ * return the target destination, or null, if that router does not support the given destination.
+ */
+typealias Router = (from: DestinationId, hint: Any?) -> DestinationId?
 
-data class ForwardDestination(val id: DestinationId) : NavigationDestination()
+/**
+ * Definition of a destination.
+ *
+ * This class binds a destination identifier with a composable function that will be used to
+ * render the content.
+ *
+ * @property id The destination identifier.
+ * @property content The composable function that will be used to render the content.
+ */
+data class NavigationDestination(
+    val id: DestinationId,
+    val content: @Composable (navigator: Navigator) -> Unit
+) {
+    constructor(
+        id: String,
+        content: @Composable (navigator: Navigator) -> Unit
+    ): this(DestinationId(id), content)
+}
+
+/**
+ * A collection of destinations.
+ *
+ * Navigation between the destinations may be controlled by local or global navigation controllers.
+ * Local navigation controller, defined here, can navigate between destinations within the
+ * collection, where some of the destinations may not be exposed outside of the component.
+ *
+ * The global navigation controller, defined in [NavigationView], can navigate between destinations
+ * from different components.
+ *
+ * @property values List of destinations within a component.
+ * @property router An optional router that can route between destinations within this component.
+ */
+class NavigationDestinations(
+    val values: List<NavigationDestination>,
+    val router: Router = { _, _ -> null },
+) {
+    constructor(
+        destination: NavigationDestination,
+        router: Router = { _, _ -> null },
+    ) : this(listOf(destination), router)
+
+    operator fun plus(other: NavigationDestinations): NavigationDestinations {
+        val combinedRouter = router.combine(other.router)
+        return NavigationDestinations(values + other.values, combinedRouter)
+    }
+}
