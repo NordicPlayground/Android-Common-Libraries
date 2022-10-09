@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.test.view.page
+package no.nordicsemi.android.common.test.main.page
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,12 +12,12 @@ import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 
-val Fonts = PagerViewItem("Fonts") {
-    Fonts()
+val FontsPage = PagerViewItem("Fonts") {
+    FontsScreen()
 }
 
 @Composable
-private fun Fonts() {
+private fun FontsScreen() {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -77,6 +77,6 @@ private fun Fonts() {
 @Composable
 private fun FontsPreview() {
     NordicTheme {
-        Fonts()
+        FontsScreen()
     }
 }

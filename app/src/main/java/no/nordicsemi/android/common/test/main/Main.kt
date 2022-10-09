@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.test.view
+package no.nordicsemi.android.common.test.main
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -14,11 +14,12 @@ import no.nordicsemi.android.common.navigation.NavigationDestination
 import no.nordicsemi.android.common.navigation.NavigationDestinations
 import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
-import no.nordicsemi.android.common.test.view.page.*
+import no.nordicsemi.android.common.test.main.page.*
 import no.nordicsemi.android.common.theme.view.NordicAppBar
 import no.nordicsemi.android.common.theme.view.PagerView
 import no.nordicsemi.android.common.theme.view.PagerViewEntity
 
+/** This is the destination identifier. */
 val Main = DestinationId("main")
 
 /**
@@ -49,10 +50,10 @@ private fun MainScreen(navigator: Navigator) {
         )
         val pages = PagerViewEntity(listOf(
             BasicsPage,
-            Fonts,
-            Wizard,
-            Connection,
-            Warning,
+            FontsPage,
+            WizardPage,
+            ConnectionPage,
+            WarningPage,
         ))
         PagerView(
             viewEntity = pages,

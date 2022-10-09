@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.test.view.page
+package no.nordicsemi.android.common.test.main.page
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,13 +24,13 @@ import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 
 val BasicsPage = PagerViewItem("Basics") {
-    BasicViews(
+    BasicViewsScreen(
         onOpenScanner = {}
     )
 }
 
 @Composable
-private fun BasicViews(
+private fun BasicViewsScreen(
     onOpenScanner: () -> Unit,
 ) {
     Column(
@@ -48,7 +48,7 @@ private fun BasicViews(
 
         Device()
 
-        BasicViews()
+        BasicViewsScreen()
 
         Cards()
     }
@@ -134,7 +134,7 @@ private fun OtherWidgets() {
 }
 
 @Composable
-private fun BasicViews() {
+private fun BasicViewsScreen() {
     Column {
         Buttons()
 
@@ -185,7 +185,7 @@ private fun Cards() {
 @Composable
 private fun ContentPreview() {
     NordicTheme {
-        BasicViews(
+        BasicViewsScreen(
             onOpenScanner = {}
         )
     }
