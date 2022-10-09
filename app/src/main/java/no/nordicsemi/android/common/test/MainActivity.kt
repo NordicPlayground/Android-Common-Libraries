@@ -33,18 +33,11 @@ package no.nordicsemi.android.common.test
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import dagger.hilt.android.AndroidEntryPoint
-import no.nordicsemi.android.common.navigation.*
-import no.nordicsemi.android.common.permission.RequireBluetooth
-import no.nordicsemi.android.common.test.view.mainDestinations
+import no.nordicsemi.android.common.navigation.NavigationView
+import no.nordicsemi.android.common.test.main.MainDestinations
 import no.nordicsemi.android.common.theme.NordicActivity
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.NordicAppBar
 
 @AndroidEntryPoint
 class MainActivity : NordicActivity() {
@@ -54,40 +47,11 @@ class MainActivity : NordicActivity() {
 
         setContent {
             NordicTheme {
-                NavigationView(mainDestinations + otherDestinations)
+                // The Navigation View is responsible for navigation between the screens.
+                // In this sample app there is only one, Main destination, so there's no need
+                // for a Router. A Router is used to determine which destination navigate to.
+                NavigationView(MainDestinations)
             }
-        }
-    }
-}
-// --------------------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------------------------------
-val Details = DestinationId("details")
-
-val otherDestinations = ComposeDestinations(listOf(
-    ComposeDestination(Details) { navigationManager ->
-        DetailsScreen(navigationManager)
-    },
-))
-
-data class DetailsParams(val index: Int) : NavigationArgument {
-    override val destinationId = Details
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DetailsScreen(
-    navigationManager: NavigationManager,
-) {
-    Column {
-        NordicAppBar(
-            text = "Kaczka",
-            onNavigationButtonClick = { navigationManager.navigateUp() },
-        )
-        RequireBluetooth  {
-            val index = navigationManager.getArgumentForId(Details).collectAsState(initial = DetailsParams(-1)).value as DetailsParams
-            Text(text = "Details ${index.index}")
         }
     }
 }
