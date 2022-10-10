@@ -21,13 +21,13 @@ class Navigator internal constructor (
      * [NavigationView].
      *
      * @param hint An optional hint to determine the target destination.
-     * @param bundle An optional argument to pass to the destination.
+     * @param args An optional argument to pass to the destination.
      */
-    fun navigate(hint: Any? = null, bundle: Bundle? = null) {
+    fun navigate(hint: Any?, args: Bundle? = null) {
         performer.navigate(
             from = currentDestinationId,
             hint = hint,
-            arg = bundle
+            args = args,
         )
     }
 

@@ -27,14 +27,14 @@ internal class NavigationPerformer(
      * Navigate to the given destination passing an optional argument.
      *
      * @param from The current destination.
-     * @param arg An optional argument to pass to the destination.
+     * @param args An optional argument to pass to the destination.
      */
-    internal fun navigate(from: DestinationId, hint: Any?, arg: Bundle?) {
+    internal fun navigate(from: DestinationId, hint: Any?, args: Bundle?) {
         // Find next destination from "from" given the argument.
         router(from, hint)?.let {
             // If found, navigate to it.
-            navigateTo(it, arg)
-        } ?: throw IllegalStateException("No destination found for $from with argument $arg")
+            navigateTo(it, args)
+        } ?: throw IllegalStateException("No destination found for $from with using $hint")
     }
 
     /**
