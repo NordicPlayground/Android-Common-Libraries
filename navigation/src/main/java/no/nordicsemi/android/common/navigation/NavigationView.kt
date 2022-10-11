@@ -62,7 +62,7 @@ fun NavigationView(
     val activity = LocalContext.current as Activity
 
     // Create a combined navigator that will navigate between destinations.
-    val combinedRouter = router.combine(destinations.router)
+    val combinedRouter = destinations.router.combine(router)
     val navigator = NavigationPerformer(combinedRouter,
         onNavigateTo = { destination, argument ->
             // Navigate to the next destination, passing the argument.
