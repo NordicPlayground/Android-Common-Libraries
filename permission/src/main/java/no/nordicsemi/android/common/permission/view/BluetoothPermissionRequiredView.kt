@@ -81,7 +81,8 @@ internal fun BluetoothPermissionRequiredView() {
     ) {
         val requiredPermissions = arrayOf(
             Manifest.permission.BLUETOOTH_SCAN,
-            Manifest.permission.BLUETOOTH_CONNECT
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_ADVERTISE,
         )
 
         val launcher = rememberLauncherForActivityResult(
