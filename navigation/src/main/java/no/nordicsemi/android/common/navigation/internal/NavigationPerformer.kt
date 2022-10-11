@@ -1,6 +1,7 @@
 package no.nordicsemi.android.common.navigation.internal
 
 import android.os.Bundle
+import androidx.lifecycle.SavedStateHandle
 import no.nordicsemi.android.common.navigation.DestinationId
 import no.nordicsemi.android.common.navigation.Router
 import no.nordicsemi.android.common.navigation.Navigator
@@ -11,11 +12,13 @@ import no.nordicsemi.android.common.navigation.Navigator
  *
  * @property router The [Router] used to calculate the target destination.
  * @property onNavigateTo The callback invoked when the navigation is performed.
+ * @property onStoreResult The callback invoked to store the result of the destination.
  * @property onNavigateUp The callback invoked when the navigation up is performed.
  */
 internal class NavigationPerformer(
     private val router: Router,
     private val onNavigateTo: (String, Bundle?) -> Unit,
+    private val onStoreResult: (Any) -> Unit,
     private val onNavigateUp: () -> Unit,
 ) {
     /**
@@ -48,6 +51,18 @@ internal class NavigationPerformer(
      * Navigate up to the previous destination.
      */
     internal fun navigateUp() {
+        onNavigateUp()
+    }
+
+    /**
+     * Navigate up to the previous destination passing the given result.
+     *
+     * @param result The result, which will be passed to the previous destination.
+     * The returned type will be saved in [SavedStateHandle], therefore it must be
+     * savable to a [Bundle].
+     */
+    internal fun navigateUpWithResult(result: Any) {
+        onStoreResult(result)
         onNavigateUp()
     }
 }

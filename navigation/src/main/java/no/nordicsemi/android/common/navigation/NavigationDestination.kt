@@ -37,19 +37,19 @@ import androidx.compose.runtime.Composable
 import no.nordicsemi.android.common.navigation.internal.combine
 
 /**
- * A destination identifier.
- */
-data class DestinationId(val name: String) {
-    override fun toString(): String = name
-}
-
-/**
  * A callback used to determine the next destination.
  *
  * Based on the current destination (from), a hint, and the optional arguments, the callback should
  * return the target destination, or null, if that router does not support the given destination.
  */
 typealias Router = (from: DestinationId, hint: Any?) -> DestinationId?
+
+/**
+ * A destination identifier.
+ */
+data class DestinationId(internal val name: String) {
+    override fun toString(): String = name
+}
 
 /**
  * Definition of a destination.
@@ -62,11 +62,11 @@ typealias Router = (from: DestinationId, hint: Any?) -> DestinationId?
  */
 data class NavigationDestination(
     val id: DestinationId,
-    val content: @Composable (navigator: Navigator) -> Unit
+    val content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit
 ) {
     constructor(
         id: String,
-        content: @Composable (navigator: Navigator) -> Unit
+        content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit
     ): this(DestinationId(id), content)
 }
 
@@ -97,3 +97,55 @@ class NavigationDestinations(
         return NavigationDestinations(values + other.values, combinedRouter)
     }
 }
+
+/**
+ * Helper function to create a [DestinationId] from a string.
+ */
+fun createDestination(name: String): DestinationId = DestinationId(name)
+
+/**
+ * Helper method for creating a [NavigationDestination].
+ */
+fun defineDestination(
+    id: DestinationId,
+    content: @Composable (navigator: Navigator) -> Unit
+): NavigationDestination = NavigationDestination(id) { navigator, _ -> content(navigator) }
+
+/**
+ * Helper method for creating a [NavigationDestination] that will
+ * be able to subscribe for results from destinations it will navigate to.
+ */
+fun defineDestination(
+    id: DestinationId,
+    content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit,
+): NavigationDestination = NavigationDestination(id, content)
+
+/**
+ * Helper method for creating a [NavigationDestinations]
+ * with local router.
+ */
+fun List<NavigationDestination>.asDestinationsWithRouter(router: Router) =
+    NavigationDestinations(this, router)
+
+/**
+ * Helper method for creating a [NavigationDestinations].
+ *
+ * This destination can be routed using global router specified
+ * in the [NavigationView].
+ *
+ * @see asDestinationsWithRouter
+ */
+fun List<NavigationDestination>.asDestinations() =
+    NavigationDestinations(this) { _, _ -> null }
+
+/**
+ * Helper method for creating a [NavigationDestinations]
+ * from a single destination.
+ *
+ * This destination can be routed using global router specified
+ * in the [NavigationView].
+ *
+ * @see asDestinationsWithRouter
+ */
+fun NavigationDestination.asDestinations() =
+    NavigationDestinations(this) { _, _ -> null }

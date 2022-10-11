@@ -1,6 +1,7 @@
 package no.nordicsemi.android.common.navigation
 
 import android.os.Bundle
+import androidx.lifecycle.SavedStateHandle
 import no.nordicsemi.android.common.navigation.internal.NavigationPerformer
 
 /**
@@ -36,5 +37,16 @@ class Navigator internal constructor (
      */
     fun navigateUp() {
         performer.navigateUp()
+    }
+
+    /**
+     * Navigates up to previous destination passing the given result, or finishes the Activity.
+     *
+     * @param result The result, which will be passed to the previous destination.
+     * The returned type will be saved in [SavedStateHandle], therefore it must be
+     * savable to a [Bundle].
+     */
+    fun navigateUpWithResult(result: Any) {
+        performer.navigateUpWithResult(result)
     }
 }

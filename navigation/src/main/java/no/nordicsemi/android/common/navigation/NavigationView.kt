@@ -36,17 +36,13 @@ import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavType
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import no.nordicsemi.android.common.navigation.internal.NavigationPerformer
 import no.nordicsemi.android.common.navigation.internal.combine
 import no.nordicsemi.android.common.navigation.internal.navigate
-
-private const val argument = "argument"
-private const val query = "/?$argument={$argument}"
 
 /**
  * A navigation view allows navigating between different destinations.
@@ -69,9 +65,20 @@ fun NavigationView(
     val combinedRouter = router.combine(destinations.router)
     val navigator = NavigationPerformer(combinedRouter,
         onNavigateTo = { destination, argument ->
-            navHostController.navigate(destination + query, argument)
+            // Navigate to the next destination, passing the argument.
+            navHostController.navigate(destination, argument)
+        },
+        onStoreResult = { result ->
+            // Save the result in the previous back stack entry.
+            navHostController.currentBackStackEntry?.destination?.route?.let { route ->
+                // The key is the current destination id.
+                navHostController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(route, result)
+            }
         },
         onNavigateUp = {
+            // Navigate up, or finish the Activity if at root.
             if (!navHostController.navigateUp()) {
                 activity.finish()
             }
@@ -82,22 +89,16 @@ fun NavigationView(
 
     NavHost(
         navController = navHostController,
-        startDestination = destinations.values.first().id.name + query,
+        startDestination = destinations.values.first().id.name,
     ) {
         destinations.values.forEach { destination ->
             composable(
-                route = destination.id.name + query,
-                arguments = listOf(
-                    navArgument(argument) {
-                        type = NavType.ParcelableType(Bundle::class.java)
-                        defaultValue = null
-                        nullable = true
-                    }
-                )
+                route = destination.id.name,
             ) {
                 DestinationScreen(
                     destination = destination,
-                    navigator = navigator.from(destination.id)
+                    navigator = navigator.from(destination.id),
+                    savedStateHandle = it.savedStateHandle,
                 )
                 // The above does the same as:
                 //
@@ -113,4 +114,5 @@ fun NavigationView(
 private fun DestinationScreen(
     destination: NavigationDestination,
     navigator: Navigator,
-) = with(destination) { content(navigator) }
+    savedStateHandle: SavedStateHandle,
+) = with(destination) { content(navigator, ResultHandle(savedStateHandle)) }
