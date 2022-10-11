@@ -8,11 +8,14 @@ import android.net.NetworkRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import no.nordicsemi.android.common.permission.util.NotAvailable
+import no.nordicsemi.android.common.permission.util.Available
+import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class InternetStateManager @Inject constructor(
+internal class InternetStateManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
@@ -26,7 +29,7 @@ class InternetStateManager @Inject constructor(
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                trySend(true)
+                trySend(Available)
             }
 
             override fun onCapabilitiesChanged(
@@ -35,16 +38,16 @@ class InternetStateManager @Inject constructor(
             ) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
                 val isAvailable = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
-                trySend(isAvailable)
+                trySend(if (isAvailable) Available else NotAvailable(FeatureNotAvailableReason.DISABLED))
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                trySend(false)
+                trySend(NotAvailable(FeatureNotAvailableReason.DISABLED))
             }
         }
 
-        val connectivityManager = context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
         awaitClose {

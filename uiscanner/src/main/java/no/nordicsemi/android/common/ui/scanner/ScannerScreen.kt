@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import no.nordicsemi.android.common.permission.RequireBluetooth
+import no.nordicsemi.android.common.permission.RequireLocation
 import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.FilterView
 import no.nordicsemi.android.common.ui.scanner.main.ScannerAppBar
@@ -63,30 +64,34 @@ fun ScannerScreen(
         }
         RequireBluetooth(
             onChanged = { isScanning = it }
-        ) { isLocationRequiredAndDisabled ->
-            val viewModel = hiltViewModel<ScannerViewModel>()
-                .apply { setFilterUuid(uuid) }
+        ) {
+            RequireLocation(
+                onChanged = { isScanning = it }
+            ) { isLocationRequiredAndDisabled ->
+                val viewModel = hiltViewModel<ScannerViewModel>()
+                    .apply { setFilterUuid(uuid) }
 
-            val state by viewModel.state.collectAsState()
-            val config by viewModel.filterConfig.collectAsState()
+                val state by viewModel.state.collectAsState()
+                val config by viewModel.filterConfig.collectAsState()
 
-            FilterView(
-                config = config,
-                onChanged = { viewModel.setFilter(it) }
-            )
-
-            val swipeRefreshState = rememberSwipeRefreshState(false)
-
-            SwipeRefresh(
-                state = swipeRefreshState,
-                onRefresh = { viewModel.refresh() },
-            ) {
-                DevicesListView(
-                    isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
-                    state = state,
-                    modifier = Modifier.fillMaxSize(),
-                    onClick = { onResult(DeviceSelected(it)) }
+                FilterView(
+                    config = config,
+                    onChanged = { viewModel.setFilter(it) }
                 )
+
+                val swipeRefreshState = rememberSwipeRefreshState(false)
+
+                SwipeRefresh(
+                    state = swipeRefreshState,
+                    onRefresh = { viewModel.refresh() },
+                ) {
+                    DevicesListView(
+                        isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
+                        state = state,
+                        modifier = Modifier.fillMaxSize(),
+                        onClick = { onResult(DeviceSelected(it)) }
+                    )
+                }
             }
         }
     }

@@ -58,13 +58,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.core.parseBold
-import no.nordicsemi.android.common.permission.PermissionViewModel
+import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 import no.nordicsemi.android.common.permission.R
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
-fun LocationPermissionRequiredView() {
+internal fun LocationPermissionRequiredView() {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val activity = LocalContext.current as Activity
     var permissionDenied by remember { mutableStateOf(viewModel.isLocationPermissionDeniedForever(activity)) }
@@ -74,7 +74,7 @@ fun LocationPermissionRequiredView() {
     ) {
         viewModel.markLocationPermissionRequested()
         permissionDenied = viewModel.isLocationPermissionDeniedForever(activity)
-        viewModel.refreshPermission()
+        viewModel.refreshLocationPermission()
     }
 
     LocationPermissionRequiredView(
@@ -90,7 +90,7 @@ fun LocationPermissionRequiredView() {
 }
 
 @Composable
-fun LocationPermissionRequiredView(
+internal fun LocationPermissionRequiredView(
     permissionDenied: Boolean,
     onGrantClicked: () -> Unit,
     onOpenSettingsClicked: () -> Unit,

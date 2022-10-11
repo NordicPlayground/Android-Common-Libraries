@@ -31,55 +31,48 @@
 
 package no.nordicsemi.android.common.permission
 
-import androidx.compose.runtime.*
+import android.os.Build
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
-import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
+import no.nordicsemi.android.common.permission.util.Available
+import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
+import no.nordicsemi.android.common.permission.util.NotAvailable
 import no.nordicsemi.android.common.permission.view.BluetoothDisabledView
 import no.nordicsemi.android.common.permission.view.BluetoothNotAvailableView
 import no.nordicsemi.android.common.permission.view.BluetoothPermissionRequiredView
-import no.nordicsemi.android.common.permission.view.InternetNotAvailableView
-import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
+import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 
 @Composable
-fun RequireInternet(
-    onChanged: ((Boolean) -> Unit)? = null,
-    content: @Composable () -> Unit
+fun RequireBluetooth(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutBluetooth: @Composable (FeatureNotAvailableReason) -> Unit = {
+        NoBluetoothView(reason = it)
+    },
+    content: @Composable () -> Unit,
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val internetPermissionState by viewModel.internetPermission.collectAsState()
+    val state by viewModel.bluetoothState.collectAsState()
 
-    onChanged?.invoke(internetPermissionState == InternetPermissionResult.ALL_GOOD)
+    onChanged(state is Available)
 
-    when (internetPermissionState) {
-        InternetPermissionResult.INTERNET_DISABLED -> InternetNotAvailableView()
-        InternetPermissionResult.ALL_GOOD -> content()
+    when (val s = state) {
+        Available -> content()
+        is NotAvailable -> contentWithoutBluetooth(s.reason)
     }
 }
 
 @Composable
-fun RequireBluetooth(
-    scanning: Boolean = true,
-    onChanged: ((Boolean) -> Unit)? = null,
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+private fun NoBluetoothView(
+    reason: FeatureNotAvailableReason,
 ) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
-    val bluetoothPermissionState by viewModel.bluetoothPermission.collectAsState()
-    val isLocationRequiredAndDisabled by viewModel.locationPermission.collectAsState()
-
-    onChanged?.invoke(bluetoothPermissionState == BluetoothPermissionResult.ALL_GOOD)
-
-    when (bluetoothPermissionState) {
-        BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE -> BluetoothNotAvailableView()
-        BluetoothPermissionResult.BLUETOOTH_PERMISSION_REQUIRED -> BluetoothPermissionRequiredView()
-        BluetoothPermissionResult.BLUETOOTH_DISABLED -> BluetoothDisabledView()
-        BluetoothPermissionResult.LOCATION_PERMISSION_REQUIRED -> {
-            if (scanning) {
-                LocationPermissionRequiredView()
-            } else {
-                content(false)
+    when (reason) {
+        FeatureNotAvailableReason.NOT_AVAILABLE -> BluetoothNotAvailableView()
+        FeatureNotAvailableReason.PERMISSION_REQUIRED ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                BluetoothPermissionRequiredView()
             }
-        }
-        BluetoothPermissionResult.ALL_GOOD -> content(scanning && isLocationRequiredAndDisabled)
+        FeatureNotAvailableReason.DISABLED -> BluetoothDisabledView()
     }
 }

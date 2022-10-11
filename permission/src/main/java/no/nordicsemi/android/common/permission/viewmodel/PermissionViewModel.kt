@@ -29,19 +29,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permission.viewmodel
 
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import no.nordicsemi.android.common.permission.bluetooth.BluetoothPermissionResult
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothStateManager
-import no.nordicsemi.android.common.permission.internet.InternetPermissionResult
 import no.nordicsemi.android.common.permission.internet.InternetStateManager
+import no.nordicsemi.android.common.permission.location.LocationStateManager
+import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
+import no.nordicsemi.android.common.permission.util.NotAvailable
 import javax.inject.Inject
 
 /**
@@ -51,28 +51,27 @@ import javax.inject.Inject
 internal class PermissionViewModel @Inject internal constructor(
     internetManager: InternetStateManager,
     private val bluetoothManager: BluetoothStateManager,
+    private val locationManager: LocationStateManager,
 ) : ViewModel() {
-    val bluetoothPermission = bluetoothManager.bluetoothState()
-        .stateIn(viewModelScope, SharingStarted.Lazily, BluetoothPermissionResult.BLUETOOTH_NOT_AVAILABLE)
+    val bluetoothState = bluetoothManager.bluetoothState()
+        .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))
 
-    val locationPermission = bluetoothManager.locationState()
-        .stateIn(viewModelScope, SharingStarted.Lazily, false)
+    val locationPermission = locationManager.locationState()
+        .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))
 
     val internetPermission = internetManager.networkState()
-        .map {
-            when (it) {
-                true -> InternetPermissionResult.ALL_GOOD
-                false -> InternetPermissionResult.INTERNET_DISABLED
-            }
-        }
-        .stateIn(viewModelScope, SharingStarted.Lazily, InternetPermissionResult.INTERNET_DISABLED)
+        .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))
 
-    fun refreshPermission() {
+    fun refreshBluetoothPermission() {
         bluetoothManager.refreshPermission()
     }
 
+    fun refreshLocationPermission() {
+        locationManager.refreshPermission()
+    }
+
     fun markLocationPermissionRequested() {
-        bluetoothManager.markLocationPermissionRequested()
+        locationManager.markLocationPermissionRequested()
     }
 
     fun markBluetoothPermissionRequested() {
@@ -84,6 +83,6 @@ internal class PermissionViewModel @Inject internal constructor(
     }
 
     fun isLocationPermissionDeniedForever(activity: Activity): Boolean {
-        return bluetoothManager.isLocationPermissionDeniedForever(activity)
+        return locationManager.isLocationPermissionDeniedForever(activity)
     }
 }

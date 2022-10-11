@@ -29,37 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission.view
+package no.nordicsemi.android.common.permission
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import no.nordicsemi.android.common.permission.R
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.util.Available
+import no.nordicsemi.android.common.permission.view.InternetNotAvailableView
+import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 
 @Composable
-internal fun InternetNotAvailableView() {
-    WarningView(
-        imageVector = Icons.Default.BluetoothDisabled,
-        title = stringResource(id = R.string.internet_not_available_title),
-        hint = stringResource(id = R.string.internet_not_available_info),
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    )
-}
+fun RequireInternet(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutInternet: @Composable () -> Unit = { InternetNotAvailableView() },
+    content: @Composable () -> Unit
+) {
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state by viewModel.internetPermission.collectAsState()
 
-@Preview
-@Composable
-private fun BluetoothNotAvailableView_Preview() {
-    NordicTheme {
-        InternetNotAvailableView()
+    onChanged(state is Available)
+
+    when (state) {
+        Available -> content()
+        else -> contentWithoutInternet()
     }
 }
