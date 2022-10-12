@@ -49,7 +49,6 @@ private const val FILTER_RSSI = -50 // [dBm]
 @HiltViewModel
 internal class ScannerViewModel @Inject constructor(
     private val scannerRepository: ScannerRepository,
-
 ) : ViewModel() {
     private var uuid: ParcelUuid? = null
 
