@@ -49,6 +49,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.theme.R as themeR
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +63,7 @@ internal fun FilterView(
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
-            .background(colorResource(id = R.color.appBarColor))
+            .background(colorResource(id = themeR.color.appBarColor))
             .padding(start = 56.dp)
     ) {
         config.filterUuidRequired?.let {

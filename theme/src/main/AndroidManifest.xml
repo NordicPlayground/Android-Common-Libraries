@@ -30,4 +30,7 @@
   ~ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="no.nordicsemi.android.common.theme" >
+
+</manifest>
