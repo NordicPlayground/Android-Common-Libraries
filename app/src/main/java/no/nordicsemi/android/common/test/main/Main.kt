@@ -9,10 +9,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.logger.view.LoggerAppBarIcon
-import no.nordicsemi.android.common.navigation.DestinationId
-import no.nordicsemi.android.common.navigation.NavigationDestination
-import no.nordicsemi.android.common.navigation.NavigationDestinations
-import no.nordicsemi.android.common.navigation.Navigator
+import no.nordicsemi.android.common.navigation.asDestinations
+import no.nordicsemi.android.common.navigation.createDestination
+import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.main.page.*
 import no.nordicsemi.android.common.theme.view.NordicAppBar
@@ -20,22 +19,22 @@ import no.nordicsemi.android.common.theme.view.PagerView
 import no.nordicsemi.android.common.theme.view.PagerViewEntity
 
 /** This is the destination identifier. */
-val Main = DestinationId("main")
+val Main = createDestination("main")
 
 /**
  * List of destinations defined in the module.
  *
  * Optionally, this can define a local Router for routing navigation within the module.
  */
-val MainDestinations = NavigationDestinations(listOf(
-    NavigationDestination(Main) { navigator ->
-        MainScreen(navigator)
-    },
-))
+private val MainDestination = defineDestination(Main) { _ ->
+        MainScreen()
+    }
+
+val MainDestinations = MainDestination.asDestinations()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(navigator: Navigator) {
+private fun MainScreen() {
     Column {
         NordicAppBar(
             text = stringResource(id = R.string.title_main),
