@@ -50,7 +50,8 @@ class BasicPageViewModel @Inject constructor(
 
     fun openScanner() {
         // As the "navigateForResult" coroutine uses navigation,
-        // it must be launched on the main dispatcher
+        // it will use Dispatchers.Main context internally.
+        // Here we can use any dispatcher.
         viewModelScope.launch(Dispatchers.IO) {
             // Navigate and wait for the result.
             navigator.navigateForResult<DiscoveredBluetoothDevice>()
