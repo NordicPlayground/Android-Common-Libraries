@@ -68,6 +68,10 @@ data class NavigationDestination(
         id: String,
         content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit
     ): this(DestinationId(id), content)
+
+    operator fun plus(other: NavigationDestination): NavigationDestinations {
+        return listOf(this, other).asDestinations()
+    }
 }
 
 /**
@@ -95,6 +99,11 @@ class NavigationDestinations(
     operator fun plus(other: NavigationDestinations): NavigationDestinations {
         val combinedRouter = router.combine(other.router)
         return NavigationDestinations(values + other.values, combinedRouter)
+    }
+
+    operator fun plus(other: Router): NavigationDestinations {
+        val combinedRouter = router.combine(other)
+        return NavigationDestinations(values, combinedRouter)
     }
 }
 
