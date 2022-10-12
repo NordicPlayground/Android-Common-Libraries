@@ -9,9 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.logger.view.LoggerAppBarIcon
-import no.nordicsemi.android.common.navigation.asDestinations
-import no.nordicsemi.android.common.navigation.createDestination
-import no.nordicsemi.android.common.navigation.defineDestination
+import no.nordicsemi.android.common.navigation.*
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.main.page.*
 import no.nordicsemi.android.common.theme.view.NordicAppBar
@@ -26,15 +24,15 @@ val Main = createDestination("main")
  *
  * Optionally, this can define a local Router for routing navigation within the module.
  */
-private val MainDestination = defineDestination(Main) { _ ->
-        MainScreen()
+private val MainDestination = defineDestination(Main) { navigator, resultHandle ->
+        MainScreen(navigator, resultHandle)
     }
 
 val MainDestinations = MainDestination.asDestinations()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen() {
+private fun MainScreen(navigator: Navigator, resultHandle: ResultHandle) {
     Column {
         NordicAppBar(
             text = stringResource(id = R.string.title_main),
@@ -48,7 +46,7 @@ private fun MainScreen() {
             }
         )
         val pages = PagerViewEntity(listOf(
-            BasicsPage,
+            BasicsPage(navigator, resultHandle),
             FontsPage,
             WizardPage,
             ConnectionPage,

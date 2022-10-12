@@ -37,7 +37,7 @@ internal class NavigationPerformer(
         router(from, hint)?.let {
             // If found, navigate to it.
             navigateTo(it, args)
-        } ?: throw IllegalStateException("No destination found for $from with using $hint")
+        } ?: throw IllegalStateException("No destination found for $from with using $hint as hint")
     }
 
     /**

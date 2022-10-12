@@ -1,36 +1,54 @@
 package no.nordicsemi.android.common.test.main.page
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.navigation.Navigator
+import no.nordicsemi.android.common.navigation.ResultHandle
 import no.nordicsemi.android.common.test.R
+import no.nordicsemi.android.common.test.scanner.Scanner
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
-val BasicsPage = PagerViewItem("Basics") {
+fun BasicsPage(
+    navigator: Navigator,
+    resultHandle: ResultHandle
+) = PagerViewItem("Basics") {
+    val selectedDevice: DiscoveredBluetoothDevice? by resultHandle.resultFrom(Scanner, null).collectAsState()
+
     BasicViewsScreen(
-        onOpenScanner = {}
+        device = selectedDevice?.let { DeviceInfo(it) },
+        onOpenScanner = { navigator.navigate() }
     )
+}
+
+@SuppressLint("MissingPermission")
+data class DeviceInfo(
+    private val device: DiscoveredBluetoothDevice?
+) {
+    val name = device?.name ?: "Unknown"
+    val address = device?.address ?: "Unknown"
+    val rssi = device?.rssi ?: 0
 }
 
 @Composable
 private fun BasicViewsScreen(
+    device: DeviceInfo?,
     onOpenScanner: () -> Unit,
 ) {
     Column(
@@ -46,7 +64,13 @@ private fun BasicViewsScreen(
             Text(text = stringResource(id = R.string.action_scanner))
         }
 
-        Device()
+        device?.let {
+            Device(
+                deviceName = it.name,
+                deviceAddress = it.address,
+                rssi = it.rssi,
+            )
+        }
 
         BasicViewsScreen()
 
@@ -55,17 +79,21 @@ private fun BasicViewsScreen(
 }
 
 @Composable
-private fun Device() {
+private fun Device(
+    deviceName: String,
+    deviceAddress: String,
+    rssi: Int,
+) {
     Box(modifier = Modifier
         .clip(RoundedCornerShape(10.dp))
         .clickable { }
         .padding(8.dp)
     ) {
         DeviceListItem(
-            name = "Nordic Blinky",
-            address = "AA:BB:CC:DD:EE:FF",
+            name = deviceName,
+            address = deviceAddress,
         ) {
-            RssiIcon(rssi = -40)
+            RssiIcon(rssi = rssi)
         }
     }
 }
@@ -186,6 +214,7 @@ private fun Cards() {
 private fun ContentPreview() {
     NordicTheme {
         BasicViewsScreen(
+            device = null,
             onOpenScanner = {}
         )
     }
