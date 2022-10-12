@@ -7,34 +7,58 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.navigation.Navigator
-import no.nordicsemi.android.common.navigation.ResultHandle
 import no.nordicsemi.android.common.test.R
-import no.nordicsemi.android.common.test.scanner.Scanner
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import javax.inject.Inject
 
-fun BasicsPage(
-    navigator: Navigator,
-    resultHandle: ResultHandle
-) = PagerViewItem("Basics") {
-    val selectedDevice: DiscoveredBluetoothDevice? by resultHandle.resultFrom(Scanner, null).collectAsState()
-
+val BasicsPage = PagerViewItem("Basics") {
+    val vm = hiltViewModel<BasicPageViewModel>()
+    val device by vm.device
     BasicViewsScreen(
-        device = selectedDevice?.let { DeviceInfo(it) },
-        onOpenScanner = { navigator.navigate() }
+        device = device?.let { DeviceInfo(it) },
+        onOpenScanner = { vm.openScanner() }
     )
+}
+
+@HiltViewModel
+class BasicPageViewModel @Inject constructor(
+    private val navigator: Navigator,
+) : ViewModel() {
+    var device = mutableStateOf(null as DiscoveredBluetoothDevice?)
+
+    fun openScanner() {
+        // As the "navigateForResult" coroutine uses navigation,
+        // it must be launched on the main dispatcher
+        viewModelScope.launch(Dispatchers.IO) {
+            // Navigate and wait for the result.
+            navigator.navigateForResult<DiscoveredBluetoothDevice>()
+                // If the result was returned, update the device.
+                // If user cancelled, the result will be null and we ignore it.
+                ?.let { device.value = it }
+        }
+    }
 }
 
 @SuppressLint("MissingPermission")

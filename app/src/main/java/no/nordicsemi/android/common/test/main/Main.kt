@@ -24,15 +24,15 @@ val Main = createDestination("main")
  *
  * Optionally, this can define a local Router for routing navigation within the module.
  */
-private val MainDestination = defineDestination(Main) { navigator, resultHandle ->
-        MainScreen(navigator, resultHandle)
+private val MainDestination = defineDestination(Main) {
+        MainScreen()
     }
 
 val MainDestinations = MainDestination.asDestinations()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(navigator: Navigator, resultHandle: ResultHandle) {
+private fun MainScreen() {
     Column {
         NordicAppBar(
             text = stringResource(id = R.string.title_main),
@@ -46,7 +46,7 @@ private fun MainScreen(navigator: Navigator, resultHandle: ResultHandle) {
             }
         )
         val pages = PagerViewEntity(listOf(
-            BasicsPage(navigator, resultHandle),
+            BasicsPage,
             FontsPage,
             WizardPage,
             ConnectionPage,

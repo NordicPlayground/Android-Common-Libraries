@@ -4,28 +4,20 @@ import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import no.nordicsemi.android.common.navigation.DestinationId
 import no.nordicsemi.android.common.navigation.Router
-import no.nordicsemi.android.common.navigation.Navigator
 
 /**
- * The navigation performer calculates the target destination by using the navigation controller
- * and then performs the navigation.
+ * This object calculates the target destination by using destination routers
+ * and then requests the navigation.
  *
  * @property router The [Router] used to calculate the target destination.
- * @property onNavigateTo The callback invoked when the navigation is performed.
- * @property onStoreResult The callback invoked to store the result of the destination.
- * @property onNavigateUp The callback invoked when the navigation up is performed.
+ * @property onNavigateTo Navigates to the given route, passing optional argument.
+ * @property onNavigateUp Navigates up, passing an optional result.
  */
-internal class NavigationPerformer(
+internal class NavigationExecutor(
     private val router: Router,
-    private val onNavigateTo: (String, Bundle?) -> Unit,
-    private val onStoreResult: (Any) -> Unit,
-    private val onNavigateUp: () -> Unit,
+    private val onNavigateTo: (route: String, Bundle?) -> Unit,
+    private val onNavigateUp: (Any?) -> Unit,
 ) {
-    /**
-     * Returns a [Navigator] that will allow navigating from the current destination.
-     */
-    internal fun from(destinationId: DestinationId): Navigator = Navigator(this, destinationId)
-
     /**
      * Navigate to the given destination passing an optional argument.
      *
@@ -51,7 +43,7 @@ internal class NavigationPerformer(
      * Navigate up to the previous destination.
      */
     internal fun navigateUp() {
-        onNavigateUp()
+        onNavigateUp(Cancelled)
     }
 
     /**
@@ -62,7 +54,6 @@ internal class NavigationPerformer(
      * savable to a [Bundle].
      */
     internal fun navigateUpWithResult(result: Any) {
-        onStoreResult(result)
-        onNavigateUp()
+        onNavigateUp(result)
     }
 }

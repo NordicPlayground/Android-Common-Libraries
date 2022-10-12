@@ -62,11 +62,11 @@ data class DestinationId(internal val name: String) {
  */
 data class NavigationDestination(
     val id: DestinationId,
-    val content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit
+    val content: @Composable () -> Unit
 ) {
     constructor(
         id: String,
-        content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit
+        content: @Composable () -> Unit
     ): this(DestinationId(id), content)
 
     operator fun plus(other: NavigationDestination): NavigationDestinations {
@@ -117,16 +117,7 @@ fun createDestination(name: String): DestinationId = DestinationId(name)
  */
 fun defineDestination(
     id: DestinationId,
-    content: @Composable (navigator: Navigator) -> Unit
-): NavigationDestination = NavigationDestination(id) { navigator, _ -> content(navigator) }
-
-/**
- * Helper method for creating a [NavigationDestination] that will
- * be able to subscribe for results from destinations it will navigate to.
- */
-fun defineDestination(
-    id: DestinationId,
-    content: @Composable (navigator: Navigator, result: ResultHandle) -> Unit,
+    content: @Composable () -> Unit
 ): NavigationDestination = NavigationDestination(id, content)
 
 /**

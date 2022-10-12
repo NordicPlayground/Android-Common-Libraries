@@ -1,19 +1,10 @@
 package no.nordicsemi.android.common.navigation
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
-import no.nordicsemi.android.common.navigation.internal.NavigationPerformer
 
-/**
- * A navigator that can be used to navigate to next destination, or back.
- *
- * @property performer The [NavigationPerformer] that will perform the navigation.
- * @property currentDestinationId The identifier of the current destination.
- */
-class Navigator internal constructor (
-    private val performer: NavigationPerformer,
-    private val currentDestinationId: DestinationId,
-) {
+interface Navigator {
     /**
      * Requests navigation using the given argument.
      *
@@ -24,20 +15,27 @@ class Navigator internal constructor (
      * @param hint An optional hint to determine the target destination.
      * @param args An optional argument to pass to the destination.
      */
-    fun navigate(hint: Any? = null, args: Bundle? = null) {
-        performer.navigate(
-            from = currentDestinationId,
-            hint = hint,
-            args = args,
-        )
-    }
+    fun navigate(hint: Any? = null, args: Bundle? = null)
+
+    /**
+     * Requests navigation using the given argument and suspends until the result is received.
+     *
+     * The destination target is determined either by the [Router] for the
+     * local [NavigationDestinations], or the global [Router] set in
+     * [NavigationView].
+     *
+     * The target destination must call [navigateUpWithResult] to return the result,
+     * or [navigateUp] to cancel. If cancelled, null will be returned.
+     *
+     * @param hint An optional hint to determine the target destination.
+     * @param args An optional argument to pass to the destination.
+     */
+    suspend fun <T> navigateForResult(hint: Any? = null, args: Bundle? = null): T?
 
     /**
      * Navigates up to previous destination, or finishes the Activity.
      */
-    fun navigateUp() {
-        performer.navigateUp()
-    }
+    fun navigateUp()
 
     /**
      * Navigates up to previous destination passing the given result, or finishes the Activity.
@@ -46,7 +44,10 @@ class Navigator internal constructor (
      * The returned type will be saved in [SavedStateHandle], therefore it must be
      * savable to a [Bundle].
      */
-    fun navigateUpWithResult(result: Any) {
-        performer.navigateUpWithResult(result)
-    }
+    fun navigateUpWithResult(result: Any)
+
+    /**
+     * Opens the given link in a browser.
+     */
+    fun open(link: Uri)
 }
