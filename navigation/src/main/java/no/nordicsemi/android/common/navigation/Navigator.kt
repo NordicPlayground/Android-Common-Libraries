@@ -14,7 +14,7 @@ interface Navigator {
      *
      * @param from The origin destination to listen for results from.
      */
-    fun <T> resultFrom(from: DestinationId): Flow<T?>
+    fun <T> resultFrom(from: DestinationId<T>): Flow<T?>
 
     /**
      * Requests navigation to the given destination. An optional parameter can be passed.
@@ -22,7 +22,7 @@ interface Navigator {
      * @param to The destination to navigate to.
      * @param args An optional argument to pass to the destination.
      */
-    fun navigateTo(to: DestinationId, args: Bundle? = null)
+    fun navigateTo(to: DestinationId<*>, args: Bundle? = null)
 
     /**
      * Navigates up to previous destination, or finishes the Activity.

@@ -56,7 +56,7 @@ class BasicPageViewModel @Inject constructor(
     var device = mutableStateOf<DiscoveredBluetoothDevice?>(savedStateHandle[DEVICE_KEY])
 
     init {
-        navigator.resultFrom<DiscoveredBluetoothDevice>(Scanner)
+        navigator.resultFrom(Scanner)
             // Filter out results of cancelled navigation.
             .filter { it != null }
             // Display the result.

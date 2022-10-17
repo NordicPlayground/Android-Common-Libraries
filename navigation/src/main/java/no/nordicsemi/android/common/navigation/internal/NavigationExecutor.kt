@@ -21,7 +21,7 @@ internal class NavigationExecutor(
      * @param to The target destination.
      * @param args An optional argument to pass to the destination.
      */
-    internal fun navigate(to: DestinationId, args: Bundle?) {
+    internal fun navigate(to: DestinationId<*>, args: Bundle?) {
         onNavigateTo(to.name, args)
     }
 

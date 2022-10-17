@@ -3,17 +3,15 @@ package no.nordicsemi.android.common.test.scanner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import no.nordicsemi.android.common.navigation.Navigator
-import no.nordicsemi.android.common.navigation.asDestinations
-import no.nordicsemi.android.common.navigation.createDestination
-import no.nordicsemi.android.common.navigation.defineDestination
+import no.nordicsemi.android.common.navigation.*
 import no.nordicsemi.android.common.ui.scanner.DeviceSelected
 import no.nordicsemi.android.common.ui.scanner.ScannerScreen
 import no.nordicsemi.android.common.ui.scanner.ScannerScreenResult
 import no.nordicsemi.android.common.ui.scanner.ScanningCancelled
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import javax.inject.Inject
 
-val Scanner = createDestination("scanner")
+val Scanner = createResultDestination<DiscoveredBluetoothDevice>("scanner")
 
 private val ScannerDestination = defineDestination(Scanner) {
     val vm = hiltViewModel<ScannerViewModel>()

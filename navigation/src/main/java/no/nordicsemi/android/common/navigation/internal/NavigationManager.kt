@@ -40,7 +40,7 @@ internal class NavigationManager @Inject constructor(
     internal var executor: NavigationExecutor? = null
     internal var savedStateHandle: SavedStateHandle? = null
 
-    override fun <T> resultFrom(from: DestinationId): Flow<T?> =
+    override fun <T> resultFrom(from: DestinationId<T>): Flow<T?> =
         @Suppress("UNCHECKED_CAST")
         savedStateHandle?.run {
             getStateFlow<NavigationResult>(from.name, Initial)
@@ -56,7 +56,7 @@ internal class NavigationManager @Inject constructor(
                 }
         }?: throw IllegalStateException("SavedStateHandle is not set")
 
-    override fun navigateTo(to: DestinationId, args: Bundle?) {
+    override fun navigateTo(to: DestinationId<*>, args: Bundle?) {
         executor?.navigate(to, args)
     }
 

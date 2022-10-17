@@ -38,7 +38,7 @@ import androidx.compose.runtime.Composable
 /**
  * A destination identifier.
  */
-data class DestinationId(internal val name: String) {
+data class DestinationId<T>(internal val name: String) {
     override fun toString(): String = name
 }
 
@@ -52,13 +52,9 @@ data class DestinationId(internal val name: String) {
  * @property content The composable function that will be used to render the content.
  */
 data class NavigationDestination(
-    val id: DestinationId,
+    val id: DestinationId<*>,
     val content: @Composable () -> Unit
 ) {
-    constructor(
-        id: String,
-        content: @Composable () -> Unit
-    ): this(DestinationId(id), content)
 
     operator fun plus(other: NavigationDestination): NavigationDestinations {
         return listOf(this, other).asDestinations()
@@ -84,14 +80,18 @@ class NavigationDestinations(
 
 /**
  * Helper function to create a [DestinationId] from a string.
+ *
+ * @param T The return type of the destination.
  */
-fun createDestination(name: String): DestinationId = DestinationId(name)
+fun <T> createResultDestination(name: String): DestinationId<T> = DestinationId(name)
+
+fun createDestination(name: String): DestinationId<Unit> = DestinationId(name)
 
 /**
  * Helper method for creating a [NavigationDestination].
  */
 fun defineDestination(
-    id: DestinationId,
+    id: DestinationId<*>,
     content: @Composable () -> Unit
 ): NavigationDestination = NavigationDestination(id, content)
 
