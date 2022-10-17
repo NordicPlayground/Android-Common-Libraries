@@ -7,11 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +35,8 @@ import javax.inject.Inject
 
 val BasicsPage = PagerViewItem("Basics") {
     val vm = hiltViewModel<BasicPageViewModel>()
-    val device by vm.device
+    val device by vm.device.collectAsState()
+
     BasicViewsScreen(
         device = device?.let { DeviceInfo(it) },
         onOpenScanner = { vm.openScanner() }
@@ -53,14 +51,13 @@ class BasicPageViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     // Initialize the selected device from the saved state handle.
-    var device = mutableStateOf<DiscoveredBluetoothDevice?>(savedStateHandle[DEVICE_KEY])
+    var device = savedStateHandle.getStateFlow<DiscoveredBluetoothDevice?>(DEVICE_KEY, null)
+        private set
 
     init {
         navigator.resultFrom(Scanner)
             // Filter out results of cancelled navigation.
             .filter { it != null }
-            // Display the result.
-            .onEach { device.value = it }
             // Save the result in SavedStateHandle.
             .onEach { savedStateHandle[DEVICE_KEY] = it }
             // And finally, launch the flow in the ViewModelScope.
