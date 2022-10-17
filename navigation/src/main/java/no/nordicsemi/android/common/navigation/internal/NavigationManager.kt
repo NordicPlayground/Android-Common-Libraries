@@ -9,78 +9,60 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.dropWhile
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import no.nordicsemi.android.common.navigation.DestinationId
 import no.nordicsemi.android.common.navigation.Navigator
 import javax.inject.Inject
 
-internal const val RESULT_KEY = "result"
-
+internal sealed class NavigationResult
 @Parcelize
-internal object Cancelled : Parcelable
+internal object Initial : NavigationResult(), Parcelable
 @Parcelize
-private object Initial : Parcelable
+internal object Cancelled : NavigationResult(), Parcelable
+@Parcelize
+internal class Success(val value: @RawValue Any) : NavigationResult(), Parcelable
 
 /**
  * A navigation manager that can be used to navigate to next destination, or back.
  *
  * @property executor The [NavigationExecutor] that will perform the navigation.
- * @property currentDestinationId The identifier of the current destination.
  */
 @ActivityRetainedScoped
 internal class NavigationManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ): Navigator {
     var executor: NavigationExecutor? = null
-    var currentDestinationId: DestinationId? = null
     var savedStateHandle: SavedStateHandle? = null
 
-    override fun navigate(hint: Any?, args: Bundle?) {
-        currentDestinationId?.let { here ->
-            executor?.navigate(
-                from = here,
-                hint = hint,
-                args = args,
-            )
-        }
+    override fun <T> resultFrom(from: DestinationId): Flow<T?> =
+        @Suppress("UNCHECKED_CAST")
+        savedStateHandle?.run {
+            getStateFlow<NavigationResult>(from.name, Initial)
+                .transform { result ->
+                    when (result) {
+                        // Ignore the initial value.
+                        is Initial -> {}
+                        // Return success result.
+                        is Success -> emit(result.value as T)
+                        // Return null when cancelled.
+                        is Cancelled -> emit(null)
+                    }
+                }
+        }?: throw IllegalStateException("SavedStateHandle is not set")
+
+    override fun navigateTo(to: DestinationId, args: Bundle?) {
+        executor?.navigate(to, args)
     }
 
-    override suspend fun <T> navigateForResult(hint: Any?, args: Bundle?): T? =
-        withContext(Dispatchers.Main) {
-            savedStateHandle?.run {
-                // Make sure the executor is set.
-                if (executor == null) return@run null
-                // Create a result flow.
-                getStateFlow<Any?>(RESULT_KEY, Initial)
-                    // Drop the initial value.
-                    .dropWhile { it == Initial }
-                    // Navigate using the executor.
-                    .also { navigate(hint, args) }
-                    // Suspend until the result is received.
-                    .run { firstOrNull() }
-                    // Remove the result from the SavedStateHandle.
-                    .also { remove<Any?>("result") }
-                    // Convert to T?
-                    .let {
-                        @Suppress("UNCHECKED_CAST")
-                        when (it) {
-                            is Cancelled -> null
-                            else -> it as? T
-                        }
-                    }
-            }
-        }
-
     override fun navigateUp() {
-        executor?.navigateUp()
+        executor?.navigateUpWithResult(Cancelled)
     }
 
     override fun navigateUpWithResult(result: Any) {
-        executor?.navigateUpWithResult(result)
+        executor?.navigateUpWithResult(Success(result))
     }
 
     override fun open(link: Uri) {

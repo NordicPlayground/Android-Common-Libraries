@@ -35,9 +35,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import no.nordicsemi.android.common.navigation.NavigationView
-import no.nordicsemi.android.common.test.main.Main
 import no.nordicsemi.android.common.test.main.MainDestinations
-import no.nordicsemi.android.common.test.scanner.Scanner
 import no.nordicsemi.android.common.test.scanner.ScannerDestinations
 import no.nordicsemi.android.common.theme.NordicActivity
 import no.nordicsemi.android.common.theme.NordicTheme
@@ -50,13 +48,7 @@ class MainActivity : NordicActivity() {
 
         setContent {
             NordicTheme {
-                // The Navigation View is responsible for navigation between the screens.
-                NavigationView(MainDestinations + ScannerDestinations) { destination, _ ->
-                    when (destination) {
-                        Main -> Scanner
-                        else -> null
-                    }
-                }
+                NavigationView(MainDestinations + ScannerDestinations)
             }
         }
     }

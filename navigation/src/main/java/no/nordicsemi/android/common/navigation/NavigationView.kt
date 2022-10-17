@@ -40,7 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import no.nordicsemi.android.common.navigation.internal.*
+import no.nordicsemi.android.common.navigation.internal.Cancelled
+import no.nordicsemi.android.common.navigation.internal.NavigationExecutor
+import no.nordicsemi.android.common.navigation.internal.NavigationViewModel
+import no.nordicsemi.android.common.navigation.internal.navigate
 
 /**
  * A navigation view allows navigating between different destinations.
@@ -48,29 +51,25 @@ import no.nordicsemi.android.common.navigation.internal.*
  * Each destination may pass an argument to the next one. The argument is a [Bundle].
  *
  * @param destinations The list of possible destinations.
- * @param router The navigation controller used to calculate target destinations.
  */
 @Composable
 fun NavigationView(
     destinations: NavigationDestinations,
-    router: Router = { _, _ -> null }
 ) {
     val navHostController = rememberNavController()
 
     val activity = LocalContext.current as Activity
 
-    // Create a combined navigator that will navigate between destinations.
-    val combinedRouter = destinations.router.combine(router)
-    val performer = NavigationExecutor(combinedRouter,
+    val executor = NavigationExecutor(
         onNavigateTo = { route, argument ->
             // Navigate to the next destination, passing the argument.
             navHostController.navigate(route, argument)
         },
         onNavigateUp = { result ->
-            // Notify the previous destination about the result.
-            navHostController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.set(RESULT_KEY, result)
+            // Navigate up to the previous destination, passing the result.
+            navHostController.currentBackStackEntry?.destination?.route?.let { route ->
+                navHostController.previousBackStackEntry?.savedStateHandle?.set(route, result)
+            }
 
             // Navigate up, or finish the Activity if at root.
             if (!navHostController.navigateUp()) {
@@ -79,9 +78,9 @@ fun NavigationView(
         }
     )
 
-    val navigation = hiltViewModel<NavigationViewModel>().apply { use(performer) }
+    val navigation = hiltViewModel<NavigationViewModel>().apply { use(executor) }
 
-    BackHandler { performer.navigateUp() }
+    BackHandler { executor.navigateUpWithResult(Cancelled) }
 
     NavHost(
         navController = navHostController,
@@ -91,7 +90,7 @@ fun NavigationView(
             composable(
                 route = destination.id.name,
             ) {
-                navigation.at(destination).use(it.savedStateHandle)
+                navigation.use(it.savedStateHandle)
                 destination.content()
             }
         }

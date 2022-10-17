@@ -19,13 +19,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
+import no.nordicsemi.android.common.test.scanner.Scanner
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
@@ -42,23 +45,40 @@ val BasicsPage = PagerViewItem("Basics") {
     )
 }
 
+private const val DEVICE_KEY = "device"
+
 @HiltViewModel
 class BasicPageViewModel @Inject constructor(
     private val navigator: Navigator,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    var device = mutableStateOf(null as DiscoveredBluetoothDevice?)
+    // Initialize the selected device from the saved state handle.
+    var device = mutableStateOf<DiscoveredBluetoothDevice?>(savedStateHandle[DEVICE_KEY])
+
+    init {
+        navigator.resultFrom<DiscoveredBluetoothDevice>(Scanner)
+            // Filter out results of cancelled navigation.
+            .filter { it != null }
+            // Display the result.
+            .onEach { device.value = it }
+            // Save the result in SavedStateHandle.
+            .onEach { savedStateHandle[DEVICE_KEY] = it }
+            // And finally, launch the flow in the ViewModelScope.
+            .launchIn(viewModelScope)
+    }
 
     fun openScanner() {
+        navigator.navigateTo(Scanner)
         // As the "navigateForResult" coroutine uses navigation,
         // it will use Dispatchers.Main context internally.
         // Here we can use any dispatcher.
-        viewModelScope.launch(Dispatchers.IO) {
-            // Navigate and wait for the result.
-            navigator.navigateForResult<DiscoveredBluetoothDevice>()
-                // If the result was returned, update the device.
-                // If user cancelled, the result will be null and we ignore it.
-                ?.let { device.value = it }
-        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            // Navigate and wait for the result.
+//            navigator.navigateForResult<DiscoveredBluetoothDevice>()
+//                // If the result was returned, update the device.
+//                // If user cancelled, the result will be null and we ignore it.
+//                ?.let { device.value = it }
+//        }
     }
 }
 

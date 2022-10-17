@@ -3,34 +3,26 @@ package no.nordicsemi.android.common.navigation
 import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
+import kotlinx.coroutines.flow.Flow
 
 interface Navigator {
-    /**
-     * Requests navigation using the given argument.
-     *
-     * The destination target is determined either by the [Router] for the
-     * local [NavigationDestinations], or the global [Router] set in
-     * [NavigationView].
-     *
-     * @param hint An optional hint to determine the target destination.
-     * @param args An optional argument to pass to the destination.
-     */
-    fun navigate(hint: Any? = null, args: Bundle? = null)
 
     /**
-     * Requests navigation using the given argument and suspends until the result is received.
+     * Creates a flow that will emit the results of the navigation from the given destination.
      *
-     * The destination target is determined either by the [Router] for the
-     * local [NavigationDestinations], or the global [Router] set in
-     * [NavigationView].
+     * Null is emitted when the navigation was cancelled.
      *
-     * The target destination must call [navigateUpWithResult] to return the result,
-     * or [navigateUp] to cancel. If cancelled, null will be returned.
+     * @param from The origin destination to listen for results from.
+     */
+    fun <T> resultFrom(from: DestinationId): Flow<T?>
+
+    /**
+     * Requests navigation to the given destination. An optional parameter can be passed.
      *
-     * @param hint An optional hint to determine the target destination.
+     * @param to The destination to navigate to.
      * @param args An optional argument to pass to the destination.
      */
-    suspend fun <T> navigateForResult(hint: Any? = null, args: Bundle? = null): T?
+    fun navigateTo(to: DestinationId, args: Bundle? = null)
 
     /**
      * Navigates up to previous destination, or finishes the Activity.

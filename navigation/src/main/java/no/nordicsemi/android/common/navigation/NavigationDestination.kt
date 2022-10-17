@@ -34,15 +34,6 @@
 package no.nordicsemi.android.common.navigation
 
 import androidx.compose.runtime.Composable
-import no.nordicsemi.android.common.navigation.internal.combine
-
-/**
- * A callback used to determine the next destination.
- *
- * Based on the current destination (from), a hint, and the optional arguments, the callback should
- * return the target destination, or null, if that router does not support the given destination.
- */
-typealias Router = (from: DestinationId, hint: Any?) -> DestinationId?
 
 /**
  * A destination identifier.
@@ -77,33 +68,17 @@ data class NavigationDestination(
 /**
  * A collection of destinations.
  *
- * Navigation between the destinations may be controlled by local or global navigation controllers.
- * Local navigation controller, defined here, can navigate between destinations within the
- * collection, where some of the destinations may not be exposed outside of the component.
- *
- * The global navigation controller, defined in [NavigationView], can navigate between destinations
- * from different components.
- *
  * @property values List of destinations within a component.
- * @property router An optional router that can route between destinations within this component.
  */
 class NavigationDestinations(
     val values: List<NavigationDestination>,
-    val router: Router = { _, _ -> null },
 ) {
     constructor(
         destination: NavigationDestination,
-        router: Router = { _, _ -> null },
-    ) : this(listOf(destination), router)
+    ) : this(listOf(destination))
 
     operator fun plus(other: NavigationDestinations): NavigationDestinations {
-        val combinedRouter = router.combine(other.router)
-        return NavigationDestinations(values + other.values, combinedRouter)
-    }
-
-    operator fun plus(other: Router): NavigationDestinations {
-        val combinedRouter = router.combine(other)
-        return NavigationDestinations(values, combinedRouter)
+        return NavigationDestinations(values + other.values)
     }
 }
 
@@ -121,22 +96,13 @@ fun defineDestination(
 ): NavigationDestination = NavigationDestination(id, content)
 
 /**
- * Helper method for creating a [NavigationDestinations]
- * with local router.
- */
-fun List<NavigationDestination>.asDestinationsWithRouter(router: Router) =
-    NavigationDestinations(this, router)
-
-/**
  * Helper method for creating a [NavigationDestinations].
  *
  * This destination can be routed using global router specified
  * in the [NavigationView].
- *
- * @see asDestinationsWithRouter
  */
 fun List<NavigationDestination>.asDestinations() =
-    NavigationDestinations(this) { _, _ -> null }
+    NavigationDestinations(this)
 
 /**
  * Helper method for creating a [NavigationDestinations]
@@ -144,8 +110,6 @@ fun List<NavigationDestination>.asDestinations() =
  *
  * This destination can be routed using global router specified
  * in the [NavigationView].
- *
- * @see asDestinationsWithRouter
  */
 fun NavigationDestination.asDestinations() =
-    NavigationDestinations(this) { _, _ -> null }
+    NavigationDestinations(this)
