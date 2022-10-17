@@ -10,7 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
@@ -57,7 +57,7 @@ internal class NavigationManager @Inject constructor(
                 // Create a result flow.
                 getStateFlow<Any?>(RESULT_KEY, Initial)
                     // Drop the initial value.
-                    .drop(1)
+                    .dropWhile { it == Initial }
                     // Navigate using the executor.
                     .also { navigate(hint, args) }
                     // Suspend until the result is received.
