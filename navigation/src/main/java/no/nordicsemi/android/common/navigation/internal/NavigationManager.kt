@@ -28,14 +28,17 @@ internal class Success(val value: @RawValue Any) : NavigationResult(), Parcelabl
 /**
  * A navigation manager that can be used to navigate to next destination, or back.
  *
+ * @param context the application context.
  * @property executor The [NavigationExecutor] that will perform the navigation.
+ * @property savedStateHandle The [SavedStateHandle] that will be used to store the navigation
+ * result.
  */
 @ActivityRetainedScoped
 internal class NavigationManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ): Navigator {
-    var executor: NavigationExecutor? = null
-    var savedStateHandle: SavedStateHandle? = null
+    internal var executor: NavigationExecutor? = null
+    internal var savedStateHandle: SavedStateHandle? = null
 
     override fun <T> resultFrom(from: DestinationId): Flow<T?> =
         @Suppress("UNCHECKED_CAST")
