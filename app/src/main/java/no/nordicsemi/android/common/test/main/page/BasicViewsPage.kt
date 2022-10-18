@@ -51,8 +51,7 @@ class BasicPageViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     // Initialize the selected device from the saved state handle.
-    var device = savedStateHandle.getStateFlow<DiscoveredBluetoothDevice?>(DEVICE_KEY, null)
-        private set
+    val device = savedStateHandle.getStateFlow<DiscoveredBluetoothDevice?>(DEVICE_KEY, null)
 
     init {
         navigator.resultFrom(Scanner)
@@ -66,16 +65,6 @@ class BasicPageViewModel @Inject constructor(
 
     fun openScanner() {
         navigator.navigateTo(Scanner)
-        // As the "navigateForResult" coroutine uses navigation,
-        // it will use Dispatchers.Main context internally.
-        // Here we can use any dispatcher.
-//        viewModelScope.launch(Dispatchers.IO) {
-//            // Navigate and wait for the result.
-//            navigator.navigateForResult<DiscoveredBluetoothDevice>()
-//                // If the result was returned, update the device.
-//                // If user cancelled, the result will be null and we ignore it.
-//                ?.let { device.value = it }
-//        }
     }
 }
 
