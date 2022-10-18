@@ -35,13 +35,17 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import no.nordicsemi.android.common.navigation.internal.Cancelled
-import no.nordicsemi.android.common.navigation.internal.NavigationExecutor
+import no.nordicsemi.android.common.navigation.internal.NavigateTo
+import no.nordicsemi.android.common.navigation.internal.NavigateUp
 import no.nordicsemi.android.common.navigation.internal.NavigationViewModel
 import no.nordicsemi.android.common.navigation.internal.navigate
 
@@ -60,27 +64,31 @@ fun NavigationView(
 
     val activity = LocalContext.current as Activity
 
-    val executor = NavigationExecutor(
-        onNavigateTo = { route, argument ->
-            // Navigate to the next destination, passing the argument.
-            navHostController.navigate(route, argument)
-        },
-        onNavigateUp = { result ->
-            // Navigate up to the previous destination, passing the result.
-            navHostController.currentBackStackEntry?.destination?.route?.let { route ->
-                navHostController.previousBackStackEntry?.savedStateHandle?.set(route, result)
-            }
+    val navigation = hiltViewModel<NavigationViewModel>()
 
-            // Navigate up, or finish the Activity if at root.
-            if (!navHostController.navigateUp()) {
-                activity.finish()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(key1 = navigation, key2 = lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            navigation.events.collect { event ->
+                when (event) {
+                    is NavigateTo -> navHostController.navigate(event.route, event.args)
+                    is NavigateUp -> {
+                        // Navigate up to the previous destination, passing the result.
+                        navHostController.currentBackStackEntry?.destination?.route?.let { route ->
+                            navHostController.previousBackStackEntry?.savedStateHandle?.set(route, event.result)
+                        }
+
+                        // Navigate up, or finish the Activity if at root.
+                        if (!navHostController.navigateUp()) {
+                            activity.finish()
+                        }
+                    }
+                }
             }
         }
-    )
+    }
 
-    val navigation = hiltViewModel<NavigationViewModel>().apply { use(executor) }
-
-    BackHandler { executor.navigateUpWithResult(Cancelled) }
+    BackHandler { navigation.navigateUp() }
 
     NavHost(
         navController = navHostController,
