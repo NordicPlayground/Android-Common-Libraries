@@ -5,25 +5,16 @@ import androidx.lifecycle.SavedStateHandle
 import no.nordicsemi.android.common.navigation.DestinationId
 
 /**
- * This object calculates the target destination by using destination routers
- * and then requests the navigation.
- *
- * @property onNavigateTo Navigates to the given route, passing optional argument.
- * @property onNavigateUp Navigates up, passing an optional result.
+ * A navigation executor that can be used to navigate to next destination, or back.
  */
-internal class NavigationExecutor(
-    private val onNavigateTo: (route: String, Bundle?) -> Unit,
-    private val onNavigateUp: (Any?) -> Unit,
-) {
+internal interface NavigationExecutor {
     /**
      * Navigates to the given destination passing an optional argument.
      *
      * @param to The target destination.
      * @param args An optional argument to pass to the destination.
      */
-    internal fun navigate(to: DestinationId<*>, args: Bundle?) {
-        onNavigateTo(to.name, args)
-    }
+    fun navigate(to: DestinationId<*>, args: Bundle?)
 
     /**
      * Navigate up to the previous destination passing the given result.
@@ -32,7 +23,5 @@ internal class NavigationExecutor(
      * The returned type will be saved in [SavedStateHandle], therefore it must be
      * savable to a [Bundle].
      */
-    internal fun navigateUpWithResult(result: NavigationResult) {
-        onNavigateUp(result)
-    }
+    fun navigateUpWithResult(result: NavigationResult)
 }

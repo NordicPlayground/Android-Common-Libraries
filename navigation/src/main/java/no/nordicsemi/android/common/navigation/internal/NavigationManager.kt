@@ -54,7 +54,7 @@ internal class NavigationManager @Inject constructor(
                         is Cancelled -> emit(null)
                     }
                 }
-        }?: throw IllegalStateException("SavedStateHandle is not set")
+        } ?: throw IllegalStateException("SavedStateHandle is not set")
 
     override fun navigateTo(to: DestinationId<*>, args: Bundle?) {
         executor?.navigate(to, args)

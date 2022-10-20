@@ -35,19 +35,14 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import no.nordicsemi.android.common.navigation.internal.NavigateTo
-import no.nordicsemi.android.common.navigation.internal.NavigateUp
-import no.nordicsemi.android.common.navigation.internal.NavigationViewModel
-import no.nordicsemi.android.common.navigation.internal.navigate
+import no.nordicsemi.android.common.navigation.internal.*
 
 /**
  * A navigation view allows navigating between different destinations.
@@ -62,33 +57,30 @@ fun NavigationView(
 ) {
     val navHostController = rememberNavController()
 
-    val activity = LocalContext.current as Activity
-
     val navigation = hiltViewModel<NavigationViewModel>()
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(key1 = navigation, key2 = lifecycleOwner) {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            navigation.events.collect { event ->
-                when (event) {
-                    is NavigateTo -> navHostController.navigate(event.route, event.args)
-                    is NavigateUp -> {
-                        // Navigate up to the previous destination, passing the result.
-                        navHostController.currentBackStackEntry?.destination?.route?.let { route ->
-                            navHostController.previousBackStackEntry?.savedStateHandle?.set(route, event.result)
-                        }
+    // Handle navigation events.
+    val event by navigation.events.collectAsState()
+    event?.let { e ->
+        when (e) {
+            is NavigateTo -> navHostController.navigate(e.route, e.args)
+            is NavigateUp -> {
+                val activity = LocalContext.current as Activity
+                // Navigate up to the previous destination, passing the result.
+                navHostController.currentBackStackEntry?.destination?.route?.let { route ->
+                    navHostController.previousBackStackEntry?.savedStateHandle?.set(route, e.result)
+                }
 
-                        // Navigate up, or finish the Activity if at root.
-                        if (!navHostController.navigateUp()) {
-                            activity.finish()
-                        }
-                    }
+                // Navigate up, or finish the Activity if at root.
+                if (!navHostController.navigateUp()) {
+                    activity.finish()
                 }
             }
         }
+        navigation.consumeEvent()
     }
 
-    BackHandler { navigation.navigateUp() }
+    BackHandler { navigation.navigateUpWithResult(Cancelled) }
 
     NavHost(
         navController = navHostController,
