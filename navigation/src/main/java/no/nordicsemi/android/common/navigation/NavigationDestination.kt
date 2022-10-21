@@ -37,8 +37,11 @@ import androidx.compose.runtime.Composable
 
 /**
  * A destination identifier.
+ *
+ * @param A The Argument type.
+ * @param R The Result type.
  */
-data class DestinationId<T>(internal val name: String) {
+data class DestinationId<A, R>(internal val name: String) {
     override fun toString(): String = name
 }
 
@@ -52,7 +55,7 @@ data class DestinationId<T>(internal val name: String) {
  * @property content The composable function that will be used to render the content.
  */
 data class NavigationDestination(
-    val id: DestinationId<*>,
+    val id: DestinationId<*, *>,
     val content: @Composable () -> Unit
 ) {
 
@@ -81,17 +84,23 @@ class NavigationDestinations(
 /**
  * Helper function to create a [DestinationId] from a string.
  *
- * @param T The return type of the destination.
+ * @param A The argument type of the destination.
+ * @param R The return type of the destination.
  */
-fun <T> createResultDestination(name: String): DestinationId<T> = DestinationId(name)
+fun <A, R> createDestination(name: String): DestinationId<A, R> = DestinationId(name)
 
-fun createDestination(name: String): DestinationId<Unit> = DestinationId(name)
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * The destination does not take any arguments and does not return any result.
+ */
+fun createSimpleDestination(name: String): DestinationId<Unit, Unit> = DestinationId(name)
 
 /**
  * Helper method for creating a [NavigationDestination].
  */
 fun defineDestination(
-    id: DestinationId<*>,
+    id: DestinationId<*, *>,
     content: @Composable () -> Unit
 ): NavigationDestination = NavigationDestination(id, content)
 

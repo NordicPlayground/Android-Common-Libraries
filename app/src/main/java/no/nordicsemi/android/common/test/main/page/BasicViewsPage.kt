@@ -1,6 +1,7 @@
 package no.nordicsemi.android.common.test.main.page
 
 import android.annotation.SuppressLint
+import android.os.ParcelUuid
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -31,6 +32,7 @@ import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import java.util.*
 import javax.inject.Inject
 
 val BasicsPage = PagerViewItem("Basics") {
@@ -64,7 +66,8 @@ class BasicPageViewModel @Inject constructor(
     }
 
     fun openScanner() {
-        navigator.navigateTo(Scanner)
+        // This is Mesh Proxy Service UUID
+        navigator.navigateTo(Scanner, ParcelUuid(UUID.fromString("00001828-0000-1000-8000-00805F9B34FB")))
     }
 }
 

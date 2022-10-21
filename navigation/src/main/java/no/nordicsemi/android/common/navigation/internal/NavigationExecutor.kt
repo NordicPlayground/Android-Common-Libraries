@@ -2,7 +2,6 @@ package no.nordicsemi.android.common.navigation.internal
 
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
-import no.nordicsemi.android.common.navigation.DestinationId
 
 /**
  * A navigation executor that can be used to navigate to next destination, or back.
@@ -11,10 +10,9 @@ internal interface NavigationExecutor {
     /**
      * Navigates to the given destination passing an optional argument.
      *
-     * @param to The target destination.
-     * @param args An optional argument to pass to the destination.
+     * @param target The target target with an optional parameter.
      */
-    fun navigate(to: DestinationId<*>, args: Bundle?)
+    fun navigate(target: NavigationTarget)
 
     /**
      * Navigate up to the previous destination passing the given result.

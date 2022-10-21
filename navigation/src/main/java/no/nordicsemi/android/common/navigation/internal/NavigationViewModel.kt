@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import no.nordicsemi.android.common.navigation.DestinationId
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 internal sealed class NavigationEvent
@@ -41,8 +42,8 @@ internal class NavigationViewModel @Inject constructor(
         _events.update { null }
     }
 
-    override fun navigate(to: DestinationId<*>, args: Bundle?) {
-        _events.update { NavigateTo(to.name, args) }
+    override fun navigate(target: NavigationTarget) {
+        _events.update { NavigateTo(target.destination.name, target.toBundle()) }
     }
 
     override fun navigateUpWithResult(result: NavigationResult) {
