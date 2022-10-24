@@ -17,7 +17,7 @@ import no.nordicsemi.android.common.theme.view.PagerView
 import no.nordicsemi.android.common.theme.view.PagerViewEntity
 
 /** This is the destination identifier. */
-val Main = createDestination("main")
+val Main = createSimpleDestination("main")
 
 /**
  * List of destinations defined in the module.
