@@ -30,8 +30,9 @@ internal class NavigationViewModel @Inject constructor(
      * This has to be the instance given in navigation composable, as each ViewModel may received
      * a different instance of [SavedStateHandle] using Hilt injections.
      */
-    fun use(savedStateHandle: SavedStateHandle) = this
-        .apply { navigationManager.savedStateHandle = savedStateHandle }
+    fun use(savedStateHandle: SavedStateHandle) = apply {
+        navigationManager.savedStateHandle = savedStateHandle
+    }
 
     /**
      * After the navigation is completed, this method should be called to consume the event.
