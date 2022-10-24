@@ -45,7 +45,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
-fun BluetoothNotAvailableView() {
+internal fun BluetoothNotAvailableView() {
     WarningView(
         imageVector = Icons.Default.BluetoothDisabled,
         title = stringResource(id = R.string.bluetooth_not_available_title),

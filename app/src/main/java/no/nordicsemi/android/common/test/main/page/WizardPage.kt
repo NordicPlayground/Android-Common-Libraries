@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.test.view.page
+package no.nordicsemi.android.common.test.main.page
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Column
@@ -25,12 +25,12 @@ import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.*
 
-val Wizard = PagerViewItem("Wizard") {
-    Wizard()
+val WizardPage = PagerViewItem("Wizard") {
+    WizardScreen()
 }
 
 @Composable
-private fun Wizard() {
+private fun WizardScreen() {
     OutlinedCard(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -134,6 +134,6 @@ private fun Wizard() {
 @Composable
 private fun ContentPreview() {
     NordicTheme {
-        Wizard()
+        WizardScreen()
     }
 }

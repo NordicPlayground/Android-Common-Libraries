@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.test.view.page
+package no.nordicsemi.android.common.test.main.page
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,12 +19,12 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.WarningView
 
-val Warning = PagerViewItem("Warning") {
-    Warning()
+val WarningPage = PagerViewItem("Warning") {
+    WarningScreen()
 }
 
 @Composable
-private fun Warning() {
+private fun WarningScreen() {
     WarningView(
         imageVector = Icons.Default.Paragliding,
         title = stringResource(id = R.string.warning_title),
@@ -57,6 +57,6 @@ private fun Warning() {
 @Composable
 private fun WarningPreview() {
     NordicTheme {
-        Warning()
+        WarningScreen()
     }
 }

@@ -29,37 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.navigation
+package no.nordicsemi.android.common.navigation.internal
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
+import android.os.Bundle
+import androidx.core.net.toUri
+import androidx.navigation.*
 
-@HiltViewModel
-internal class NavigationViewModel @Inject constructor(
-    val navigationManager: NavigationManager,
-) : ViewModel() {
-    var navigationWrapper: NavigationWrapper? = null
+internal fun NavController.navigate(
+    route: String,
+    args: Bundle?,
+    navOptions: NavOptions? = null,
+    navigatorExtras: Navigator.Extras? = null
+) {
+    val routeLink = NavDeepLinkRequest
+        .Builder
+        .fromUri(NavDestination.createRoute(route).toUri())
+        .build()
 
-    init {
-        navigationManager.navigationDestination
-            .onEach { destination ->
-                navigationWrapper?.let {
-                    it.consumeEvent(destination)
-                    consumeLastEvent()
-                }
-            }
-            .launchIn(viewModelScope)
-    }
-
-    fun navigateUp() {
-        navigationManager.navigateUp()
-    }
-
-    private fun consumeLastEvent() {
-        navigationManager.consumeLastEvent()
+    val deepLinkMatch = graph.matchDeepLink(routeLink)
+    if (deepLinkMatch != null) {
+        val destination = deepLinkMatch.destination
+        val id = destination.id
+        navigate(id, args, navOptions, navigatorExtras)
+    } else {
+        navigate(route, navOptions, navigatorExtras)
     }
 }

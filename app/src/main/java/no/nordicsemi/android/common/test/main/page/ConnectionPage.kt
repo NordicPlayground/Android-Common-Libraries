@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.test.view.page
+package no.nordicsemi.android.common.test.main.page
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,12 +19,12 @@ import no.nordicsemi.android.common.ui.scanner.view.DeviceDisconnectedView
 import no.nordicsemi.android.common.ui.scanner.view.NoDeviceView
 import no.nordicsemi.android.common.ui.scanner.view.Reason
 
-val Connection = PagerViewItem("Connection") {
-    Connection()
+val ConnectionPage = PagerViewItem("Connection") {
+    ConnectionScreen()
 }
 
 @Composable
-private fun Connection() {
+private fun ConnectionScreen() {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -74,5 +74,5 @@ private fun Connection() {
 @Preview
 @Composable
 private fun ConnectionPreview() {
-    Connection()
+    ConnectionScreen()
 }

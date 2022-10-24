@@ -29,14 +29,34 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("unused")
+package no.nordicsemi.android.common.permission
 
-package no.nordicsemi.android.common.navigation
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.util.Available
+import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
+import no.nordicsemi.android.common.permission.util.NotAvailable
+import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
+import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 
-interface NavigationResult {
-    val destinationId: DestinationId
-}
+@Composable
+fun RequireLocation(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
+    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+) {
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state by viewModel.locationPermission.collectAsState()
 
-interface NavigationArgument {
-    val destinationId: DestinationId
+    onChanged(state is Available || (state as NotAvailable).reason == FeatureNotAvailableReason.DISABLED)
+
+    when (val s = state) {
+        is NotAvailable -> when(s.reason) {
+            FeatureNotAvailableReason.DISABLED -> content(true)
+            else -> contentWithoutLocation()
+        }
+        Available -> content(false)
+    }
 }

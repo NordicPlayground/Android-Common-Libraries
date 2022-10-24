@@ -36,9 +36,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -57,13 +59,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.permission.PermissionViewModel
+import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 import no.nordicsemi.android.common.permission.R
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun BluetoothPermissionRequiredView() {
+internal fun BluetoothPermissionRequiredView() {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val activity = LocalContext.current as Activity
     var permissionDenied by remember { mutableStateOf(viewModel.isBluetoothScanPermissionDeniedForever(activity)) }
@@ -78,7 +81,8 @@ fun BluetoothPermissionRequiredView() {
     ) {
         val requiredPermissions = arrayOf(
             Manifest.permission.BLUETOOTH_SCAN,
-            Manifest.permission.BLUETOOTH_CONNECT
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_ADVERTISE,
         )
 
         val launcher = rememberLauncherForActivityResult(
@@ -86,7 +90,7 @@ fun BluetoothPermissionRequiredView() {
         ) {
             viewModel.markBluetoothPermissionRequested()
             permissionDenied = viewModel.isBluetoothScanPermissionDeniedForever(activity)
-            viewModel.refreshPermission()
+            viewModel.refreshBluetoothPermission()
         }
 
         if (!permissionDenied) {
@@ -112,6 +116,7 @@ private fun openPermissionSettings(context: Context) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Preview
 @Composable
 private fun BluetoothPermissionRequiredView_Preview() {

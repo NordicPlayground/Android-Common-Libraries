@@ -29,12 +29,96 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.navigation
 
-sealed class NavigationDestination
+import androidx.compose.runtime.Composable
 
-object InitialDestination : NavigationDestination()
+/**
+ * A destination identifier.
+ *
+ * @param A The Argument type.
+ * @param R The Result type.
+ */
+data class DestinationId<A, R>(internal val name: String) {
+    override fun toString(): String = name
+}
 
-object BackDestination : NavigationDestination()
+/**
+ * Definition of a destination.
+ *
+ * This class binds a destination identifier with a composable function that will be used to
+ * render the content.
+ *
+ * @property id The destination identifier.
+ * @property content The composable function that will be used to render the content.
+ */
+data class NavigationDestination(
+    val id: DestinationId<*, *>,
+    val content: @Composable () -> Unit
+) {
 
-data class ForwardDestination(val id: DestinationId) : NavigationDestination()
+    operator fun plus(other: NavigationDestination): NavigationDestinations {
+        return listOf(this, other).asDestinations()
+    }
+}
+
+/**
+ * A collection of destinations.
+ *
+ * @property values List of destinations within a component.
+ */
+class NavigationDestinations(
+    val values: List<NavigationDestination>,
+) {
+    constructor(
+        destination: NavigationDestination,
+    ) : this(listOf(destination))
+
+    operator fun plus(other: NavigationDestinations): NavigationDestinations {
+        return NavigationDestinations(values + other.values)
+    }
+}
+
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * @param A The argument type of the destination.
+ * @param R The return type of the destination.
+ */
+fun <A, R> createDestination(name: String): DestinationId<A, R> = DestinationId(name)
+
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * The destination does not take any arguments and does not return any result.
+ */
+fun createSimpleDestination(name: String): DestinationId<Unit, Unit> = DestinationId(name)
+
+/**
+ * Helper method for creating a [NavigationDestination].
+ */
+fun defineDestination(
+    id: DestinationId<*, *>,
+    content: @Composable () -> Unit
+): NavigationDestination = NavigationDestination(id, content)
+
+/**
+ * Helper method for creating a [NavigationDestinations].
+ *
+ * This destination can be routed using global router specified
+ * in the [NavigationView].
+ */
+fun List<NavigationDestination>.asDestinations() =
+    NavigationDestinations(this)
+
+/**
+ * Helper method for creating a [NavigationDestinations]
+ * from a single destination.
+ *
+ * This destination can be routed using global router specified
+ * in the [NavigationView].
+ */
+fun NavigationDestination.asDestinations() =
+    NavigationDestinations(this)

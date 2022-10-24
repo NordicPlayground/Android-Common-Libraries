@@ -29,6 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.navigation
+package no.nordicsemi.android.common.permission
 
-fun doNothing() { }
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import no.nordicsemi.android.common.permission.util.Available
+import no.nordicsemi.android.common.permission.view.InternetNotAvailableView
+import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
+
+@Composable
+fun RequireInternet(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutInternet: @Composable () -> Unit = { InternetNotAvailableView() },
+    content: @Composable () -> Unit
+) {
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state by viewModel.internetPermission.collectAsState()
+
+    onChanged(state is Available)
+
+    when (state) {
+        Available -> content()
+        else -> contentWithoutInternet()
+    }
+}

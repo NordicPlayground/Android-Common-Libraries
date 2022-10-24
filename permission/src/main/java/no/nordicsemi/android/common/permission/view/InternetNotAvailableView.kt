@@ -45,7 +45,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
-fun InternetNotAvailableView() {
+internal fun InternetNotAvailableView() {
     WarningView(
         imageVector = Icons.Default.BluetoothDisabled,
         title = stringResource(id = R.string.internet_not_available_title),

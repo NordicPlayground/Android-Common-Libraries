@@ -32,31 +32,66 @@
 package no.nordicsemi.android.common.navigation
 
 import android.app.Activity
+import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import no.nordicsemi.android.common.navigation.internal.*
 
+/**
+ * A navigation view allows navigating between different destinations.
+ *
+ * Each destination may pass an argument to the next one. The argument is a [Bundle].
+ *
+ * @param destinations The list of possible destinations.
+ */
 @Composable
-fun NavigationView(destinations: ComposeDestinations) {
-    val navController = rememberNavController()
-    val viewModel: NavigationViewModel = hiltViewModel()
+fun NavigationView(
+    destinations: NavigationDestinations,
+) {
+    val navHostController = rememberNavController()
 
-    val activity = LocalContext.current as Activity
-    viewModel.navigationWrapper = NavigationWrapper(activity, navController)
+    val navigation = hiltViewModel<NavigationViewModel>()
 
-    BackHandler { viewModel.navigateUp() }
+    // Handle navigation events.
+    val event by navigation.events.collectAsState()
+    event?.let { e ->
+        when (e) {
+            is NavigateTo -> navHostController.navigate(e.route, e.args)
+            is NavigateUp -> {
+                val activity = LocalContext.current as Activity
+                // Navigate up to the previous destination, passing the result.
+                navHostController.currentBackStackEntry?.destination?.route?.let { route ->
+                    navHostController.previousBackStackEntry?.savedStateHandle?.set(route, e.result)
+                }
+
+                // Navigate up, or finish the Activity if at root.
+                if (!navHostController.navigateUp()) {
+                    activity.finish()
+                }
+            }
+        }
+        navigation.consumeEvent()
+    }
+
+    BackHandler { navigation.navigateUpWithResult(Cancelled) }
 
     NavHost(
-        navController = navController,
-        startDestination = destinations.values[0].id.name
+        navController = navHostController,
+        startDestination = destinations.values.first().id.name,
     ) {
         destinations.values.forEach { destination ->
-            composable(destination.id.name) {
-                destination.draw(viewModel.navigationManager)
+            composable(
+                route = destination.id.name,
+            ) {
+                navigation.use(it.savedStateHandle)
+                destination.content()
             }
         }
     }

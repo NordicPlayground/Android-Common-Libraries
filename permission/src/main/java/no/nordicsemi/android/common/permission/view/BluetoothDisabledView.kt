@@ -52,7 +52,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
 @Composable
-fun BluetoothDisabledView() {
+internal fun BluetoothDisabledView() {
     WarningView(
         imageVector = Icons.Default.BluetoothDisabled,
         title = stringResource(id = R.string.bluetooth_disabled_title),

@@ -1,36 +1,88 @@
-package no.nordicsemi.android.common.test.view.page
+package no.nordicsemi.android.common.test.main.page
 
+import android.annotation.SuppressLint
+import android.os.ParcelUuid
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
+import no.nordicsemi.android.common.test.scanner.Scanner
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
+import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import java.util.*
+import javax.inject.Inject
 
 val BasicsPage = PagerViewItem("Basics") {
-    BasicViews(
-        onOpenScanner = {}
+    val vm = hiltViewModel<BasicPageViewModel>()
+    val device by vm.device.collectAsState()
+
+    BasicViewsScreen(
+        device = device?.let { DeviceInfo(it) },
+        onOpenScanner = { vm.openScanner() }
     )
 }
 
+private const val DEVICE_KEY = "device"
+
+@HiltViewModel
+class BasicPageViewModel @Inject constructor(
+    private val navigator: Navigator,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    // Initialize the selected device from the saved state handle.
+    val device = savedStateHandle.getStateFlow<DiscoveredBluetoothDevice?>(DEVICE_KEY, null)
+
+    init {
+        navigator.resultFrom(Scanner)
+            // Filter out results of cancelled navigation.
+            .filter { it != null }
+            // Save the result in SavedStateHandle.
+            .onEach { savedStateHandle[DEVICE_KEY] = it }
+            // And finally, launch the flow in the ViewModelScope.
+            .launchIn(viewModelScope)
+    }
+
+    fun openScanner() {
+        // This is Mesh Proxy Service UUID
+        navigator.navigateTo(Scanner, ParcelUuid(UUID.fromString("00001828-0000-1000-8000-00805F9B34FB")))
+    }
+}
+
+@SuppressLint("MissingPermission")
+data class DeviceInfo(
+    private val device: DiscoveredBluetoothDevice?
+) {
+    val name = device?.name ?: "Unknown"
+    val address = device?.address ?: "Unknown"
+    val rssi = device?.rssi ?: 0
+}
+
 @Composable
-private fun BasicViews(
+private fun BasicViewsScreen(
+    device: DeviceInfo?,
     onOpenScanner: () -> Unit,
 ) {
     Column(
@@ -46,26 +98,36 @@ private fun BasicViews(
             Text(text = stringResource(id = R.string.action_scanner))
         }
 
-        Device()
+        device?.let {
+            Device(
+                deviceName = it.name,
+                deviceAddress = it.address,
+                rssi = it.rssi,
+            )
+        }
 
-        BasicViews()
+        BasicViewsScreen()
 
         Cards()
     }
 }
 
 @Composable
-private fun Device() {
+private fun Device(
+    deviceName: String,
+    deviceAddress: String,
+    rssi: Int,
+) {
     Box(modifier = Modifier
         .clip(RoundedCornerShape(10.dp))
         .clickable { }
         .padding(8.dp)
     ) {
         DeviceListItem(
-            name = "Nordic Blinky",
-            address = "AA:BB:CC:DD:EE:FF",
+            name = deviceName,
+            address = deviceAddress,
         ) {
-            RssiIcon(rssi = -40)
+            RssiIcon(rssi = rssi)
         }
     }
 }
@@ -134,7 +196,7 @@ private fun OtherWidgets() {
 }
 
 @Composable
-private fun BasicViews() {
+private fun BasicViewsScreen() {
     Column {
         Buttons()
 
@@ -185,7 +247,8 @@ private fun Cards() {
 @Composable
 private fun ContentPreview() {
     NordicTheme {
-        BasicViews(
+        BasicViewsScreen(
+            device = null,
             onOpenScanner = {}
         )
     }
