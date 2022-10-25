@@ -42,13 +42,18 @@ kapt {
 }
 
 dependencies {
+    implementation platform("androidx.compose:compose-bom:$compose_version")
     // Fundamental components of compose UI
-    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui"
+    // Android Studio Preview support
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
     // Integration with activities
-    implementation "androidx.activity:activity-compose:1.6.0"
+    implementation "androidx.activity:activity-compose:1.6.1"
     // Navigation
-    implementation "androidx.navigation:navigation-compose:2.6.0-alpha02"
+    implementation "androidx.navigation:navigation-compose:2.6.0-alpha03"
 
+    // Dagger and Hilt
     implementation "com.google.dagger:hilt-android:$dagger_version"
     kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
