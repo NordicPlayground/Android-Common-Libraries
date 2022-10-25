@@ -21,8 +21,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
@@ -58,7 +58,7 @@ class BasicPageViewModel @Inject constructor(
     init {
         navigator.resultFrom(Scanner)
             // Filter out results of cancelled navigation.
-            .filter { it != null }
+            .mapNotNull { it }
             // Save the result in SavedStateHandle.
             .onEach { savedStateHandle[DEVICE_KEY] = it }
             // And finally, launch the flow in the ViewModelScope.
