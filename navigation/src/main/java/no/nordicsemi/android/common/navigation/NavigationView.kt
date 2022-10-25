@@ -53,7 +53,7 @@ import no.nordicsemi.android.common.navigation.internal.*
  */
 @Composable
 fun NavigationView(
-    destinations: NavigationDestinations,
+    destinations: List<NavigationDestination>,
 ) {
     val navHostController = rememberNavController()
 
@@ -84,9 +84,9 @@ fun NavigationView(
 
     NavHost(
         navController = navHostController,
-        startDestination = destinations.values.first().id.name,
+        startDestination = destinations.first().id.name,
     ) {
-        destinations.values.forEach { destination ->
+        destinations.forEach { destination ->
             composable(
                 route = destination.id.name,
             ) {

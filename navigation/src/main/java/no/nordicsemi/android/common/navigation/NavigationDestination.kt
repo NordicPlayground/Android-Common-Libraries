@@ -59,33 +59,12 @@ data class NavigationDestination(
     val content: @Composable () -> Unit
 ) {
 
-    operator fun plus(other: NavigationDestination): NavigationDestinations {
-        return listOf(this, other).asDestinations()
+    operator fun plus(other: NavigationDestination): List<NavigationDestination> {
+        return listOf(this, other)
     }
 
-    operator fun plus(other: NavigationDestinations): NavigationDestinations {
-        return other + this
-    }
-}
-
-/**
- * A collection of destinations.
- *
- * @property values List of destinations within a component.
- */
-class NavigationDestinations(
-    val values: List<NavigationDestination>,
-) {
-    constructor(
-        destination: NavigationDestination,
-    ) : this(listOf(destination))
-
-    operator fun plus(other: NavigationDestinations): NavigationDestinations {
-        return NavigationDestinations(values + other.values)
-    }
-
-    operator fun plus(other: NavigationDestination): NavigationDestinations {
-        return NavigationDestinations(values + other)
+    operator fun plus(other: List<NavigationDestination>): List<NavigationDestination> {
+        return listOf(this) + other
     }
 }
 
@@ -111,22 +90,3 @@ fun defineDestination(
     id: DestinationId<*, *>,
     content: @Composable () -> Unit
 ): NavigationDestination = NavigationDestination(id, content)
-
-/**
- * Helper method for creating a [NavigationDestinations].
- *
- * This destination can be routed using global router specified
- * in the [NavigationView].
- */
-fun List<NavigationDestination>.asDestinations() =
-    NavigationDestinations(this)
-
-/**
- * Helper method for creating a [NavigationDestinations]
- * from a single destination.
- *
- * This destination can be routed using global router specified
- * in the [NavigationView].
- */
-fun NavigationDestination.asDestinations() =
-    NavigationDestinations(this)
