@@ -62,6 +62,10 @@ data class NavigationDestination(
     operator fun plus(other: NavigationDestination): NavigationDestinations {
         return listOf(this, other).asDestinations()
     }
+
+    operator fun plus(other: NavigationDestinations): NavigationDestinations {
+        return other + this
+    }
 }
 
 /**
@@ -78,6 +82,10 @@ class NavigationDestinations(
 
     operator fun plus(other: NavigationDestinations): NavigationDestinations {
         return NavigationDestinations(values + other.values)
+    }
+
+    operator fun plus(other: NavigationDestination): NavigationDestinations {
+        return NavigationDestinations(values + other)
     }
 }
 
