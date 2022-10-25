@@ -52,15 +52,19 @@ interface Navigator {
  * @param destination The current destination.
  */
 fun <A> SavedStateHandle.getStateFlow(destination: DestinationId<A, *>, initial: A?): StateFlow<A?> =
-    @Suppress("UNCHECKED_CAST")
-    getStateFlow<A?>(destination.name, initial)
+    getStateFlow(destination.name, initial)
 
 /**
  * Returns the argument for the current destination.
  *
  * @param destination The current destination.
  */
-@Suppress("UNCHECKED_CAST")
-fun <A> SavedStateHandle.get(destination: DestinationId<A, *>): A? =
-    @Suppress("DEPRECATION")
-    get<Bundle?>(destination.name)?.get(destination.name) as? A
+fun <A> SavedStateHandle.getOrNull(destination: DestinationId<A, *>): A? = get(destination.name)
+
+/**
+ * Returns the argument for the current destination.
+ *
+ * @param destination The current destination.
+ */
+fun <A> SavedStateHandle.get(destination: DestinationId<A, *>): A =
+    get(destination.name) ?: error("Argument for ${destination.name} not found")
