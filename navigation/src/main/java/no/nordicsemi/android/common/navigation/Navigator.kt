@@ -23,7 +23,7 @@ interface Navigator {
      * @param to The destination to navigate to.
      * @param args An optional argument to pass to the destination.
      */
-    fun <A> navigateTo(to: DestinationId<A, *>, args: A? = null)
+    fun <A> navigateTo(to: DestinationId<A, *>, args: A)
 
     /**
      * Navigates up to previous destination, or finishes the Activity.
@@ -59,12 +59,13 @@ fun <A> SavedStateHandle.getStateFlow(destination: DestinationId<A, *>, initial:
  *
  * @param destination The current destination.
  */
-fun <A> SavedStateHandle.getOrNull(destination: DestinationId<A, *>): A? = get(destination.name)
+fun <A> SavedStateHandle.getOrNull(destination: DestinationId<A?, *>): A? =
+    get(destination.name)
 
 /**
  * Returns the argument for the current destination.
  *
  * @param destination The current destination.
  */
-fun <A> SavedStateHandle.get(destination: DestinationId<A, *>): A =
+fun <A> SavedStateHandle.get(destination: DestinationId<A & Any, *>): A =
     get(destination.name) ?: error("Argument for ${destination.name} not found")

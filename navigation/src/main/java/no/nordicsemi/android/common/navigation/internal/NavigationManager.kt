@@ -63,7 +63,7 @@ internal class NavigationManager @Inject constructor(
                 }
         } ?: throw IllegalStateException("SavedStateHandle is not set")
 
-    override fun <A> navigateTo(to: DestinationId<A, *>, args: A?) {
+    override fun <A> navigateTo(to: DestinationId<A, *>, args: A) {
         executor?.navigate(NavigationTarget(to, args))
     }
 
