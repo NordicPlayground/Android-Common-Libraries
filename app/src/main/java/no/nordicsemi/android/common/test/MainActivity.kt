@@ -35,8 +35,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import no.nordicsemi.android.common.navigation.NavigationView
-import no.nordicsemi.android.common.test.main.MainDestinations
-import no.nordicsemi.android.common.test.scanner.ScannerDestinations
+import no.nordicsemi.android.common.test.main.MainDestination
+import no.nordicsemi.android.common.test.scanner.ScannerDestination
 import no.nordicsemi.android.common.theme.NordicActivity
 import no.nordicsemi.android.common.theme.NordicTheme
 
@@ -48,7 +48,7 @@ class MainActivity : NordicActivity() {
 
         setContent {
             NordicTheme {
-                NavigationView(MainDestinations + ScannerDestinations)
+                NavigationView(MainDestination + ScannerDestination)
             }
         }
     }
