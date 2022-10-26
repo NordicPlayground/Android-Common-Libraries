@@ -42,7 +42,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import no.nordicsemi.android.common.navigation.internal.*
+import no.nordicsemi.android.common.navigation.internal.Cancelled
+import no.nordicsemi.android.common.navigation.internal.NavigationViewModel
+import no.nordicsemi.android.common.navigation.internal.NavigationViewModel.Event
+import no.nordicsemi.android.common.navigation.internal.navigate
 
 /**
  * A navigation view allows navigating between different destinations.
@@ -53,7 +56,7 @@ import no.nordicsemi.android.common.navigation.internal.*
  */
 @Composable
 fun NavigationView(
-    destinations: NavigationDestinations,
+    destinations: List<NavigationDestination>,
 ) {
     val navHostController = rememberNavController()
 
@@ -63,8 +66,8 @@ fun NavigationView(
     val event by navigation.events.collectAsState()
     event?.let { e ->
         when (e) {
-            is NavigateTo -> navHostController.navigate(e.route, e.args)
-            is NavigateUp -> {
+            is Event.NavigateTo -> navHostController.navigate(e.route, e.args)
+            is Event.NavigateUp -> {
                 val activity = LocalContext.current as Activity
                 // Navigate up to the previous destination, passing the result.
                 navHostController.currentBackStackEntry?.destination?.route?.let { route ->
@@ -84,9 +87,9 @@ fun NavigationView(
 
     NavHost(
         navController = navHostController,
-        startDestination = destinations.values.first().id.name,
+        startDestination = destinations.first().id.name,
     ) {
-        destinations.values.forEach { destination ->
+        destinations.forEach { destination ->
             composable(
                 route = destination.id.name,
             ) {

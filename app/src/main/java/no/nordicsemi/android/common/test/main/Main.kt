@@ -24,11 +24,9 @@ val Main = createSimpleDestination("main")
  *
  * Optionally, this can define a local Router for routing navigation within the module.
  */
-private val MainDestination = defineDestination(Main) {
-        MainScreen()
-    }
-
-val MainDestinations = MainDestination.asDestinations()
+val MainDestination = defineDestination(Main) {
+    MainScreen()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
