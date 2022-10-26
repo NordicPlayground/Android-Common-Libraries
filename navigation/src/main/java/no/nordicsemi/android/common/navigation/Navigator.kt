@@ -70,4 +70,4 @@ fun <A> SavedStateHandle.getOrNull(destination: DestinationId<A?, *>): A? =
  * @param destination The current destination.
  */
 fun <A> SavedStateHandle.get(destination: DestinationId<A & Any, *>): A =
-    get(destination.name) ?: error("Argument for ${destination.name} not found")
+    get(destination.name) ?: error("Destination '${destination.name}' requires a non-nullable argument")
