@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.navigation
 
 import android.net.Uri
@@ -5,25 +7,25 @@ import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.parcelize.RawValue
 
 interface Navigator {
 
     /**
      * Creates a flow that will emit the results of the navigation from the given destination.
      *
-     * Null is emitted when the navigation was cancelled.
-     *
      * @param from The origin destination to listen for results from.
      */
-    fun <R> resultFrom(from: DestinationId<*, R>): Flow<R?>
+    fun <R> resultFrom(from: DestinationId<*, R>): Flow<NavigationResult<R>>
 
     /**
      * Requests navigation to the given destination. An optional parameter can be passed.
      *
      * @param to The destination to navigate to.
-     * @param args An optional argument to pass to the destination.
+     * @param args An optional argument to pass to the destination. The argument will be saved
+     * in [SavedStateHandle], therefore it must be savable to a [Bundle].
      */
-    fun <A> navigateTo(to: DestinationId<A, *>, args: A)
+    fun <A> navigateTo(to: DestinationId<A, *>, args: @RawValue A)
 
     /**
      * Navigates up to previous destination, or finishes the Activity.
@@ -35,10 +37,10 @@ interface Navigator {
      *
      * @param from The destination from which navigating up.
      * @param result The result, which will be passed to the previous destination.
-     * The returned type will be saved in [SavedStateHandle], therefore it must be
+     * The returned object will be saved in [SavedStateHandle], therefore it must be
      * savable to a [Bundle].
      */
-    fun <R> navigateUpWithResult(from: DestinationId<*, R>, result: R)
+    fun <R> navigateUpWithResult(from: DestinationId<*, R>, result: @RawValue R)
 
     /**
      * Opens the given link in a browser.

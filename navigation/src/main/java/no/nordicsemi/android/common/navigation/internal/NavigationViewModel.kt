@@ -9,15 +9,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-internal sealed class NavigationEvent
-internal data class NavigateTo(val route: String, val args: Bundle?) : NavigationEvent()
-internal data class NavigateUp(val result: Any?) : NavigationEvent()
-
 @HiltViewModel
 internal class NavigationViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
 ): ViewModel(), NavigationExecutor {
-    private val _events = MutableStateFlow<NavigationEvent?>(null)
+    /** The navigation events class. */
+    sealed class Event {
+        data class NavigateTo(val route: String, val args: Bundle?) : Event()
+        data class NavigateUp(val result: Any?) : Event()
+    }
+
+    private val _events = MutableStateFlow<Event?>(null)
     val events = _events.asStateFlow()
 
     init {
@@ -43,12 +45,12 @@ internal class NavigationViewModel @Inject constructor(
         _events.update { null }
     }
 
-    override fun navigate(target: NavigationTarget) {
-        _events.update { NavigateTo(target.destination.name, target.toBundle()) }
+    override fun <A> navigate(target: NavigationTarget<A>) {
+        _events.update { Event.NavigateTo(target.destination.name, target.toBundle()) }
     }
 
-    override fun navigateUpWithResult(result: NavigationResult) {
-        _events.update { NavigateUp(result) }
+    override fun navigateUpWithResult(result: NavigationResultState) {
+        _events.update { Event.NavigateUp(result) }
     }
 
     override fun onCleared() {
