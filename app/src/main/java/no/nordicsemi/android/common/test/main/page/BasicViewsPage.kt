@@ -57,8 +57,7 @@ class BasicPageViewModel @Inject constructor(
     init {
         navigator.resultFrom(Scanner)
             // Filter out results of cancelled navigation.
-            .filter { it is NavigationResult.Success }
-            .map { it as NavigationResult.Success }
+            .mapNotNull { it as? NavigationResult.Success }
             .map { it.value }
             // Save the result in SavedStateHandle.
             .onEach { savedStateHandle[DEVICE_KEY] = it }
