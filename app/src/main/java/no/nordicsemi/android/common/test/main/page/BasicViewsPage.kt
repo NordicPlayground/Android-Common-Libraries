@@ -26,6 +26,7 @@ import no.nordicsemi.android.common.navigation.NavigationResult
 import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.scanner.Scanner
+import no.nordicsemi.android.common.test.simple.Hello
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
@@ -40,7 +41,8 @@ val BasicsPage = PagerViewItem("Basics") {
 
     BasicViewsScreen(
         device = device?.let { DeviceInfo(it) },
-        onOpenScanner = { vm.openScanner() }
+        onOpenScanner = { vm.openScanner() },
+        onOpenSimple = { vm.openSimple() },
     )
 }
 
@@ -69,6 +71,10 @@ class BasicPageViewModel @Inject constructor(
         // This is Mesh Proxy Service UUID
         navigator.navigateTo(Scanner, ParcelUuid(UUID.fromString("00001828-0000-1000-8000-00805F9B34FB")))
     }
+
+    fun openSimple() {
+        navigator.navigateTo(Hello)
+    }
 }
 
 @SuppressLint("MissingPermission")
@@ -84,6 +90,7 @@ data class DeviceInfo(
 private fun BasicViewsScreen(
     device: DeviceInfo?,
     onOpenScanner: () -> Unit,
+    onOpenSimple: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -92,6 +99,12 @@ private fun BasicViewsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Button(
+            onClick = onOpenSimple
+        ) {
+            Text(text = stringResource(id = R.string.action_simple))
+        }
+
         Button(
             onClick = onOpenScanner
         ) {
@@ -249,7 +262,8 @@ private fun ContentPreview() {
     NordicTheme {
         BasicViewsScreen(
             device = null,
-            onOpenScanner = {}
+            onOpenScanner = {},
+            onOpenSimple = {},
         )
     }
 }
