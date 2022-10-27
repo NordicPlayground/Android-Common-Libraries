@@ -19,13 +19,20 @@ interface Navigator {
     fun <R> resultFrom(from: DestinationId<*, R>): Flow<NavigationResult<R>>
 
     /**
-     * Requests navigation to the given destination. An optional parameter can be passed.
+     * Requests navigation to the given destination. An required parameter must be passed.
      *
      * @param to The destination to navigate to.
      * @param args An optional argument to pass to the destination. The argument will be saved
      * in [SavedStateHandle], therefore it must be savable to a [Bundle].
      */
     fun <A> navigateTo(to: DestinationId<A, *>, args: @RawValue A)
+
+    /**
+     * Requests navigation to the given destination which takes no input parameter.
+     *
+     * @param to The destination to navigate to.
+     */
+    fun navigateTo(to: DestinationId<Unit, *>) = navigateTo(to, Unit)
 
     /**
      * Navigates up to previous destination, or finishes the Activity.
@@ -71,3 +78,11 @@ fun <A> SavedStateHandle.getOrNull(destination: DestinationId<A?, *>): A? =
  */
 fun <A> SavedStateHandle.get(destination: DestinationId<A & Any, *>): A =
     get(destination.name) ?: error("Destination '${destination.name}' requires a non-nullable argument")
+
+/**
+ * Returns the argument for the current destination.
+ *
+ * @param destination The current destination.
+ */
+fun SavedStateHandle.get(destination: DestinationId<Unit, *>): Nothing =
+    error("Destination '${destination.name}' does not have an argument")

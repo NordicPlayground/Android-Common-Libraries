@@ -18,7 +18,7 @@ internal data class NavigationTarget<A>(
     val destination: DestinationId<A, *>,
     val args: @RawValue A
 ) {
-    fun toBundle() = bundleOf(destination.name to args)
+    fun toBundle() = if (args is Unit) bundleOf() else bundleOf(destination.name to args)
 }
 
 internal sealed class NavigationResultState

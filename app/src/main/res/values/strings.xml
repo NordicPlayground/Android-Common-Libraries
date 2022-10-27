@@ -62,12 +62,16 @@
     <string name="wizard_step_inactive">Inactive</string>
     <string name="wizard_text_inactive">This is not yet available</string>
 
+    <string name="action_simple">Say Hello</string>
     <string name="action_scanner">Open Scanner</string>
     <string name="action_no_op">Button</string>
     <string name="action_disabled">Disabled</string>
     <string name="action_destroy">Destroy</string>
+    <string name="action_dialog">Open Dialog</string>
 
     <string name="option">Important option</string>
+
+    <string name="hello">Hello!</string>
 
     <string name="warning_title">No parachute</string>
     <string name="warning_text">It\'s too late to do anything.</string>

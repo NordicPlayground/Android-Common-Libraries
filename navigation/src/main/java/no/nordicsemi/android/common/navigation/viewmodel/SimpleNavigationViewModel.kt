@@ -19,16 +19,20 @@ open class SimpleNavigationViewModel @Inject constructor(
     /**
      * Returns the parameter of the current destination, or null, if hasn't been set.
      */
-    fun <A> nullableParameterOf(destinationId: DestinationId<A?, *>): A? {
-        return savedStateHandle.getOrNull(destinationId)
-    }
+    fun <A> nullableParameterOf(destinationId: DestinationId<A?, *>): A? =
+        savedStateHandle.getOrNull(destinationId)
 
     /**
      * Returns the parameter of the current destination, or null, if hasn't been set.
      */
-    fun <A> parameterOf(destinationId: DestinationId<A & Any, *>): A {
-        return savedStateHandle.get(destinationId)
-    }
+    fun <A> parameterOf(destinationId: DestinationId<A & Any, *>): A =
+        savedStateHandle.get(destinationId)
+
+    /**
+     * Returns the parameter of the current destination, or null, if hasn't been set.
+     */
+    fun parameterOf(destinationId: DestinationId<Unit, *>): Nothing =
+        savedStateHandle.get(destinationId)
 
     /**
      * Returns the parameter of the current destination, or null, if hasn't been set.
