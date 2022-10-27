@@ -81,7 +81,7 @@ fun <A, R> createDestination(name: String): DestinationId<A, R> = DestinationId(
  *
  * The destination does not take any arguments and does not return any result.
  */
-fun createSimpleDestination(name: String): DestinationId<Unit, Unit> = DestinationId(name)
+fun createSimpleDestination(name: String): DestinationId<Unit?, Unit?> = DestinationId(name)
 
 /**
  * Helper method for creating a [NavigationDestination].
