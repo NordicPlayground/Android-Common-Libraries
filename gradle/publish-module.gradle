@@ -21,9 +21,9 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
 
-                        artifact androidSourcesJar
+                artifact androidSourcesJar
 
-                        groupId = GROUP
+                groupId = GROUP
                 artifactId = POM_ARTIFACT_ID
                 version = getVersionNameFromTags()
 

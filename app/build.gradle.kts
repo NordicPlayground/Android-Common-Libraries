@@ -4,6 +4,8 @@ plugins {
     id("nowinandroid.android.hilt")
 }
 
+group = "no.nordicsemi.android.common"
+
 android {
     namespace = "no.nordicsemi.android.common.test"
     compileSdk = 33
