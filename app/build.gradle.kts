@@ -1,7 +1,7 @@
 plugins {
-    id("nowinandroid.android.application")
-    id("nowinandroid.android.application.compose")
-    id("nowinandroid.android.hilt")
+    id("com.nordicsemi.android.application")
+    id("com.nordicsemi.android.application.compose")
+    id("com.nordicsemi.android.hilt")
 }
 
 group = "no.nordicsemi.android.common"

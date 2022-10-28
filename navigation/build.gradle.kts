@@ -1,7 +1,7 @@
 plugins {
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
-    id("nowinandroid.android.hilt")
+    id("com.nordicsemi.android.feature")
+    id("com.nordicsemi.android.library.compose")
+    id("com.nordicsemi.android.hilt")
     id("kotlin-parcelize")
 }
 

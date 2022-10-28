@@ -1,6 +1,6 @@
 plugins {
-    id("nowinandroid.android.feature")
-    id("nowinandroid.android.library.compose")
+    id("com.nordicsemi.android.feature")
+    id("com.nordicsemi.android.library.compose")
     id("com.google.protobuf")
 }
 

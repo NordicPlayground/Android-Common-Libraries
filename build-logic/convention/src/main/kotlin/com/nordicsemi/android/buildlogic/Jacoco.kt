@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.samples.apps.nowinandroid
+package com.nordicsemi.android.buildlogic
 
 import com.android.build.api.variant.AndroidComponentsExtension
 import org.gradle.api.Project

@@ -18,7 +18,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.google.samples.apps.nowinandroid.buildlogic"
+group = "com.nordicsemi.android.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -33,27 +33,27 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplicationCompose") {
-            id = "nowinandroid.android.application.compose"
+            id = "com.nordicsemi.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("androidApplication") {
-            id = "nowinandroid.android.application"
+            id = "com.nordicsemi.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibraryCompose") {
-            id = "nowinandroid.android.library.compose"
+            id = "com.nordicsemi.android.library.compose"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidLibrary") {
-            id = "nowinandroid.android.library"
+            id = "com.nordicsemi.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidFeature") {
-            id = "nowinandroid.android.feature"
+            id = "com.nordicsemi.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("androidHilt") {
-            id = "nowinandroid.android.hilt"
+            id = "com.nordicsemi.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
     }
