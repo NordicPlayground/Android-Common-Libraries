@@ -7,9 +7,7 @@ plugins {
 group = "no.nordicsemi.android.common"
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
-    // Fundamental components of compose UI
-    implementation("androidx.compose.ui:ui")
+    implementation(libs.androidx.compose.ui)
 }
 
 // === Maven Central configuration ===
