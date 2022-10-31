@@ -16,9 +16,13 @@
 
 plugins {
     `kotlin-dsl`
+    `java-gradle-plugin`
+    `maven-publish`
+    id("com.gradle.plugin-publish") version "1.0.0"
 }
 
-group = "com.nordicsemi.android.buildlogic"
+group = "com.nordicsemi.android"
+version = "1.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -32,29 +36,47 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        register("androidApplicationCompose") {
+        register("application.compose") {
             id = "com.nordicsemi.android.application.compose"
+            displayName = "Application with Compose"
+            description = "Application plugin extension with Compose feature enabled"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
-        register("androidApplication") {
+        register("application") {
             id = "com.nordicsemi.android.application"
+            displayName = "Standalone Application configuration"
+            description = "Application plugin extension for internal releases"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
-        register("androidLibraryCompose") {
+        register("library.compose") {
             id = "com.nordicsemi.android.library.compose"
+            displayName = "Library with Compose"
+            description = "Library plugin extension with Compose feature enabled"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
-        register("androidLibrary") {
+        register("library") {
             id = "com.nordicsemi.android.library"
+            displayName = "Standalone library configuration"
+            description = "Library plugin extension for internal releases"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidFeature") {
+        register("feature") {
             id = "com.nordicsemi.android.feature"
+            displayName = "Feature plugin"
+            description = "UI feature plugin with Hilt & Compose"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
-        register("androidHilt") {
+        register("hilt") {
             id = "com.nordicsemi.android.hilt"
+            displayName = "Hilt plugin"
+            description = "Plugin enabling Hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
+    }
+}
+
+publishing {
+    repositories {
+        gradlePluginPortal()
     }
 }
