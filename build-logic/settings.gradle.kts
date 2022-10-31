@@ -19,11 +19,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("toml/libs.versions.toml"))
-        }
-    }
 }
 
 rootProject.name = "build-logic"

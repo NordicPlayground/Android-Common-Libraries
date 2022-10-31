@@ -74,9 +74,3 @@ gradlePlugin {
         }
     }
 }
-
-publishing {
-    repositories {
-        gradlePluginPortal()
-    }
-}

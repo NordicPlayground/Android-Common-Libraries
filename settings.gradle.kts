@@ -14,11 +14,6 @@ dependencyResolutionManagement {
         mavenCentral()
         maven(url = "https://jitpack.io")
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("build-logic/toml/libs.versions.toml"))
-        }
-    }
 }
 rootProject.name = "Common Libraries"
 
