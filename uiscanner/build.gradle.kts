@@ -12,25 +12,20 @@ dependencies {
     implementation(project(":theme"))
     implementation(project(":permission"))
 
-    implementation("com.google.accompanist:accompanist-flowlayout:0.27.0")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
+    implementation(libs.accompanist.flowlayout)
+    implementation(libs.accompanist.swiperefresh)
 
-    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
-    // Material 3
-    implementation("androidx.compose.material3:material3")
-    // Material design icons
-    implementation("androidx.compose.material:material-icons-extended")
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    // Integration with activities
-    implementation("androidx.activity:activity-compose:1.6.1")
-    // Brings the new BluetoothLeScanner API to older platforms
-    implementation("no.nordicsemi.android.support.v18:scanner:1.6.0")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.nordic.scanner)
+
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
 }
 
 // === Maven Central configuration ===

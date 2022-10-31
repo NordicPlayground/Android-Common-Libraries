@@ -30,24 +30,18 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":theme"))
 
-    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
-    // Material 3
-    implementation("androidx.compose.material3:material3")
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    // Data Store
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Dagger and Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(libs.androidx.dataStore.preferences)
 
-    // Firebase for Analytics
-    implementation(platform("com.google.firebase:firebase-bom:31.0.1"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
 }
 

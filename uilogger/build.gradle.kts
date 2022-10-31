@@ -9,18 +9,14 @@ group = "no.nordicsemi.android.common"
 dependencies {
     implementation(project(":theme"))
 
-    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
-    // Material 3
-    implementation("androidx.compose.material3:material3")
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    // nRF Logger
-    implementation("no.nordicsemi.android:log:2.3.0")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Dagger and Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation(libs.nordic.log)
+
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
 }
 
 // === Maven Central configuration ===

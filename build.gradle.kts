@@ -29,7 +29,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.protobuf) apply false
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0" apply false
+    alias(libs.plugins.publish) apply false
 }
 
 apply(plugin = "io.github.gradle-nexus.publish-plugin")

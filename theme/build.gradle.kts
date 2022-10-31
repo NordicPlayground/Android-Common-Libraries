@@ -7,23 +7,19 @@ plugins {
 group = "no.nordicsemi.android.common"
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
-    // Material 3
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    // Android Studio Preview support
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    // Integration with activities
-    implementation("androidx.activity:activity-compose:1.6.1")
-    // Splash Screen
-    implementation("androidx.core:core-splashscreen:1.0.0")
-    // Pager with indicators
-    implementation("com.google.accompanist:accompanist-pager:0.27.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.27.0")
-    // Markdown
-    implementation("com.github.jeziellago:compose-markdown:0.3.0")
-    implementation("androidx.activity:activity-compose:1.6.0")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.iconsExtended)
+
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.splashscreen)
+
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pagerindicators)
+
+    implementation(libs.markdown)
 }
 
 // === Maven Central configuration ===
