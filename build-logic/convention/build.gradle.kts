@@ -21,7 +21,7 @@ plugins {
     id("com.gradle.plugin-publish") version "1.0.0"
 }
 
-group = "com.nordicsemi.android"
+group = "no.nordicsemi.android"
 version = "1.0.0"
 
 java {
@@ -37,40 +37,57 @@ dependencies {
 gradlePlugin {
     plugins {
         register("application.compose") {
-            id = "com.nordicsemi.android.application.compose"
+            id = "no.nordicsemi.android.application.compose"
             displayName = "Application with Compose"
             description = "Application plugin extension with Compose feature enabled"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("application") {
-            id = "com.nordicsemi.android.application"
+            id = "no.nordicsemi.android.application"
             displayName = "Standalone Application configuration"
             description = "Application plugin extension for internal releases"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("library.compose") {
-            id = "com.nordicsemi.android.library.compose"
+            id = "no.nordicsemi.android.library.compose"
             displayName = "Library with Compose"
             description = "Library plugin extension with Compose feature enabled"
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("library") {
-            id = "com.nordicsemi.android.library"
+            id = "no.nordicsemi.android.library"
             displayName = "Standalone library configuration"
             description = "Library plugin extension for internal releases"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("feature") {
-            id = "com.nordicsemi.android.feature"
+            id = "no.nordicsemi.android.feature"
             displayName = "Feature plugin"
             description = "UI feature plugin with Hilt & Compose"
             implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("hilt") {
-            id = "com.nordicsemi.android.hilt"
+            id = "no.nordicsemi.android.hilt"
             displayName = "Hilt plugin"
             description = "Plugin enabling Hilt"
             implementationClass = "AndroidHiltConventionPlugin"
         }
     }
 }
+
+// === Maven Central configuration ===
+// The following file exists only when Android BLE Library project is opened, but not
+// when the module is loaded to a different project.
+if (rootProject.file("gradle/publish-module.gradle").exists()) {
+    extra.set("POM_ARTIFACT_ID", "plugins")
+    extra.set("POM_NAME", "Nordic common plugins")
+    extra.set("POM_PACKAGING", "aar")
+    apply(from = rootProject.file("gradle/publish-module.gradle"))
+}
+
+//publishing {
+//    repositories {
+//        mavenCentral()
+////        gradlePluginPortal()
+//    }
+//}

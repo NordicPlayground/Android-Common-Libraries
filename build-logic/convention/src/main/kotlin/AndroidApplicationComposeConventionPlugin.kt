@@ -15,7 +15,7 @@
  */
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.nordicsemi.android.buildlogic.configureAndroidCompose
+import no.nordicsemi.android.buildlogic.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType

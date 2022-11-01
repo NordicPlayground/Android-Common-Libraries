@@ -1,7 +1,7 @@
 plugins {
-    id("com.nordicsemi.android.application")
-    id("com.nordicsemi.android.application.compose")
-    id("com.nordicsemi.android.hilt")
+    id("no.nordicsemi.android.application")
+    id("no.nordicsemi.android.application.compose")
+    id("no.nordicsemi.android.hilt")
 }
 
 group = "no.nordicsemi.android.common"

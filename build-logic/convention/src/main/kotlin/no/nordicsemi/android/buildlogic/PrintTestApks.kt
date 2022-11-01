@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package com.nordicsemi.android.buildlogic
+package no.nordicsemi.android.buildlogic
 
 import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.AndroidComponentsExtension
