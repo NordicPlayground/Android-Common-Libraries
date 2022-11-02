@@ -14,8 +14,8 @@
  *   limitations under the License.
  */
 
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import no.nordicsemi.android.buildlogic.configureKotlinAndroid
 import no.nordicsemi.android.buildlogic.configurePrintApksTask
 import org.gradle.api.Plugin
