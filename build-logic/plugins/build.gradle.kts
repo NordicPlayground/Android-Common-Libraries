@@ -78,16 +78,16 @@ gradlePlugin {
 // === Maven Central configuration ===
 // The following file exists only when Android BLE Library project is opened, but not
 // when the module is loaded to a different project.
-if (rootProject.file("gradle/publish-module.gradle").exists()) {
-    extra.set("POM_ARTIFACT_ID", "plugins")
-    extra.set("POM_NAME", "Nordic common plugins")
-    extra.set("POM_PACKAGING", "aar")
-    apply(from = rootProject.file("gradle/publish-module.gradle"))
-}
-
-//publishing {
-//    repositories {
-//        mavenCentral()
-////        gradlePluginPortal()
-//    }
+//if (rootProject.file("gradle/publish-module.gradle").exists()) {
+//    extra.set("POM_ARTIFACT_ID", "plugins")
+//    extra.set("POM_NAME", "Nordic common plugins")
+//    extra.set("POM_PACKAGING", "aar")
+//    apply(from = rootProject.file("gradle/publish-module.gradle"))
 //}
+
+publishing {
+    repositories {
+        mavenCentral()
+//        gradlePluginPortal()
+    }
+}

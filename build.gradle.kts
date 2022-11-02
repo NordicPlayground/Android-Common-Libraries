@@ -21,6 +21,12 @@ plugins {
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.protobuf) apply false
     alias(libs.plugins.publish) apply false
+    id("no.nordicsemi.android.feature") version "1.0.0" apply false
+    id("no.nordicsemi.android.library") version "1.0.0" apply false
+    id("no.nordicsemi.android.library.compose") version "1.0.0" apply false
+    id("no.nordicsemi.android.application") version "1.0.0" apply false
+    id("no.nordicsemi.android.application.compose") version "1.0.0" apply false
+    id("no.nordicsemi.android.hilt") version "1.0.0" apply false
 }
 
 apply(plugin = "io.github.gradle-nexus.publish-plugin")
