@@ -16,7 +16,7 @@ jobs:
           # The following env variables are used by gradle/publish-module.gradle
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
-          # The following env variables are used by gradle/publish-root.gradle
+          # The following env variables are used by gradle/publish-root.gradle.kts
           OSSR_USERNAME: ${{ secrets.OSSR_USERNAME }}
           OSSR_PASSWORD: ${{ secrets.OSSR_PASSWORD }}
           SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
