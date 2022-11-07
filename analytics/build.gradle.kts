@@ -1,6 +1,6 @@
 plugins {
-    id("no.nordicsemi.android.feature")
-    id("no.nordicsemi.android.library.compose")
+    id("no.nordicsemi.android.gradle.feature")
+    id("no.nordicsemi.android.gradle.library.compose")
     id("com.google.protobuf")
 }
 
