@@ -42,7 +42,7 @@ lint = "30.2.2"
 okhttp = "4.10.0"
 protobuf = "3.21.9"
 protobufPlugin = "0.8.19"
-publishPlugin = "1.1.0"
+publishPlugin = "1.0.0"
 retrofit = "2.9.0"
 retrofitKotlinxSerializationJson = "0.8.0"
 room = "2.5.0-alpha03"
@@ -148,4 +148,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publishPlugin" }
+publish = { id = "com.gradle.plugin-publish", version.ref = "publishPlugin" }
