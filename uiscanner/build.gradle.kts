@@ -12,6 +12,7 @@ group = "no.nordicsemi.android.common"
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "uiscanner"
     POM_NAME = "Nordic library for Android with UI screens utilizing uiscanner library."
+    GROUP = "no.nordicsemi.android.common"
 }
 
 dependencies {
