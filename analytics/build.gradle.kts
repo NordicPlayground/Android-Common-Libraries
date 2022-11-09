@@ -2,9 +2,16 @@ plugins {
     id("no.nordicsemi.android.gradle.feature")
     id("no.nordicsemi.android.gradle.library.compose")
     id("com.google.protobuf")
+    id("no.nordicsemi.android.gradle.nexus")
 }
 
 group = "no.nordicsemi.android.common"
+
+nordicNexusPublishing {
+    POM_ARTIFACT_ID = "analytics"
+    POM_NAME = "Nordic library for analytics."
+    GROUP = "no.nordicsemi.android.common"
+}
 
 //protobuf {
 //
@@ -43,14 +50,4 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
 
-}
-
-// === Maven Central configuration ===
-// The following file exists only when Android BLE Library project is opened, but not
-// when the module is loaded to a different project.
-if (rootProject.file("gradle/publish-module.gradle").exists()) {
-    extra.set("POM_ARTIFACT_ID", "analytics")
-    extra.set("POM_NAME", "Nordic library for analytics.")
-    extra.set("POM_PACKAGING", "aar")
-    apply(from = rootProject.file("gradle/publish-module.gradle"))
 }

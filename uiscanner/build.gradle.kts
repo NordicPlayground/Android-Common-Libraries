@@ -35,35 +35,3 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
 }
-
-//artifacts {
-//    archives androidSourcesJar
-//}
-//
-//
-//publishing {
-//    publications {
-//        create<MavenPublication>("maven") {
-//
-//        }
-//        release(MavenPublication) {
-//
-//        }
-//        release(MavenPublication) {
-//            artifac
-//        }
-//        artifacts {
-//            sourceJar
-//        }
-//    }
-//}
-
-//// === Maven Central configuration ===
-//// The following file exists only when Android BLE Library project is opened, but not
-//// when the module is loaded to a different project.
-//if (rootProject.file("gradle/publish-module.gradle").exists()) {
-//    extra.set("POM_ARTIFACT_ID", "uiscanner")
-//    extra.set("POM_NAME", "Nordic library for Android with UI screens utilizing uiscanner library.")
-//    extra.set("POM_PACKAGING", "aar")
-//    apply(from = rootProject.file("gradle/publish-module.gradle"))
-//}
