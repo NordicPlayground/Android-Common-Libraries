@@ -33,6 +33,7 @@
 <resources>
     <string name="nordic_logo_accessibility">Nordic Semiconductor</string>
     <string name="navigation_item_accessibility">Back</string>
+    <string name="menu_item_accessibility">Menu</string>
 
     <string name="dbm">%d dBm</string>
 </resources>
