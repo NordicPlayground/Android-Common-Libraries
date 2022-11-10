@@ -31,31 +31,19 @@
 
 package no.nordicsemi.android.common.navigation.internal
 
-import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavBackStackEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
 internal class NavigationViewModel @Inject constructor(
     private val navigationManager: NavigationManager,
-): ViewModel(), NavigationExecutor {
-    /** The navigation events class. */
-    sealed class Event {
-        data class NavigateTo(val route: String, val args: Bundle?) : Event()
-        data class NavigateUp(val result: Any?) : Event()
-    }
-
-    private val _events = MutableStateFlow<Event?>(null)
-    val events = _events.asStateFlow()
-
-    init {
-        navigationManager.executor = this
-    }
+): ViewModel() {
+    /** A flow of navigation events. */
+    val events = navigationManager.events
 
     /**
      * The given [SavedStateHandle] will be used to store the navigation result.
@@ -63,8 +51,22 @@ internal class NavigationViewModel @Inject constructor(
      * This has to be the instance given in navigation composable, as each ViewModel may received
      * a different instance of [SavedStateHandle] using Hilt injections.
      */
-    fun use(savedStateHandle: SavedStateHandle) = apply {
+    fun use(savedStateHandle: SavedStateHandle) {
         navigationManager.savedStateHandle = savedStateHandle
+    }
+
+    /**
+     * The given [Flow] will be used to get the destination hierarchy.
+     */
+    fun use(currentBackStackEntryFlow: Flow<NavBackStackEntry>) {
+        navigationManager.currentBackStackEntryFlow = currentBackStackEntryFlow
+    }
+
+    /**
+     * Navigates back to the previous destination sending cancellation result.
+     */
+    fun navigateUp() {
+        navigationManager.navigateUp()
     }
 
     /**
@@ -73,19 +75,12 @@ internal class NavigationViewModel @Inject constructor(
      * the consumer was destroyed before it could handle it.
      */
     fun consumeEvent() {
-        _events.update { null }
-    }
-
-    override fun <A> navigate(target: NavigationTarget<A>) {
-        _events.update { Event.NavigateTo(target.destination.name, target.toBundle()) }
-    }
-
-    override fun navigateUpWithResult(result: NavigationResultState) {
-        _events.update { Event.NavigateUp(result) }
+        navigationManager.consumeEvent()
     }
 
     override fun onCleared() {
         super.onCleared()
-        navigationManager.executor = null
+        navigationManager.savedStateHandle = null
+        navigationManager.currentBackStackEntryFlow = null
     }
 }

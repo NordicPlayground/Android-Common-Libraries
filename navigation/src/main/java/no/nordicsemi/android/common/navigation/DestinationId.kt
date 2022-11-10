@@ -29,39 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.navigation.internal
+package no.nordicsemi.android.common.navigation
 
-import android.os.Bundle
-import androidx.core.net.toUri
-import androidx.navigation.*
-
-internal fun NavController.navigate(
-    route: String,
-    args: Bundle?,
-    navOptions: NavOptions? = null,
-    navigatorExtras: Navigator.Extras? = null
-) {
-    val routeLink = NavDeepLinkRequest
-        .Builder
-        .fromUri(NavDestination.createRoute(route).toUri())
-        .build()
-
-    val deepLinkMatch = graph.matchDeepLink(routeLink)
-    if (deepLinkMatch != null) {
-        val destination = deepLinkMatch.destination
-        val id = destination.id
-        navigate(id, args, navOptions, navigatorExtras)
-    } else {
-        navigate(route, navOptions, navigatorExtras)
-    }
+/**
+ * A destination identifier.
+ *
+ * @param A The Argument type.
+ * @param R The Result type.
+ */
+data class DestinationId<A, R>(internal val name: String) {
+    override fun toString(): String = name
 }
 
-internal fun NavController.navigate(
-    route: String,
-    args: Bundle?,
-    builder: NavOptionsBuilder.() -> Unit,
-) {
-    navigate(route, args, navOptions(builder))
-}
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * @param A The argument type of the destination.
+ * @param R The return type of the destination.
+ */
+fun <A, R> createDestination(name: String): DestinationId<A, R> = DestinationId(name)
 
-internal const val START_DESTINATION = "_startDestination"
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * The destination does not take any arguments and does not return any result.
+ */
+fun createSimpleDestination(name: String): DestinationId<Unit, Unit> = DestinationId(name)

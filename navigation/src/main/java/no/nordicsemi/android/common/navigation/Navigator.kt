@@ -36,9 +36,14 @@ package no.nordicsemi.android.common.navigation
 import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.PopUpToBuilder
+import androidx.navigation.navOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.RawValue
+import no.nordicsemi.android.common.navigation.internal.START_DESTINATION
 
 interface Navigator {
 
@@ -55,15 +60,38 @@ interface Navigator {
      * @param to The destination to navigate to.
      * @param args An optional argument to pass to the destination. The argument will be saved
      * in [SavedStateHandle], therefore it must be savable to a [Bundle].
+     * @param navOptions An optional [NavOptions] to use for this navigation.
      */
-    fun <A> navigateTo(to: DestinationId<A, *>, args: @RawValue A)
+    fun <A> navigateTo(to: DestinationId<A, *>, args: @RawValue A, navOptions: NavOptions? = null)
+
+    /**
+     * Requests navigation to the given destination. An required parameter must be passed.
+     *
+     * @param to The destination to navigate to.
+     * @param args An optional argument to pass to the destination. The argument will be saved
+     * in [SavedStateHandle], therefore it must be savable to a [Bundle].
+     * @param builder An optional [NavOptions] builder to use for this navigation.
+     */
+    fun <A> navigateTo(to: DestinationId<A, *>, args: @RawValue A, builder: NavOptionsBuilder.() -> Unit) =
+        navigateTo(to, args, navOptions(builder))
 
     /**
      * Requests navigation to the given destination which takes no input parameter.
      *
      * @param to The destination to navigate to.
+     * @param navOptions An optional [NavOptions] to use for this navigation.
      */
-    fun navigateTo(to: DestinationId<Unit, *>) = navigateTo(to, Unit)
+    fun navigateTo(to: DestinationId<Unit, *>, navOptions: NavOptions? = null) =
+        navigateTo(to, Unit, navOptions)
+
+    /**
+     * Requests navigation to the given destination which takes no input parameter.
+     *
+     * @param to The destination to navigate to.
+     * @param builder An optional [NavOptions] builder to use for this navigation.
+     */
+    fun navigateTo(to: DestinationId<Unit, *>, builder: NavOptionsBuilder.() -> Unit) =
+        navigateTo(to, Unit, navOptions(builder))
 
     /**
      * Navigates up to previous destination, or finishes the Activity.
@@ -79,6 +107,16 @@ interface Navigator {
      * savable to a [Bundle].
      */
     fun <R> navigateUpWithResult(from: DestinationId<*, R>, result: @RawValue R)
+
+    /**
+     * Checks whether the given destination is in the back stack.
+     */
+    fun isInHierarchy(destination: DestinationId<*, *>): StateFlow<Boolean>
+
+    /**
+     * Current destination as flow.
+     */
+    fun currentDestination(): StateFlow<DestinationId<*, *>?>
 
     /**
      * Opens the given link in a browser.
@@ -117,3 +155,19 @@ fun <A> SavedStateHandle.get(destination: DestinationId<A & Any, *>): A =
  */
 fun SavedStateHandle.get(destination: DestinationId<Unit, *>): Nothing =
     error("Destination '${destination.name}' does not have an argument")
+
+/**
+ * Pop up to a given destination before navigating. This pops all non-matching destination routes
+ * from the back stack until the destination with a matching route is found.
+ */
+fun NavOptionsBuilder.popUpTo(
+    destination: DestinationId<*, *>,
+    popUpToBuilder: PopUpToBuilder.() -> Unit = {}
+) = popUpTo(destination.name, popUpToBuilder)
+
+/**
+ * Pop up to the start destination before navigating. This pops all non-matching destination routes
+ * from the back stack until the destination with a matching route is found.
+ */
+fun NavOptionsBuilder.popUpToStartDestination(popUpToBuilder: PopUpToBuilder.() -> Unit = {}) =
+    popUpTo(START_DESTINATION, popUpToBuilder)
