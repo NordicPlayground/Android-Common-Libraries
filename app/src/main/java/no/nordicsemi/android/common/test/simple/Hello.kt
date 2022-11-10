@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import no.nordicsemi.android.common.navigation.createSimpleDestination
+import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
 import no.nordicsemi.android.common.test.R
@@ -23,31 +23,26 @@ import no.nordicsemi.android.common.theme.view.NordicAppBar
  *
  * A simple destination does not take any parameters and does not return any result.
  */
-val Hello = createSimpleDestination("hello")
+val Hello = createDestination<Int, Unit>("hello")
 
 val HelloDestination = defineDestination(Hello) {
     val vm: SimpleNavigationViewModel = hiltViewModel()
+    val param = vm.parameterOf(Hello)
 
     HelloScreen(
+        param = param,
         modifier = Modifier.fillMaxWidth(),
-        onNavigateUp = { vm.navigateUp() }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HelloScreen(
-    onNavigateUp: () -> Unit,
+    param: Int,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
     ) {
-        NordicAppBar(
-            text = stringResource(id = R.string.hello),
-            onNavigationButtonClick = onNavigateUp,
-        )
-
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -55,7 +50,9 @@ private fun HelloScreen(
         ) {
             Text(text = stringResource(id = R.string.hello))
 
-            Button(onClick = onNavigateUp) {
+            Text(text = stringResource(id = R.string.hello_param, param))
+
+            Button(onClick = { }) {
                 Text(text = stringResource(id = R.string.action_dialog))
             }
         }
@@ -66,6 +63,8 @@ private fun HelloScreen(
 @Composable
 private fun SimpleContentPreview() {
     NordicTheme {
-        HelloScreen(onNavigateUp = {})
+        HelloScreen(
+            param = 0,
+        )
     }
 }
