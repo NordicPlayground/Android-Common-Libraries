@@ -41,8 +41,8 @@ val BasicsPage = PagerViewItem("Basics") {
 
     BasicViewsScreen(
         device = device?.let { DeviceInfo(it) },
-        onOpenScanner = { vm.openScanner() },
         onOpenSimple = { vm.openSimple() },
+        onOpenScanner = { vm.openScanner() },
     )
 }
 
@@ -73,7 +73,7 @@ class BasicPageViewModel @Inject constructor(
     }
 
     fun openSimple() {
-        navigator.navigateTo(Hello)
+        navigator.navigateTo(Hello, 1)
     }
 }
 
@@ -89,8 +89,8 @@ data class DeviceInfo(
 @Composable
 private fun BasicViewsScreen(
     device: DeviceInfo?,
-    onOpenScanner: () -> Unit,
     onOpenSimple: () -> Unit,
+    onOpenScanner: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -99,10 +99,12 @@ private fun BasicViewsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Button(
-            onClick = onOpenSimple
-        ) {
-            Text(text = stringResource(id = R.string.action_simple))
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Button(
+                onClick = onOpenSimple
+            ) {
+                Text(text = stringResource(id = R.string.action_simple))
+            }
         }
 
         Button(
@@ -262,8 +264,8 @@ private fun ContentPreview() {
     NordicTheme {
         BasicViewsScreen(
             device = null,
-            onOpenScanner = {},
             onOpenSimple = {},
+            onOpenScanner = {},
         )
     }
 }

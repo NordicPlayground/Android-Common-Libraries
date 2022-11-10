@@ -29,45 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.theme
-
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
+package no.nordicsemi.android.common.navigation
 
 /**
- * Base activity that sets the Nordic theme and the Splash Screen.
+ * A destination identifier.
  *
- * The Activity must be declared using NordicTheme.SplashScreen theme in the manifest.
- * The theme will be changed to NordicTheme when the splash screen animation is complete.
+ * @param A The Argument type.
+ * @param R The Result type.
  */
-abstract class NordicActivity : ComponentActivity() {
-
-    companion object {
-        private var coldStart = true
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.NordicTheme)
-        super.onCreate(savedInstanceState)
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val splashScreen = installSplashScreen()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (coldStart) {
-                    coldStart = false
-                    val then = System.currentTimeMillis()
-                    splashScreen.setKeepOnScreenCondition {
-                         val now = System.currentTimeMillis()
-                        now < then + 900
-                    }
-                }
-            }
-        }
-    }
+data class DestinationId<A, R>(internal val name: String) {
+    override fun toString(): String = name
 }
+
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * @param A The argument type of the destination.
+ * @param R The return type of the destination.
+ */
+fun <A, R> createDestination(name: String): DestinationId<A, R> = DestinationId(name)
+
+/**
+ * Helper function to create a [DestinationId] from a string.
+ *
+ * The destination does not take any arguments and does not return any result.
+ */
+fun createSimpleDestination(name: String): DestinationId<Unit, Unit> = DestinationId(name)

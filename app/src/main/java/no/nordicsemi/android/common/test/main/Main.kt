@@ -1,18 +1,13 @@
 package no.nordicsemi.android.common.test.main
 
-import android.widget.Toast
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.logger.view.LoggerAppBarIcon
-import no.nordicsemi.android.common.navigation.*
-import no.nordicsemi.android.common.test.R
+import no.nordicsemi.android.common.navigation.createSimpleDestination
+import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.test.main.page.*
-import no.nordicsemi.android.common.theme.view.NordicAppBar
+import no.nordicsemi.android.common.test.scanner.ScannerDestination
+import no.nordicsemi.android.common.test.simple.HelloDestination
 import no.nordicsemi.android.common.theme.view.PagerView
 import no.nordicsemi.android.common.theme.view.PagerViewEntity
 
@@ -20,40 +15,26 @@ import no.nordicsemi.android.common.theme.view.PagerViewEntity
 val Main = createSimpleDestination("main")
 
 /**
- * List of destinations defined in the module.
- *
- * Optionally, this can define a local Router for routing navigation within the module.
+ * Here you define a View for the destination.
  */
-val MainDestination = defineDestination(Main) {
+private val MainDestination = defineDestination(Main) {
     MainScreen()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+val MainDestinations = MainDestination + ScannerDestination + HelloDestination
+
 @Composable
 private fun MainScreen() {
-    Column {
-        NordicAppBar(
-            text = stringResource(id = R.string.title_main),
-            actions = {
-                val context = LocalContext.current
-                LoggerAppBarIcon(
-                    onClick = {
-                        Toast.makeText(context, "Logger clicked", Toast.LENGTH_SHORT).show()
-                    }
-                )
-            }
-        )
-        val pages = PagerViewEntity(listOf(
-            BasicsPage,
-            FontsPage,
-            WizardPage,
-            ConnectionPage,
-            WarningPage,
-        ))
-        PagerView(
-            viewEntity = pages,
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            itemSpacing = 16.dp,
-        )
-    }
+    val pages = PagerViewEntity(listOf(
+        BasicsPage,
+        FontsPage,
+        WizardPage,
+        ConnectionPage,
+        WarningPage,
+    ))
+    PagerView(
+        viewEntity = pages,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        itemSpacing = 16.dp,
+    )
 }

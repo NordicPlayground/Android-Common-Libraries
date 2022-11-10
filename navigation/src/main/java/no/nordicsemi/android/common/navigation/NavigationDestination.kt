@@ -36,29 +36,12 @@ package no.nordicsemi.android.common.navigation
 import androidx.compose.runtime.Composable
 
 /**
- * A destination identifier.
- *
- * @param A The Argument type.
- * @param R The Result type.
+ * A navigation view allows navigating between different destinations.
+ * @property id The destination id.
  */
-data class DestinationId<A, R>(internal val name: String) {
-    override fun toString(): String = name
-}
-
-/**
- * Definition of a destination.
- *
- * This class binds a destination identifier with a composable function that will be used to
- * render the content.
- *
- * @property id The destination identifier.
- * @property content The composable function that will be used to render the content.
- */
-data class NavigationDestination(
+sealed class NavigationDestination(
     val id: DestinationId<*, *>,
-    val content: @Composable () -> Unit
 ) {
-
     operator fun plus(other: NavigationDestination): List<NavigationDestination> {
         return listOf(this, other)
     }
@@ -69,24 +52,46 @@ data class NavigationDestination(
 }
 
 /**
- * Helper function to create a [DestinationId] from a string.
+ * Definition of a composable destination.
  *
- * @param A The argument type of the destination.
- * @param R The return type of the destination.
+ * This class binds a destination identifier with a composable function that will be used to
+ * render the content.
+ *
+ * @property id The destination identifier.
+ * @property content The composable function that will be used to render the content.
  */
-fun <A, R> createDestination(name: String): DestinationId<A, R> = DestinationId(name)
+internal class ComposableDestination(
+    id: DestinationId<*, *>,
+    val content: @Composable () -> Unit,
+): NavigationDestination(id)
 
 /**
- * Helper function to create a [DestinationId] from a string.
- *
- * The destination does not take any arguments and does not return any result.
+ * Definition of an inner navigation.
  */
-fun createSimpleDestination(name: String): DestinationId<Unit, Unit> = DestinationId(name)
+internal class InnerNavigationDestination(
+    id: DestinationId<*, *>,
+    val destinations: List<NavigationDestination>,
+): NavigationDestination(id)
 
 /**
- * Helper method for creating a [NavigationDestination].
+ * Helper method for creating a composable [NavigationDestination].
  */
 fun defineDestination(
     id: DestinationId<*, *>,
     content: @Composable () -> Unit
-): NavigationDestination = NavigationDestination(id, content)
+): NavigationDestination = ComposableDestination(id, content)
+
+/**
+ * Helper method for creating inner navigation.
+ */
+fun defineDestinationWithInnerNavigation(
+    id: DestinationId<*, *>,
+    destinations: List<NavigationDestination>
+): NavigationDestination = InnerNavigationDestination(id, destinations)
+
+/**
+ * Helper method for creating inner navigation.
+ */
+infix fun DestinationId<*, *>.with(destinations: List<NavigationDestination>): NavigationDestination {
+    return defineDestinationWithInnerNavigation(this, destinations)
+}

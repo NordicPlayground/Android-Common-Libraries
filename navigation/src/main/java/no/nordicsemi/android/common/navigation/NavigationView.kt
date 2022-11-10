@@ -37,14 +37,18 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import no.nordicsemi.android.common.navigation.internal.Cancelled
+import androidx.navigation.navigation
+import no.nordicsemi.android.common.navigation.internal.NavigationManager.Event
 import no.nordicsemi.android.common.navigation.internal.NavigationViewModel
-import no.nordicsemi.android.common.navigation.internal.NavigationViewModel.Event
+import no.nordicsemi.android.common.navigation.internal.START_DESTINATION
 import no.nordicsemi.android.common.navigation.internal.navigate
 
 /**
@@ -53,20 +57,44 @@ import no.nordicsemi.android.common.navigation.internal.navigate
  * Each destination may pass an argument to the next one. The argument is a [Bundle].
  *
  * @param destinations The list of possible destinations.
+ * @param modifier The modifier to be applied to the layout.
+ * @param backHandler The back handler to be called when the back button is pressed. It can
+ * handle the back press and return true, or return false to let the navigation view handle it.
  */
 @Composable
 fun NavigationView(
     destinations: List<NavigationDestination>,
+    modifier: Modifier = Modifier,
+    backHandler: () -> Boolean = { false },
 ) {
     val navHostController = rememberNavController()
 
     val navigation = hiltViewModel<NavigationViewModel>()
+    navigation.use(navHostController.currentBackStackEntryFlow)
 
     // Handle navigation events.
     val event by navigation.events.collectAsState()
     event?.let { e ->
         when (e) {
-            is Event.NavigateTo -> navHostController.navigate(e.route, e.args)
+            is Event.NavigateTo -> navHostController.navigate(e.route, e.args) {
+                e.navOptions?.let { navOptions ->
+                    when (val route = navOptions.popUpToRoute) {
+                        START_DESTINATION -> popUpTo(navHostController.graph.findStartDestination().id) {
+                            inclusive = navOptions.isPopUpToInclusive()
+                            saveState = navOptions.shouldPopUpToSaveState()
+                        }
+                        is String -> popUpTo(route) {
+                            inclusive = navOptions.isPopUpToInclusive()
+                            saveState = navOptions.shouldPopUpToSaveState()
+                        }
+                        else -> {
+                            // Do nothing.
+                        }
+                    }
+                    launchSingleTop = navOptions.shouldLaunchSingleTop()
+                    restoreState = navOptions.shouldRestoreState()
+                }
+            }
             is Event.NavigateUp -> {
                 val activity = LocalContext.current as Activity
                 // Navigate up to the previous destination, passing the result.
@@ -83,18 +111,39 @@ fun NavigationView(
         navigation.consumeEvent()
     }
 
-    BackHandler { navigation.navigateUpWithResult(Cancelled) }
+    BackHandler { if (!backHandler()) navigation.navigateUp() }
 
     NavHost(
+        modifier = modifier,
         navController = navHostController,
         startDestination = destinations.first().id.name,
     ) {
-        destinations.forEach { destination ->
-            composable(
-                route = destination.id.name,
-            ) {
-                navigation.use(it.savedStateHandle)
-                destination.content()
+        create(destinations, navigation)
+    }
+}
+
+private fun NavGraphBuilder.create(
+    destinations: List<NavigationDestination>,
+    navigation: NavigationViewModel,
+) {
+    destinations.forEach { destination ->
+        when (destination) {
+            is ComposableDestination -> {
+                composable(
+                    route = destination.id.name,
+
+                ) {
+                    navigation.use(it.savedStateHandle)
+                    destination.content()
+                }
+            }
+            is InnerNavigationDestination -> {
+                navigation(
+                    startDestination = destination.destinations.first().id.name,
+                    route = destination.id.name
+                ) {
+                    create(destination.destinations, navigation)
+                }
             }
         }
     }

@@ -55,3 +55,13 @@ internal fun NavController.navigate(
         navigate(route, navOptions, navigatorExtras)
     }
 }
+
+internal fun NavController.navigate(
+    route: String,
+    args: Bundle?,
+    builder: NavOptionsBuilder.() -> Unit,
+) {
+    navigate(route, args, navOptions(builder))
+}
+
+internal const val START_DESTINATION = "_startDestination"
