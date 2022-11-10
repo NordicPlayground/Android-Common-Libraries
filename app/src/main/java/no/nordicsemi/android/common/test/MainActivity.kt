@@ -158,7 +158,7 @@ class MainActivity : NordicActivity() {
                         topBar = {
                             NordicAppBar(
                                 text = stringResource(id = R.string.title_main),
-                                showBackButton = listOf(Hello, Scanner).contains(currentDestination),
+                                showBackButton = listOf(Hello, HelloDialog, Scanner).contains(currentDestination),
                                 onNavigationButtonClick = { navigator.navigateUp() },
                                 onHamburgerButtonClick = {
                                     scope.launch { drawerState.open() }

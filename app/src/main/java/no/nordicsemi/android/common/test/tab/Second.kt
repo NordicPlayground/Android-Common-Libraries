@@ -17,7 +17,7 @@ import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.simple.Hello
-import no.nordicsemi.android.common.test.simple.HelloDestination
+import no.nordicsemi.android.common.test.simple.HelloDestinations
 import no.nordicsemi.android.common.theme.NordicTheme
 
 val Second = createSimpleDestination("second")
@@ -30,7 +30,7 @@ private val SecondDestination = defineDestination(Second) {
     )
 }
 
-val SecondDestinations = SecondDestination + HelloDestination
+val SecondDestinations = SecondDestination + HelloDestinations
 
 @Composable
 private fun SecondScreen(

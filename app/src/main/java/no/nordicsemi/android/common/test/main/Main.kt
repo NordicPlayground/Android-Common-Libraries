@@ -7,7 +7,7 @@ import no.nordicsemi.android.common.navigation.createSimpleDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.test.main.page.*
 import no.nordicsemi.android.common.test.scanner.ScannerDestination
-import no.nordicsemi.android.common.test.simple.HelloDestination
+import no.nordicsemi.android.common.test.simple.HelloDestinations
 import no.nordicsemi.android.common.theme.view.PagerView
 import no.nordicsemi.android.common.theme.view.PagerViewEntity
 
@@ -21,7 +21,7 @@ private val MainDestination = defineDestination(Main) {
     MainScreen()
 }
 
-val MainDestinations = MainDestination + ScannerDestination + HelloDestination
+val MainDestinations = MainDestination + ScannerDestination + HelloDestinations
 
 @Composable
 private fun MainScreen() {
