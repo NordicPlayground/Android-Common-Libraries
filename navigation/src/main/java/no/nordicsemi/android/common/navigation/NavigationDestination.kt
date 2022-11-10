@@ -34,6 +34,7 @@
 package no.nordicsemi.android.common.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.DialogProperties
 
 /**
  * A navigation view allows navigating between different destinations.
@@ -74,6 +75,21 @@ internal class InnerNavigationDestination(
 ): NavigationDestination(id)
 
 /**
+ * Definition of a dialog destination.
+ *
+ * This class binds a destination identifier with a composable function that will be used to
+ * render the content.
+ *
+ * @property id The destination identifier.
+ * @property content The composable function that will be used to render the content.
+ */
+internal class DialogDestination(
+    id: DestinationId<*, *>,
+    val dialogProperties: DialogProperties = DialogProperties(),
+    val content: @Composable () -> Unit,
+): NavigationDestination(id)
+
+/**
  * Helper method for creating a composable [NavigationDestination].
  */
 fun defineDestination(
@@ -95,3 +111,12 @@ fun defineDestinationWithInnerNavigation(
 infix fun DestinationId<*, *>.with(destinations: List<NavigationDestination>): NavigationDestination {
     return defineDestinationWithInnerNavigation(this, destinations)
 }
+
+/**
+ * Helper method for creating a dialog [NavigationDestination].
+ */
+fun defineDialogDestination(
+    id: DestinationId<*, *>,
+    dialogProperties: DialogProperties = DialogProperties(),
+    content: @Composable () -> Unit,
+): NavigationDestination = DialogDestination(id, dialogProperties, content)

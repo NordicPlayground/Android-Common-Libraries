@@ -44,6 +44,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import no.nordicsemi.android.common.navigation.internal.NavigationManager.Event
@@ -143,6 +144,15 @@ private fun NavGraphBuilder.create(
                     route = destination.id.name
                 ) {
                     create(destination.destinations, navigation)
+                }
+            }
+            is DialogDestination -> {
+                dialog(
+                    route = destination.id.name,
+                    dialogProperties = destination.dialogProperties,
+                ) {
+                    navigation.use(it.savedStateHandle)
+                    destination.content()
                 }
             }
         }
