@@ -20,10 +20,10 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.secrets) apply false
     alias(libs.plugins.protobuf) apply false
-    id("no.nordicsemi.android.gradle.feature") version "1.0.0" apply false
-    id("no.nordicsemi.android.gradle.library") version "1.0.0" apply false
-    id("no.nordicsemi.android.gradle.library.compose") version "1.0.0" apply false
-    id("no.nordicsemi.android.gradle.application") version "1.0.0" apply false
-    id("no.nordicsemi.android.gradle.application.compose") version "1.0.0" apply false
-    id("no.nordicsemi.android.gradle.hilt") version "1.0.0" apply false
+    alias(libs.plugins.nordic.application) apply false
+    alias(libs.plugins.nordic.application.compose) apply false
+    alias(libs.plugins.nordic.library) apply false
+    alias(libs.plugins.nordic.library.compose) apply false
+    alias(libs.plugins.nordic.hilt) apply false
+    alias(libs.plugins.nordic.feature) apply false
 }

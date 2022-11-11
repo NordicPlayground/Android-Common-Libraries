@@ -1,5 +1,4 @@
 pluginManagement {
-//    includeBuild("build-logic")
     repositories {
         mavenLocal()
         google()
@@ -18,7 +17,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            from("no.nordicsemi.android.gradle:version-catalog:1.0.0")
+            from("no.nordicsemi.android.gradle:version-catalog:1.0.1")
         }
     }
 }
