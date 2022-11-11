@@ -5,9 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
-import no.nordicsemi.android.common.ui.scanner.DeviceSelected
-import no.nordicsemi.android.common.ui.scanner.ScannerScreen
-import no.nordicsemi.android.common.ui.scanner.ScanningCancelled
+import no.nordicsemi.android.common.ui.scanner.ScannerView
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 
 /**
@@ -24,13 +22,8 @@ val ScannerDestination = defineDestination(Scanner) {
     // As the type of the parameter can be null, so we need to use nullableParameterOf.
     val uuid = vm.nullableParameterOf(Scanner)
 
-    ScannerScreen(
+    ScannerView(
         uuid = uuid,
-        onResult = { result ->
-            when (result) {
-                is DeviceSelected -> vm.navigateUpWithResult(Scanner, result.device)
-                is ScanningCancelled -> vm.navigateUp()
-            }
-        }
+        onResult = { vm.navigateUpWithResult(Scanner, it) }
     )
 }
