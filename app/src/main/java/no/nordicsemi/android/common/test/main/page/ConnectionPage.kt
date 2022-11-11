@@ -16,7 +16,6 @@ import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.ui.scanner.view.DeviceConnectingView
 import no.nordicsemi.android.common.ui.scanner.view.DeviceDisconnectedView
-import no.nordicsemi.android.common.ui.scanner.view.NoDeviceView
 import no.nordicsemi.android.common.ui.scanner.view.Reason
 
 val ConnectionPage = PagerViewItem("Connection") {
@@ -31,8 +30,6 @@ private fun ConnectionScreen() {
             .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        NoDeviceView()
-
         DeviceConnectingView { padding ->
             Button(
                 onClick = { },
