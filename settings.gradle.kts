@@ -16,11 +16,11 @@ dependencyResolutionManagement {
         mavenCentral()
         maven(url = "https://jitpack.io")
     }
-//    versionCatalogs {
-//        create("libs") {
-//            from("no.nordicsemi.android:version-catalog:1.0.0")
-//        }
-//    }
+    versionCatalogs {
+        create("libs") {
+            from("no.nordicsemi.android.gradle:version-catalog:1.0.0")
+        }
+    }
 }
 rootProject.name = "Common Libraries"
 
