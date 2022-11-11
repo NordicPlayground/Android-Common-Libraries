@@ -31,24 +31,18 @@
 
 package no.nordicsemi.android.common.ui.scanner.main
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
+import no.nordicsemi.android.common.ui.scanner.view.internal.ScanEmptyView
+import no.nordicsemi.android.common.ui.scanner.view.internal.ScanErrorView
+import no.nordicsemi.android.support.v18.scanner.ScanCallback
 
 @Composable
 fun DevicesListView(
@@ -56,9 +50,9 @@ fun DevicesListView(
     state: ScanningState,
     onClick: (DiscoveredBluetoothDevice) -> Unit,
     modifier: Modifier = Modifier,
-    row: @Composable (DiscoveredBluetoothDevice) -> Unit = {
+    deviceItem: @Composable (DiscoveredBluetoothDevice) -> Unit = {
         DeviceListItem(it.displayName, it.address)
-   },
+    },
 ) {
     LazyColumn(
         modifier = modifier,
@@ -70,7 +64,7 @@ fun DevicesListView(
                 if (state.isEmpty()) {
                     item { ScanEmptyView(isLocationRequiredAndDisabled) }
                 } else {
-                    DeviceListItems(state, onClick, row)
+                    DeviceListItems(state, onClick, deviceItem)
                 }
             }
             is ScanningState.Error -> item { ScanErrorView(state.errorCode) }
@@ -78,54 +72,50 @@ fun DevicesListView(
     }
 }
 
-@Suppress("FunctionName")
-fun LazyListScope.DeviceListItems(
-    devices: ScanningState.DevicesDiscovered,
-    onClick: (DiscoveredBluetoothDevice) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
-) {
-    val bondedDevices = devices.bonded
-    val discoveredDevices = devices.notBonded
-
-    if (bondedDevices.isNotEmpty()) {
-        item {
-            Text(
-                text = stringResource(id = R.string.bonded_devices),
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
-            )
-        }
-        items(bondedDevices) { device ->
-            ClickableDeviceItem(device, onClick, deviceView)
-        }
-    }
-
-    if (discoveredDevices.isNotEmpty()) {
-        item {
-            Text(
-                text = stringResource(id = R.string.discovered_devices),
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
-            )
-        }
-
-        items(discoveredDevices) { device ->
-            ClickableDeviceItem(device, onClick, deviceView)
-        }
+@Preview(name = "Location required")
+@Composable
+private fun DeviceListView_Preview_LocationRequired() {
+    NordicTheme {
+        DevicesListView(
+            isLocationRequiredAndDisabled = true,
+            state = ScanningState.Loading,
+            onClick = {}
+        )
     }
 }
 
+@Preview
 @Composable
-private fun ClickableDeviceItem(
-    device: DiscoveredBluetoothDevice,
-    onClick: (DiscoveredBluetoothDevice) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
-) {
-    Box(modifier = Modifier
-        .clip(RoundedCornerShape(10.dp))
-        .clickable { onClick(device) }
-        .padding(8.dp)
-    ) {
-        deviceView(device)
+private fun DeviceListView_Preview_LocationNotRequired() {
+    NordicTheme {
+        DevicesListView(
+            isLocationRequiredAndDisabled = false,
+            state = ScanningState.Loading,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DeviceListView_Preview_Error() {
+    NordicTheme {
+        DevicesListView(
+            isLocationRequiredAndDisabled = true,
+            state = ScanningState.Error(ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED),
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DeviceListView_Preview_Empty() {
+    NordicTheme {
+        DevicesListView(
+            isLocationRequiredAndDisabled = true,
+            state = ScanningState.DevicesDiscovered(emptyList()),
+            onClick = {}
+        )
     }
 }

@@ -28,43 +28,40 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package no.nordicsemi.android.common.ui.scanner
 
-import android.os.ParcelUuid
-import androidx.compose.foundation.layout.Column
+package no.nordicsemi.android.common.ui.scanner.view.internal
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothSearching
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.view.ScannerAppBar
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.scanner.R
 
 @Composable
-fun ScannerScreen(
-    title: String = stringResource(id = R.string.scanner_screen),
-    uuid: ParcelUuid?,
-    cancellable: Boolean = true,
-    onResult: (ScannerScreenResult) -> Unit,
-    deviceItem: @Composable (DiscoveredBluetoothDevice) -> Unit = {
-        DeviceListItem(it.displayName, it.address)
-    }
+internal fun ScanErrorView(
+    error: Int,
 ) {
-    var isScanning by rememberSaveable { mutableStateOf(false) }
+    WarningView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        imageVector = Icons.Default.BluetoothSearching,
+        title = stringResource(id = R.string.scanner_error),
+        hint = stringResource(id = R.string.scan_failed, error),
+    )
+}
 
-    Column {
-        if (cancellable) {
-            ScannerAppBar(title, isScanning) { onResult(ScanningCancelled) }
-        } else {
-            ScannerAppBar(title, isScanning)
-        }
-        ScannerView(
-            uuid = uuid,
-            onScanningStateChanged = { isScanning = it },
-            onResult = { onResult(DeviceSelected(it)) },
-            deviceItem = deviceItem,
-        )
+@Preview
+@Composable
+private fun ErrorSectionPreview() {
+    NordicTheme {
+        ScanErrorView(3)
     }
 }
