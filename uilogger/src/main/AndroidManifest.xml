@@ -30,7 +30,8 @@
   ~ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="no.nordicsemi.android.common.ui.logger" >
 
     <uses-permission android:name="no.nordicsemi.android.LOG"/>
 

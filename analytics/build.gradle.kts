@@ -1,0 +1,53 @@
+plugins {
+    id("no.nordicsemi.android.gradle.feature")
+    id("no.nordicsemi.android.gradle.library.compose")
+    id("com.google.protobuf")
+    id("no.nordicsemi.android.gradle.nexus")
+}
+
+group = "no.nordicsemi.android.common"
+
+nordicNexusPublishing {
+    POM_ARTIFACT_ID = "analytics"
+    POM_NAME = "Nordic library for analytics."
+    GROUP = "no.nordicsemi.android.common"
+}
+
+//protobuf {
+//
+//    protoc {
+//        artifact = "com.google.protobuf:protoc:3.14.0"
+//    }
+//
+//    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+//    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+//    // for more information.
+//    generateProtoTasks {
+//        all().each { task ->
+//            task.builtins {
+//                java {
+//                    option = "lite"
+//                }
+//            }
+//        }
+//    }
+//}
+
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":theme"))
+
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    implementation(libs.androidx.dataStore.preferences)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+
+}
