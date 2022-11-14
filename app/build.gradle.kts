@@ -8,22 +8,6 @@ group = "no.nordicsemi.android.common"
 
 android {
     namespace = "no.nordicsemi.android.common.test"
-    compileSdk = 33
-
-    defaultConfig {
-        applicationId = "no.nordicsemi.android.common.test"
-        minSdk = 21
-        targetSdk = 33
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-        }
-    }
 }
 
 dependencies {

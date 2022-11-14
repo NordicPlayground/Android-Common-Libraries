@@ -14,6 +14,10 @@ nordicNexusPublishing {
     GROUP = "no.nordicsemi.android.common"
 }
 
+android {
+    namespace = "no.nordicsemi.android.common.navigation"
+}
+
 dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)

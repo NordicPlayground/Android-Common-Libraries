@@ -31,8 +31,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="no.nordicsemi.android.common.ui.scanner" >
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <!--
      Bluetooth permission is required on Android 4.3 - 11 in order to communicate with

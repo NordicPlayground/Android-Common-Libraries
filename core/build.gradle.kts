@@ -13,6 +13,10 @@ nordicNexusPublishing {
     GROUP = "no.nordicsemi.android.common"
 }
 
+android {
+    namespace = "no.nordicsemi.android.common.core"
+}
+
 dependencies {
     implementation(libs.androidx.compose.ui)
 }

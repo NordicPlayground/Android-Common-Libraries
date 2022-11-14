@@ -31,6 +31,10 @@ protobuf {
     }
 }
 
+android {
+    namespace = "no.nordicsemi.android.common.analytics"
+}
+
 dependencies {
     implementation(project(":core"))
     implementation(project(":theme"))

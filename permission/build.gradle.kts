@@ -13,6 +13,10 @@ nordicNexusPublishing {
     GROUP = "no.nordicsemi.android.common"
 }
 
+android {
+    namespace = "no.nordicsemi.android.common.permission"
+}
+
 dependencies {
     implementation(project(":core"))
     implementation(project(":theme"))
