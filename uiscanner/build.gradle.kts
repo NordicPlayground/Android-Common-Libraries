@@ -13,6 +13,12 @@ nordicNexusPublishing {
     POM_ARTIFACT_ID = "uiscanner"
     POM_NAME = "Nordic library for Android with UI screens utilizing uiscanner library."
     GROUP = "no.nordicsemi.android.common"
+
+    POM_DESCRIPTION = "Nordic Android Common Libraries"
+    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
+    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
+    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
 }
 
 android {
