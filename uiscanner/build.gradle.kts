@@ -1,11 +1,10 @@
 plugins {
-    id("no.nordicsemi.android.gradle.feature")
-    id("no.nordicsemi.android.gradle.library")
-    id("no.nordicsemi.android.gradle.library.compose")
-    id("no.nordicsemi.android.gradle.hilt")
-    id("no.nordicsemi.android.gradle.nexus")
+    alias(libs.plugins.nordic.feature)
+    alias(libs.plugins.nordic.library)
+    alias(libs.plugins.nordic.library.compose)
+    alias(libs.plugins.nordic.hilt)
+    alias(libs.plugins.nordic.nexus)
     id("kotlin-parcelize")
-    id("maven-publish")
 }
 
 group = "no.nordicsemi.android.common"

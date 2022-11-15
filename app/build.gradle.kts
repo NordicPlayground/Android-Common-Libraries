@@ -1,7 +1,7 @@
 plugins {
-    id("no.nordicsemi.android.gradle.application")
-    id("no.nordicsemi.android.gradle.application.compose")
-    id("no.nordicsemi.android.gradle.hilt")
+    alias(libs.plugins.nordic.application)
+    alias(libs.plugins.nordic.application.compose)
+    alias(libs.plugins.nordic.hilt)
 }
 
 group = "no.nordicsemi.android.common"
