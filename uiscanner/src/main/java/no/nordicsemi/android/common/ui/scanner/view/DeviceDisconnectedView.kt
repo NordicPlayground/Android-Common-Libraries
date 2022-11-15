@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.CircularIcon
 import no.nordicsemi.android.common.ui.scanner.R
 
@@ -102,15 +103,17 @@ fun DeviceDisconnectedView(
 @Preview
 @Composable
 private fun DeviceDisconnectedView_Preview() {
-    DeviceDisconnectedView(
-        reason = Reason.MISSING_SERVICE,
-        content = { padding ->
-            Button(
-                onClick = {},
-                modifier = Modifier.padding(padding)
-            ) {
-                Text(text = "Retry")
+    NordicTheme {
+        DeviceDisconnectedView(
+            reason = Reason.MISSING_SERVICE,
+            content = { padding ->
+                Button(
+                    onClick = {},
+                    modifier = Modifier.padding(padding)
+                ) {
+                    Text(text = "Retry")
+                }
             }
-        }
-    )
+        )
+    }
 }

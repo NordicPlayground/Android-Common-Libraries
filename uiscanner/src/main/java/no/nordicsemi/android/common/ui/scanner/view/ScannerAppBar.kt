@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.main
+package no.nordicsemi.android.common.ui.scanner.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,7 +43,7 @@ import no.nordicsemi.android.common.theme.view.NordicAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScannerAppBar(
+fun ScannerAppBar(
     text: String,
     showProgress: Boolean = false,
     onNavigationButtonClick: (() -> Unit)? = null,
