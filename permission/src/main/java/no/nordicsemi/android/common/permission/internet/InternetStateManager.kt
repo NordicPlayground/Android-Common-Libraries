@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class InternetStateManager @Inject constructor(
+class InternetStateManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 

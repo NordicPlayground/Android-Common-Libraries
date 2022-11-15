@@ -6,7 +6,7 @@ enum class FeatureNotAvailableReason {
     DISABLED,
 }
 
-internal sealed class FeatureState
+sealed class FeatureState
 
-internal object Available : FeatureState()
-internal data class NotAvailable(val reason: FeatureNotAvailableReason) : FeatureState()
+object Available : FeatureState()
+data class NotAvailable(val reason: FeatureNotAvailableReason) : FeatureState()
