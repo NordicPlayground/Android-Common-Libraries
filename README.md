@@ -17,6 +17,7 @@ The library contains a few features which are necessary for theming Nordic Semic
 * Abstract `NordicActivity` class which contain implementations for Nordic's splash screen animation.
 * `WizardStepComponent` for wizard-based app flow.
 * `CircularIcon` an icon with circular shape.
+* Other common views available for different projects.
 
 ## Permission
 
