@@ -22,6 +22,12 @@ nordicNexusPublishing {
 
 android {
     namespace = "no.nordicsemi.android.common.permission"
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
+    }
 }
 
 dependencies {

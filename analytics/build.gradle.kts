@@ -20,6 +20,12 @@ nordicNexusPublishing {
 
 android {
     namespace = "no.nordicsemi.android.common.analytics"
+
+     buildTypes {
+         release {
+             isMinifyEnabled = false
+         }
+     }
 }
 
 dependencies {
