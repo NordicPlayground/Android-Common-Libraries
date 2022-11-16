@@ -64,6 +64,7 @@ fun PagerView(
     viewEntity: PagerViewEntity,
     modifier: Modifier = Modifier,
     itemSpacing: Dp = 0.dp,
+    scrollable: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     verticalAlignment: Alignment.Vertical = Alignment.Top,
 ) {
@@ -74,30 +75,59 @@ fun PagerView(
         val tabIndex = pagerState.currentPage
         val coroutineScope = rememberCoroutineScope()
 
-        ScrollableTabRow(
-            edgePadding = 0.dp,
-            selectedTabIndex = tabIndex,
-            containerColor = colorResource(id = R.color.appBarColor),
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            indicator = @Composable { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            },
-        ) {
-            viewEntity.items.forEachIndexed { index, item ->
-                Tab(
-                    selected = tabIndex == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+        if (scrollable) {
+            ScrollableTabRow(
+                edgePadding = 0.dp,
+                selectedTabIndex = tabIndex,
+                containerColor = colorResource(id = R.color.appBarColor),
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                indicator = @Composable { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+            ) {
+                viewEntity.items.forEachIndexed { index, item ->
+                    Tab(
+                        selected = tabIndex == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = {
+                            Text(text = item.title)
                         }
-                    },
-                    text = {
-                        Text(text = item.title)
-                    }
-                )
+                    )
+                }
+            }
+        } else {
+            TabRow(
+                modifier = Modifier.fillMaxWidth(),
+                selectedTabIndex = tabIndex,
+                containerColor = colorResource(id = R.color.appBarColor),
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                indicator = @Composable { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+            ) {
+                viewEntity.items.forEachIndexed { index, item ->
+                    Tab(
+                        selected = tabIndex == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = {
+                            Text(text = item.title)
+                        }
+                    )
+                }
             }
         }
 
