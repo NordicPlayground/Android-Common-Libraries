@@ -11,7 +11,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":analytics"))
     implementation(project(":theme"))
     implementation(project(":uilogger"))
     implementation(project(":uiscanner"))
