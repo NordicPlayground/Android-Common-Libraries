@@ -45,7 +45,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.theme.R
 
@@ -65,15 +67,15 @@ fun PagerView(
     modifier: Modifier = Modifier,
     itemSpacing: Dp = 0.dp,
     scrollable: Boolean = true,
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    pagerState: PagerState = rememberPagerState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     verticalAlignment: Alignment.Vertical = Alignment.Top,
 ) {
     Column(
         modifier = modifier,
     ) {
-        val pagerState = rememberPagerState()
         val tabIndex = pagerState.currentPage
-        val coroutineScope = rememberCoroutineScope()
 
         if (scrollable) {
             ScrollableTabRow(
