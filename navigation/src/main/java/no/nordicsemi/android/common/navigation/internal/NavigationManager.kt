@@ -108,6 +108,7 @@ internal class NavigationManager @Inject constructor(
         @Suppress("UNCHECKED_CAST")
         savedStateHandle?.run {
             getStateFlow<Result>(from.name, Result.Initial)
+                .onEach { this[from.name] = Result.Initial }
                 .transform { result ->
                     when (result) {
                         // Ignore the initial value.
@@ -160,8 +161,8 @@ internal class NavigationManager @Inject constructor(
      * Otherwise, it will be emitted again. This covers a case, when the event was received, but
      * the consumer was destroyed before it could handle it.
      */
-    fun consumeEvent() {
-        _events.update { null }
+    fun consumeEvent(event: Event) {
+        _events.compareAndSet(event, null)
     }
 
     private fun Flow<NavBackStackEntry>.combine(

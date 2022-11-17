@@ -33,7 +33,6 @@ package no.nordicsemi.android.common.test
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -153,7 +152,6 @@ class MainActivity : NordicActivity() {
                     }
                 ) {
                     val currentDestination by navigator.currentDestination().collectAsState()
-                    Log.w("AAA", "Current destination: $currentDestination")
                     Scaffold(
                         topBar = {
                             NordicAppBar(

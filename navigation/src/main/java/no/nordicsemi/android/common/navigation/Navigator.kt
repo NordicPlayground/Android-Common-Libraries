@@ -42,7 +42,9 @@ import androidx.navigation.PopUpToBuilder
 import androidx.navigation.navOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.parcelize.RawValue
+import no.nordicsemi.android.common.navigation.internal.NavigationManager
 import no.nordicsemi.android.common.navigation.internal.START_DESTINATION
 
 interface Navigator {
@@ -123,6 +125,11 @@ interface Navigator {
      */
     fun open(link: Uri)
 }
+
+/**
+ * Returns current emission as [NavigationResult.Success] if valid.
+ */
+fun <T> Flow<NavigationResult<T>>.onlySuccess() = this.mapNotNull { it as? NavigationResult.Success }
 
 /**
  * Returns the argument for the current destination as Flow.
