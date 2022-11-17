@@ -108,6 +108,7 @@ internal class NavigationManager @Inject constructor(
         @Suppress("UNCHECKED_CAST")
         savedStateHandle?.run {
             getStateFlow<Result>(from.name, Result.Initial)
+                .onEach { this[from.name] = Result.Initial }
                 .transform { result ->
                     when (result) {
                         // Ignore the initial value.
