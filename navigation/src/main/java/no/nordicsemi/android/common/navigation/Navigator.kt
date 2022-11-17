@@ -129,7 +129,7 @@ interface Navigator {
 /**
  * Returns current emission as [NavigationResult.Success] if valid.
  */
-fun <T> Flow<NavigationResult<T>>.onlySuccess() = this.mapNotNull { it as NavigationResult.Success }
+fun <T> Flow<NavigationResult<T>>.onlySuccess() = this.mapNotNull { it as? NavigationResult.Success }
 
 /**
  * Returns the argument for the current destination as Flow.
