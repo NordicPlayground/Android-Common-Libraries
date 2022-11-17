@@ -75,6 +75,7 @@ fun NavigationView(
 
     // Handle navigation events.
     val event by navigation.events.collectAsState()
+
     event?.let { e ->
         when (e) {
             is Event.NavigateTo -> navHostController.navigate(e.route, e.args) {
@@ -109,7 +110,7 @@ fun NavigationView(
                 }
             }
         }
-        navigation.consumeEvent()
+        navigation.consumeEvent(e)
     }
 
     BackHandler { if (!backHandler()) navigation.navigateUp() }

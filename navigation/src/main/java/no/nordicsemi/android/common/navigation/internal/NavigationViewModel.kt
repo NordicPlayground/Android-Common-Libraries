@@ -74,8 +74,8 @@ internal class NavigationViewModel @Inject constructor(
      * Otherwise, it will be emitted again. This covers a case, when the event was received, but
      * the consumer was destroyed before it could handle it.
      */
-    fun consumeEvent() {
-        navigationManager.consumeEvent()
+    fun consumeEvent(event: NavigationManager.Event) {
+        navigationManager.consumeEvent(event)
     }
 
     override fun onCleared() {

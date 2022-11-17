@@ -161,8 +161,8 @@ internal class NavigationManager @Inject constructor(
      * Otherwise, it will be emitted again. This covers a case, when the event was received, but
      * the consumer was destroyed before it could handle it.
      */
-    fun consumeEvent() {
-        _events.update { null }
+    fun consumeEvent(event: Event) {
+        _events.compareAndSet(event, null)//update { null }
     }
 
     private fun Flow<NavBackStackEntry>.combine(
