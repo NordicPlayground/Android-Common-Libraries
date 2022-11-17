@@ -162,7 +162,7 @@ internal class NavigationManager @Inject constructor(
      * the consumer was destroyed before it could handle it.
      */
     fun consumeEvent(event: Event) {
-        _events.compareAndSet(event, null)//update { null }
+        _events.compareAndSet(event, null)
     }
 
     private fun Flow<NavBackStackEntry>.combine(
