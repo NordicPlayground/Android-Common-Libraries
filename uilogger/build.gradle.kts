@@ -1,6 +1,4 @@
 plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.library)
     alias(libs.plugins.nordic.library.compose)
     alias(libs.plugins.nordic.hilt)
     alias(libs.plugins.nordic.nexus)
@@ -33,12 +31,5 @@ android {
 dependencies {
     implementation(project(":theme"))
 
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
     implementation(libs.nordic.log)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
 }

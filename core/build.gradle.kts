@@ -1,8 +1,5 @@
 plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.library)
     alias(libs.plugins.nordic.library.compose)
-    alias(libs.plugins.nordic.hilt)
     alias(libs.plugins.nordic.nexus)
 }
 
@@ -31,5 +28,6 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
 }
