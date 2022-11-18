@@ -45,7 +45,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.theme.R
 
@@ -64,40 +66,70 @@ fun PagerView(
     viewEntity: PagerViewEntity,
     modifier: Modifier = Modifier,
     itemSpacing: Dp = 0.dp,
+    scrollable: Boolean = true,
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    pagerState: PagerState = rememberPagerState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     verticalAlignment: Alignment.Vertical = Alignment.Top,
 ) {
     Column(
         modifier = modifier,
     ) {
-        val pagerState = rememberPagerState()
         val tabIndex = pagerState.currentPage
-        val coroutineScope = rememberCoroutineScope()
 
-        ScrollableTabRow(
-            edgePadding = 0.dp,
-            selectedTabIndex = tabIndex,
-            containerColor = colorResource(id = R.color.appBarColor),
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            indicator = @Composable { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            },
-        ) {
-            viewEntity.items.forEachIndexed { index, item ->
-                Tab(
-                    selected = tabIndex == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+        if (scrollable) {
+            ScrollableTabRow(
+                edgePadding = 0.dp,
+                selectedTabIndex = tabIndex,
+                containerColor = colorResource(id = R.color.appBarColor),
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                indicator = @Composable { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+            ) {
+                viewEntity.items.forEachIndexed { index, item ->
+                    Tab(
+                        selected = tabIndex == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = {
+                            Text(text = item.title)
                         }
-                    },
-                    text = {
-                        Text(text = item.title)
-                    }
-                )
+                    )
+                }
+            }
+        } else {
+            TabRow(
+                modifier = Modifier.fillMaxWidth(),
+                selectedTabIndex = tabIndex,
+                containerColor = colorResource(id = R.color.appBarColor),
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                indicator = @Composable { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+            ) {
+                viewEntity.items.forEachIndexed { index, item ->
+                    Tab(
+                        selected = tabIndex == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = {
+                            Text(text = item.title)
+                        }
+                    )
+                }
             }
         }
 
