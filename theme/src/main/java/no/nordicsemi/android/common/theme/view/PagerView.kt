@@ -66,8 +66,27 @@ fun PagerView(
     viewEntity: PagerViewEntity,
     modifier: Modifier = Modifier,
     itemSpacing: Dp = 0.dp,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    verticalAlignment: Alignment.Vertical = Alignment.Top,
+) {
+    PagerView(
+        viewEntity = viewEntity,
+        modifier = modifier,
+        itemSpacing = itemSpacing,
+        contentPadding = contentPadding,
+        verticalAlignment = verticalAlignment,
+        coroutineScope = rememberCoroutineScope()
+    )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun PagerView(
+    viewEntity: PagerViewEntity,
+    modifier: Modifier = Modifier,
+    itemSpacing: Dp = 0.dp,
     scrollable: Boolean = true,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    coroutineScope: CoroutineScope,
     pagerState: PagerState = rememberPagerState(),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     verticalAlignment: Alignment.Vertical = Alignment.Top,

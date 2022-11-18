@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":theme"))
 
     implementation(libs.androidx.dataStore.preferences)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
