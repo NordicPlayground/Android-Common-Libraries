@@ -44,10 +44,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavOptions
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import no.nordicsemi.android.common.navigation.*
@@ -85,22 +83,26 @@ internal class NavigationManager @Inject constructor(
         set(value) {
             field = value
             value?.also { currentBackStackEntryFlow ->
+                // Cancel any previous job.
+                scope.coroutineContext.cancelChildren()
+                // For all existing hierarchy observers start collecting using the new flow.
                 map.forEach { entry ->
                     currentBackStackEntryFlow.combine(entry)
                 }
+                // Also, start observing for current destination.
                 scope.launch {
                     currentBackStackEntryFlow.collect { entry ->
                         //Log.d("Navigator", "Hierarchy: ${entry.destination.hierarchy.map { it.route }.reduce { acc, s -> "$acc | $s" }}")
                         entry.destination.route?.let { route ->
-                            if (navigationUpAvailable.value?.name != route) {
-                                navigationUpAvailable.value = createSimpleDestination(route)
+                            if (currentDestinationFlow.value?.name != route) {
+                                currentDestinationFlow.value = createSimpleDestination(route)
                             }
                         }
                     }
                 }
             }
         }
-    private var navigationUpAvailable = MutableStateFlow<DestinationId<*, *>?>(null)
+    private var currentDestinationFlow = MutableStateFlow<DestinationId<*, *>?>(null)
 
     private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -142,7 +144,7 @@ internal class NavigationManager @Inject constructor(
         }
 
     override fun currentDestination(): StateFlow<DestinationId<*, *>?> {
-        return navigationUpAvailable
+        return currentDestinationFlow
     }
 
     override fun open(link: Uri) {
