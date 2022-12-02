@@ -31,11 +31,7 @@
 
 package no.nordicsemi.android.common.ui.scanner.view.internal
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Label
@@ -45,11 +41,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.theme.R as themeR
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,14 +53,12 @@ import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 internal fun FilterView(
     config: DevicesScanFilter,
     onChanged: (DevicesScanFilter) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colorResource(id = themeR.color.appBarColor))
-            .padding(start = 56.dp)
+        modifier = modifier,
     ) {
         config.filterUuidRequired?.let {
             ElevatedFilterChip(
@@ -81,14 +75,14 @@ internal fun FilterView(
                 },
             )
         }
-        with(config.filterNearbyOnly) {
+        config.filterNearbyOnly.let {
             ElevatedFilterChip(
-                selected = this,
-                onClick = { onChanged(config.copy(filterNearbyOnly = !this)) },
+                selected = it,
+                onClick = { onChanged(config.copy(filterNearbyOnly = !it)) },
                 label = { Text(text = stringResource(id = R.string.filter_nearby),) },
                 modifier = Modifier.padding(end = 8.dp),
                 leadingIcon = {
-                    if (this) {
+                    if (it) {
                         Icon(Icons.Default.Done, contentDescription = "")
                     } else {
                         Icon(Icons.Default.Wifi, contentDescription = "")
@@ -96,14 +90,14 @@ internal fun FilterView(
                 },
             )
         }
-        with(config.filterWithNames) {
+        config.filterWithNames.let {
             ElevatedFilterChip(
-                selected = this,
-                onClick = { onChanged(config.copy(filterWithNames = !this)) },
+                selected = it,
+                onClick = { onChanged(config.copy(filterWithNames = !it)) },
                 label = { Text(text = stringResource(id = R.string.filter_name),) },
                 modifier = Modifier.padding(end = 8.dp),
                 leadingIcon = {
-                    if (this) {
+                    if (it) {
                         Icon(Icons.Default.Done, contentDescription = "")
                     } else {
                         Icon(Icons.Default.Label, contentDescription = "")
@@ -111,5 +105,21 @@ internal fun FilterView(
                 },
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun FilterViewPreview() {
+    NordicTheme {
+        FilterView(
+            config = DevicesScanFilter(
+                filterUuidRequired = true,
+                filterNearbyOnly = true,
+                filterWithNames = true,
+            ),
+            onChanged = {},
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }

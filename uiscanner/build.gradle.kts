@@ -65,8 +65,8 @@ dependencies {
     implementation(project(":permission"))
 
     implementation(libs.accompanist.flowlayout)
-    implementation(libs.accompanist.swiperefresh)
 
+    implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.iconsExtended)
 
     implementation(libs.nordic.scanner)
