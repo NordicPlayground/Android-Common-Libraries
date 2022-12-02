@@ -32,23 +32,33 @@
 package no.nordicsemi.android.common.ui.scanner
 
 import android.os.ParcelUuid
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permission.RequireBluetooth
 import no.nordicsemi.android.common.permission.RequireLocation
+import no.nordicsemi.android.common.theme.R
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.view.internal.FilterView
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun ScannerView(
     uuid: ParcelUuid?,
@@ -67,27 +77,46 @@ fun ScannerView(
             val viewModel = hiltViewModel<ScannerViewModel>()
                 .apply { setFilterUuid(uuid) }
 
-            val state by viewModel.state.collectAsState()
-            val config by viewModel.filterConfig.collectAsState()
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            val config by viewModel.filterConfig.collectAsStateWithLifecycle()
+            var refreshing by remember { mutableStateOf(false) }
+
+            val scope = rememberCoroutineScope()
+            fun refresh() = scope.launch {
+                refreshing = true
+                viewModel.refresh()
+                delay(400) // TODO remove this delay and refreshing variable after updating material dependency
+                refreshing = false
+            }
 
             Column(modifier = Modifier.fillMaxSize()) {
                 FilterView(
                     config = config,
-                    onChanged = { viewModel.setFilter(it) }
+                    onChanged = { viewModel.setFilter(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(colorResource(id = R.color.appBarColor))
+                        .padding(horizontal = 16.dp),
                 )
 
-                val swipeRefreshState = rememberSwipeRefreshState(false)
+                val pullRefreshState  = rememberPullRefreshState(
+                    refreshing = refreshing,
+                    onRefresh = { refresh() },
+                )
 
-                SwipeRefresh(
-                    state = swipeRefreshState,
-                    onRefresh = { viewModel.refresh() },
-                ) {
+                Box(modifier = Modifier.pullRefresh(pullRefreshState).clipToBounds()) {
                     DevicesListView(
                         isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
                         state = state,
                         modifier = Modifier.fillMaxSize(),
                         onClick = { onResult(it) },
                         deviceItem = deviceItem,
+                    )
+
+                    PullRefreshIndicator(
+                        refreshing = refreshing,
+                        state = pullRefreshState,
+                        Modifier.align(Alignment.TopCenter)
                     )
                 }
             }
