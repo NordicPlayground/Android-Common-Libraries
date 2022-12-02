@@ -30,8 +30,7 @@
  */
 
 plugins {
-    alias(libs.plugins.nordic.library.compose)
-    alias(libs.plugins.nordic.hilt)
+    alias(libs.plugins.nordic.feature)
     alias(libs.plugins.nordic.nexus)
     id("kotlin-parcelize")
 }
@@ -69,9 +68,6 @@ dependencies {
     implementation(libs.accompanist.swiperefresh)
 
     implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.nordic.scanner)
 }
