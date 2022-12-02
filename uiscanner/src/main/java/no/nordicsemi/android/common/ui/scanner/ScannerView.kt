@@ -56,6 +56,7 @@ import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.common.ui.scanner.view.internal.FilterView
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLifecycleComposeApi::class)
@@ -77,7 +78,7 @@ fun ScannerView(
             val viewModel = hiltViewModel<ScannerViewModel>()
                 .apply { setFilterUuid(uuid) }
 
-            val state by viewModel.state.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle(ScanningState.Loading)
             val config by viewModel.filterConfig.collectAsStateWithLifecycle()
             var refreshing by remember { mutableStateOf(false) }
 
