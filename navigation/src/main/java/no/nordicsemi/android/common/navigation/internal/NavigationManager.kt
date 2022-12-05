@@ -81,10 +81,11 @@ internal class NavigationManager @Inject constructor(
     internal var savedStateHandle: SavedStateHandle? = null
     internal var currentBackStackEntryFlow: Flow<NavBackStackEntry>? = null
         set(value) {
+            // Cancel any previous job.
+            scope.coroutineContext.cancelChildren()
+
             field = value
             value?.also { currentBackStackEntryFlow ->
-                // Cancel any previous job.
-                scope.coroutineContext.cancelChildren()
                 // For all existing hierarchy observers start collecting using the new flow.
                 map.forEach { entry ->
                     currentBackStackEntryFlow.combine(entry)
