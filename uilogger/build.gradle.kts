@@ -54,12 +54,6 @@ nordicNexusPublishing {
 
 android {
     namespace = "no.nordicsemi.android.common.ui.logger"
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
 }
 
 dependencies {

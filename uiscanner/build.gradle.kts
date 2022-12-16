@@ -54,12 +54,6 @@ nordicNexusPublishing {
 
 android {
     namespace = "no.nordicsemi.android.common.ui.scanner"
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
 }
 
 dependencies {

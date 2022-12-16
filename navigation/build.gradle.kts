@@ -55,12 +55,6 @@ nordicNexusPublishing {
 
 android {
     namespace = "no.nordicsemi.android.common.navigation"
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
 }
 
 dependencies {
