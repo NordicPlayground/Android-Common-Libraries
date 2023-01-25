@@ -61,18 +61,31 @@ import javax.inject.Inject
 @ActivityRetainedScoped
 internal class NavigationManager @Inject constructor(
     @ApplicationContext private val context: Context,
-): Navigator {
+) : Navigator {
     /** The navigation events class. */
     sealed class Event {
-        data class NavigateTo(val route: String, val args: Bundle?, val navOptions: NavOptions? = null) : Event()
-        data class NavigateUp(val result: Any?) : Event()
+        data class NavigateTo(
+            val route: String,
+            val args: Bundle?,
+            val navOptions: NavOptions? = null,
+            val counter: Int = Event.counter++
+        ) : Event()
+
+        data class NavigateUp(val result: Any?, val counter: Int = Event.counter++) : Event()
+
+        companion object {
+            private var counter = 0
+        }
     }
 
     /** Savable results that can be stored in [SavedStateHandle]. */
-    sealed class Result: Parcelable {
-        @Parcelize object Initial : Result()
-        @Parcelize object Cancelled : Result()
-        @Parcelize data class Success<R>(val value: @RawValue R) : Result()
+    sealed class Result : Parcelable {
+        @Parcelize
+        object Initial : Result()
+        @Parcelize
+        object Cancelled : Result()
+        @Parcelize
+        data class Success<R>(val value: @RawValue R) : Result()
     }
 
     private val map = mutableMapOf<DestinationId<*, *>, MutableStateFlow<Boolean>>()
@@ -150,7 +163,7 @@ internal class NavigationManager @Inject constructor(
 
     override fun open(link: Uri) {
         try {
-            with (Intent(Intent.ACTION_VIEW, link)) {
+            with(Intent(Intent.ACTION_VIEW, link)) {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(this)
             }

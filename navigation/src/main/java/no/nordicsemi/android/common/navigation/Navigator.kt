@@ -44,7 +44,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.parcelize.RawValue
-import no.nordicsemi.android.common.navigation.internal.NavigationManager
 import no.nordicsemi.android.common.navigation.internal.START_DESTINATION
 
 interface Navigator {
