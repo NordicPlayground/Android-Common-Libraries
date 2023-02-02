@@ -60,7 +60,7 @@ fun NordicLargeAppBar(
             Modifier.nestedScroll(connection = it)
         } ?: Modifier,
         title = { Text(text) },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
+        colors = TopAppBarDefaults.largeTopAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
