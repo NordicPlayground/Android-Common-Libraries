@@ -39,8 +39,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import no.nordicsemi.android.common.theme.R
@@ -56,9 +54,6 @@ fun NordicLargeAppBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     LargeTopAppBar(
-        modifier = scrollBehavior?.nestedScrollConnection?.let {
-            Modifier.nestedScroll(connection = it)
-        } ?: Modifier,
         title = { Text(text) },
         colors = TopAppBarDefaults.largeTopAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
