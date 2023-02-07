@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":permission"))
 
     implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(libs.androidx.activity.compose)
 

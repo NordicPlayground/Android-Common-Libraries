@@ -32,9 +32,9 @@
 package no.nordicsemi.android.common.permission
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.permission.util.Available
 import no.nordicsemi.android.common.permission.view.InternetNotAvailableView
 import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
@@ -46,7 +46,7 @@ fun RequireInternet(
     content: @Composable () -> Unit
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.internetPermission.collectAsState()
+    val state by viewModel.internetPermission.collectAsStateWithLifecycle()
 
     onChanged(state is Available)
 

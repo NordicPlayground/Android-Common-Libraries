@@ -33,9 +33,9 @@ package no.nordicsemi.android.common.permission
 
 import android.os.Build
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.permission.util.Available
 import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
 import no.nordicsemi.android.common.permission.util.NotAvailable
@@ -53,7 +53,7 @@ fun RequireBluetooth(
     content: @Composable () -> Unit,
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.bluetoothState.collectAsState()
+    val state by viewModel.bluetoothState.collectAsStateWithLifecycle()
 
     onChanged(state is Available)
 
