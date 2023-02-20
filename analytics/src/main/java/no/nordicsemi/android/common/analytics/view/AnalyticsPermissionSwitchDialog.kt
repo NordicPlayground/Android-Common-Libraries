@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.analytics.AnalyticsPermissionData
 import no.nordicsemi.android.common.analytics.R
 import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewModel
@@ -55,7 +56,7 @@ fun AnalyticsPermissionSwitchDialog(
     onDismiss: () -> Unit
 ) {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val state by viewModel.permissionData.collectAsState(AnalyticsPermissionData())
+    val state by viewModel.permissionData.collectAsStateWithLifecycle(AnalyticsPermissionData())
 
     AnalyticsPermissionSwitchDialog(
         granted = state.isPermissionGranted,

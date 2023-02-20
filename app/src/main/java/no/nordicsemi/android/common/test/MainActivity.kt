@@ -42,7 +42,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -51,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.logger.view.LoggerAppBarIcon
@@ -151,7 +151,7 @@ class MainActivity : NordicActivity() {
                         }
                     }
                 ) {
-                    val currentDestination by navigator.currentDestination().collectAsState()
+                    val currentDestination by navigator.currentDestination().collectAsStateWithLifecycle()
                     Scaffold(
                         topBar = {
                             NordicAppBar(
@@ -177,10 +177,10 @@ class MainActivity : NordicActivity() {
                         },
                         bottomBar = {
                             // Show the Navigation Bar only in the Tabs destination.
-                            if (navigator.isInHierarchy(Tabs).collectAsState().value) {
+                            if (navigator.isInHierarchy(Tabs).collectAsStateWithLifecycle().value) {
                                 NavigationBar {
                                     tabs.forEach { tab ->
-                                        val selected by navigator.isInHierarchy(tab.destinationId).collectAsState()
+                                        val selected by navigator.isInHierarchy(tab.destinationId).collectAsStateWithLifecycle()
                                         NavigationBarItem(
                                             icon = { Icon(tab.icon, contentDescription = null) },
                                             label = { Text(tab.title) },
@@ -238,7 +238,7 @@ private fun NavigationDrawerItems(
     modifier: Modifier = Modifier,
 ) {
     items.forEach { item ->
-        val selected by navigator.isInHierarchy(item.destinationId).collectAsState()
+        val selected by navigator.isInHierarchy(item.destinationId).collectAsStateWithLifecycle()
         NavigationDrawerItem(
             icon = { Icon(item.icon, contentDescription = null) },
             label = { Text(item.title) },

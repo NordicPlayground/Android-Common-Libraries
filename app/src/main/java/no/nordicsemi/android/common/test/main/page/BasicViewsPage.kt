@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -68,7 +69,7 @@ import javax.inject.Inject
 
 val BasicsPage = PagerViewItem("Basics") {
     val vm = hiltViewModel<BasicPageViewModel>()
-    val device by vm.device.collectAsState()
+    val device by vm.device.collectAsStateWithLifecycle()
 
     BasicViewsScreen(
         device = device?.let { DeviceInfo(it) },

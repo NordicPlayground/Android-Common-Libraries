@@ -53,6 +53,8 @@ dependencies {
 
     implementation(libs.androidx.hilt.navigation.compose)
 
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation(libs.leakcanary)
 }

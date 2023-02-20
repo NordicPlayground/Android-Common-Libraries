@@ -32,9 +32,9 @@
 package no.nordicsemi.android.common.permission
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.permission.util.Available
 import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
 import no.nordicsemi.android.common.permission.util.NotAvailable
@@ -48,7 +48,7 @@ fun RequireLocation(
     content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.locationPermission.collectAsState()
+    val state by viewModel.locationPermission.collectAsStateWithLifecycle()
 
     onChanged(state is Available || (state as NotAvailable).reason == FeatureNotAvailableReason.DISABLED)
 

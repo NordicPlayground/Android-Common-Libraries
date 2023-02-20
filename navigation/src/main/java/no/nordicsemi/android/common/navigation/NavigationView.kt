@@ -35,11 +35,11 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -74,7 +74,7 @@ fun NavigationView(
     navigation.use(navHostController.currentBackStackEntryFlow)
 
     // Handle navigation events.
-    val event by navigation.events.collectAsState()
+    val event by navigation.events.collectAsStateWithLifecycle()
 
     event?.let { e ->
         when (e) {
