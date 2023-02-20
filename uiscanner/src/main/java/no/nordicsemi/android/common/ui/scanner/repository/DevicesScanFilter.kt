@@ -29,12 +29,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner
+package no.nordicsemi.android.common.ui.scanner.repository
 
-import no.nordicsemi.android.kotlin.ble.core.ServerDevice
-
-sealed interface ScannerScreenResult
-
-object ScanningCancelled : ScannerScreenResult
-
-data class DeviceSelected(val device: ServerDevice) : ScannerScreenResult
+internal data class DevicesScanFilter(
+    val filterUuidRequired: Boolean?,
+    val filterNearbyOnly: Boolean,
+    val filterWithNames: Boolean
+)

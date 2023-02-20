@@ -61,10 +61,10 @@ dependencies {
     implementation(project(":theme"))
     implementation(project(":permission"))
 
+    implementation("no.nordicsemi.android.kotlin.ble:scanner:0.0.1")
+
     implementation(libs.accompanist.flowlayout)
 
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.nordic.scanner)
 }
