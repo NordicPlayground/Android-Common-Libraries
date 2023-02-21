@@ -55,7 +55,7 @@ import no.nordicsemi.android.common.analytics.viewmodel.AnalyticsPermissionViewM
 @Composable
 fun AnalyticsPermissionSwitch() {
     val viewModel: AnalyticsPermissionViewModel = hiltViewModel()
-    val state = viewModel.permissionData.collectAsStateWithLifecycle(AnalyticsPermissionData()).value
+    val state by viewModel.permissionData.collectAsStateWithLifecycle(AnalyticsPermissionData())
 
     AnalyticsPermissionSwitch(
         granted = state.isPermissionGranted,
