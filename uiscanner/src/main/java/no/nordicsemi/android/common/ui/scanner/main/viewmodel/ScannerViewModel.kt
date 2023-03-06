@@ -48,6 +48,8 @@ import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanFailedError
+import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanningFailedException
 import javax.inject.Inject
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -87,7 +89,9 @@ internal class ScannerViewModel @Inject constructor(
                 _state.value = ScanningState.DevicesDiscovered(it)
             }
             .catch {
-                _state.value = ScanningState.Error(it)
+                _state.value = (it as? ScanningFailedException)?.let {
+                    ScanningState.Error(it.errorCode.value)
+                } ?: ScanningState.Error(ScanFailedError.UNKNOWN.value)
             }
             .launchIn(viewModelScope)
     }

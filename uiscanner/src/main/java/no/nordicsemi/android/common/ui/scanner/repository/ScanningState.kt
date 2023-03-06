@@ -37,7 +37,7 @@ sealed class ScanningState {
 
     object Loading : ScanningState()
 
-    data class Error(val errorCode: Throwable) : ScanningState()
+    data class Error(val errorCode: Int) : ScanningState()
 
     data class DevicesDiscovered(val devices: List<ServerDevice>) : ScanningState() {
         val bonded: List<ServerDevice> = devices.filter { it.isBonded }

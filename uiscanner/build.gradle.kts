@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":permission"))
 
     implementation("no.nordicsemi.android.kotlin.ble:scanner:0.0.1")
+    implementation("no.nordicsemi.android.kotlin.ble:core:0.0.1")
 
     implementation(libs.accompanist.flowlayout)
 
