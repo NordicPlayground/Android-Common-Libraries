@@ -63,7 +63,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.PagerViewItem
 import no.nordicsemi.android.common.theme.view.RssiIcon
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
 import java.util.*
 import javax.inject.Inject
 
@@ -86,7 +86,7 @@ class BasicPageViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     // Initialize the selected device from the saved state handle.
-    val device = savedStateHandle.getStateFlow<DiscoveredBluetoothDevice?>(DEVICE_KEY, null)
+    val device = savedStateHandle.getStateFlow<ServerDevice?>(DEVICE_KEY, null)
 
     init {
         navigator.resultFrom(Scanner)
@@ -111,11 +111,11 @@ class BasicPageViewModel @Inject constructor(
 
 @SuppressLint("MissingPermission")
 data class DeviceInfo(
-    private val device: DiscoveredBluetoothDevice?
+    private val device: ServerDevice?
 ) {
     val name = device?.name ?: "Unknown"
     val address = device?.address ?: "Unknown"
-    val rssi = device?.rssi ?: 0
+    val rssi = device?.highestRssi ?: 0
 }
 
 @Composable

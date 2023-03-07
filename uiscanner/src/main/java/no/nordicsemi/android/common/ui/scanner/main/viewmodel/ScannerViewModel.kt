@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -79,8 +80,9 @@ internal class ScannerViewModel @Inject constructor(
 
     private fun relaunchScanning() {
         currentJob?.cancel()
-        currentJob = filterConfig
-            .combine(scannerRepository.getScannerState()) { config, result ->
+        currentJob = scannerRepository.getScannerState()
+            .filter { it.isNotEmpty() }
+            .combine(filterConfig) { result, config  ->
                 result.applyFilters(config)
             }
             .onStart { _state.value = ScanningState.Loading }
@@ -100,7 +102,7 @@ internal class ScannerViewModel @Inject constructor(
     // scanner is not visible. Scanner state stops scanning when it is not observed.
     // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
     private fun List<ServerDevice>.applyFilters(config: DevicesScanFilter) =
-        filter { uuid == null || config.filterUuidRequired == false || it.serviceUuids.contains(uuid) }
+            filter { !config.filterUuidRequired || it.serviceUuids.contains(uuid) }
             .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
             .filter { !config.filterWithNames || it.hasName }
 
@@ -108,7 +110,7 @@ internal class ScannerViewModel @Inject constructor(
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
         if (uuid == null) {
-            filterConfig.value = filterConfig.value.copy(filterUuidRequired = null)
+            filterConfig.value = filterConfig.value.copy(filterUuidRequired = false)
         }
     }
 

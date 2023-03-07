@@ -51,6 +51,8 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
 
+    implementation("no.nordicsemi.android.kotlin.ble:scanner:0.0.1")
+
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
