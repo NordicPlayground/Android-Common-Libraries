@@ -37,6 +37,7 @@ import android.net.Uri
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
 import no.nordicsemi.android.log.Logger
 import no.nordicsemi.android.log.annotation.LogLevel
 
@@ -57,7 +58,7 @@ class NordicLogger @AssistedInject constructor(
     @Assisted("profile") profile: String?,
     @Assisted("key") key: String,
     @Assisted("name") name: String?,
-) {
+) : BlekLogger {
     private val logSession = Logger.newSession(context, profile, key, name)
 
     /**
@@ -65,8 +66,8 @@ class NordicLogger @AssistedInject constructor(
      *
      * If nRF Logger is not installed, this method does nothing.
      */
-    fun log(@LogLevel level: Int, message: String) {
-        Logger.log(logSession, level, message)
+    override fun log(@LogLevel priority: Int, log: String) {
+        Logger.log(logSession, priority, log)
     }
 
     companion object {
