@@ -32,58 +32,26 @@
 package no.nordicsemi.android.common.logger
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
 import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
 import no.nordicsemi.android.log.LogContract
 import no.nordicsemi.android.log.Logger
-import no.nordicsemi.android.log.annotation.LogLevel
 
-/**
- * Creates a new instance of the logger
- *
- * @param context the application context.
- * @param profile The profile name. This name will be shown in nRF Logger next to the app's name,
- *                e.g. nRF Toolbox "Proximity" in the navigation menu.
- * @param key The key are use to group the logs. Usually, the key is the device MAC address.
- * @param name An optional identifier for the log session, usually a device name.
- */
-class NordicLogger @AssistedInject constructor(
-    @ApplicationContext val context: Context,
-    @Assisted("profile") profile: String?,
-    @Assisted("key") key: String,
-    @Assisted("name") name: String?,
+class NordicBlekLogger(
+    private val context: Context,
+    profile: String?,
+    key: String,
+    name: String?
 ) : BlekLogger {
     private val logSession = Logger.newSession(context, profile, key, name)
 
-    /**
-     * Logs the given message with the given log level.
-     *
-     * If nRF Logger is not installed, this method does nothing.
-     */
-    override fun log(@LogLevel priority: Int, log: String) {
-        Logger.log(logSession, priority, log)
+    override fun log(priority: Int, log: String) {
+        Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), log)
     }
 
-
-    companion object {
-
-        /**
-         * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
-         */
-        fun launch(context: Context, logger: NordicLogger? = null) {
-            LoggerLauncher.launch(context, logger?.logSession?.sessionsUri)
-        }
-
-        /**
-         * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
-         */
-        fun launch(context: Context, sessionUri: Uri? = null) {
-            LoggerLauncher.launch(context, sessionUri)
-        }
+    /**
+     * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
+     */
+    fun launch() {
+        LoggerLauncher.launch(context, logSession?.sessionsUri)
     }
 }
-
