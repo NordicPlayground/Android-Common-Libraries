@@ -52,6 +52,6 @@ class NordicBlekLogger(
      * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
      */
     fun launch() {
-        LoggerLauncher.launch(context, logSession?.sessionsUri)
+        LoggerLauncher.launch(context, logSession?.sessionUri)
     }
 }
