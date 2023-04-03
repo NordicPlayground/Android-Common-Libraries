@@ -34,6 +34,6 @@
     <!-- Main theme customization per API. -->
     <style name="NordicTheme" parent="NordicTheme.Base">
         <!-- Black navigation bar. -->
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
     </style>
 </resources>

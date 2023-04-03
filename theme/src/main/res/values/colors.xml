@@ -34,6 +34,7 @@
 
     <color name="appBarColor">@color/md_theme_primary</color>
     <color name="statusBarColor">@color/appBarColor</color>
+    <color name="navigationBarColor">#E1EFF2</color>
 
     <color name="iconColor">@color/md_theme_onBackground</color>
 
