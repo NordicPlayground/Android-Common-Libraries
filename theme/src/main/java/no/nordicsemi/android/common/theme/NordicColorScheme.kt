@@ -35,35 +35,46 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 
-@Composable
-fun ColorScheme.nordicBlue() = colorResource(id = R.color.nordicBlue)
+val ColorScheme.nordicBlue
+    @Composable
+    get() = colorResource(id = R.color.nordicBlue)
 
-@Composable
-fun ColorScheme.nordicSky() = colorResource(id = R.color.nordicSky)
+val ColorScheme.nordicSky
+    @Composable
+    get() = colorResource(id = R.color.nordicSky)
 
-@Composable
-fun ColorScheme.nordicBlueslate() = colorResource(id = R.color.nordicBlueslate)
+val ColorScheme.nordicBlueslate
+    @Composable
+    get() = colorResource(id = R.color.nordicBlueslate)
 
-@Composable
-fun ColorScheme.nordicLake() = colorResource(id = R.color.nordicLake)
+val ColorScheme.nordicLake
+    @Composable
+    get() = colorResource(id = R.color.nordicLake)
 
-@Composable
-fun ColorScheme.nordicGrass() = colorResource(id = R.color.nordicGrass)
+val ColorScheme.nordicGrass
+    @Composable
+    get() = colorResource(id = R.color.nordicGrass)
 
-@Composable
-fun ColorScheme.nordicSun() = colorResource(id = R.color.nordicSun)
+val ColorScheme.nordicSun
+    @Composable
+    get() = colorResource(id = R.color.nordicSun)
 
-@Composable
-fun ColorScheme.nordicRed() = colorResource(id = R.color.nordicRed)
+val ColorScheme.nordicRed
+    @Composable
+    get() = colorResource(id = R.color.nordicRed)
 
-@Composable
-fun ColorScheme.nordicFall() = colorResource(id = R.color.nordicFall)
+val ColorScheme.nordicFall
+    @Composable
+    get() = colorResource(id = R.color.nordicFall)
 
-@Composable
-fun ColorScheme.nordicLightGray() = colorResource(id = R.color.nordicLightGray)
+val ColorScheme.nordicLightGray
+    @Composable
+    get() = colorResource(id = R.color.nordicLightGray)
 
-@Composable
-fun ColorScheme.nordicMiddleGray() = colorResource(id = R.color.nordicMiddleGray)
+val ColorScheme.nordicMiddleGray
+    @Composable
+    get() = colorResource(id = R.color.nordicMiddleGray)
 
-@Composable
-fun ColorScheme.nordicDarkGray() = colorResource(id = R.color.nordicDarkGray)
+val ColorScheme.nordicDarkGray
+    @Composable
+    get() = colorResource(id = R.color.nordicDarkGray)
