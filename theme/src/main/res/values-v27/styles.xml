@@ -34,9 +34,9 @@
     <!-- Main theme customization per API. -->
     <style name="NordicTheme" parent="NordicTheme.Base">
         <!-- Black navigation bar. -->
-        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- Nav Bar can be drown on top of the status bar. -->
-        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Use white status bar text on any theme. -->
         <item name="android:windowLightStatusBar">false</item>
         <!-- The default cutoff has to be set so that nothing is drawn in landscape mode
