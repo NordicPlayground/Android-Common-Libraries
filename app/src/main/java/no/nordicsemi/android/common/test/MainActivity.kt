@@ -81,7 +81,7 @@ class MainActivity : NordicActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setDecorFitsSystemWindows(false)
 
         val menuItems = listOf(
             Item("Main", Tabs, Icons.Filled.Verified),

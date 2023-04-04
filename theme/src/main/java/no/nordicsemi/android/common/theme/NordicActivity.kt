@@ -37,8 +37,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 
 /**
  * Base activity that sets the Nordic theme and the Splash Screen.
@@ -55,6 +56,8 @@ abstract class NordicActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.NordicTheme)
         super.onCreate(savedInstanceState)
+
+        setDecorFitsSystemWindows(true)
 
         val view = window.decorView
         if (!isDarkMode()) {
@@ -82,6 +85,15 @@ abstract class NordicActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    fun setDecorFitsSystemWindows(decorFitsSystemWindows: Boolean) {
+        if (!decorFitsSystemWindows) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.statusBarColor)
         }
     }
 
