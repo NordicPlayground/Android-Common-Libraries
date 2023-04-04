@@ -31,10 +31,14 @@
 
 package no.nordicsemi.android.common.theme
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
 
 /**
  * Base activity that sets the Nordic theme and the Splash Screen.
@@ -52,6 +56,19 @@ abstract class NordicActivity : ComponentActivity() {
         setTheme(R.style.NordicTheme)
         super.onCreate(savedInstanceState)
 
+        val view = window.decorView
+        if (!isDarkMode()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                )
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val flags = view.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                view.setSystemUiVisibility(flags)
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val splashScreen = installSplashScreen()
 
@@ -60,11 +77,16 @@ abstract class NordicActivity : ComponentActivity() {
                     coldStart = false
                     val then = System.currentTimeMillis()
                     splashScreen.setKeepOnScreenCondition {
-                         val now = System.currentTimeMillis()
+                        val now = System.currentTimeMillis()
                         now < then + 900
                     }
                 }
             }
         }
+    }
+
+    fun isDarkMode(): Boolean {
+        val darkModeFlag = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return darkModeFlag == Configuration.UI_MODE_NIGHT_YES
     }
 }
