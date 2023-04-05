@@ -31,7 +31,13 @@
 
 package no.nordicsemi.android.common.ui.scanner.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material3.Button
@@ -48,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.CircularIcon
 import no.nordicsemi.android.common.ui.scanner.R
+import no.nordicsemi.android.kotlin.ble.core.data.BleGattConnectionStatus
 
 enum class Reason {
     USER, UNKNOWN, LINK_LOSS, MISSING_SERVICE
@@ -55,7 +62,43 @@ enum class Reason {
 
 @Composable
 fun DeviceDisconnectedView(
+    status: BleGattConnectionStatus,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.(PaddingValues) -> Unit = {},
+) {
+    val disconnectedReason = when (status) {
+        BleGattConnectionStatus.UNKNOWN -> stringResource(id = R.string.device_reason_unknown)
+        BleGattConnectionStatus.SUCCESS -> stringResource(id = R.string.device_reason_user)
+        BleGattConnectionStatus.TERMINATE_LOCAL_HOST -> stringResource(id = R.string.device_reason_terminate_local_host)
+        BleGattConnectionStatus.TERMINATE_PEER_USER -> stringResource(id = R.string.device_reason_terminate_peer_user)
+        BleGattConnectionStatus.LINK_LOSS -> stringResource(id = R.string.device_reason_link_loss)
+        BleGattConnectionStatus.NOT_SUPPORTED -> stringResource(id = R.string.device_reason_missing_service)
+        BleGattConnectionStatus.CANCELLED -> stringResource(id = R.string.device_reason_cancelled)
+        BleGattConnectionStatus.TIMEOUT -> stringResource(id = R.string.device_reason_timeout)
+    }
+
+    DeviceDisconnectedView(disconnectedReason = disconnectedReason, modifier, content)
+}
+
+@Composable
+fun DeviceDisconnectedView(
     reason: Reason,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.(PaddingValues) -> Unit = {},
+) {
+    val disconnectedReason = when (reason) {
+        Reason.USER -> stringResource(id = R.string.device_reason_user)
+        Reason.LINK_LOSS -> stringResource(id = R.string.device_reason_link_loss)
+        Reason.MISSING_SERVICE -> stringResource(id = R.string.device_reason_missing_service)
+        Reason.UNKNOWN -> stringResource(id = R.string.device_reason_unknown)
+    }
+
+    DeviceDisconnectedView(disconnectedReason = disconnectedReason, modifier, content)
+}
+
+@Composable
+fun DeviceDisconnectedView(
+    disconnectedReason: String,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.(PaddingValues) -> Unit = {},
 ) {
@@ -81,15 +124,8 @@ fun DeviceDisconnectedView(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                val text = when (reason) {
-                    Reason.USER -> stringResource(id = R.string.device_reason_user)
-                    Reason.LINK_LOSS -> stringResource(id = R.string.device_reason_link_loss)
-                    Reason.MISSING_SERVICE -> stringResource(id = R.string.device_reason_missing_service)
-                    Reason.UNKNOWN -> stringResource(id = R.string.device_reason_unknown)
-                }
-
                 Text(
-                    text = text,
+                    text = disconnectedReason,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium
                 )
