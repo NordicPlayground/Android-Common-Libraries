@@ -48,6 +48,6 @@ object LoggerLauncher {
 
         val intent= sessionUri?.let { Intent(Intent.ACTION_VIEW, it) } ?: packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
         intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context.startActivity(intent)
+        intent?.let { context.startActivity(intent) }
     }
 }
