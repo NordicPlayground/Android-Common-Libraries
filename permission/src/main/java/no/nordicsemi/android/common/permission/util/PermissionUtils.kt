@@ -35,7 +35,7 @@ package no.nordicsemi.android.common.permission.util
 
 import android.Manifest
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
@@ -49,10 +49,10 @@ internal class PermissionUtils(
     private val dataProvider: LocalDataProvider,
 ) {
     val isBleEnabled: Boolean
-        get() {
-            val adapter = BluetoothAdapter.getDefaultAdapter()
-            return adapter != null && adapter.isEnabled
-        }
+        get() = (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager)
+            .adapter
+            .isEnabled
+
 
     val isLocationEnabled: Boolean
         get() = if (dataProvider.isMarshmallowOrAbove) {
@@ -102,14 +102,16 @@ internal class PermissionUtils(
         return dataProvider.isSOrAbove &&
                 !isBluetoothScanPermissionGranted && // Bluetooth Scan permission must be denied
                 dataProvider.bluetoothPermissionRequested && // Permission must have been requested before
-                !context.findActivity().shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
+                !context.findActivity()
+                    .shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
     }
 
     fun isLocationPermissionDeniedForever(): Boolean {
         return dataProvider.isMarshmallowOrAbove &&
                 !isLocationPermissionGranted // Location permission must be denied
                 && dataProvider.locationPermissionRequested // Permission must have been requested before
-                && !context.findActivity().shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+                && !context.findActivity()
+            .shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     /**
