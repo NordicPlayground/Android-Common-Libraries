@@ -32,7 +32,6 @@
 package no.nordicsemi.android.common.permission.view
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -66,14 +65,14 @@ import no.nordicsemi.android.common.theme.view.WarningView
 @Composable
 internal fun LocationPermissionRequiredView() {
     val viewModel = hiltViewModel<PermissionViewModel>()
-    val activity = LocalContext.current as Activity
-    var permissionDenied by remember { mutableStateOf(viewModel.isLocationPermissionDeniedForever(activity)) }
+    val context = LocalContext.current
+    var permissionDenied by remember { mutableStateOf(viewModel.isLocationPermissionDeniedForever()) }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
         viewModel.markLocationPermissionRequested()
-        permissionDenied = viewModel.isLocationPermissionDeniedForever(activity)
+        permissionDenied = viewModel.isLocationPermissionDeniedForever()
         viewModel.refreshLocationPermission()
     }
 
@@ -85,7 +84,7 @@ internal fun LocationPermissionRequiredView() {
             )
             launcher.launch(requiredPermissions)
         },
-        onOpenSettingsClicked = { openPermissionSettings(activity) },
+        onOpenSettingsClicked = { openPermissionSettings(context) },
     )
 }
 
@@ -137,3 +136,4 @@ private fun LocationPermissionRequiredView_Preview() {
         )
     }
 }
+

@@ -69,7 +69,7 @@ import no.nordicsemi.android.common.theme.view.WarningView
 internal fun BluetoothPermissionRequiredView() {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val activity = LocalContext.current as Activity
-    var permissionDenied by remember { mutableStateOf(viewModel.isBluetoothScanPermissionDeniedForever(activity)) }
+    var permissionDenied by remember { mutableStateOf(viewModel.isBluetoothScanPermissionDeniedForever()) }
 
     WarningView(
         imageVector = Icons.Default.BluetoothDisabled,
@@ -89,7 +89,7 @@ internal fun BluetoothPermissionRequiredView() {
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
             viewModel.markBluetoothPermissionRequested()
-            permissionDenied = viewModel.isBluetoothScanPermissionDeniedForever(activity)
+            permissionDenied = viewModel.isBluetoothScanPermissionDeniedForever()
             viewModel.refreshBluetoothPermission()
         }
 

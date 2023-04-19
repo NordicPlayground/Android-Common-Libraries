@@ -31,7 +31,6 @@
 
 package no.nordicsemi.android.common.permission.location
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -81,8 +80,8 @@ internal class LocationStateManager @Inject constructor(
         dataProvider.locationPermissionRequested = true
     }
 
-    fun isLocationPermissionDeniedForever(activity: Activity): Boolean {
-        return utils.isLocationPermissionDeniedForever(activity)
+    fun isLocationPermissionDeniedForever(): Boolean {
+        return utils.isLocationPermissionDeniedForever()
     }
 
     private fun getLocationState(): FeatureState {

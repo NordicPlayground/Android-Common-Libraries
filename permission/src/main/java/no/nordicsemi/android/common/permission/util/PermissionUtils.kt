@@ -29,12 +29,15 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permission.util
 
 import android.Manifest
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
@@ -46,10 +49,10 @@ internal class PermissionUtils(
     private val dataProvider: LocalDataProvider,
 ) {
     val isBleEnabled: Boolean
-        get() {
-            val adapter = BluetoothAdapter.getDefaultAdapter()
-            return adapter != null && adapter.isEnabled
-        }
+        get() = (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager)
+            .adapter
+            .isEnabled
+
 
     val isLocationEnabled: Boolean
         get() = if (dataProvider.isMarshmallowOrAbove) {
@@ -95,17 +98,36 @@ internal class PermissionUtils(
         dataProvider.locationPermissionRequested = true
     }
 
-    fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
+    fun isBluetoothScanPermissionDeniedForever(): Boolean {
         return dataProvider.isSOrAbove &&
                 !isBluetoothScanPermissionGranted && // Bluetooth Scan permission must be denied
                 dataProvider.bluetoothPermissionRequested && // Permission must have been requested before
-                !activity.shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
+                !context.findActivity()
+                    .shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
     }
 
-    fun isLocationPermissionDeniedForever(activity: Activity): Boolean {
+    fun isLocationPermissionDeniedForever(): Boolean {
         return dataProvider.isMarshmallowOrAbove &&
                 !isLocationPermissionGranted // Location permission must be denied
                 && dataProvider.locationPermissionRequested // Permission must have been requested before
-                && !activity.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+                && !context.findActivity()
+            .shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    /**
+     * Finds the activity from the given context.
+     *
+     * https://github.com/google/accompanist/blob/6611ebda55eb2948eca9e1c89c2519e80300855a/permissions/src/main/java/com/google/accompanist/permissions/PermissionsUtil.kt#L99
+     *
+     * @throws IllegalStateException if no activity was found.
+     * @return the activity.
+     */
+    fun Context.findActivity(): Activity {
+        var context = this
+        while (context is ContextWrapper) {
+            if (context is Activity) return context
+            context = context.baseContext
+        }
+        throw IllegalStateException("no activity")
     }
 }
