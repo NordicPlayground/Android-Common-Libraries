@@ -31,7 +31,6 @@
 
 package no.nordicsemi.android.common.permission.bluetooth
 
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -40,8 +39,8 @@ import android.content.IntentFilter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permission.util.*
 import no.nordicsemi.android.common.permission.util.Available
+import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
 import no.nordicsemi.android.common.permission.util.LocalDataProvider
 import no.nordicsemi.android.common.permission.util.NotAvailable
 import no.nordicsemi.android.common.permission.util.PermissionUtils
@@ -84,8 +83,8 @@ class BluetoothStateManager @Inject constructor(
         dataProvider.bluetoothPermissionRequested = true
     }
 
-    fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
-        return utils.isBluetoothScanPermissionDeniedForever(activity)
+    fun isBluetoothScanPermissionDeniedForever(): Boolean {
+        return utils.isBluetoothScanPermissionDeniedForever()
     }
 
     private fun getBluetoothPermissionState() = when {

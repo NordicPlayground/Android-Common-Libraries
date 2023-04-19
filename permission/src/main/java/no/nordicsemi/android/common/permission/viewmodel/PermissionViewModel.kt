@@ -31,7 +31,6 @@
 
 package no.nordicsemi.android.common.permission.viewmodel
 
-import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -78,11 +77,11 @@ internal class PermissionViewModel @Inject internal constructor(
         bluetoothManager.markBluetoothPermissionRequested()
     }
 
-    fun isBluetoothScanPermissionDeniedForever(activity: Activity): Boolean {
-        return bluetoothManager.isBluetoothScanPermissionDeniedForever(activity)
+    fun isBluetoothScanPermissionDeniedForever(): Boolean {
+        return bluetoothManager.isBluetoothScanPermissionDeniedForever()
     }
 
-    fun isLocationPermissionDeniedForever(activity: Activity): Boolean {
-        return locationManager.isLocationPermissionDeniedForever(activity)
+    fun isLocationPermissionDeniedForever(): Boolean {
+        return locationManager.isLocationPermissionDeniedForever()
     }
 }
