@@ -46,7 +46,7 @@ class NordicBlekLogger(
     private val logSession = Logger.newSession(context, profile, key, name)
 
     override fun log(priority: Int, log: String) {
-        Log.println(LogContract.Log.Level.fromPriority(priority), key, log)
+        Log.println(priority, key, log)
         Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), log)
     }
 
