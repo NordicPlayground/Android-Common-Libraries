@@ -32,6 +32,7 @@
 package no.nordicsemi.android.common.logger
 
 import android.content.Context
+import android.util.Log
 import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
 import no.nordicsemi.android.log.LogContract
 import no.nordicsemi.android.log.Logger
@@ -39,12 +40,13 @@ import no.nordicsemi.android.log.Logger
 class NordicBlekLogger(
     private val context: Context,
     profile: String?,
-    key: String,
+    private val key: String,
     name: String?
 ) : BlekLogger {
     private val logSession = Logger.newSession(context, profile, key, name)
 
     override fun log(priority: Int, log: String) {
+        Log.println(LogContract.Log.Level.fromPriority(priority), key, log)
         Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), log)
     }
 
