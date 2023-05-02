@@ -46,8 +46,24 @@ object LoggerLauncher {
     fun launch(context: Context, sessionUri: Uri? = null) {
         val packageManger = context.packageManager
 
-        val intent= sessionUri?.let { Intent(Intent.ACTION_VIEW, it) } ?: packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME)
-        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent?.let { context.startActivity(intent) }
+        if (packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) != null && sessionUri != null) {
+            openLauncher(context, sessionUri)
+        } else try {
+            openGooglePlay(context)
+        } catch (e: Exception) {
+            e.printStackTrace() //Google Play not installed
+        }
+    }
+
+    private fun openLauncher(context: Context, sessionUri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, sessionUri)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.let { context.startActivity(intent) }
+    }
+
+    private fun openGooglePlay(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 }
