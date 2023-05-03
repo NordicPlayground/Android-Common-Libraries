@@ -23,6 +23,7 @@ jobs:
         # The script generates sec.gpg file that is required by gradle/publish-module.gradle
         # and starts :deployNexus lane using fastlane.
         run: |
+          java --version
           echo "${{ secrets.GPG_FILE }}" > sec.gpg.asc
           gpg -d --passphrase "${{ secrets.GPG_FILE_PSWD }}" --batch sec.gpg.asc > sec.gpg
           fastlane deployNexus
