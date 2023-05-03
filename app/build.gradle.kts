@@ -40,10 +40,6 @@ android {
     namespace = "no.nordicsemi.android.common.test"
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
 dependencies {
     implementation(project(":theme"))
     implementation(project(":uilogger"))
