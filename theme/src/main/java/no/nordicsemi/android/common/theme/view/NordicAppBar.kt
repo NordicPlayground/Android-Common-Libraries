@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import no.nordicsemi.android.common.theme.R
@@ -48,6 +49,7 @@ fun NordicAppBar(
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
+    backButtonIcon:ImageVector = Icons.Default.ArrowBack,
     showHamburgerButton: Boolean = onHamburgerButtonClick != null,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -64,7 +66,7 @@ fun NordicAppBar(
             onNavigationButtonClick?.takeIf { showBackButton }?.let { action ->
                 IconButton(onClick = { action() }) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = backButtonIcon,
                         contentDescription = stringResource(id = R.string.navigation_item_accessibility),
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )
