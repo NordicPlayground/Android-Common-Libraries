@@ -59,7 +59,7 @@ android {
 dependencies {
     implementation(project(":theme"))
 
-    implementation("no.nordicsemi.android.kotlin.ble:core:0.0.1")
+    implementation(libs.nordic.blek.core)
 
     implementation(libs.nordic.log)
 }

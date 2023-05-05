@@ -51,7 +51,7 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
 
-    implementation("no.nordicsemi.android.kotlin.ble:scanner:0.0.1")
+    implementation(libs.nordic.blek.scanner)
 
     implementation(libs.androidx.hilt.navigation.compose)
 

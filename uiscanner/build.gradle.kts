@@ -61,8 +61,8 @@ dependencies {
     implementation(project(":theme"))
     implementation(project(":permission"))
 
-    implementation("no.nordicsemi.android.kotlin.ble:scanner:0.0.1")
-    implementation("no.nordicsemi.android.kotlin.ble:core:0.0.1")
+    implementation(libs.nordic.blek.scanner)
+    implementation(libs.nordic.blek.core)
 
     implementation(libs.accompanist.flowlayout)
 
