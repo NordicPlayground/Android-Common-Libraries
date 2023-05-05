@@ -29,43 +29,31 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.nexus)
-    alias(libs.plugins.kotlin.parcelize)
-}
+package no.nordicsemi.android.common.logger
 
-group = "no.nordicsemi.android.common"
+import android.content.Context
+import android.util.Log
+import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
+import no.nordicsemi.android.log.LogContract
+import no.nordicsemi.android.log.Logger
 
-nordicNexusPublishing {
-    POM_ARTIFACT_ID = "uiscanner"
-    POM_NAME = "Nordic library for Android with UI screens utilizing uiscanner library."
+class NordicBlekLogger(
+    private val context: Context,
+    profile: String?,
+    private val key: String,
+    name: String?
+) : BlekLogger {
+    private val logSession = Logger.newSession(context, profile, key, name)
 
-    POM_DESCRIPTION = "Nordic Android Common Libraries"
-    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+    override fun log(priority: Int, log: String) {
+        Log.println(priority, key, log)
+        Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), log)
+    }
 
-    POM_DEVELOPER_ID = "syzi"
-    POM_DEVELOPER_NAME = "Sylwester Zieliński"
-    POM_DEVELOPER_EMAIL = "sylwester.zielinski@nordicsemi.no"
-}
-
-android {
-    namespace = "no.nordicsemi.android.common.ui.scanner"
-}
-
-dependencies {
-    implementation(project(":core"))
-    implementation(project(":theme"))
-    implementation(project(":permission"))
-
-    implementation(libs.nordic.blek.scanner)
-    implementation(libs.nordic.blek.core)
-
-    implementation(libs.accompanist.flowlayout)
-
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material.iconsExtended)
+    /**
+     * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
+     */
+    fun launch() {
+        LoggerLauncher.launch(context, logSession?.sessionUri)
+    }
 }

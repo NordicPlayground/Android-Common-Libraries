@@ -38,20 +38,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.common.ui.scanner.view.internal.ScanEmptyView
 import no.nordicsemi.android.common.ui.scanner.view.internal.ScanErrorView
-import no.nordicsemi.android.support.v18.scanner.ScanCallback
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
 
 @Composable
 fun DevicesListView(
     isLocationRequiredAndDisabled: Boolean,
     state: ScanningState,
-    onClick: (DiscoveredBluetoothDevice) -> Unit,
+    onClick: (ServerDevice) -> Unit,
     modifier: Modifier = Modifier,
-    deviceItem: @Composable (DiscoveredBluetoothDevice) -> Unit = {
-        DeviceListItem(it.displayName, it.address)
+    deviceItem: @Composable (ServerDevice) -> Unit = {
+        DeviceListItem(it.name, it.address)
     },
 ) {
     LazyColumn(
@@ -102,7 +101,7 @@ private fun DeviceListView_Preview_Error() {
     NordicTheme {
         DevicesListView(
             isLocationRequiredAndDisabled = true,
-            state = ScanningState.Error(ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED),
+            state = ScanningState.Error(1),
             onClick = {}
         )
     }

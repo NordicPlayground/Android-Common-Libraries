@@ -29,43 +29,41 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.nexus)
-    alias(libs.plugins.kotlin.parcelize)
-}
+package no.nordicsemi.android.common.logger
 
-group = "no.nordicsemi.android.common"
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 
-nordicNexusPublishing {
-    POM_ARTIFACT_ID = "uiscanner"
-    POM_NAME = "Nordic library for Android with UI screens utilizing uiscanner library."
+private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
+private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
 
-    POM_DESCRIPTION = "Nordic Android Common Libraries"
-    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+object LoggerLauncher {
 
-    POM_DEVELOPER_ID = "syzi"
-    POM_DEVELOPER_NAME = "Sylwester Zieliński"
-    POM_DEVELOPER_EMAIL = "sylwester.zielinski@nordicsemi.no"
-}
+    /**
+     * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
+     */
+    fun launch(context: Context, sessionUri: Uri? = null) {
+        val packageManger = context.packageManager
 
-android {
-    namespace = "no.nordicsemi.android.common.ui.scanner"
-}
+        if (packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) != null && sessionUri != null) {
+            openLauncher(context, sessionUri)
+        } else try {
+            openGooglePlay(context)
+        } catch (e: Exception) {
+            e.printStackTrace() //Google Play not installed
+        }
+    }
 
-dependencies {
-    implementation(project(":core"))
-    implementation(project(":theme"))
-    implementation(project(":permission"))
+    private fun openLauncher(context: Context, sessionUri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, sessionUri)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.let { context.startActivity(intent) }
+    }
 
-    implementation(libs.nordic.blek.scanner)
-    implementation(libs.nordic.blek.core)
-
-    implementation(libs.accompanist.flowlayout)
-
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material.iconsExtended)
+    private fun openGooglePlay(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    }
 }

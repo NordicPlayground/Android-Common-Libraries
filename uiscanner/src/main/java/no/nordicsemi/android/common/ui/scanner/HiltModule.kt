@@ -29,37 +29,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.ui.scanner.repository
+package no.nordicsemi.android.common.ui.scanner
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import no.nordicsemi.android.support.v18.scanner.ScanResult
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
-import no.nordicsemi.android.common.ui.scanner.model.toDiscoveredBluetoothDevice
-import javax.inject.Inject
-import javax.inject.Singleton
+import android.content.Context
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import no.nordicsemi.android.kotlin.ble.scanner.NordicScanner
 
-@Singleton
-internal class DevicesDataStore @Inject constructor() {
-    val devices = mutableListOf<DiscoveredBluetoothDevice>()
-    val data = MutableStateFlow(devices.toList())
+@Module
+@InstallIn(SingletonComponent::class)
+internal class HiltModule {
 
-    fun addNewDevice(scanResult: ScanResult) {
-        devices.firstOrNull { it.device == scanResult.device }?.let { device ->
-            val i = devices.indexOf(device)
-            devices.set(i, device.update(scanResult))
-        } ?: scanResult.toDiscoveredBluetoothDevice().also { devices.add(it) }
-
-        data.value = devices.toList()
-    }
-
-    fun clear() {
-        devices.clear()
-        data.value = devices
+    @Provides
+    fun providesScanner(
+        @ApplicationContext
+        context: Context
+    ): NordicScanner {
+        return NordicScanner(context)
     }
 }
-
-internal data class DevicesScanFilter(
-    val filterUuidRequired: Boolean?,
-    val filterNearbyOnly: Boolean,
-    val filterWithNames: Boolean
-)

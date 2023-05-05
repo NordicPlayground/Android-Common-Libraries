@@ -33,12 +33,24 @@ package no.nordicsemi.android.common.ui.scanner.main.viewmodel
 
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanFailedError
+import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanningFailedException
 import javax.inject.Inject
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -57,32 +69,48 @@ internal class ScannerViewModel @Inject constructor(
         )
     )
 
-    val state = filterConfig
-        .combine(scannerRepository.getScannerState()) { config, result ->
-            when (result) {
-                is ScanningState.DevicesDiscovered -> result.applyFilters(config)
-                else -> result
-            }
-        }
-        // This can't be observed in View Model Scope, as it can exist even when the
-        // scanner is not visible. Scanner state stops scanning when it is not observed.
-        // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
+    private var currentJob: Job? = null
 
-    private fun ScanningState.DevicesDiscovered.applyFilters(config: DevicesScanFilter) =
-        ScanningState.DevicesDiscovered(devices
-            .filter {
-                uuid == null ||
-                config.filterUuidRequired == false ||
-                it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
+    private val _state = MutableStateFlow<ScanningState>(ScanningState.Loading)
+    val state = _state.asStateFlow()
+
+    init {
+        relaunchScanning()
+    }
+
+    private fun relaunchScanning() {
+        currentJob?.cancel()
+        currentJob = scannerRepository.getScannerState()
+            .filter { it.isNotEmpty() }
+            .combine(filterConfig) { result, config  ->
+                result.applyFilters(config)
             }
+            .onStart { _state.value = ScanningState.Loading }
+            .cancellable()
+            .onEach {
+                _state.value = ScanningState.DevicesDiscovered(it)
+            }
+            .catch {
+                _state.value = (it as? ScanningFailedException)?.let {
+                    ScanningState.Error(it.errorCode.value)
+                } ?: ScanningState.Error(ScanFailedError.UNKNOWN.value)
+            }
+            .launchIn(viewModelScope)
+    }
+
+    // This can't be observed in View Model Scope, as it can exist even when the
+    // scanner is not visible. Scanner state stops scanning when it is not observed.
+    // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
+    private fun List<ServerDevice>.applyFilters(config: DevicesScanFilter) =
+            filter { !config.filterUuidRequired || it.serviceUuids.contains(uuid) }
             .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
-            .filter { !config.filterWithNames || it.hadName }
-        )
+            .filter { !config.filterWithNames || it.hasName }
+
 
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
         if (uuid == null) {
-            filterConfig.value = filterConfig.value.copy(filterUuidRequired = null)
+            filterConfig.value = filterConfig.value.copy(filterUuidRequired = false)
         }
     }
 
@@ -91,11 +119,6 @@ internal class ScannerViewModel @Inject constructor(
     }
 
     fun refresh() {
-        scannerRepository.clear()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        scannerRepository.clear()
+        relaunchScanning()
     }
 }

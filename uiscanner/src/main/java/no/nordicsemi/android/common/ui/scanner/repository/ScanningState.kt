@@ -31,7 +31,7 @@
 
 package no.nordicsemi.android.common.ui.scanner.repository
 
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
 
 sealed class ScanningState {
 
@@ -39,10 +39,10 @@ sealed class ScanningState {
 
     data class Error(val errorCode: Int) : ScanningState()
 
-    data class DevicesDiscovered(val devices: List<DiscoveredBluetoothDevice>) : ScanningState() {
-        val bonded: List<DiscoveredBluetoothDevice> = devices.filter { it.isBonded }
+    data class DevicesDiscovered(val devices: List<ServerDevice>) : ScanningState() {
+        val bonded: List<ServerDevice> = devices.filter { it.isBonded }
 
-        val notBonded: List<DiscoveredBluetoothDevice> = devices.filter { !it.isBonded }
+        val notBonded: List<ServerDevice> = devices.filter { !it.isBonded }
 
         fun size(): Int = bonded.size + notBonded.size
 

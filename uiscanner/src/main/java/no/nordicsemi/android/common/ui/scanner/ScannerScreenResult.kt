@@ -31,10 +31,10 @@
 
 package no.nordicsemi.android.common.ui.scanner
 
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
 
 sealed interface ScannerScreenResult
 
 object ScanningCancelled : ScannerScreenResult
 
-data class DeviceSelected(val device: DiscoveredBluetoothDevice) : ScannerScreenResult
+data class DeviceSelected(val device: ServerDevice) : ScannerScreenResult

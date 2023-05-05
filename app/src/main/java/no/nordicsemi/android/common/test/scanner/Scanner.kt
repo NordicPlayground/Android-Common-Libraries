@@ -37,14 +37,14 @@ import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
 import no.nordicsemi.android.common.ui.scanner.ScannerView
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
 
 /**
  * The scanner destination servers as an example of a destination that takes a parameter and returns
  * a result. The parameter is a [ParcelUuid] that is used to filter the devices that are displayed.
  * The result is a [DiscoveredBluetoothDevice] that was selected by the user.
  */
-val Scanner = createDestination<ParcelUuid?, DiscoveredBluetoothDevice>("scanner")
+val Scanner = createDestination<ParcelUuid?, ServerDevice>("scanner")
 
 val ScannerDestination = defineDestination(Scanner) {
     val vm: SimpleNavigationViewModel = hiltViewModel()

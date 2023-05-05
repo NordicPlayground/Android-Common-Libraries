@@ -45,14 +45,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
-import no.nordicsemi.android.common.ui.scanner.model.DiscoveredBluetoothDevice
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
+import no.nordicsemi.android.kotlin.ble.core.ServerDevice
 
 @Suppress("FunctionName")
 fun LazyListScope.DeviceListItems(
     devices: ScanningState.DevicesDiscovered,
-    onClick: (DiscoveredBluetoothDevice) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    onClick: (ServerDevice) -> Unit,
+    deviceView: @Composable (ServerDevice) -> Unit,
 ) {
     val bondedDevices = devices.bonded
     val discoveredDevices = devices.notBonded
@@ -87,9 +87,9 @@ fun LazyListScope.DeviceListItems(
 
 @Composable
 private fun ClickableDeviceItem(
-    device: DiscoveredBluetoothDevice,
-    onClick: (DiscoveredBluetoothDevice) -> Unit,
-    deviceView: @Composable (DiscoveredBluetoothDevice) -> Unit,
+    device: ServerDevice,
+    onClick: (ServerDevice) -> Unit,
+    deviceView: @Composable (ServerDevice) -> Unit,
 ) {
     Box(modifier = Modifier
         .clip(RoundedCornerShape(10.dp))
