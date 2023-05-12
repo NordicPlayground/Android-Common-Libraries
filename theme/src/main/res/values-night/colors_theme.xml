@@ -35,9 +35,9 @@
     <color name="md_theme_onPrimary">@android:color/white</color>
     <color name="md_theme_primaryContainer">@color/nordicSky</color>
     <color name="md_theme_onPrimaryContainer">@android:color/white</color>
-    <color name="md_theme_secondary">@color/nordicBlue</color>
+    <color name="md_theme_secondary">@color/nordicLake</color>
     <color name="md_theme_onSecondary">@android:color/white</color>
-    <color name="md_theme_secondaryContainer">@color/nordicBlue</color>
+    <color name="md_theme_secondaryContainer">@color/nordicLake</color>
     <color name="md_theme_onSecondaryContainer">@android:color/white</color>
     <color name="md_theme_tertiary">#670016</color>
     <color name="md_theme_onTertiary">#FFB2B6</color>
