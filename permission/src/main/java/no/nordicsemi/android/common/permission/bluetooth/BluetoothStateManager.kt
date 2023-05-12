@@ -83,8 +83,8 @@ class BluetoothStateManager @Inject constructor(
         dataProvider.bluetoothPermissionRequested = true
     }
 
-    fun isBluetoothScanPermissionDeniedForever(): Boolean {
-        return utils.isBluetoothScanPermissionDeniedForever()
+    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
+        return utils.isBluetoothScanPermissionDeniedForever(context)
     }
 
     private fun getBluetoothPermissionState() = when {

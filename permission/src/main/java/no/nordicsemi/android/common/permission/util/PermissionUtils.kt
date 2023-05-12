@@ -98,7 +98,7 @@ internal class PermissionUtils(
         dataProvider.locationPermissionRequested = true
     }
 
-    fun isBluetoothScanPermissionDeniedForever(): Boolean {
+    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
         return dataProvider.isSOrAbove &&
                 !isBluetoothScanPermissionGranted && // Bluetooth Scan permission must be denied
                 dataProvider.bluetoothPermissionRequested && // Permission must have been requested before
@@ -106,7 +106,7 @@ internal class PermissionUtils(
                     .shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN)
     }
 
-    fun isLocationPermissionDeniedForever(): Boolean {
+    fun isLocationPermissionDeniedForever(context: Context): Boolean {
         return dataProvider.isMarshmallowOrAbove &&
                 !isLocationPermissionGranted // Location permission must be denied
                 && dataProvider.locationPermissionRequested // Permission must have been requested before

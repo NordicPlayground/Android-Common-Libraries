@@ -66,13 +66,13 @@ import no.nordicsemi.android.common.theme.view.WarningView
 internal fun LocationPermissionRequiredView() {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val context = LocalContext.current
-    var permissionDenied by remember { mutableStateOf(viewModel.isLocationPermissionDeniedForever()) }
+    var permissionDenied by remember { mutableStateOf(viewModel.isLocationPermissionDeniedForever(context)) }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
         viewModel.markLocationPermissionRequested()
-        permissionDenied = viewModel.isLocationPermissionDeniedForever()
+        permissionDenied = viewModel.isLocationPermissionDeniedForever(context)
         viewModel.refreshLocationPermission()
     }
 

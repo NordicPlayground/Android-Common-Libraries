@@ -44,7 +44,8 @@ import no.nordicsemi.android.common.permission.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS = "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
+private const val REFRESH_PERMISSIONS =
+    "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
 
 @Singleton
 internal class LocationStateManager @Inject constructor(
@@ -80,8 +81,8 @@ internal class LocationStateManager @Inject constructor(
         dataProvider.locationPermissionRequested = true
     }
 
-    fun isLocationPermissionDeniedForever(): Boolean {
-        return utils.isLocationPermissionDeniedForever()
+    fun isLocationPermissionDeniedForever(context: Context): Boolean {
+        return utils.isLocationPermissionDeniedForever(context)
     }
 
     private fun getLocationState(): FeatureState {
@@ -89,8 +90,10 @@ internal class LocationStateManager @Inject constructor(
         return when {
             !utils.isLocationPermissionGranted ->
                 NotAvailable(FeatureNotAvailableReason.PERMISSION_REQUIRED)
+
             dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
                 NotAvailable(FeatureNotAvailableReason.DISABLED)
+
             else -> Available
         }
     }
