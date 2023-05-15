@@ -115,7 +115,6 @@ data class DeviceInfo(
 ) {
     val name = device?.name ?: "Unknown"
     val address = device?.address ?: "Unknown"
-    val rssi = device?.highestRssi ?: 0
 }
 
 @Composable
@@ -148,8 +147,7 @@ private fun BasicViewsScreen(
         device?.let {
             Device(
                 deviceName = it.name,
-                deviceAddress = it.address,
-                rssi = it.rssi,
+                deviceAddress = it.address
             )
         }
 
@@ -162,8 +160,7 @@ private fun BasicViewsScreen(
 @Composable
 private fun Device(
     deviceName: String,
-    deviceAddress: String,
-    rssi: Int,
+    deviceAddress: String
 ) {
     Box(modifier = Modifier
         .clip(RoundedCornerShape(10.dp))
@@ -173,9 +170,7 @@ private fun Device(
         DeviceListItem(
             name = deviceName,
             address = deviceAddress,
-        ) {
-            RssiIcon(rssi = rssi)
-        }
+        )
     }
 }
 

@@ -43,12 +43,14 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.aggregator.BleScanResultAggregator
+import no.nordicsemi.android.kotlin.ble.scanner.data.AggregatedBleScanItemWithRecord
 import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanFailedError
 import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanningFailedException
 import javax.inject.Inject
@@ -80,7 +82,9 @@ internal class ScannerViewModel @Inject constructor(
 
     private fun relaunchScanning() {
         currentJob?.cancel()
+        val aggregator = BleScanResultAggregator()
         currentJob = scannerRepository.getScannerState()
+            .map { aggregator.aggregate(it) }
             .filter { it.isNotEmpty() }
             .combine(filterConfig) { result, config  ->
                 result.applyFilters(config)
@@ -88,7 +92,7 @@ internal class ScannerViewModel @Inject constructor(
             .onStart { _state.value = ScanningState.Loading }
             .cancellable()
             .onEach {
-                _state.value = ScanningState.DevicesDiscovered(it)
+                _state.value = ScanningState.DevicesDiscovered(it.map { it.device })
             }
             .catch {
                 _state.value = (it as? ScanningFailedException)?.let {
@@ -101,11 +105,10 @@ internal class ScannerViewModel @Inject constructor(
     // This can't be observed in View Model Scope, as it can exist even when the
     // scanner is not visible. Scanner state stops scanning when it is not observed.
     // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
-    private fun List<ServerDevice>.applyFilters(config: DevicesScanFilter) =
-            filter { !config.filterUuidRequired || it.serviceUuids.contains(uuid) }
+    private fun List<AggregatedBleScanItemWithRecord>.applyFilters(config: DevicesScanFilter) =
+            filter { !config.filterUuidRequired || it.lastScanResult?.scanRecord?.serviceUuids?.contains(uuid) == true }
             .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
-            .filter { !config.filterWithNames || it.hasName }
-
+            .filter { !config.filterWithNames || it.device.name.isNotEmpty() }
 
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
