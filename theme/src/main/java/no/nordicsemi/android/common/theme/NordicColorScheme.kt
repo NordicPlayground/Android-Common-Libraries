@@ -55,6 +55,10 @@ val ColorScheme.nordicGrass
     @Composable
     get() = colorResource(id = R.color.nordicGrass)
 
+val ColorScheme.nordicGreen
+    @Composable
+    get() = colorResource(id = R.color.nordicGreen)
+
 val ColorScheme.nordicSun
     @Composable
     get() = colorResource(id = R.color.nordicSun)
