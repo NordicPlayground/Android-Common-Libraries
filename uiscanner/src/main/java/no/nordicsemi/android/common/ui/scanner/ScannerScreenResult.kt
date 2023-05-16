@@ -37,4 +37,4 @@ sealed interface ScannerScreenResult
 
 object ScanningCancelled : ScannerScreenResult
 
-data class DeviceSelected(val device: BleScanResults) : ScannerScreenResult
+data class DeviceSelected(val scanResults: BleScanResults) : ScannerScreenResult
