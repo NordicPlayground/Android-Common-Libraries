@@ -50,7 +50,7 @@ import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.kotlin.ble.scanner.aggregator.BleScanResultAggregator
-import no.nordicsemi.android.kotlin.ble.scanner.data.AggregatedBleScanItemWithRecord
+import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
 import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanFailedError
 import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanningFailedException
 import javax.inject.Inject
@@ -92,7 +92,7 @@ internal class ScannerViewModel @Inject constructor(
             .onStart { _state.value = ScanningState.Loading }
             .cancellable()
             .onEach {
-                _state.value = ScanningState.DevicesDiscovered(it.map { it.device })
+                _state.value = ScanningState.DevicesDiscovered(it)
             }
             .catch {
                 _state.value = (it as? ScanningFailedException)?.let {
@@ -105,7 +105,7 @@ internal class ScannerViewModel @Inject constructor(
     // This can't be observed in View Model Scope, as it can exist even when the
     // scanner is not visible. Scanner state stops scanning when it is not observed.
     // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)
-    private fun List<AggregatedBleScanItemWithRecord>.applyFilters(config: DevicesScanFilter) =
+    private fun List<BleScanResults>.applyFilters(config: DevicesScanFilter) =
             filter { !config.filterUuidRequired || it.lastScanResult?.scanRecord?.serviceUuids?.contains(uuid) == true }
             .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
             .filter { !config.filterWithNames || it.device.name.isNotEmpty() }

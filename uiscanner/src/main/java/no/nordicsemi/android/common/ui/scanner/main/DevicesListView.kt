@@ -41,16 +41,16 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.common.ui.scanner.view.internal.ScanEmptyView
 import no.nordicsemi.android.common.ui.scanner.view.internal.ScanErrorView
-import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
 
 @Composable
 fun DevicesListView(
     isLocationRequiredAndDisabled: Boolean,
     state: ScanningState,
-    onClick: (ServerDevice) -> Unit,
+    onClick: (BleScanResults) -> Unit,
     modifier: Modifier = Modifier,
-    deviceItem: @Composable (ServerDevice) -> Unit = {
-        DeviceListItem(it.name, it.address)
+    deviceItem: @Composable (BleScanResults) -> Unit = {
+        DeviceListItem(it.device.name, it.device.address)
     },
 ) {
     LazyColumn(

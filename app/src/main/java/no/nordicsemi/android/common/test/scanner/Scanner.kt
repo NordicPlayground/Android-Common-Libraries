@@ -55,6 +55,6 @@ val ScannerDestination = defineDestination(Scanner) {
 
     ScannerView(
         uuid = uuid,
-        onResult = { vm.navigateUpWithResult(Scanner, it) }
+        onResult = { vm.navigateUpWithResult(Scanner, it.device) }
     )
 }

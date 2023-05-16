@@ -40,7 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.view.ScannerAppBar
-import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
 
 @Composable
 fun ScannerScreen(
@@ -48,8 +48,8 @@ fun ScannerScreen(
     uuid: ParcelUuid?,
     cancellable: Boolean = true,
     onResult: (ScannerScreenResult) -> Unit,
-    deviceItem: @Composable (ServerDevice) -> Unit = {
-        DeviceListItem(it.name, it.address)
+    deviceItem: @Composable (BleScanResults) -> Unit = {
+        DeviceListItem(it.device.name, it.device.address)
     }
 ) {
     var isScanning by rememberSaveable { mutableStateOf(false) }

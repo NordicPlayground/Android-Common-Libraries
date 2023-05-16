@@ -56,16 +56,16 @@ import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.common.ui.scanner.view.internal.FilterView
-import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScannerView(
     uuid: ParcelUuid?,
     onScanningStateChanged: (Boolean) -> Unit = {},
-    onResult: (ServerDevice) -> Unit,
-    deviceItem: @Composable (ServerDevice) -> Unit = {
-        DeviceListItem(it.name, it.address)
+    onResult: (BleScanResults) -> Unit,
+    deviceItem: @Composable (BleScanResults) -> Unit = {
+        DeviceListItem(it.device.name, it.device.address)
     }
 ) {
     RequireBluetooth(

@@ -46,13 +46,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.kotlin.ble.core.ServerDevice
+import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
 
 @Suppress("FunctionName")
 fun LazyListScope.DeviceListItems(
     devices: ScanningState.DevicesDiscovered,
-    onClick: (ServerDevice) -> Unit,
-    deviceView: @Composable (ServerDevice) -> Unit,
+    onClick: (BleScanResults) -> Unit,
+    deviceView: @Composable (BleScanResults) -> Unit,
 ) {
     val bondedDevices = devices.bonded
     val discoveredDevices = devices.notBonded
@@ -87,9 +87,9 @@ fun LazyListScope.DeviceListItems(
 
 @Composable
 private fun ClickableDeviceItem(
-    device: ServerDevice,
-    onClick: (ServerDevice) -> Unit,
-    deviceView: @Composable (ServerDevice) -> Unit,
+    device: BleScanResults,
+    onClick: (BleScanResults) -> Unit,
+    deviceView: @Composable (BleScanResults) -> Unit,
 ) {
     Box(modifier = Modifier
         .clip(RoundedCornerShape(10.dp))
