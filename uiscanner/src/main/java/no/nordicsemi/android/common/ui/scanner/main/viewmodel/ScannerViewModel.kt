@@ -49,8 +49,8 @@ import kotlinx.coroutines.flow.onStart
 import no.nordicsemi.android.common.ui.scanner.repository.DevicesScanFilter
 import no.nordicsemi.android.common.ui.scanner.repository.ScannerRepository
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
 import no.nordicsemi.android.kotlin.ble.scanner.aggregator.BleScanResultAggregator
-import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
 import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanFailedError
 import no.nordicsemi.android.kotlin.ble.scanner.errors.ScanningFailedException
 import javax.inject.Inject

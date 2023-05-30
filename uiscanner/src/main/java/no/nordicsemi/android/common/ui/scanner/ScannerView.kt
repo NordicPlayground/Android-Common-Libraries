@@ -56,7 +56,7 @@ import no.nordicsemi.android.common.ui.scanner.main.DevicesListView
 import no.nordicsemi.android.common.ui.scanner.main.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.common.ui.scanner.view.internal.FilterView
-import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

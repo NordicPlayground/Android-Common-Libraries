@@ -35,7 +35,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,7 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.scanner.R
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
-import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
 
 @Suppress("FunctionName")
 fun LazyListScope.DeviceListItems(
@@ -65,8 +64,8 @@ fun LazyListScope.DeviceListItems(
                 modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
         }
-        items(bondedDevices) { device ->
-            ClickableDeviceItem(device, onClick, deviceView)
+        items(bondedDevices.size) {
+            ClickableDeviceItem(bondedDevices[it], onClick, deviceView)
         }
     }
 
@@ -79,8 +78,8 @@ fun LazyListScope.DeviceListItems(
             )
         }
 
-        items(discoveredDevices) { device ->
-            ClickableDeviceItem(device, onClick, deviceView)
+        items(discoveredDevices.size) {
+            ClickableDeviceItem(discoveredDevices[it], onClick, deviceView)
         }
     }
 }

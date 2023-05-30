@@ -31,7 +31,7 @@
 
 package no.nordicsemi.android.common.ui.scanner
 
-import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
 
 sealed interface ScannerScreenResult
 
