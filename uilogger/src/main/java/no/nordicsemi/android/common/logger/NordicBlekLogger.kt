@@ -37,7 +37,7 @@ import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
 import no.nordicsemi.android.log.LogContract
 import no.nordicsemi.android.log.Logger
 
-class NordicBlekLogger(
+class NordicBlekLogger private constructor(
     private val context: Context,
     profile: String?,
     private val key: String,
@@ -55,5 +55,12 @@ class NordicBlekLogger(
      */
     fun launch() {
         LoggerLauncher.launch(context, logSession?.sessionUri)
+    }
+
+    companion object {
+
+        fun create(context: Context, profile: String?, key: String, name: String?): NordicBlekLogger {
+            return NordicBlekLogger(context, profile, key, name)
+        }
     }
 }
