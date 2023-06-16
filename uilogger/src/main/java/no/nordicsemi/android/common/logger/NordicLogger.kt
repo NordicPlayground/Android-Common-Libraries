@@ -32,13 +32,6 @@
 package no.nordicsemi.android.common.logger
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.qualifiers.ApplicationContext
-import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
-import no.nordicsemi.android.log.LogContract
 import no.nordicsemi.android.log.Logger
 import no.nordicsemi.android.log.annotation.LogLevel
 
@@ -51,12 +44,12 @@ import no.nordicsemi.android.log.annotation.LogLevel
  * @param key The key are use to group the logs. Usually, the key is the device MAC address.
  * @param name An optional identifier for the log session, usually a device name.
  */
-class NordicLogger @AssistedInject constructor(
-    @ApplicationContext val context: Context,
-    @Assisted("profile") profile: String?,
-    @Assisted("key") key: String,
-    @Assisted("name") name: String?,
-) : BlekLogger {
+class NordicLogger constructor(
+    private val context: Context,
+    profile: String?,
+    key: String,
+    name: String?,
+) : BlekLoggerAndLauncher {
     private val logSession = Logger.newSession(context, profile, key, name)
 
     /**
@@ -68,22 +61,8 @@ class NordicLogger @AssistedInject constructor(
         Logger.log(logSession, priority, log)
     }
 
-
-    companion object {
-
-        /**
-         * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
-         */
-        fun launch(context: Context, logger: NordicLogger? = null) {
-            LoggerLauncher.launch(context, logger?.logSession?.sessionsUri)
-        }
-
-        /**
-         * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
-         */
-        fun launch(context: Context, sessionUri: Uri? = null) {
-            LoggerLauncher.launch(context, sessionUri)
-        }
+    override fun launch() {
+        LoggerLauncher.launch(context, logSession?.sessionsUri)
     }
 }
 

@@ -33,7 +33,6 @@ package no.nordicsemi.android.common.logger
 
 import android.content.Context
 import android.util.Log
-import no.nordicsemi.android.kotlin.ble.core.logger.BlekLogger
 import no.nordicsemi.android.log.LogContract
 import no.nordicsemi.android.log.Logger
 
@@ -42,7 +41,7 @@ class NordicBlekLogger private constructor(
     profile: String?,
     private val key: String,
     name: String?
-) : BlekLogger {
+) : BlekLoggerAndLauncher {
     private val logSession = Logger.newSession(context, profile, key, name)
 
     override fun log(priority: Int, log: String) {
@@ -50,10 +49,7 @@ class NordicBlekLogger private constructor(
         Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), log)
     }
 
-    /**
-     * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
-     */
-    fun launch() {
+    override fun launch() {
         LoggerLauncher.launch(context, logSession?.sessionUri)
     }
 
