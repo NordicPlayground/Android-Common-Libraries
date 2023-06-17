@@ -55,7 +55,7 @@ class NordicBlekLogger private constructor(
 
     companion object {
 
-        fun create(context: Context, profile: String?, key: String, name: String?): NordicBlekLogger {
+        fun create(context: Context, profile: String?, key: String, name: String?): BlekLoggerAndLauncher {
             return NordicBlekLogger(context, profile, key, name)
         }
     }
