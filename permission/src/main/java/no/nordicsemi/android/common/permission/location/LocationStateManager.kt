@@ -40,7 +40,10 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permission.util.*
+import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
+import no.nordicsemi.android.common.permission.util.DangerousPermissionState
+import no.nordicsemi.android.common.permission.util.LocalDataProvider
+import no.nordicsemi.android.common.permission.util.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -85,16 +88,16 @@ internal class LocationStateManager @Inject constructor(
         return utils.isLocationPermissionDeniedForever(context)
     }
 
-    private fun getLocationState(): FeatureState {
+    private fun getLocationState(): DangerousPermissionState {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return when {
             !utils.isLocationPermissionGranted ->
-                NotAvailable(FeatureNotAvailableReason.PERMISSION_REQUIRED)
+                DangerousPermissionState.NotAvailable(DangerousPermissionNotAvailableReason.PERMISSION_REQUIRED)
 
             dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
-                NotAvailable(FeatureNotAvailableReason.DISABLED)
+                DangerousPermissionState.NotAvailable(DangerousPermissionNotAvailableReason.DISABLED)
 
-            else -> Available
+            else -> DangerousPermissionState.Available
         }
     }
 }

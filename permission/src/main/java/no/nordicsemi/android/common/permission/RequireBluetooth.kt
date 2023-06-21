@@ -33,12 +33,12 @@ package no.nordicsemi.android.common.permission
 
 import android.os.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.Available
-import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
-import no.nordicsemi.android.common.permission.util.NotAvailable
+import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
+import no.nordicsemi.android.common.permission.util.DangerousPermissionState
 import no.nordicsemi.android.common.permission.view.BluetoothDisabledView
 import no.nordicsemi.android.common.permission.view.BluetoothNotAvailableView
 import no.nordicsemi.android.common.permission.view.BluetoothPermissionRequiredView
@@ -47,7 +47,7 @@ import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 @Composable
 fun RequireBluetooth(
     onChanged: (Boolean) -> Unit = {},
-    contentWithoutBluetooth: @Composable (FeatureNotAvailableReason) -> Unit = {
+    contentWithoutBluetooth: @Composable (DangerousPermissionNotAvailableReason) -> Unit = {
         NoBluetoothView(reason = it)
     },
     content: @Composable () -> Unit,
@@ -55,24 +55,27 @@ fun RequireBluetooth(
     val viewModel = hiltViewModel<PermissionViewModel>()
     val state by viewModel.bluetoothState.collectAsStateWithLifecycle()
 
-    onChanged(state is Available)
+    LaunchedEffect(state) {
+        onChanged(state is DangerousPermissionState.Available)
+    }
 
     when (val s = state) {
-        Available -> content()
-        is NotAvailable -> contentWithoutBluetooth(s.reason)
+        DangerousPermissionState.Available -> content()
+        is DangerousPermissionState.NotAvailable -> contentWithoutBluetooth(s.reason)
     }
 }
 
 @Composable
 private fun NoBluetoothView(
-    reason: FeatureNotAvailableReason,
+    reason: DangerousPermissionNotAvailableReason,
 ) {
     when (reason) {
-        FeatureNotAvailableReason.NOT_AVAILABLE -> BluetoothNotAvailableView()
-        FeatureNotAvailableReason.PERMISSION_REQUIRED ->
+        DangerousPermissionNotAvailableReason.NOT_AVAILABLE -> BluetoothNotAvailableView()
+        DangerousPermissionNotAvailableReason.PERMISSION_REQUIRED ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 BluetoothPermissionRequiredView()
             }
-        FeatureNotAvailableReason.DISABLED -> BluetoothDisabledView()
+
+        DangerousPermissionNotAvailableReason.DISABLED -> BluetoothDisabledView()
     }
 }

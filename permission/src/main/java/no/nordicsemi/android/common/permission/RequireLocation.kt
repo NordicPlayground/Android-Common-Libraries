@@ -32,12 +32,12 @@
 package no.nordicsemi.android.common.permission
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.Available
-import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
-import no.nordicsemi.android.common.permission.util.NotAvailable
+import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
+import no.nordicsemi.android.common.permission.util.DangerousPermissionState
 import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
 import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
 
@@ -50,13 +50,16 @@ fun RequireLocation(
     val viewModel = hiltViewModel<PermissionViewModel>()
     val state by viewModel.locationPermission.collectAsStateWithLifecycle()
 
-    onChanged(state is Available || (state as NotAvailable).reason == FeatureNotAvailableReason.DISABLED)
+    LaunchedEffect(state) {
+        onChanged(state is DangerousPermissionState.Available || (state as DangerousPermissionState.NotAvailable).reason == DangerousPermissionNotAvailableReason.DISABLED)
+    }
 
     when (val s = state) {
-        is NotAvailable -> when(s.reason) {
-            FeatureNotAvailableReason.DISABLED -> content(true)
+        is DangerousPermissionState.NotAvailable -> when (s.reason) {
+            DangerousPermissionNotAvailableReason.DISABLED -> content(true)
             else -> contentWithoutLocation()
         }
-        Available -> content(false)
+
+        DangerousPermissionState.Available -> content(false)
     }
 }

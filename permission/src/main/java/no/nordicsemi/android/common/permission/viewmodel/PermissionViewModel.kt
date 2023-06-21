@@ -70,10 +70,16 @@ internal class PermissionViewModel @Inject internal constructor(
         )
 
     val locationPermission = locationManager.locationState()
-        .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            DangerousPermissionState.NotAvailable(DangerousPermissionNotAvailableReason.NOT_AVAILABLE)
+        )
 
     val internetPermission = internetManager.networkState()
-        .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            StandardPermissionState.NotAvailable(StandardPermissionNotAvailableReason.NOT_AVAILABLE)
+        )
 
     fun refreshBluetoothPermission() {
         bluetoothManager.refreshPermission()
