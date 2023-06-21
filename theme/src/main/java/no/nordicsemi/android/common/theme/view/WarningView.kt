@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -89,6 +90,30 @@ fun WarningView(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BigIcon(imageVector = imageVector)
+
+        Title(text = title)
+
+        Hint(text = hint, textAlign = hintTextAlign)
+
+        content()
+    }
+}
+
+@Composable
+fun WarningView(
+    painterResource: Painter,
+    title: String,
+    hint: String,
+    modifier: Modifier = Modifier,
+    hintTextAlign: TextAlign? = TextAlign.Center,
+    content: @Composable ColumnScope.() -> Unit = {}
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        BigIcon(painterResource = painterResource)
 
         Title(text = title)
 
