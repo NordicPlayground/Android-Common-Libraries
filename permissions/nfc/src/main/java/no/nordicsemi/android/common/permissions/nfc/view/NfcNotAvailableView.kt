@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.permission.view
+package no.nordicsemi.android.common.permissions.nfc.view
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import no.nordicsemi.android.common.permission.R
+import no.nordicsemi.android.common.permissions.nfc.R
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 

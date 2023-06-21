@@ -1,15 +1,15 @@
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permissions.nfc
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.StandardPermissionNotAvailableReason
-import no.nordicsemi.android.common.permission.util.StandardPermissionState
-import no.nordicsemi.android.common.permission.view.NfcDisabledView
-import no.nordicsemi.android.common.permission.view.NfcNotAvailableView
-import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
+import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionState
+import no.nordicsemi.android.common.permissions.nfc.view.NfcDisabledView
+import no.nordicsemi.android.common.permissions.nfc.view.NfcNotAvailableView
+import no.nordicsemi.android.common.permissions.nfc.viewmodel.NfcPermissionViewModel
 
 @Composable
 fun RequireNfc(
@@ -19,7 +19,7 @@ fun RequireNfc(
     },
     content: @Composable () -> Unit,
 ) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
+    val viewModel: NfcPermissionViewModel = hiltViewModel()
     val state by viewModel.nfcPermission.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {

@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.permission.nfc
+package no.nordicsemi.android.common.permissions.nfc.repostory
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,10 +8,9 @@ import android.nfc.NfcAdapter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permission.util.LocalDataProvider
-import no.nordicsemi.android.common.permission.util.PermissionUtils
-import no.nordicsemi.android.common.permission.util.StandardPermissionNotAvailableReason
-import no.nordicsemi.android.common.permission.util.StandardPermissionState
+import no.nordicsemi.android.common.permissions.nfc.utils.PermissionUtils
+import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +21,7 @@ private const val REFRESH_PERMISSIONS =
 internal class NfcStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    private val dataProvider = LocalDataProvider(context)
-    private val utils = PermissionUtils(context, dataProvider)
+    private val utils = PermissionUtils(context)
 
     fun nfcState() = callbackFlow {
         trySend(getNfcPermissionState())
