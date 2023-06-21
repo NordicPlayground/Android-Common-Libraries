@@ -40,8 +40,11 @@ import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.android.common.permission.bluetooth.BluetoothStateManager
 import no.nordicsemi.android.common.permission.internet.InternetStateManager
 import no.nordicsemi.android.common.permission.location.LocationStateManager
-import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
-import no.nordicsemi.android.common.permission.util.NotAvailable
+import no.nordicsemi.android.common.permission.nfc.NfcStateManager
+import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
+import no.nordicsemi.android.common.permission.util.DangerousPermissionState
+import no.nordicsemi.android.common.permission.util.StandardPermissionNotAvailableReason
+import no.nordicsemi.android.common.permission.util.StandardPermissionState
 import javax.inject.Inject
 
 /**
@@ -52,9 +55,19 @@ internal class PermissionViewModel @Inject internal constructor(
     internetManager: InternetStateManager,
     private val bluetoothManager: BluetoothStateManager,
     private val locationManager: LocationStateManager,
+    nfcManager: NfcStateManager,
 ) : ViewModel() {
     val bluetoothState = bluetoothManager.bluetoothState()
-        .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            DangerousPermissionState.NotAvailable(DangerousPermissionNotAvailableReason.NOT_AVAILABLE)
+        )
+
+    val nfcPermission = nfcManager.nfcState()
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            StandardPermissionState.NotAvailable(StandardPermissionNotAvailableReason.NOT_AVAILABLE)
+        )
 
     val locationPermission = locationManager.locationState()
         .stateIn(viewModelScope, SharingStarted.Lazily, NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE))

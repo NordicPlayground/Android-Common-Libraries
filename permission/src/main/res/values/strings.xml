@@ -62,4 +62,10 @@
     <string name="location_required_title">Location required</string>
     <string name="bluetooth_required_title">Bluetooth required</string>
     <string name="internet_required_title">Internet required</string>
+
+    <string name="nf_not_available_title">NFC NOT AVAILABLE</string>
+    <string name="nfc_not_available_info">Nfc is not available on your phone.\nWe cannot provide you the feature.</string>
+
+    <string name="nfc_disabled_title">NFC DISABLED</string>
+    <string name="nfc_disabled_info">The Nf is disabled.\nClick the button below to enable it.</string>
 </resources>
