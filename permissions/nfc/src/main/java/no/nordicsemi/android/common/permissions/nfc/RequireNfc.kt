@@ -5,8 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionState
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcNotAvailableReason
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionState
 import no.nordicsemi.android.common.permissions.nfc.view.NfcDisabledView
 import no.nordicsemi.android.common.permissions.nfc.view.NfcNotAvailableView
 import no.nordicsemi.android.common.permissions.nfc.viewmodel.NfcPermissionViewModel
@@ -14,7 +14,7 @@ import no.nordicsemi.android.common.permissions.nfc.viewmodel.NfcPermissionViewM
 @Composable
 fun RequireNfc(
     onChanged: (Boolean) -> Unit = {},
-    contentWithoutNfc: @Composable (StandardPermissionNotAvailableReason) -> Unit = {
+    contentWithoutNfc: @Composable (NfcNotAvailableReason) -> Unit = {
         NoNfcView(reason = it)
     },
     content: @Composable () -> Unit,
@@ -23,21 +23,21 @@ fun RequireNfc(
     val state by viewModel.nfcPermission.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {
-        onChanged(state is StandardPermissionState.Available)
+        onChanged(state is NfcPermissionState.Available)
     }
 
     when (val s = state) {
-        StandardPermissionState.Available -> content()
-        is StandardPermissionState.NotAvailable -> contentWithoutNfc(s.reason)
+        NfcPermissionState.Available -> content()
+        is NfcPermissionState.NotAvailable -> contentWithoutNfc(s.reason)
     }
 }
 
 @Composable
 private fun NoNfcView(
-    reason: StandardPermissionNotAvailableReason,
+    reason: NfcNotAvailableReason,
 ) {
     when (reason) {
-        StandardPermissionNotAvailableReason.NOT_AVAILABLE -> NfcNotAvailableView()
-        StandardPermissionNotAvailableReason.DISABLED -> NfcDisabledView()
+        NfcNotAvailableReason.NOT_AVAILABLE -> NfcNotAvailableView()
+        NfcNotAvailableReason.DISABLED -> NfcDisabledView()
     }
 }

@@ -8,20 +8,17 @@ import android.nfc.NfcAdapter
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.nfc.utils.PermissionUtils
-import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.nfc.utils.StandardPermissionState
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionUtils
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcNotAvailableReason
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val REFRESH_PERMISSIONS =
-    "no.nordicsemi.android.common.permission.REFRESH_NFC_PERMISSIONS"
 
 @Singleton
 internal class NfcStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    private val utils = PermissionUtils(context)
+    private val utils = NfcPermissionUtils(context)
 
     fun nfcState() = callbackFlow {
         trySend(getNfcPermissionState())
@@ -29,7 +26,7 @@ internal class NfcStateManager @Inject constructor(
         val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
 
         if (nfcAdapter == null) {
-            trySend(StandardPermissionState.NotAvailable(StandardPermissionNotAvailableReason.NOT_AVAILABLE))
+            trySend(NfcPermissionState.NotAvailable(NfcNotAvailableReason.NOT_AVAILABLE))
             channel.close()
             return@callbackFlow
         }
@@ -43,7 +40,6 @@ internal class NfcStateManager @Inject constructor(
         }
         val filter = IntentFilter().apply {
             addAction(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
-            addAction(REFRESH_PERMISSIONS)
         }
         context.registerReceiver(nfcStateChangeHandler, filter)
         awaitClose {
@@ -51,17 +47,17 @@ internal class NfcStateManager @Inject constructor(
         }
     }
 
-    private fun getNfcPermissionState(): StandardPermissionState {
+    private fun getNfcPermissionState(): NfcPermissionState {
         return when {
-            !utils.isNfcAvailable -> StandardPermissionState.NotAvailable(
-                StandardPermissionNotAvailableReason.NOT_AVAILABLE
+            !utils.isNfcAvailable -> NfcPermissionState.NotAvailable(
+                NfcNotAvailableReason.NOT_AVAILABLE
             )
 
-            !utils.isNfcEnabled -> StandardPermissionState.NotAvailable(
-                StandardPermissionNotAvailableReason.DISABLED
+            !utils.isNfcEnabled -> NfcPermissionState.NotAvailable(
+                NfcNotAvailableReason.DISABLED
             )
 
-            else -> StandardPermissionState.Available
+            else -> NfcPermissionState.Available
         }
     }
 }

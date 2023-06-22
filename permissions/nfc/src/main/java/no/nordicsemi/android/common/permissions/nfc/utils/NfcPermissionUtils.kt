@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.nfc.NfcManager
 
-internal class PermissionUtils(
+internal class NfcPermissionUtils(
     private val context: Context,
 ) {
     val isNfcEnabled: Boolean
