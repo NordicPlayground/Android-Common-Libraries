@@ -40,7 +40,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.nfc.NfcManager
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 
@@ -54,11 +53,6 @@ internal class PermissionUtils(
             .adapter
             .isEnabled
 
-    val isNfcEnabled: Boolean
-        get() = (context.getSystemService(Context.NFC_SERVICE) as NfcManager)
-            .defaultAdapter
-            .isEnabled
-
     val isLocationEnabled: Boolean
         get() = if (dataProvider.isMarshmallowOrAbove) {
             val lm = context.getSystemService(LocationManager::class.java)
@@ -67,9 +61,6 @@ internal class PermissionUtils(
 
     val isBluetoothAvailable: Boolean
         get() = context.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
-
-    val isNfcAvailable: Boolean
-        get() = context.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 
     val isLocationPermissionRequired: Boolean
         get() = dataProvider.isMarshmallowOrAbove && !dataProvider.isSOrAbove
