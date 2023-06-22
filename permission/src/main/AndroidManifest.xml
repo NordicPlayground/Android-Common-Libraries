@@ -34,7 +34,6 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <!--
      Bluetooth permission is required on Android 4.3 - 11 in order to communicate with
      Bluetooth LE devices.

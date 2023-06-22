@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,32 +29,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permissions.nfc.viewmodel
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.StandardPermissionState
-import no.nordicsemi.android.common.permission.view.InternetNotAvailableView
-import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import no.nordicsemi.android.common.permissions.nfc.repostory.NfcStateManager
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcNotAvailableReason
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionState
+import javax.inject.Inject
 
-@Composable
-fun RequireInternet(
-    onChanged: (Boolean) -> Unit = {},
-    contentWithoutInternet: @Composable () -> Unit = { InternetNotAvailableView() },
-    content: @Composable () -> Unit
-) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.internetPermission.collectAsStateWithLifecycle()
+class NfcPermissionViewModel @Inject internal constructor(
+    nfcManager: NfcStateManager,
+) : ViewModel() {
 
-    LaunchedEffect(state) {
-        onChanged(state is StandardPermissionState.Available)
-    }
-
-    when (state) {
-        StandardPermissionState.Available -> content()
-        else -> contentWithoutInternet()
-    }
+    val nfcPermission = nfcManager.nfcState()
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            NfcPermissionState.NotAvailable(NfcNotAvailableReason.NOT_AVAILABLE)
+        )
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,37 +29,20 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permissions.nfc.utils
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
-import no.nordicsemi.android.common.permission.util.DangerousPermissionState
-import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
-import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
+import android.content.Context
+import android.content.pm.PackageManager
+import android.nfc.NfcManager
 
-@Composable
-fun RequireLocation(
-    onChanged: (Boolean) -> Unit = {},
-    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+internal class NfcPermissionUtils(
+    private val context: Context,
 ) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.locationPermission.collectAsStateWithLifecycle()
+    val isNfcEnabled: Boolean
+        get() = (context.getSystemService(Context.NFC_SERVICE) as NfcManager)
+            .defaultAdapter
+            .isEnabled
 
-    LaunchedEffect(state) {
-        onChanged(state is DangerousPermissionState.Available || (state as DangerousPermissionState.NotAvailable).reason == DangerousPermissionNotAvailableReason.DISABLED)
-    }
-
-    when (val s = state) {
-        is DangerousPermissionState.NotAvailable -> when (s.reason) {
-            DangerousPermissionNotAvailableReason.DISABLED -> content(true)
-            else -> contentWithoutLocation()
-        }
-
-        DangerousPermissionState.Available -> content(false)
-    }
+    val isNfcAvailable: Boolean
+        get() = context.packageManager.hasSystemFeature(PackageManager.FEATURE_NFC)
 }

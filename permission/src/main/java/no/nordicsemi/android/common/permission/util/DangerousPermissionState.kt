@@ -31,13 +31,14 @@
 
 package no.nordicsemi.android.common.permission.util
 
-enum class FeatureNotAvailableReason {
+enum class DangerousPermissionNotAvailableReason {
     PERMISSION_REQUIRED,
     NOT_AVAILABLE,
     DISABLED,
 }
 
-sealed class FeatureState
-
-object Available : FeatureState()
-data class NotAvailable(val reason: FeatureNotAvailableReason) : FeatureState()
+sealed class DangerousPermissionState {
+    object Available : DangerousPermissionState()
+    data class NotAvailable(val reason: DangerousPermissionNotAvailableReason) :
+        DangerousPermissionState()
+}

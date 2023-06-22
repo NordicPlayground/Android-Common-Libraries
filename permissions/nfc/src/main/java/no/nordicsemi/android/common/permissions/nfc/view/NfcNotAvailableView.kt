@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,37 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permissions.nfc.view
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
-import no.nordicsemi.android.common.permission.util.DangerousPermissionState
-import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
-import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import no.nordicsemi.android.common.permissions.nfc.R
+import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.theme.view.WarningView
+
 
 @Composable
-fun RequireLocation(
-    onChanged: (Boolean) -> Unit = {},
-    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
-) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.locationPermission.collectAsStateWithLifecycle()
+internal fun NfcNotAvailableView() {
+    WarningView(
+        painterResource = painterResource(id = R.drawable.nfc_variant_off),
+        title = stringResource(id = R.string.nf_not_available_title),
+        hint = stringResource(id = R.string.nfc_not_available_info),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    )
+}
 
-    LaunchedEffect(state) {
-        onChanged(state is DangerousPermissionState.Available || (state as DangerousPermissionState.NotAvailable).reason == DangerousPermissionNotAvailableReason.DISABLED)
-    }
-
-    when (val s = state) {
-        is DangerousPermissionState.NotAvailable -> when (s.reason) {
-            DangerousPermissionNotAvailableReason.DISABLED -> content(true)
-            else -> contentWithoutLocation()
-        }
-
-        DangerousPermissionState.Available -> content(false)
+@Preview
+@Composable
+private fun NfcNotAvailableView_Preview() {
+    NordicTheme {
+        NfcNotAvailableView()
     }
 }

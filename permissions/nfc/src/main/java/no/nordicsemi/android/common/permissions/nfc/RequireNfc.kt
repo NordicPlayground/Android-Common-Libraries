@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,37 +29,46 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permission
+package no.nordicsemi.android.common.permissions.nfc
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permission.util.DangerousPermissionNotAvailableReason
-import no.nordicsemi.android.common.permission.util.DangerousPermissionState
-import no.nordicsemi.android.common.permission.view.LocationPermissionRequiredView
-import no.nordicsemi.android.common.permission.viewmodel.PermissionViewModel
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcNotAvailableReason
+import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionState
+import no.nordicsemi.android.common.permissions.nfc.view.NfcDisabledView
+import no.nordicsemi.android.common.permissions.nfc.view.NfcNotAvailableView
+import no.nordicsemi.android.common.permissions.nfc.viewmodel.NfcPermissionViewModel
 
 @Composable
-fun RequireLocation(
+fun RequireNfc(
     onChanged: (Boolean) -> Unit = {},
-    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+    contentWithoutNfc: @Composable (NfcNotAvailableReason) -> Unit = {
+        NoNfcView(reason = it)
+    },
+    content: @Composable () -> Unit,
 ) {
-    val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.locationPermission.collectAsStateWithLifecycle()
+    val viewModel: NfcPermissionViewModel = hiltViewModel()
+    val state by viewModel.nfcPermission.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {
-        onChanged(state is DangerousPermissionState.Available || (state as DangerousPermissionState.NotAvailable).reason == DangerousPermissionNotAvailableReason.DISABLED)
+        onChanged(state is NfcPermissionState.Available)
     }
 
     when (val s = state) {
-        is DangerousPermissionState.NotAvailable -> when (s.reason) {
-            DangerousPermissionNotAvailableReason.DISABLED -> content(true)
-            else -> contentWithoutLocation()
-        }
+        NfcPermissionState.Available -> content()
+        is NfcPermissionState.NotAvailable -> contentWithoutNfc(s.reason)
+    }
+}
 
-        DangerousPermissionState.Available -> content(false)
+@Composable
+private fun NoNfcView(
+    reason: NfcNotAvailableReason,
+) {
+    when (reason) {
+        NfcNotAvailableReason.NOT_AVAILABLE -> NfcNotAvailableView()
+        NfcNotAvailableReason.DISABLED -> NfcDisabledView()
     }
 }

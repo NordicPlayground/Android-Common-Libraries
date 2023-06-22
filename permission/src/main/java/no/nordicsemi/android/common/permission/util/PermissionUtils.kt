@@ -53,7 +53,6 @@ internal class PermissionUtils(
             .adapter
             .isEnabled
 
-
     val isLocationEnabled: Boolean
         get() = if (dataProvider.isMarshmallowOrAbove) {
             val lm = context.getSystemService(LocationManager::class.java)

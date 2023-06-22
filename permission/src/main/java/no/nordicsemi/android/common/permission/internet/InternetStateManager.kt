@@ -39,9 +39,8 @@ import android.net.NetworkRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permission.util.NotAvailable
-import no.nordicsemi.android.common.permission.util.Available
-import no.nordicsemi.android.common.permission.util.FeatureNotAvailableReason
+import no.nordicsemi.android.common.permission.util.StandardPermissionNotAvailableReason
+import no.nordicsemi.android.common.permission.util.StandardPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -60,7 +59,7 @@ class InternetStateManager @Inject constructor(
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                trySend(Available)
+                trySend(StandardPermissionState.Available)
             }
 
             override fun onCapabilitiesChanged(
@@ -68,13 +67,17 @@ class InternetStateManager @Inject constructor(
                 networkCapabilities: NetworkCapabilities
             ) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
-                val isAvailable = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
-                trySend(if (isAvailable) Available else NotAvailable(FeatureNotAvailableReason.DISABLED))
+                val isAvailable =
+                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+                trySend(
+                    if (isAvailable) StandardPermissionState.Available 
+                    else StandardPermissionState.NotAvailable(StandardPermissionNotAvailableReason.DISABLED)
+                )
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                trySend(NotAvailable(FeatureNotAvailableReason.DISABLED))
+                trySend(StandardPermissionState.NotAvailable(StandardPermissionNotAvailableReason.DISABLED))
             }
         }
 

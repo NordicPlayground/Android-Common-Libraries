@@ -63,6 +63,7 @@ include(":uilogger")
 include(":navigation")
 include(":analytics")
 include(":permission")
+include(":permissions:nfc")
 
 //if (file("../Kotlin-BLE-Library").exists()) {
 //    includeBuild("../Kotlin-BLE-Library")
