@@ -35,11 +35,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!--
-    Nfc permission to access the NFC hardware.
-    -->
-    <uses-permission android:name="android.permission.NFC" />
-
-    <!--
      Bluetooth permission is required on Android 4.3 - 11 in order to communicate with
      Bluetooth LE devices.
     -->
