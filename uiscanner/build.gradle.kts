@@ -59,7 +59,7 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":theme"))
-    implementation(project(":permission"))
+    implementation(project(":permissions:ble"))
 
     implementation(libs.nordic.blek.scanner)
     implementation(libs.nordic.blek.core)

@@ -29,36 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
-}
+package no.nordicsemi.android.common.permissions.ble
 
-group = "no.nordicsemi.android.common"
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import no.nordicsemi.android.common.permissions.ble.util.BlePermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
+import no.nordicsemi.android.common.permissions.ble.view.LocationPermissionRequiredView
+import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
 
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
+@Composable
+fun RequireLocation(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
+    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+) {
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state by viewModel.locationPermission.collectAsStateWithLifecycle()
 
-dependencies {
-    implementation(project(":theme"))
-    implementation(project(":uilogger"))
-    implementation(project(":uiscanner"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions:nfc"))
-    implementation(project(":permissions:ble"))
-    implementation(project(":permissions:internet"))
+    LaunchedEffect(state) {
+        onChanged(state is BlePermissionState.Available || (state as BlePermissionState.NotAvailable).reason == BlePermissionNotAvailableReason.DISABLED)
+    }
 
-    implementation(libs.androidx.compose.material.iconsExtended)
+    when (val s = state) {
+        is BlePermissionState.NotAvailable -> when (s.reason) {
+            BlePermissionNotAvailableReason.DISABLED -> content(true)
+            else -> contentWithoutLocation()
+        }
 
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.nordic.blek.scanner)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+        BlePermissionState.Available -> content(false)
+    }
 }

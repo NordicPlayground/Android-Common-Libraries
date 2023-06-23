@@ -29,36 +29,29 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
-}
+package no.nordicsemi.android.common.permissions.internet.viewmodel
 
-group = "no.nordicsemi.android.common"
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import no.nordicsemi.android.common.permissions.internet.repository.InternetStateManager
+import no.nordicsemi.android.common.permissions.internet.util.InternetPermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.internet.util.InternetPermissionState
+import javax.inject.Inject
 
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
+/**
+ * Needed for injecting to @Composable functions.
+ */
+@HiltViewModel
+internal class InternetPermissionViewModel @Inject internal constructor(
+    internetManager: InternetStateManager
+) : ViewModel() {
 
-dependencies {
-    implementation(project(":theme"))
-    implementation(project(":uilogger"))
-    implementation(project(":uiscanner"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions:nfc"))
-    implementation(project(":permissions:ble"))
-    implementation(project(":permissions:internet"))
-
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.nordic.blek.scanner)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+    val internetPermission = internetManager.networkState()
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            InternetPermissionState.NotAvailable(InternetPermissionNotAvailableReason.NOT_AVAILABLE)
+        )
 }

@@ -62,7 +62,8 @@ include(":uiscanner")
 include(":uilogger")
 include(":navigation")
 include(":analytics")
-include(":permission")
+include(":permissions:ble")
+include(":permissions:internet")
 include(":permissions:nfc")
 
 //if (file("../Kotlin-BLE-Library").exists()) {
