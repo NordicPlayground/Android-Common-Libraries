@@ -40,4 +40,6 @@ plugins {
     alias(libs.plugins.nordic.feature) apply false
     alias(libs.plugins.nordic.hilt) apply false
     alias(libs.plugins.nordic.nexus) apply false
+    id("com.android.application") version "8.0.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.7.20" apply false
 }

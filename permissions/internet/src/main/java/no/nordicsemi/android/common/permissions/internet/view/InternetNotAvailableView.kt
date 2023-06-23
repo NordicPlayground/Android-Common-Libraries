@@ -29,36 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
+package no.nordicsemi.android.common.permissions.internet.view
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothDisabled
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import no.nordicsemi.android.common.permissions.ble.R
+import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.theme.view.WarningView
+
+@Composable
+internal fun InternetNotAvailableView() {
+    WarningView(
+        imageVector = Icons.Default.BluetoothDisabled,
+        title = stringResource(id = R.string.internet_not_available_title),
+        hint = stringResource(id = R.string.internet_not_available_info),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    )
 }
 
-group = "no.nordicsemi.android.common"
-
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
-
-dependencies {
-    implementation(project(":theme"))
-    implementation(project(":uilogger"))
-    implementation(project(":uiscanner"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions:nfc"))
-    implementation(project(":permissions:ble"))
-    implementation(project(":permissions:internet"))
-
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.nordic.blek.scanner)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+@Preview
+@Composable
+private fun BluetoothNotAvailableView_Preview() {
+    NordicTheme {
+        InternetNotAvailableView()
+    }
 }

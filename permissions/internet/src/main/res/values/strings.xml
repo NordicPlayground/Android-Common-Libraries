@@ -1,0 +1,6 @@
+<resources>
+    <string name="internet_not_available_title">INTERNET NOT AVAILABLE</string>
+    <string name="internet_not_available_info">Connect to the Internet and try again.</string>
+
+    <string name="internet_required_title">Internet required</string>
+</resources>

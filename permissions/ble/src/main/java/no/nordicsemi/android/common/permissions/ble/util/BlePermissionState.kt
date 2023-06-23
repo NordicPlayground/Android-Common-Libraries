@@ -29,36 +29,17 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
+package no.nordicsemi.android.common.permissions.ble.util
+
+enum class BlePermissionNotAvailableReason {
+    PERMISSION_REQUIRED,
+    NOT_AVAILABLE,
+    DISABLED,
 }
 
-group = "no.nordicsemi.android.common"
-
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
-
-dependencies {
-    implementation(project(":theme"))
-    implementation(project(":uilogger"))
-    implementation(project(":uiscanner"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions:nfc"))
-    implementation(project(":permissions:ble"))
-    implementation(project(":permissions:internet"))
-
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.nordic.blek.scanner)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+sealed class BlePermissionState {
+    object Available : BlePermissionState()
+    data class NotAvailable(
+        val reason: BlePermissionNotAvailableReason,
+    ) : BlePermissionState()
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022, Nordic Semiconductor
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification, are
+  ~ permitted provided that the following conditions are met:
+  ~
+  ~ 1. Redistributions of source code must retain the above copyright notice, this list of
+  ~ conditions and the following disclaimer.
+  ~
+  ~ 2. Redistributions in binary form must reproduce the above copyright notice, this list
+  ~ of conditions and the following disclaimer in the documentation and/or other materials
+  ~ provided with the distribution.
+  ~
+  ~ 3. Neither the name of the copyright holder nor the names of its contributors may be
+  ~ used to endorse or promote products derived from this software without specific prior
+  ~ written permission.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+  ~ TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+  ~ PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+  ~ OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+  ~ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+  ~ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  ~ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<resources>
+    <string name="action_grant_permission">Grant permission</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_enable">Enable</string>
+    <string name="action_try_again">Try again</string>
+    <string name="action_location_settings">Location settings</string>
+    <string name="action_go_up">Back</string>
+
+    <string name="bluetooth_disabled_title">BLUETOOTH DISABLED</string>
+    <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off.\nClick the button below to enable it.</string>
+
+    <string name="location_permission_title">LOCATION PERMISSION REQUIRED</string>
+    <string name="location_permission_info">From Android 6.0 Marshmallow until Android 11 the application
+        requires Location permission in order to scan for Bluetooth Low Energy devices. This
+        is because Bluetooth LE beacons, for example iBeacons or Eddystone, may be used to
+        determine the phone\'s and user\'s location.\n\nThe app will not use
+		this information in any way.\n\nOn Android 12 or newer a new Nearby permission
+		can be requested instead, without the need for location, but this system
+		version does not support that feature.</string>
+
+    <string name="bluetooth_permission_title">BLUETOOTH PERMISSIONS REQUIRED</string>
+    <string name="bluetooth_permission_info">The app needs to scan and connect to Bluetooth LE devices.</string>
+
+    <string name="bluetooth_not_available_title">BLUETOOTH NOT AVAILABLE</string>
+    <string name="bluetooth_not_available_info">Bluetooth is not available on your phone.\nWe cannot provide you the feature.</string>
+
+    <string name="location_required_title">Location required</string>
+    <string name="bluetooth_required_title">Bluetooth required</string>
+</resources>

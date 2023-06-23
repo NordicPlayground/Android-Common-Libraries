@@ -29,36 +29,32 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
-}
+package no.nordicsemi.android.common.permissions.internet
 
-group = "no.nordicsemi.android.common"
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import no.nordicsemi.android.common.permissions.internet.util.InternetPermissionState
+import no.nordicsemi.android.common.permissions.internet.view.InternetNotAvailableView
+import no.nordicsemi.android.common.permissions.internet.viewmodel.InternetPermissionViewModel
 
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
+@Composable
+fun RequireInternet(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutInternet: @Composable () -> Unit = { InternetNotAvailableView() },
+    content: @Composable () -> Unit
+) {
+    val viewModel = hiltViewModel<InternetPermissionViewModel>()
+    val state by viewModel.internetPermission.collectAsStateWithLifecycle()
 
-dependencies {
-    implementation(project(":theme"))
-    implementation(project(":uilogger"))
-    implementation(project(":uiscanner"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions:nfc"))
-    implementation(project(":permissions:ble"))
-    implementation(project(":permissions:internet"))
+    LaunchedEffect(state) {
+        onChanged(state is InternetPermissionState.Available)
+    }
 
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.nordic.blek.scanner)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+    when (state) {
+        InternetPermissionState.Available -> content()
+        else -> contentWithoutInternet()
+    }
 }
