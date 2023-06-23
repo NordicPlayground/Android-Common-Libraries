@@ -53,7 +53,7 @@ nordicNexusPublishing {
 }
 
 android {
-    namespace = "no.nordicsemi.android.common.permissions.ble"
+    namespace = "no.nordicsemi.android.common.permissions.internet"
 }
 
 dependencies {
