@@ -56,10 +56,10 @@ dependencyResolutionManagement {
 rootProject.name = "Common Libraries"
 
 include(":core")
-// include(":app")
+include(":app")
 include(":theme")
-// include(":uiscanner")
-// include(":uilogger")
+include(":uiscanner")
+include(":uilogger")
 include(":navigation")
 include(":analytics")
 include(":permissions:ble")
