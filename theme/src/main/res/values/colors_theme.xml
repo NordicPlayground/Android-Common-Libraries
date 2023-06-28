@@ -44,6 +44,8 @@
     <color name="md_theme_tertiaryContainer">#D0E4FF</color>
     <color name="md_theme_onTertiaryContainer">#41000A</color>
     <color name="md_theme_error">#BA1B1B</color>
+    <color name="md_theme_warning">@color/nordicFall</color>
+    <color name="md_theme_success">@color/nordicGreen</color>
     <color name="md_theme_errorContainer">#FFDAD4</color>
     <color name="md_theme_onError">@android:color/white</color>
     <color name="md_theme_onErrorContainer">#410001</color>
