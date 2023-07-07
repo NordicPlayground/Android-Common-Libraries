@@ -34,6 +34,7 @@ jobs:
       - name: Nexus release
         uses: Propromp/nexus-release@1
         with:
+          server: "oss.sonatype.org"
           groupId: "no.nordicsemi.android.common" # Group id of the repository
           nexusUsername: ${{ secrets.OSSR_USERNAME }} # User name of the nexus repository manager
           nexusPassword: ${{ secrets.OSSR_PASSWORD }} # Password of the nexus repository manager
