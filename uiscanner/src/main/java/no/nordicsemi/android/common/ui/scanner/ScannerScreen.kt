@@ -40,7 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import no.nordicsemi.android.common.ui.scanner.main.DeviceListItem
 import no.nordicsemi.android.common.ui.scanner.view.ScannerAppBar
-import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
 
 @Composable
 fun ScannerScreen(

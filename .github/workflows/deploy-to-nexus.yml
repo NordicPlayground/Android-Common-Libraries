@@ -31,3 +31,9 @@ jobs:
           echo "${{ secrets.GPG_FILE }}" > sec.gpg.asc
           gpg -d --passphrase "${{ secrets.GPG_FILE_PSWD }}" --batch sec.gpg.asc > sec.gpg
           fastlane deployNexus
+      - name: Nexus release
+        uses: Propromp/nexus-release@1
+        with:
+          groupId: "no.nordicsemi.android.common" # Group id of the repository
+          nexusUsername: ${{ secrets.OSSR_USERNAME }} # User name of the nexus repository manager
+          nexusPassword: ${{ secrets.OSSR_PASSWORD }} # Password of the nexus repository manager

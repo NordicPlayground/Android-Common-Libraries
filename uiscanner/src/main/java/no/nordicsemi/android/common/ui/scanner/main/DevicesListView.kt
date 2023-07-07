@@ -41,7 +41,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.scanner.repository.ScanningState
 import no.nordicsemi.android.common.ui.scanner.view.internal.ScanEmptyView
 import no.nordicsemi.android.common.ui.scanner.view.internal.ScanErrorView
-import no.nordicsemi.android.kotlin.ble.scanner.data.BleScanResults
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
 
 @Composable
 fun DevicesListView(
