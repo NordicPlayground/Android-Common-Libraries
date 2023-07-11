@@ -31,10 +31,14 @@
 
 package no.nordicsemi.android.common.navigation.internal
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.navigation.*
 
+//FIXME Fix NavGraph methods() can only be called from within the same library group.
+//FIXME Delete SuppressLint and run gradlew build
+@SuppressLint("RestrictedApi")
 internal fun NavController.navigate(
     route: String,
     args: Bundle?,
