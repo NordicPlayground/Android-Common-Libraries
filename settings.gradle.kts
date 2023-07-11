@@ -49,7 +49,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            from("no.nordicsemi.android.gradle:version-catalog:1.6.5")
+            from("no.nordicsemi.android.gradle:version-catalog:1.7.0")
         }
     }
 }
@@ -60,6 +60,6 @@ include(":theme")
 include(":uilogger")
 include(":navigation")
 include(":analytics")
-include(":permissions:ble")
-include(":permissions:internet")
-include(":permissions:nfc")
+include(":permissions-ble")
+include(":permissions-internet")
+include(":permissions-nfc")
