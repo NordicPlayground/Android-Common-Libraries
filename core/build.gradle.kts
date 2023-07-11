@@ -32,6 +32,7 @@
 plugins {
     alias(libs.plugins.nordic.library.compose)
     alias(libs.plugins.nordic.nexus)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 group = "no.nordicsemi.android.common"
