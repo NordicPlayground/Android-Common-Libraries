@@ -59,7 +59,5 @@ android {
 dependencies {
     implementation(project(":theme"))
 
-    implementation(libs.nordic.blek.core)
-
     implementation(libs.nordic.log)
 }

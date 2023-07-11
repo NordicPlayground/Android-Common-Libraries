@@ -56,16 +56,10 @@ dependencyResolutionManagement {
 rootProject.name = "Common Libraries"
 
 include(":core")
-include(":app")
 include(":theme")
-include(":uiscanner")
 include(":uilogger")
 include(":navigation")
 include(":analytics")
 include(":permissions:ble")
 include(":permissions:internet")
 include(":permissions:nfc")
-
-//if (file("../Kotlin-BLE-Library").exists()) {
-//    includeBuild("../Kotlin-BLE-Library")
-//}
