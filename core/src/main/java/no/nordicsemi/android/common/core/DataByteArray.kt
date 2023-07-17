@@ -1,6 +1,7 @@
 package no.nordicsemi.android.common.core
 
 import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -10,8 +11,13 @@ import kotlinx.parcelize.Parcelize
  *
  * @property value Original [ByteArray] value.
  */
+//TODO check if [ByteArray] is  Parcelable.
 @Parcelize
-data class DataByteArray(val value: ByteArray) : Parcelable {
+data class DataByteArray(val value: ByteArray = byteArrayOf()) : Parcelable {
+
+    @IgnoredOnParcel
+    val size = value.size
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -29,5 +35,24 @@ data class DataByteArray(val value: ByteArray) : Parcelable {
 
     override fun toString(): String {
         return value.toDisplayString()
+    }
+
+    fun copyOf(): DataByteArray {
+        return DataByteArray(value.copyOf())
+    }
+
+    fun copyOfRange(fromIndex: Int, toIndex: Int): DataByteArray {
+        return DataByteArray(value.copyOfRange(fromIndex, toIndex))
+    }
+
+    fun split(size: Int): List<DataByteArray> {
+        return value.asList().chunked(size).map { DataByteArray(it.toByteArray()) }
+    }
+
+    companion object {
+
+        fun from(vararg bytes: Byte): DataByteArray {
+            return DataByteArray(bytes)
+        }
     }
 }
