@@ -49,6 +49,20 @@ data class DataByteArray(val value: ByteArray = byteArrayOf()) : Parcelable {
         return value.asList().chunked(size).map { DataByteArray(it.toByteArray()) }
     }
 
+    fun getChunk(offset: Int, mtu: Int): DataByteArray {
+        val maxSize = mtu - 3
+        val sizeLeft = this.size - offset
+        return if (sizeLeft > 0) {
+            if (sizeLeft > maxSize) {
+                this.copyOfRange(offset, offset + maxSize)
+            } else {
+                this.copyOfRange(offset, this.size)
+            }
+        } else {
+            DataByteArray()
+        }
+    }
+
     companion object {
 
         fun from(vararg bytes: Byte): DataByteArray {
