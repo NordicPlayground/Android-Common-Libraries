@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2022, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,33 +29,35 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+plugins {
+    alias(libs.plugins.nordic.application.compose)
+    alias(libs.plugins.nordic.hilt)
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
+group = "no.nordicsemi.android.common"
 
-include(":app")
-include(":core")
-include(":theme")
-include(":uilogger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
+android {
+    namespace = "no.nordicsemi.android.common.test"
+}
+
+dependencies {
+    implementation(libs.nordic.theme)
+    implementation(libs.nordic.navigation)
+    implementation(libs.nordic.permissions.ble)
+    implementation(libs.nordic.permissions.nfc)
+    implementation(libs.nordic.permissions.internet)
+    implementation(libs.nordic.uilogger)
+
+    implementation(libs.androidx.compose.material.iconsExtended)
+
+    implementation(libs.androidx.activity.compose)
+
+    implementation(libs.nordic.blek.scanner)
+
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // debugImplementation because LeakCanary should only run in debug builds.
+    debugImplementation(libs.leakcanary)
+}

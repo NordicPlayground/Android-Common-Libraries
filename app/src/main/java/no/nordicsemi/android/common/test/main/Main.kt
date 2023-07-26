@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2022, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,33 +29,44 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package no.nordicsemi.android.common.test.main
+
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.navigation.createSimpleDestination
+import no.nordicsemi.android.common.navigation.defineDestination
+import no.nordicsemi.android.common.test.main.page.BasicsPage
+import no.nordicsemi.android.common.test.main.page.FontsPage
+import no.nordicsemi.android.common.test.main.page.WarningPage
+import no.nordicsemi.android.common.test.main.page.WizardPage
+import no.nordicsemi.android.common.test.simple.HelloDestinations
+import no.nordicsemi.android.common.theme.view.PagerView
+import no.nordicsemi.android.common.theme.view.PagerViewEntity
+
+/** This is the destination identifier. */
+val Main = createSimpleDestination("main")
+
+/**
+ * Here you define a View for the destination.
+ */
+private val MainDestination = defineDestination(Main) {
+    MainScreen()
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
+val MainDestinations = MainDestination + HelloDestinations
 
-include(":app")
-include(":core")
-include(":theme")
-include(":uilogger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
+@Composable
+private fun MainScreen() {
+    val pages = PagerViewEntity(listOf(
+        BasicsPage,
+        FontsPage,
+        WizardPage,
+        WarningPage,
+    ))
+    PagerView(
+        viewEntity = pages,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        itemSpacing = 16.dp,
+    )
+}
