@@ -53,7 +53,6 @@ rootProject.name = "Common Libraries"
 include(":app")
 include(":core")
 include(":theme")
-include(":logger")
 include(":uilogger")
 include(":navigation")
 include(":analytics")
