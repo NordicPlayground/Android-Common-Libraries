@@ -29,34 +29,44 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package no.nordicsemi.android.common.logger
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+
+private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
+private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
+
+/**
+ * Helper object responsible for launching nRF Logger app.
+ */
+object LoggerLauncher {
+
+    /**
+     * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
+     */
+    fun launch(context: Context, sessionUri: Uri? = null) {
+        val packageManger = context.packageManager
+
+        if (packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) != null && sessionUri != null) {
+            openLauncher(context, sessionUri)
+        } else try {
+            openGooglePlay(context)
+        } catch (e: Exception) {
+            e.printStackTrace() //Google Play not installed
+        }
+    }
+
+    private fun openLauncher(context: Context, sessionUri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, sessionUri)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.let { context.startActivity(intent) }
+    }
+
+    private fun openGooglePlay(context: Context) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":logger")
-include(":uilogger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")

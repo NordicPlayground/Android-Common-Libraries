@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":logger"))
+
     implementation(libs.nordic.theme)
     implementation(libs.nordic.navigation)
     implementation(libs.nordic.permissions.ble)

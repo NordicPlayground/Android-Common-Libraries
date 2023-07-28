@@ -29,34 +29,35 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+plugins {
+    alias(libs.plugins.nordic.library)
+    alias(libs.plugins.nordic.kotlin)
+    alias(libs.plugins.nordic.nexus)
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
+group = "no.nordicsemi.android.common"
 
-include(":app")
-include(":core")
-include(":theme")
-include(":logger")
-include(":uilogger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
+android {
+    namespace = "no.nordicsemi.android.common.logger"
+}
+
+nordicNexusPublishing {
+    POM_ARTIFACT_ID = "logger"
+    POM_NAME = "Nordic Kotlin library for BLE logs"
+
+    POM_DESCRIPTION = "Nordic Android Common Libraries"
+    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
+    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
+    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+
+    POM_DEVELOPER_ID = "syzi"
+    POM_DEVELOPER_NAME = "Sylwester Zieliński"
+    POM_DEVELOPER_EMAIL = "sylwester.zielinski@nordicsemi.no"
+}
+
+dependencies {
+    implementation(project(":core"))
+
+    implementation(libs.nordic.log)
+}

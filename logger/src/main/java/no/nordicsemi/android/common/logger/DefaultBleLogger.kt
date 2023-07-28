@@ -29,34 +29,43 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package no.nordicsemi.android.common.logger
+
+import android.content.Context
+import android.util.Log
+import no.nordicsemi.android.log.LogContract
+import no.nordicsemi.android.log.Logger
+
+/**
+ * Helper class implementing [BleLoggerAndLauncher] responsible for printing logs to console and
+ * nRF Logger and responsible for starting nRF Logger in most basic manner.
+ *
+ * @property context An application context.
+ * @property key The session key, which is used to group sessions.
+ * @param profile Application profile which will be concatenated to the application name.
+ * @param name The human readable session name.
+ */
+class DefaultBleLogger private constructor(
+    private val context: Context,
+    profile: String?,
+    private val key: String,
+    name: String?
+) : BleLoggerAndLauncher {
+    private val logSession = Logger.newSession(context, profile, key, name)
+
+    override fun log(priority: Int, log: String) {
+        Log.println(priority, key, log)
+        Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), log)
+    }
+
+    override fun launch() {
+        LoggerLauncher.launch(context, logSession?.sessionUri)
+    }
+
+    companion object {
+
+        fun create(context: Context, profile: String?, key: String, name: String?): BleLoggerAndLauncher {
+            return DefaultBleLogger(context, profile, key, name)
+        }
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":logger")
-include(":uilogger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
