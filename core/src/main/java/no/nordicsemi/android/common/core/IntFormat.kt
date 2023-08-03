@@ -29,54 +29,30 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.logger
+package no.nordicsemi.android.common.core
 
-import android.content.Context
-import android.util.Log
+enum class IntFormat(valueFormat: ValueFormat) {
+    FORMAT_UINT8(ValueFormat.FORMAT_UINT8),
+    FORMAT_UINT16_LE(ValueFormat.FORMAT_UINT16_LE),
+    FORMAT_UINT16_BE(ValueFormat.FORMAT_UINT16_BE),
+    FORMAT_UINT24_LE(ValueFormat.FORMAT_UINT24_LE),
+    FORMAT_UINT24_BE(ValueFormat.FORMAT_UINT24_BE),
+    FORMAT_UINT32_LE(ValueFormat.FORMAT_UINT32_LE),
+    FORMAT_UINT32_BE(ValueFormat.FORMAT_UINT32_BE),
+    FORMAT_SINT8(ValueFormat.FORMAT_SINT8),
+    FORMAT_SINT16_LE(ValueFormat.FORMAT_SINT16_LE),
+    FORMAT_SINT16_BE(ValueFormat.FORMAT_SINT16_BE),
+    FORMAT_SINT24_LE(ValueFormat.FORMAT_SINT24_LE),
+    FORMAT_SINT24_BE(ValueFormat.FORMAT_SINT24_BE),
+    FORMAT_SINT32_LE(ValueFormat.FORMAT_SINT32_LE),
+    FORMAT_SINT32_BE(ValueFormat.FORMAT_SINT32_BE);
 
-/**
- * Interface grouping [BleRemoteLoggerLauncher] and [BleLogger]. Needed to be used as a return type.
- */
-interface BleLoggerAndLauncher : BleRemoteLoggerLauncher, BleLogger
-
-/**
- * Functional interface responsible for launching a dedicated logger app.
- */
-fun interface BleRemoteLoggerLauncher {
-
-    /**
-     * Launches dedicated logger app.
-     */
-    fun launch()
+    val value: Int = valueFormat.value
 }
 
 /**
- * Functional interface which defines logs logging action.
+ * Returns the size of a give value type.
  */
-fun interface BleLogger {
-
-    /**
-     * Prints log.
-     *
-     * @param priority Priority of the logs.
-     * @param log Message.
-     */
-    fun log(priority: Int, log: String)
-}
-
-/**
- * Default implementation of [BleLoggerAndLauncher] which print logs to Logcat and launch main page
- * of [the Logger app](https://play.google.com/store/apps/details?id=no.nordicsemi.android.log&hl=en&gl=US).
- *
- * @property context An application context.
- */
-class DefaultBlekLogger(private val context: Context) : BleLoggerAndLauncher {
-
-    override fun log(priority: Int, log: String) {
-        Log.println(priority, "BLEK-LOG", log)
-    }
-
-    override fun launch() {
-        LoggerLauncher.launch(context)
-    }
+fun getTypeLen(formatType: IntFormat): Int {
+    return formatType.value and 0xF
 }
