@@ -68,7 +68,6 @@ nordic-dfu = "2.3.0"
 nordic-log = "2.3.0"
 nordic-mcumgr = "1.7.2"
 nordic-scanner = "1.6.0"
-nordic-memfault = "1.0.2"
 nordicPlugins = "1.9.5"
 dokkaPlugin = "1.9.0"
 googleServicesPlugins = "4.4.0"
@@ -183,7 +182,6 @@ nordic-mcumgr-ble = { group = "no.nordicsemi.android", name = "mcumgr-ble", vers
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
 nordic-log-timber = { group = "no.nordicsemi.android", name = "log-timber", version.ref = "nordic-log" }
 nordic-scanner = { group = "no.nordicsemi.android.support.v18", name = "scanner", version.ref = "nordic-scanner" }
-nordic-memfault = { group = "no.nordicsemi.android", name = "memfault", version.ref = "nordic-memfault" }
 
 # BleK
 nordic-blek-client = { group = "no.nordicsemi.android.kotlin.ble", name = "client", version.ref = "nordic-blek" }
