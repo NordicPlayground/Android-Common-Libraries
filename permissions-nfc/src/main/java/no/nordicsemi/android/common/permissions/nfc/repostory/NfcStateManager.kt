@@ -73,7 +73,7 @@ internal class NfcStateManager @Inject constructor(
         val filter = IntentFilter().apply {
             addAction(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
         }
-        ContextCompat.registerReceiver(context, nfcStateChangeHandler, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(context, nfcStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
             context.unregisterReceiver(nfcStateChangeHandler)
         }
