@@ -36,6 +36,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
+import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
@@ -69,7 +70,7 @@ internal class LocationStateManager @Inject constructor(
             addAction(LocationManager.MODE_CHANGED_ACTION)
             addAction(REFRESH_PERMISSIONS)
         }
-        context.registerReceiver(locationStateChangeHandler, filter)
+        ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         awaitClose {
             context.unregisterReceiver(locationStateChangeHandler)
         }
