@@ -63,7 +63,6 @@ moshiKotlin = "1.15.0"
 moshiAdapters = "1.15.0"
 
 nordic-blek = "1.0.5"
-nordic-dfu = "2.3.0"
 nordic-log = "2.3.0"
 nordic-mcumgr = "1.7.2"
 nordic-scanner = "1.6.0"
@@ -173,7 +172,6 @@ moshi-kotlin = {group = "com.squareup.moshi", name = "moshi-kotlin", version.ref
 moshi-adapters = {group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshiAdapters"}
 
 # Nordic
-nordic-dfu = { group = "no.nordicsemi.android", name = "dfu", version.ref = "nordic-dfu" }
 nordic-mcumgr-core = { group = "no.nordicsemi.android", name = "mcumgr-core", version.ref = "nordic-mcumgr" }
 nordic-mcumgr-ble = { group = "no.nordicsemi.android", name = "mcumgr-ble", version.ref = "nordic-mcumgr" }
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
