@@ -68,7 +68,6 @@ nordic-dfu = "2.3.0"
 nordic-log = "2.3.0"
 nordic-mcumgr = "1.7.2"
 nordic-scanner = "1.6.0"
-nordic-common = "1.8.2"
 nordic-memfault = "1.0.2"
 nordicPlugins = "1.9.5"
 dokkaPlugin = "1.9.0"
@@ -184,15 +183,6 @@ nordic-mcumgr-ble = { group = "no.nordicsemi.android", name = "mcumgr-ble", vers
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
 nordic-log-timber = { group = "no.nordicsemi.android", name = "log-timber", version.ref = "nordic-log" }
 nordic-scanner = { group = "no.nordicsemi.android.support.v18", name = "scanner", version.ref = "nordic-scanner" }
-nordic-core = { group = "no.nordicsemi.android.common", name = "core", version.ref = "nordic-common" }
-nordic-theme = { group = "no.nordicsemi.android.common", name = "theme", version.ref = "nordic-common" }
-nordic-analytics = { group = "no.nordicsemi.android.common", name = "analytics", version.ref = "nordic-common" }
-nordic-navigation = { group = "no.nordicsemi.android.common", name = "navigation", version.ref = "nordic-common" }
-nordic-uiscanner = { group = "no.nordicsemi.android.common", name = "uiscanner", version.ref = "nordic-common" }
-nordic-uilogger = { group = "no.nordicsemi.android.common", name = "uilogger", version.ref = "nordic-common" }
-nordic-permissions-nfc = { group = "no.nordicsemi.android.common", name = "permissions-nfc", version.ref = "nordic-common" }
-nordic-permissions-ble = { group = "no.nordicsemi.android.common", name = "permissions-ble", version.ref = "nordic-common" }
-nordic-permissions-internet = { group = "no.nordicsemi.android.common", name = "permissions-internet", version.ref = "nordic-common" }
 nordic-memfault = { group = "no.nordicsemi.android", name = "memfault", version.ref = "nordic-memfault" }
 
 # BleK
