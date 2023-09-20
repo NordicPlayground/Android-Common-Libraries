@@ -68,7 +68,7 @@ class BluetoothStateManager @Inject constructor(
             addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
             addAction(REFRESH_PERMISSIONS)
         }
-        ContextCompat.registerReceiver(context, bluetoothStateChangeHandler, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(context, bluetoothStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
             context.unregisterReceiver(bluetoothStateChangeHandler)
         }

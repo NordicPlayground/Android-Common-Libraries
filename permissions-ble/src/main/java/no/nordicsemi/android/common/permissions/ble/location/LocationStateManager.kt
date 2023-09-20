@@ -70,7 +70,7 @@ internal class LocationStateManager @Inject constructor(
             addAction(LocationManager.MODE_CHANGED_ACTION)
             addAction(REFRESH_PERMISSIONS)
         }
-        ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
             context.unregisterReceiver(locationStateChangeHandler)
         }
