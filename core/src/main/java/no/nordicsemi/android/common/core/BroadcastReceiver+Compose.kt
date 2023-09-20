@@ -39,10 +39,15 @@ import android.content.IntentFilter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun registerReceiver(intentFilter: IntentFilter, onEvent: (Intent?) -> Unit) {
+fun registerReceiver(
+    intentFilter: IntentFilter,
+    @ContextCompat.RegisterReceiverFlags flags: Int = ContextCompat.RECEIVER_NOT_EXPORTED,
+    onEvent: (Intent?) -> Unit
+) {
     val context = LocalContext.current
 
     DisposableEffect(context) {
@@ -51,7 +56,7 @@ fun registerReceiver(intentFilter: IntentFilter, onEvent: (Intent?) -> Unit) {
                 onEvent(intent)
             }
         }
-        context.registerReceiver(broadcast, intentFilter)
+        ContextCompat.registerReceiver(context, broadcast, intentFilter, flags)
         onDispose {
             context.unregisterReceiver(broadcast)
         }

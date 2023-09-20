@@ -36,6 +36,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -67,7 +68,7 @@ class BluetoothStateManager @Inject constructor(
             addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
             addAction(REFRESH_PERMISSIONS)
         }
-        context.registerReceiver(bluetoothStateChangeHandler, filter)
+        ContextCompat.registerReceiver(context, bluetoothStateChangeHandler, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         awaitClose {
             context.unregisterReceiver(bluetoothStateChangeHandler)
         }

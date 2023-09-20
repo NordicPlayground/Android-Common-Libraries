@@ -36,6 +36,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
+import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -72,7 +73,7 @@ internal class NfcStateManager @Inject constructor(
         val filter = IntentFilter().apply {
             addAction(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
         }
-        context.registerReceiver(nfcStateChangeHandler, filter)
+        ContextCompat.registerReceiver(context, nfcStateChangeHandler, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         awaitClose {
             context.unregisterReceiver(nfcStateChangeHandler)
         }
