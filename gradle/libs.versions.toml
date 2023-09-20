@@ -64,7 +64,6 @@ moshiAdapters = "1.15.0"
 
 nordic-blek = "1.0.5"
 nordic-log = "2.3.0"
-nordic-scanner = "1.6.0"
 nordicPlugins = "1.9.5"
 dokkaPlugin = "1.9.0"
 googleServicesPlugins = "4.4.0"
@@ -173,7 +172,6 @@ moshi-adapters = {group = "com.squareup.moshi", name = "moshi-adapters", version
 # Nordic
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
 nordic-log-timber = { group = "no.nordicsemi.android", name = "log-timber", version.ref = "nordic-log" }
-nordic-scanner = { group = "no.nordicsemi.android.support.v18", name = "scanner", version.ref = "nordic-scanner" }
 
 # BleK
 nordic-blek-client = { group = "no.nordicsemi.android.kotlin.ble", name = "client", version.ref = "nordic-blek" }
