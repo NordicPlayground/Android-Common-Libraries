@@ -31,9 +31,13 @@
 
 package no.nordicsemi.android.common.theme.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
@@ -43,10 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.theme.R
@@ -60,7 +60,7 @@ class PagerViewItem(
     val drawView: @Composable () -> Unit,
 )
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerView(
     viewEntity: PagerViewEntity,
@@ -79,7 +79,7 @@ fun PagerView(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerView(
     viewEntity: PagerViewEntity,
@@ -87,7 +87,7 @@ fun PagerView(
     itemSpacing: Dp = 0.dp,
     scrollable: Boolean = true,
     coroutineScope: CoroutineScope,
-    pagerState: PagerState = rememberPagerState(),
+    pagerState: PagerState = rememberPagerState(pageCount = { viewEntity.items.size }),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     verticalAlignment: Alignment.Vertical = Alignment.Top,
 ) {
@@ -153,10 +153,9 @@ fun PagerView(
         }
 
         HorizontalPager(
-            count = viewEntity.items.size,
             state = pagerState,
-            itemSpacing = itemSpacing,
             contentPadding = contentPadding,
+            pageSpacing = itemSpacing,
             verticalAlignment = verticalAlignment,
             modifier = Modifier
                 .weight(1f)

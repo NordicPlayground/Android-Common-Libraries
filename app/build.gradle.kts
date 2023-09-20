@@ -43,12 +43,12 @@ android {
 dependencies {
     implementation(project(":logger"))
 
-    implementation(libs.nordic.theme)
-    implementation(libs.nordic.navigation)
-    implementation(libs.nordic.permissions.ble)
-    implementation(libs.nordic.permissions.nfc)
-    implementation(libs.nordic.permissions.internet)
-    implementation(libs.nordic.uilogger)
+    implementation(project(":theme"))
+    implementation(project(":navigation"))
+    implementation(project(":permissions-ble"))
+    implementation(project(":permissions-nfc"))
+    implementation(project(":permissions-internet"))
+    implementation(project(":uilogger"))
 
     implementation(libs.androidx.compose.material.iconsExtended)
 

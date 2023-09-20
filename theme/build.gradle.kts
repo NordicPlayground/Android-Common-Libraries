@@ -62,8 +62,5 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pagerindicators)
-
     implementation(libs.markdown)
 }
