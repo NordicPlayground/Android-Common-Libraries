@@ -59,7 +59,7 @@ sealed class WizardStepAction {
     /**
      * Will display a circular progress indicator.
      */
-    object ProgressIndicator: WizardStepAction()
+    data object ProgressIndicator: WizardStepAction()
 }
 
 enum class WizardStepState {

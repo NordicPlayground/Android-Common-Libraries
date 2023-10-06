@@ -81,9 +81,9 @@ class NavigationManager @Inject constructor(
     /** Savable results that can be stored in [SavedStateHandle]. */
     sealed class Result : Parcelable {
         @Parcelize
-        object Initial : Result()
+        data object Initial : Result()
         @Parcelize
-        object Cancelled : Result()
+        data object Cancelled : Result()
         @Parcelize
         data class Success<R>(val value: @RawValue R) : Result()
     }

@@ -38,7 +38,7 @@ enum class InternetPermissionNotAvailableReason {
 
 sealed class InternetPermissionState {
 
-    object Available : InternetPermissionState()
+    data object Available : InternetPermissionState()
 
     data class NotAvailable(
         val reason: InternetPermissionNotAvailableReason,

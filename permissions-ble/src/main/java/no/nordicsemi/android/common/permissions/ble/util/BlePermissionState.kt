@@ -38,7 +38,7 @@ enum class BlePermissionNotAvailableReason {
 }
 
 sealed class BlePermissionState {
-    object Available : BlePermissionState()
+    data object Available : BlePermissionState()
     data class NotAvailable(
         val reason: BlePermissionNotAvailableReason,
     ) : BlePermissionState()
