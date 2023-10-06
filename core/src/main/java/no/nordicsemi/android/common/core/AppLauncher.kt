@@ -40,6 +40,7 @@ import android.net.Uri
 import android.os.Build
 
 const val GOOGLE_PLAY_LINK = "https://play.google.com/store/apps/details?id="
+@Suppress("unused")
 object AppLauncher {
     /**
      * Opens the app with supplied package name, or opens Google Play if the app is not installed.
