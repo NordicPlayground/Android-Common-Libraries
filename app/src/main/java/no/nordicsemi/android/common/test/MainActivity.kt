@@ -239,7 +239,6 @@ class MainActivity : NordicActivity() {
 }
 
 @SuppressLint("ComposableNaming")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NavigationDrawerItems(
     items: List<Item>,
