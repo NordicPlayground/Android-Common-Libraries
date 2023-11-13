@@ -37,8 +37,8 @@ fun <T, R> SparseArray<T>.map(
     modifier: (T) -> R,
 ): SparseArray<R> {
     val newArray = SparseArray<R>(this.size())
-    for (i in 0..this.size()) {
-        newArray[i] = modifier(this[i])
+    for (i in 0 until this.size()) {
+        newArray[this.keyAt(i)] = modifier(this.valueAt(i))
     }
     return newArray
 }

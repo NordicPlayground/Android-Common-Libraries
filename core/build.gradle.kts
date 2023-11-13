@@ -54,10 +54,29 @@ nordicNexusPublishing {
 
 android {
     namespace = "no.nordicsemi.android.common.core"
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.core)
+
+    testImplementation(libs.test.mockk)
+    testImplementation(libs.junit4)
+    testImplementation(libs.kotlin.junit)
+    testImplementation(libs.androidx.test.ext)
+    testImplementation(libs.androidx.test.rules)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.test.slf4j.simple)
+    testImplementation(libs.test.robolectric)
+    testImplementation(libs.hilt.android.testing)
+
+    androidTestImplementation(libs.junit4)
+    androidTestImplementation(libs.kotlin.junit)
+    androidTestImplementation(libs.androidx.test.ext)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 }
