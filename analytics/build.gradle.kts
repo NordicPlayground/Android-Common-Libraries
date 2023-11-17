@@ -63,8 +63,6 @@ dependencies {
     implementation(libs.androidx.dataStore.preferences)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)

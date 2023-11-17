@@ -54,8 +54,6 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
 
-    implementation(libs.nordic.blek.scanner)
-
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
