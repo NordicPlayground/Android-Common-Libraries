@@ -117,14 +117,15 @@ private fun WizardScreen() {
                     iconRightPadding = 24.dp,
                 )
 
-                val infiniteTransition = rememberInfiniteTransition()
+                val infiniteTransition = rememberInfiniteTransition(label = "ProgressTransition")
                 val progress by infiniteTransition.animateFloat(
                     initialValue = 0.0f,
                     targetValue = 1.0f,
                     animationSpec = infiniteRepeatable(
                         animation = tween(10000, easing = LinearEasing),
                         repeatMode = RepeatMode.Restart
-                    )
+                    ),
+                    label = "Progress"
                 )
 
                 ProgressItem(
@@ -133,8 +134,8 @@ private fun WizardScreen() {
                     iconRightPadding = 24.dp,
                 ) {
                     LinearProgressIndicator(
-                        progress = progress,
-                        modifier = Modifier.fillMaxWidth()
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
                     )
                     Text(
                         text = "%.1f%%".format(progress * 100),

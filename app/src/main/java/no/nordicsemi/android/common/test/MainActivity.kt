@@ -126,7 +126,7 @@ class MainActivity : NordicActivity() {
                                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
 
-                            Divider(
+                            HorizontalDivider(
                                 modifier = Modifier.padding(NavigationDrawerDividerDefaults.ItemPadding)
                             )
 
