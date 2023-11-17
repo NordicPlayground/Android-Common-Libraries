@@ -39,6 +39,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -103,7 +104,7 @@ fun PagerView(
                 containerColor = colorResource(id = R.color.appBarColor),
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 indicator = @Composable { tabPositions ->
-                    TabRowDefaults.Indicator(
+                    SecondaryIndicator(
                         Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -130,7 +131,7 @@ fun PagerView(
                 containerColor = colorResource(id = R.color.appBarColor),
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 indicator = @Composable { tabPositions ->
-                    TabRowDefaults.Indicator(
+                    SecondaryIndicator(
                         Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
                         color = MaterialTheme.colorScheme.onPrimary
                     )

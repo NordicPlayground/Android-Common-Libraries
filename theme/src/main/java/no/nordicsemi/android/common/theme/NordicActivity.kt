@@ -68,7 +68,7 @@ abstract class NordicActivity : ComponentActivity() {
                 )
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val flags = view.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                view.setSystemUiVisibility(flags)
+                view.systemUiVisibility = flags
             }
         }
 

@@ -122,8 +122,8 @@ private fun ProgressItemPreview_Working() {
             status = ProgressItemStatus.WORKING,
         ) {
             LinearProgressIndicator(
-                progress = 0.3f,
-                modifier = Modifier.fillMaxWidth()
+                progress = { 0.3f },
+                modifier = Modifier.fillMaxWidth(),
             )
             Text(
                 text = "30%",
