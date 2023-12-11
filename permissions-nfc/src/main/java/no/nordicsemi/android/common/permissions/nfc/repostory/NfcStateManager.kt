@@ -47,7 +47,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class NfcStateManager @Inject constructor(
+class NfcStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val utils = NfcPermissionUtils(context)
