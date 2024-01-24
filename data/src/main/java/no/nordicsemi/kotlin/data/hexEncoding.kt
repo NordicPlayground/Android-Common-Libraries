@@ -29,10 +29,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.core
+@file:Suppress("unused")
 
-fun ByteArray.toDisplayString(): String {
-    return "(0x) " + this.joinToString(":") {
-        "%02x".format(it).uppercase()
-    }
-}
+package no.nordicsemi.kotlin.data
+
+/**
+ * Converts a byte array to a hex string.
+ *
+ * @param prefixOx Whether to prefix the hex string with 0x.
+ * @param format The format of the hex string.
+ * @return Hex string representation of the byte array.
+ */
+@OptIn(ExperimentalStdlibApi::class)
+fun ByteArray.toHexString(prefixOx: Boolean = false, format: HexFormat = HexFormat.UpperCase) =
+    (if (prefixOx) "0x" else "") + toHexString(format)
+
+/**
+ * Converts a byte array to a hex string.
+ * @param format The format of the hex string.
+ */
+@OptIn(ExperimentalStdlibApi::class)
+fun String.decodeHex(format: HexFormat = HexFormat.UpperCase) = hexToByteArray(format)
