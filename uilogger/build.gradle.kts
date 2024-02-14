@@ -58,6 +58,4 @@ android {
 
 dependencies {
     implementation(project(":theme"))
-
-    implementation(libs.nordic.log)
 }

@@ -29,11 +29,14 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
+
 package no.nordicsemi.android.common.logger
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import no.nordicsemi.android.log.LogSession
 
 private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
 private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
@@ -46,26 +49,21 @@ object LoggerLauncher {
     /**
      * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
      */
-    fun launch(context: Context, sessionUri: Uri? = null) {
+    fun launch(context: Context, logSession: LogSession?) {
+        val sessionUri = logSession?.sessionUri
         val packageManger = context.packageManager
 
-        if (packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) != null && sessionUri != null) {
-            openLauncher(context, sessionUri)
+        if (sessionUri != null && packageManger.getLaunchIntentForPackage(LOGGER_PACKAGE_NAME) != null) {
+            open(context, sessionUri)
         } else try {
-            openGooglePlay(context)
+            open(context, Uri.parse(LOGGER_LINK))
         } catch (e: Exception) {
             e.printStackTrace() //Google Play not installed
         }
     }
 
-    private fun openLauncher(context: Context, sessionUri: Uri) {
+    private fun open(context: Context, sessionUri: Uri) {
         val intent = Intent(Intent.ACTION_VIEW, sessionUri)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.let { context.startActivity(intent) }
-    }
-
-    private fun openGooglePlay(context: Context) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(LOGGER_LINK))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
     }
