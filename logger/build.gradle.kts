@@ -57,7 +57,5 @@ nordicNexusPublishing {
 }
 
 dependencies {
-    implementation(project(":core"))
-
-    implementation(libs.nordic.log)
+    api(libs.nordic.log)
 }
