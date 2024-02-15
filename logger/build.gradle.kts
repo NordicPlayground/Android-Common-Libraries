@@ -30,7 +30,7 @@
  */
 
 plugins {
-    alias(libs.plugins.nordic.library)
+    alias(libs.plugins.nordic.library.compose)
     alias(libs.plugins.nordic.kotlin)
     alias(libs.plugins.nordic.nexus)
 }
@@ -43,7 +43,7 @@ android {
 
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "logger"
-    POM_NAME = "Nordic Kotlin library for BLE logs"
+    POM_NAME = "Set of helper classes and UI components for Nordic logger."
 
     POM_DESCRIPTION = "Nordic Android Common Libraries"
     POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
@@ -57,5 +57,7 @@ nordicNexusPublishing {
 }
 
 dependencies {
+    implementation(project(":theme"))
+
     api(libs.nordic.log)
 }
