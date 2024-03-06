@@ -40,7 +40,7 @@ publishPlugin = "1.2.1"
 markdown = "0.4.1"
 leakcanary = "2.13"
 mockk = "1.13.10"
-slf4j = "2.0.12" # don't update
+slf4j = "1.7.36" # don't update
 robolectric = "4.11.1"
 material3 = "1.2.0"
 material = "1.6.2"
@@ -57,6 +57,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxMacroBenchmark" }
+androidx-compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "androidxComposeCompiler" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
