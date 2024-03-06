@@ -46,7 +46,7 @@ material3 = "1.2.0"
 material = "1.6.2"
 
 nordic-log = "2.3.0"
-nordicPlugins = "1.11.1"
+nordicPlugins = "2.0.0"
 dokkaPlugin = "1.9.20"
 googleServicesPlugins = "4.4.1"
 firebaseCrashlyticsPlugins = "2.9.9"
@@ -144,7 +144,8 @@ nordic-library-compose = { id = "no.nordicsemi.android.gradle.library.compose", 
 nordic-feature = { id = "no.nordicsemi.android.gradle.feature", version.ref = "nordicPlugins" }
 nordic-hilt = { id = "no.nordicsemi.android.gradle.hilt", version.ref = "nordicPlugins" }
 nordic-kotlin = { id = "no.nordicsemi.android.gradle.kotlin", version.ref = "nordicPlugins" }
-nordic-nexus = { id = "no.nordicsemi.android.gradle.nexus", version.ref = "nordicPlugins" }
+nordic-nexus-android = { id = "no.nordicsemi.android.gradle.nexus", version.ref = "nordicPlugins" }
+nordic-nexus-kotlin = { id = "no.nordicsemi.kotlin.gradle.nexus", version.ref = "nordicPlugins" }
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
