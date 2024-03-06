@@ -39,7 +39,7 @@ group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "permissions-nfc"
-    POM_NAME = "Nordic library for checking required nfc permission."
+    POM_NAME = "Nordic library for checking NFC permission."
 
     POM_DESCRIPTION = "Nordic Android Common Libraries"
     POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
