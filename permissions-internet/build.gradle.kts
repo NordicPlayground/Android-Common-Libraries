@@ -39,7 +39,7 @@ group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "permissions-internet"
-    POM_NAME = "Nordic library for checking required internet permissions."
+    POM_NAME = "Nordic library for checking Internet permission."
 
     POM_DESCRIPTION = "Nordic Android Common Libraries"
     POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
