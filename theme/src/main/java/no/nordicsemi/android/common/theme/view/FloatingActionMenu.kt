@@ -68,7 +68,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
@@ -112,7 +112,7 @@ fun FloatingActionMenu(
                         menuContent()
                     }
                     // The spacer positions the menu above the content.
-                    Spacer(modifier = Modifier.height(bottomPadding - contentPadding.calculateBottomPadding()))
+                    Spacer(modifier = Modifier.height(max(0.dp, bottomPadding - contentPadding.calculateBottomPadding())))
                 }
             }
         }
@@ -126,9 +126,9 @@ fun FloatingActionMenu(
                 with(density) {
                     val windowSize = layoutCoordinates.findRootCoordinates().size
                     val bottomOffset =
-                        layoutCoordinates.positionInWindow().y + layoutCoordinates.size.height
+                        layoutCoordinates.positionInRoot().y + layoutCoordinates.size.height
                     val endOffset =
-                        layoutCoordinates.positionInWindow().x + layoutCoordinates.size.width
+                        layoutCoordinates.positionInRoot().x + layoutCoordinates.size.width
                     bottomPadding =
                         windowSize.height.toDp() - bottomOffset.toDp() - navigationBarHeight.toDp()
                     endPadding = windowSize.width.toDp() - endOffset.toDp()
