@@ -54,7 +54,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":theme"))
+    implementation(project(":ui"))
 
     implementation(libs.androidx.dataStore.preferences)
     implementation(libs.androidx.hilt.navigation.compose)

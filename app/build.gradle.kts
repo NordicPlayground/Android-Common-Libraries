@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":logger"))
 
     implementation(project(":theme"))
+    implementation(project(":ui"))
     implementation(project(":navigation"))
     implementation(project(":permissions-ble"))
     implementation(project(":permissions-nfc"))

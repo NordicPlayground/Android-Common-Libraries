@@ -53,7 +53,7 @@ nordicNexusPublishing {
 }
 
 dependencies {
-    implementation(project(":theme"))
+    implementation(project(":ui"))
 
     api(libs.nordic.log)
 }

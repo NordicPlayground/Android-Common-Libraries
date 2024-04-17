@@ -67,7 +67,7 @@ import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.simple.Hello
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.PagerViewItem
+import no.nordicsemi.android.common.ui.view.PagerViewItem
 import javax.inject.Inject
 
 val BasicsPage = PagerViewItem("Basics") {

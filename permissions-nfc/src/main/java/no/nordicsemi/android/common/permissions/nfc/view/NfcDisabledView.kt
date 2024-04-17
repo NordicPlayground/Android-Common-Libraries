@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,8 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permissions.nfc.R
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
 internal fun NfcDisabledView() {
@@ -73,7 +73,7 @@ private fun enableNfc(context: Context) {
 @Preview
 @Composable
 private fun NfcDisabledView_Preview() {
-    NordicTheme {
+    MaterialTheme {
         NfcDisabledView()
     }
 }

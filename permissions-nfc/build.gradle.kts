@@ -54,7 +54,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":theme"))
+    implementation(project(":ui"))
     implementation(project(":navigation"))
     
     implementation(libs.androidx.navigation.compose)

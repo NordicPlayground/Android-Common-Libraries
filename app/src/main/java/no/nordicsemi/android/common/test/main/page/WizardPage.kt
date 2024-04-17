@@ -60,12 +60,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.PagerViewItem
-import no.nordicsemi.android.common.theme.view.ProgressItem
-import no.nordicsemi.android.common.theme.view.ProgressItemStatus
-import no.nordicsemi.android.common.theme.view.WizardStepAction
-import no.nordicsemi.android.common.theme.view.WizardStepComponent
-import no.nordicsemi.android.common.theme.view.WizardStepState
+import no.nordicsemi.android.common.ui.view.PagerViewItem
+import no.nordicsemi.android.common.ui.view.ProgressItem
+import no.nordicsemi.android.common.ui.view.ProgressItemStatus
+import no.nordicsemi.android.common.ui.view.WizardStepAction
+import no.nordicsemi.android.common.ui.view.WizardStepComponent
+import no.nordicsemi.android.common.ui.view.WizardStepState
 
 val WizardPage = PagerViewItem("Wizard") {
     WizardScreen()

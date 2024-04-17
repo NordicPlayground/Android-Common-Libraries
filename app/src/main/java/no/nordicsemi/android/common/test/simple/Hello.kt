@@ -64,9 +64,9 @@ import no.nordicsemi.android.common.navigation.defineDialogDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.FloatingActionMenu
-import no.nordicsemi.android.common.theme.view.FloatingActionMenuItem
-import no.nordicsemi.android.common.theme.view.FloatingActionMenuItemSecondary
+import no.nordicsemi.android.common.ui.view.FloatingActionMenu
+import no.nordicsemi.android.common.ui.view.FloatingActionMenuItem
+import no.nordicsemi.android.common.ui.view.FloatingActionMenuItemSecondary
 
 /**
  * This is an example of a simple destination.

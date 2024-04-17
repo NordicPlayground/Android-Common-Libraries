@@ -35,7 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import no.nordicsemi.android.common.logger.R
-import no.nordicsemi.android.common.theme.view.AppBarIcon
+import no.nordicsemi.android.common.ui.view.AppBarIcon
 
 @Composable
 fun LoggerAppBarIcon(

@@ -41,8 +41,8 @@ import no.nordicsemi.android.common.test.main.page.FontsPage
 import no.nordicsemi.android.common.test.main.page.WarningPage
 import no.nordicsemi.android.common.test.main.page.WizardPage
 import no.nordicsemi.android.common.test.simple.HelloDestinations
-import no.nordicsemi.android.common.theme.view.PagerView
-import no.nordicsemi.android.common.theme.view.PagerViewEntity
+import no.nordicsemi.android.common.ui.view.PagerView
+import no.nordicsemi.android.common.ui.view.PagerViewEntity
 
 /** This is the destination identifier. */
 val Main = createSimpleDestination("main")

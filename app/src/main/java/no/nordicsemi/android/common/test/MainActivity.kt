@@ -35,12 +35,31 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Album
+import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.Navigation
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,14 +73,30 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.logger.view.LoggerAppBarIcon
-import no.nordicsemi.android.common.navigation.*
+import no.nordicsemi.android.common.navigation.DestinationId
+import no.nordicsemi.android.common.navigation.NavigationView
+import no.nordicsemi.android.common.navigation.Navigator
+import no.nordicsemi.android.common.navigation.createSimpleDestination
+import no.nordicsemi.android.common.navigation.popUpToStartDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
+import no.nordicsemi.android.common.navigation.with
 import no.nordicsemi.android.common.test.main.MainDestinations
-import no.nordicsemi.android.common.test.simple.*
-import no.nordicsemi.android.common.test.tab.*
+import no.nordicsemi.android.common.test.simple.Advanced
+import no.nordicsemi.android.common.test.simple.AdvancedDestination
+import no.nordicsemi.android.common.test.simple.Hello
+import no.nordicsemi.android.common.test.simple.HelloDialog
+import no.nordicsemi.android.common.test.simple.Settings
+import no.nordicsemi.android.common.test.simple.SettingsDestination
+import no.nordicsemi.android.common.test.tab.SecondDestinations
+import no.nordicsemi.android.common.test.tab.ThirdDestination
+import no.nordicsemi.android.common.test.tab.ThirdTab
 import no.nordicsemi.android.common.theme.NordicActivity
 import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.*
+import no.nordicsemi.android.common.ui.view.NavigationDrawerDividerDefaults
+import no.nordicsemi.android.common.ui.view.NavigationDrawerTitle
+import no.nordicsemi.android.common.ui.view.NavigationDrawerTitleDefaults
+import no.nordicsemi.android.common.ui.view.NordicAppBar
+import no.nordicsemi.android.common.ui.view.NordicLogo
 
 data class Item(val title: String, val destinationId: DestinationId<Unit, *>, val icon: ImageVector)
 
@@ -77,6 +112,7 @@ class MainActivity : NordicActivity() {
         super.onCreate(savedInstanceState)
 
         setDecorFitsSystemWindows(false)
+        enableEdgeToEdge() // <- This is the Way.
 
         val menuItems = listOf(
             Item("Main", Tabs, Icons.Filled.Verified),

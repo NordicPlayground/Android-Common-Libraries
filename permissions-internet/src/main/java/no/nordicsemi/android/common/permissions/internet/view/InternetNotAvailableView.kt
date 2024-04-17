@@ -36,13 +36,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BluetoothDisabled
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permissions.internet.R
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
 internal fun InternetNotAvailableView() {
@@ -59,7 +59,7 @@ internal fun InternetNotAvailableView() {
 @Preview
 @Composable
 private fun BluetoothNotAvailableView_Preview() {
-    NordicTheme {
+    MaterialTheme {
         InternetNotAvailableView()
     }
 }
