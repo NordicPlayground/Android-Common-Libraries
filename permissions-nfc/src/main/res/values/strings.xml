@@ -33,9 +33,9 @@
 <resources>
     <string name="action_enable">Enable</string>
 
-    <string name="nf_not_available_title">NFC NOT AVAILABLE</string>
-    <string name="nfc_not_available_info">Nfc is not available on your phone.\nWe cannot provide you the feature.</string>
+    <string name="nf_not_available_title">NFC NOT SUPPORTED</string>
+    <string name="nfc_not_available_info">"NFC not supported on this device.\nFeature unavailable.</string>
 
     <string name="nfc_disabled_title">NFC DISABLED</string>
-    <string name="nfc_disabled_info">The Nf is disabled.\nClick the button below to enable it.</string>
+    <string name="nfc_disabled_info">Click the button below to enable it.</string>
 </resources>
