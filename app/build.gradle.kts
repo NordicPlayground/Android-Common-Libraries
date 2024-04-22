@@ -48,7 +48,7 @@ dependencies {
     implementation(project(":permissions-ble"))
     implementation(project(":permissions-nfc"))
     implementation(project(":permissions-internet"))
-    implementation(project(":uilogger"))
+    implementation(project(":logger"))
 
     implementation(libs.androidx.compose.material.iconsExtended)
 
