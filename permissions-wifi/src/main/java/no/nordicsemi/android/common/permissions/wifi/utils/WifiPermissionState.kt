@@ -29,35 +29,32 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package no.nordicsemi.android.common.permissions.wifi.utils
+
+/**
+ * Represents the reason for Wi-Fi permission is not available.
+ */
+enum class WifiPermissionNotAvailableReason {
+    PERMISSION_REQUIRED,
+    NOT_AVAILABLE,
+    DISABLED,
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
+/**
+ * Represents the state of Wi-Fi permission.
+ */
+sealed class WifiPermissionState {
 
-include(":app")
-include(":core")
-include(":theme")
-include(":logger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":data")
-include(":permissions-wifi")
+    /**
+     * Represents the Wi-Fi permission is available.
+     */
+    data object Available : WifiPermissionState()
+
+    /**
+     * Represents the Wi-Fi permission is not available.
+     * @param reason The reason for Wi-Fi permission is not available.
+     */
+    data class NotAvailable(
+        val reason: WifiPermissionNotAvailableReason,
+    ) : WifiPermissionState()
+}
