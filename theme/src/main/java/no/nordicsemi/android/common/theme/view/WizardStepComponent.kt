@@ -115,7 +115,8 @@ fun WizardStepComponent(
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(48.dp)
-                            .padding(8.dp)
+                            .padding(8.dp),
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }
                 else -> {}

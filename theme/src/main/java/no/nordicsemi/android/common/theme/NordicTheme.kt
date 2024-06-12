@@ -39,6 +39,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 
 @Composable
@@ -61,6 +62,10 @@ fun NordicTheme(content: @Composable () -> Unit) {
         onBackground = colorResource(id = R.color.md_theme_onBackground),
         surface = colorResource(id = R.color.md_theme_surface),
         onSurface = colorResource(id = R.color.md_theme_onSurface),
+        surfaceContainer = colorResource(id = R.color.md_theme_surfaceContainer),
+        surfaceContainerLow = colorResource(id = R.color.md_theme_surfaceContainerLow),
+        surfaceContainerHigh = colorResource(id = R.color.md_theme_surfaceContainerHigh),
+        surfaceContainerHighest = colorResource(id = R.color.md_theme_surfaceContainerHighest),
         surfaceVariant = colorResource(id = R.color.md_theme_surfaceVariant),
         onSurfaceVariant = colorResource(id = R.color.md_theme_onSurfaceVariant),
         inverseSurface = colorResource(id = R.color.md_theme_inverseSurface),
@@ -89,6 +94,10 @@ fun NordicTheme(content: @Composable () -> Unit) {
         background = colorResource(id = R.color.md_theme_background),
         onBackground = colorResource(id = R.color.md_theme_onBackground),
         surface = colorResource(id = R.color.md_theme_surface),
+        surfaceContainer = colorResource(id = R.color.md_theme_surfaceContainer),
+        surfaceContainerLow = colorResource(id = R.color.md_theme_surfaceContainerLow),
+        surfaceContainerHigh = colorResource(id = R.color.md_theme_surfaceContainerHigh),
+        surfaceContainerHighest = colorResource(id = R.color.md_theme_surfaceContainerHighest),
         onSurface = colorResource(id = R.color.md_theme_onSurface),
         surfaceVariant = colorResource(id = R.color.md_theme_surfaceVariant),
         onSurfaceVariant = colorResource(id = R.color.md_theme_onSurfaceVariant),
