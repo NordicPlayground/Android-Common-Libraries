@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,36 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
+package no.nordicsemi.android.common.permissions.wifi.view
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import no.nordicsemi.android.common.permissions.wifi.R
+import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.theme.view.WarningView
+
+@Composable
+internal fun WifiNotAvailableView() {
+    WarningView(
+        imageVector = Icons.Default.WifiOff,
+        title = stringResource(id = R.string.wifi_not_available),
+        hint = stringResource(id = R.string.wifi_not_available_des),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    )
 }
 
-group = "no.nordicsemi.android.common"
-
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
-
-dependencies {
-    implementation(project(":logger"))
-
-    implementation(project(":theme"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions-ble"))
-    implementation(project(":permissions-nfc"))
-    implementation(project(":permissions-wifi"))
-    implementation(project(":permissions-internet"))
-    implementation(project(":logger"))
-
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+@Preview
+@Composable
+private fun WifiNotAvailableView_Preview() {
+    NordicTheme {
+        WifiNotAvailableView()
+    }
 }

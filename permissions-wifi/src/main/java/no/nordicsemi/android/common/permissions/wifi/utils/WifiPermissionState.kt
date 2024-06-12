@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,36 +29,32 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.application.compose)
-    alias(libs.plugins.nordic.hilt)
+package no.nordicsemi.android.common.permissions.wifi.utils
+
+/**
+ * Represents the reason for Wi-Fi permission is not available.
+ */
+enum class WifiPermissionNotAvailableReason {
+    PERMISSION_REQUIRED,
+    NOT_AVAILABLE,
+    DISABLED,
 }
 
-group = "no.nordicsemi.android.common"
+/**
+ * Represents the state of Wi-Fi permission.
+ */
+sealed class WifiPermissionState {
 
-android {
-    namespace = "no.nordicsemi.android.common.test"
-}
+    /**
+     * Represents the Wi-Fi permission is available.
+     */
+    data object Available : WifiPermissionState()
 
-dependencies {
-    implementation(project(":logger"))
-
-    implementation(project(":theme"))
-    implementation(project(":navigation"))
-    implementation(project(":permissions-ble"))
-    implementation(project(":permissions-nfc"))
-    implementation(project(":permissions-wifi"))
-    implementation(project(":permissions-internet"))
-    implementation(project(":logger"))
-
-    implementation(libs.androidx.compose.material.iconsExtended)
-
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation(libs.leakcanary)
+    /**
+     * Represents the Wi-Fi permission is not available.
+     * @param reason The reason for Wi-Fi permission is not available.
+     */
+    data class NotAvailable(
+        val reason: WifiPermissionNotAvailableReason,
+    ) : WifiPermissionState()
 }

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright (c) 2022, Nordic Semiconductor
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2024, Nordic Semiconductor
   ~ All rights reserved.
   ~
   ~ Redistribution and use in source and binary forms, with or without modification, are
@@ -29,40 +28,19 @@
   ~ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
   ~ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
+<resources>
+    <string name="location_permission_required">LOCATION PERMISSION REQUIRED</string>
+    <string name="location_permission_required_des">Location permission is required to scan for Wi-Fi networks.</string>
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <!--
-     Location permission, it will replace any existing location permission in the merged manifest.
-     This app does not use this location information in any way.
-     Since Android 10 ACCESS_FINE_LOCATION is required and for that, the COARSE one also needs
-     to be specified.
-    -->
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"
-        tools:node="replace" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        tools:node="replace" />
+    <string name="wifi_permission_required">WI-FI PERMISSION REQUIRED</string>
+    <string name="wifi_permission_required_des">Wi-Fi permission is required to scan for Wi-Fi networks.</string>
+    <string name="wifi_disabled">WI-FI DISABLED</string>
+    <string name="wifi_disabled_des">Wi-Fi is disabled. Please enable Wi-Fi to scan for Wi-Fi networks.</string>
+    <string name="enable_wifi">Enable Wi-Fi</string>
+    <string name="wifi_not_available">WI-FI NOT AVAILABLE</string>
+    <string name="wifi_not_available_des">Wi-Fi is not available on this device.</string>
 
-    <application
-        android:allowBackup="true"
-        android:name=".TestApplication"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/NordicTheme">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/NordicTheme.SplashScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <string name="grant_permission">Grant Permission</string>
+    <string name="settings">Settings</string>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
-
-</manifest>
+</resources>

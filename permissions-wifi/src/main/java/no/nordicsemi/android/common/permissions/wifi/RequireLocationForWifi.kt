@@ -29,35 +29,39 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package no.nordicsemi.android.common.permissions.wifi
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.view.LocationPermissionRequiredView
+import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
+
+@Composable
+fun RequireLocationForWifi(
+    onChanged: (Boolean) -> Unit = {},
+    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
+    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+) {
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state by viewModel.locationPermission.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state) {
+        onChanged(
+            state is WifiPermissionState.Available ||
+                    (state as WifiPermissionState.NotAvailable).reason == WifiPermissionNotAvailableReason.DISABLED
+        )
+    }
+
+    when (val s = state) {
+        WifiPermissionState.Available -> content(false)
+        is WifiPermissionState.NotAvailable -> when (s.reason) {
+            WifiPermissionNotAvailableReason.DISABLED -> content(true)
+            else -> contentWithoutLocation()
+        }
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":logger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":data")
