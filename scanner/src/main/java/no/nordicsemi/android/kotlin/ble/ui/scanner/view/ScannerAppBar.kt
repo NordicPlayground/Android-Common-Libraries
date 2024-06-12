@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2022, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,37 +29,40 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
+package no.nordicsemi.android.kotlin.ble.ui.scanner.view
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.theme.view.NordicAppBar
 
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-//include(":scanner")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":data")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScannerAppBar(
+    text: String,
+    showProgress: Boolean = false,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    onNavigationButtonClick: (() -> Unit)? = null,
+) {
+    NordicAppBar(
+        text = text,
+        backButtonIcon = backButtonIcon,
+        onNavigationButtonClick = onNavigationButtonClick,
+        actions = {
+            if (showProgress) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(horizontal = 16.dp).size(30.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
+    )
+}

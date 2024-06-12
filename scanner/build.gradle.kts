@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2022, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,37 +29,36 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+plugins {
+    alias(libs.plugins.nordic.feature)
+    alias(libs.plugins.nordic.nexus.android)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
+group = "no.nordicsemi.android.common"
 
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-//include(":scanner")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":data")
+nordicNexusPublishing {
+    POM_ARTIFACT_ID = "scanner"
+    POM_NAME = "Nordic Kotlin library for BLE server side."
+
+    POM_DESCRIPTION = "Nordic Android Kotlin BLE library"
+    POM_URL = "https://github.com/NordicPlayground/Kotlin-BLE-Library"
+    POM_SCM_URL = "https://github.com/NordicPlayground/Kotlin-BLE-Library"
+    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Kotlin-BLE-Library.git"
+    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Kotlin-BLE-Library.git"
+}
+
+android {
+    namespace = "no.nordicsemi.android.common.scanner"
+}
+
+dependencies {
+    implementation(project(":theme"))
+    implementation(project(":core"))
+    implementation(project(":permissions-ble"))
+
+    api(libs.nordic.blek.client.android)
+
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.iconsExtended)
+}

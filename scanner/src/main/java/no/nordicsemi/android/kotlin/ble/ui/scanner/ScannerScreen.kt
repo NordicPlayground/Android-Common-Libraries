@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -28,38 +28,43 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package no.nordicsemi.android.kotlin.ble.ui.scanner
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+import android.os.ParcelUuid
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import no.nordicsemi.android.kotlin.ble.ui.scanner.main.DeviceListItem
+import no.nordicsemi.android.kotlin.ble.ui.scanner.view.ScannerAppBar
+import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
+
+@Composable
+fun ScannerScreen(
+    title: String = stringResource(id = R.string.scanner_screen),
+    uuid: ParcelUuid?,
+    cancellable: Boolean = true,
+    onResult: (ScannerScreenResult) -> Unit,
+    deviceItem: @Composable (BleScanResults) -> Unit = {
+        DeviceListItem(it.advertisedName ?: it.device.name, it.device.address)
+    }
+) {
+    var isScanning by rememberSaveable { mutableStateOf(false) }
+
+    Column {
+        if (cancellable) {
+            ScannerAppBar(title, isScanning) { onResult(ScanningCancelled) }
+        } else {
+            ScannerAppBar(title, isScanning)
+        }
+        ScannerView(
+            uuid = uuid,
+            onScanningStateChanged = { isScanning = it },
+            onResult = { onResult(DeviceSelected(it)) },
+            deviceItem = deviceItem,
+        )
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
-    }
-}
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-//include(":scanner")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":data")
