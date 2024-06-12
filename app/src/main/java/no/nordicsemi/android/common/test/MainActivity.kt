@@ -32,8 +32,10 @@
 package no.nordicsemi.android.common.test
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -111,8 +113,9 @@ class MainActivity : NordicActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setDecorFitsSystemWindows(false)
-        enableEdgeToEdge() // <- This is the Way.
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
 
         val menuItems = listOf(
             Item("Main", Tabs, Icons.Filled.Verified),
