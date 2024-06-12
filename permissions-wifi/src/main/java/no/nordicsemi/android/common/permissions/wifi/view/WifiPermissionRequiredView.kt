@@ -63,12 +63,17 @@ import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewMod
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.theme.view.WarningView
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 internal fun WifiPermissionRequiredView() {
     val viewModel: PermissionViewModel = hiltViewModel()
     val context = LocalContext.current
-    var permissionDenied by remember { mutableStateOf(viewModel.isWifiPermissionDeniedForever(context)) }
+    var permissionDenied by remember {
+        mutableStateOf(
+            viewModel.isWifiPermissionDeniedForever(
+                context
+            )
+        )
+    }
 
     WarningView(
         imageVector = Icons.Default.WifiOff,
@@ -79,7 +84,8 @@ internal fun WifiPermissionRequiredView() {
             .verticalScroll(rememberScrollState())
     ) {
         val requiredPermissions = arrayOf(
-            Manifest.permission.NEARBY_WIFI_DEVICES,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                Manifest.permission.NEARBY_WIFI_DEVICES else Manifest.permission.CHANGE_WIFI_STATE,
         )
 
         val launcher = rememberLauncherForActivityResult(

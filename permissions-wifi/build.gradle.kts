@@ -6,8 +6,8 @@ plugins {
 group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
-    POM_ARTIFACT_ID = "permissions-nfc"
-    POM_NAME = "Nordic library for checking required nfc permission."
+    POM_ARTIFACT_ID = "permissions-wifi"
+    POM_NAME = "Nordic library for checking permissions required for scanning for Wi-Fi networks."
 
     POM_DESCRIPTION = "Nordic Android Common Libraries"
     POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
