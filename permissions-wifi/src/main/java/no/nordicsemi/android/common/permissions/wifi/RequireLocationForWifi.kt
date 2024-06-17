@@ -46,7 +46,7 @@ import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewMod
 fun RequireLocationForWifi(
     onChanged: (Boolean) -> Unit = {},
     contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+    content: @Composable (isLocationAvailable: Boolean) -> Unit,
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val state by viewModel.locationPermission.collectAsStateWithLifecycle()
@@ -59,7 +59,7 @@ fun RequireLocationForWifi(
     }
 
     when (val s = state) {
-        WifiPermissionState.Available -> content(false)
+        WifiPermissionState.Available -> content(true)
         is WifiPermissionState.NotAvailable -> when (s.reason) {
             WifiPermissionNotAvailableReason.DISABLED -> LocationDisabledView()
             else -> contentWithoutLocation()
