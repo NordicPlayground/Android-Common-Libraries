@@ -36,9 +36,14 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -47,23 +52,22 @@ import no.nordicsemi.android.common.theme.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun NordicAppBar(
+fun NordicMediumAppBar(
     title: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     showHamburgerButton: Boolean = onHamburgerButtonClick != null,
-    expandedHeight: Dp = TopAppBarDefaults.TopAppBarExpandedHeight,
+    collapsedHeight: Dp = TopAppBarDefaults.MediumAppBarCollapsedHeight,
+    expandedHeight: Dp = TopAppBarDefaults.MediumAppBarExpandedHeight,
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    TopAppBar(
+    MediumTopAppBar(
         title = title,
-        modifier = modifier,
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -92,7 +96,8 @@ fun NordicAppBar(
         },
         actions = actions,
         scrollBehavior = scrollBehavior,
-        expandedHeight = expandedHeight,
         windowInsets = windowInsets,
+        collapsedHeight = collapsedHeight,
+        expandedHeight = expandedHeight,
     )
 }
