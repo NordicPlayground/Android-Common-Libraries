@@ -49,11 +49,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import no.nordicsemi.android.common.theme.R
 
-
 @ExperimentalMaterial3Api
 @Composable
 fun NordicMediumAppBar(
-    text: String,
+    title: String,
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
@@ -63,7 +62,7 @@ fun NordicMediumAppBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     NordicMediumAppBar(
-        title = { Text(text) },
+        title = { Text(title) },
         onNavigationButtonClick = onNavigationButtonClick,
         onHamburgerButtonClick = onHamburgerButtonClick,
         showBackButton = showBackButton,
