@@ -49,7 +49,7 @@ fun NordicAppBar(
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
-    backButtonIcon:ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     showHamburgerButton: Boolean = onHamburgerButtonClick != null,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -64,7 +64,7 @@ fun NordicAppBar(
         ),
         navigationIcon = {
             onNavigationButtonClick?.takeIf { showBackButton }?.let { action ->
-                IconButton(onClick = { action() }) {
+                IconButton(onClick = action) {
                     Icon(
                         imageVector = backButtonIcon,
                         contentDescription = stringResource(id = R.string.navigation_item_accessibility),
@@ -73,7 +73,7 @@ fun NordicAppBar(
                 }
             } ?: run {
                 onHamburgerButtonClick?.takeIf { showHamburgerButton }?.let { action ->
-                    IconButton(onClick = { action() }) {
+                    IconButton(onClick = action) {
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = stringResource(id = R.string.menu_item_accessibility),
