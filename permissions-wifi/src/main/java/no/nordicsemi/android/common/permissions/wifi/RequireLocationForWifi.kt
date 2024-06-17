@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.view.LocationDisabledView
 import no.nordicsemi.android.common.permissions.wifi.view.LocationPermissionRequiredView
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
 
@@ -60,7 +61,7 @@ fun RequireLocationForWifi(
     when (val s = state) {
         WifiPermissionState.Available -> content(false)
         is WifiPermissionState.NotAvailable -> when (s.reason) {
-            WifiPermissionNotAvailableReason.DISABLED -> content(true)
+            WifiPermissionNotAvailableReason.DISABLED -> LocationDisabledView()
             else -> contentWithoutLocation()
         }
     }
