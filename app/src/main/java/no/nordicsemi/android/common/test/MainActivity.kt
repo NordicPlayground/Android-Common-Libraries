@@ -162,7 +162,7 @@ class MainActivity : NordicActivity() {
                     Scaffold(
                         topBar = {
                             NordicAppBar(
-                                text = stringResource(id = R.string.title_main),
+                                title = stringResource(id = R.string.title_main),
                                 showBackButton = listOf(Hello, HelloDialog).contains(
                                     currentDestination
                                 ),

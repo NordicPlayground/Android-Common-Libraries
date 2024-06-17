@@ -45,7 +45,31 @@ import no.nordicsemi.android.common.theme.R
 @ExperimentalMaterial3Api
 @Composable
 fun NordicAppBar(
-    text: String,
+    title: @Composable () -> Unit = {},
+    onNavigationButtonClick: (() -> Unit)? = null,
+    onHamburgerButtonClick: (() -> Unit)? = null,
+    showBackButton: Boolean = onNavigationButtonClick != null,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    showHamburgerButton: Boolean = onHamburgerButtonClick != null,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    NordicAppBar(
+        title = title,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onHamburgerButtonClick = onHamburgerButtonClick,
+        showBackButton = showBackButton,
+        backButtonIcon = backButtonIcon,
+        showHamburgerButton = showHamburgerButton,
+        scrollBehavior = scrollBehavior,
+        actions = actions,
+    )
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun NordicAppBar(
+    title: String,
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
@@ -55,7 +79,7 @@ fun NordicAppBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
-        title = { Text(text) },
+        title = { Text(title) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,

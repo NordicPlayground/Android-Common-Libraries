@@ -46,7 +46,29 @@ import no.nordicsemi.android.common.theme.R
 
 @Composable
 fun NordicLargeAppBar(
-    text: String,
+    title: @Composable () -> Unit = {},
+    onNavigationButtonClick: (() -> Unit)? = null,
+    onHamburgerButtonClick: (() -> Unit)? = null,
+    showBackButton: Boolean = onNavigationButtonClick != null,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    showHamburgerButton: Boolean = onHamburgerButtonClick != null,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    NordicLargeAppBar(
+        title = title,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onHamburgerButtonClick = onHamburgerButtonClick,
+        showBackButton = showBackButton,
+        backButtonIcon = backButtonIcon,
+        showHamburgerButton = showHamburgerButton,
+        scrollBehavior = scrollBehavior,
+        actions = actions,
+    )
+}
+@Composable
+fun NordicLargeAppBar(
+    title: String,
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
@@ -56,7 +78,7 @@ fun NordicLargeAppBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     LargeTopAppBar(
-        title = { Text(text) },
+        title = { Text(title) },
         colors = TopAppBarDefaults.largeTopAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
