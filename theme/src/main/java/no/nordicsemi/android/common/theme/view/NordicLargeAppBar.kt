@@ -34,51 +34,43 @@
 package no.nordicsemi.android.common.theme.view
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import no.nordicsemi.android.common.theme.R
 
 @Composable
 fun NordicLargeAppBar(
-    title: @Composable () -> Unit = {},
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     showHamburgerButton: Boolean = onHamburgerButtonClick != null,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    actions: @Composable RowScope.() -> Unit = {},
-) {
-    NordicLargeAppBar(
-        title = title,
-        onNavigationButtonClick = onNavigationButtonClick,
-        onHamburgerButtonClick = onHamburgerButtonClick,
-        showBackButton = showBackButton,
-        backButtonIcon = backButtonIcon,
-        showHamburgerButton = showHamburgerButton,
-        scrollBehavior = scrollBehavior,
-        actions = actions,
-    )
-}
-@Composable
-fun NordicLargeAppBar(
-    title: String,
-    onNavigationButtonClick: (() -> Unit)? = null,
-    onHamburgerButtonClick: (() -> Unit)? = null,
-    showBackButton: Boolean = onNavigationButtonClick != null,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    showHamburgerButton: Boolean = onHamburgerButtonClick != null,
+    collapsedHeight: Dp = TopAppBarDefaults.LargeAppBarCollapsedHeight,
+    expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
+    windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     LargeTopAppBar(
-        title = { Text(title) },
+        title = title,
+        modifier = modifier,
         colors = TopAppBarDefaults.largeTopAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -108,5 +100,8 @@ fun NordicLargeAppBar(
         },
         actions = actions,
         scrollBehavior = scrollBehavior,
+        collapsedHeight = collapsedHeight,
+        expandedHeight = expandedHeight,
+        windowInsets = windowInsets,
     )
 }
