@@ -35,5 +35,5 @@
     <string name="navigation_item_accessibility">Back</string>
     <string name="menu_item_accessibility">Menu</string>
 
-    <string name="dbm">%d dBm</string>
+    <string name="dbm">%d&#xA0;dBm</string>
 </resources>

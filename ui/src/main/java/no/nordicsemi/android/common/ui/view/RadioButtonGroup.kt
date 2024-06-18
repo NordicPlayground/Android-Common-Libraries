@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 
 data class RadioGroupViewEntity(
     val items: List<RadioButtonItem>,
@@ -52,7 +53,10 @@ data class RadioButtonItem(
 )
 
 @Composable
-fun RadioButtonGroup(viewEntity: RadioGroupViewEntity, onItemClick: (RadioButtonItem) -> Unit) {
+fun RadioButtonGroup(
+    viewEntity: RadioGroupViewEntity,
+    onItemClick: (RadioButtonItem) -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
@@ -81,5 +85,41 @@ fun HorizontalLabelRadioButtonGroup(
                 Text(text = it.label, style = MaterialTheme.typography.labelMedium)
             }
         }
+    }
+}
+
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Composable
+private fun RadioButtonGroupPreview() {
+    MaterialTheme {
+        RadioButtonGroup(
+            viewEntity = RadioGroupViewEntity(
+                listOf(
+                    RadioButtonItem(label = "Option 1", isChecked = true),
+                    RadioButtonItem(label = "Option 2", isChecked = false),
+                    RadioButtonItem(label = "Option 3", isChecked = false),
+                    RadioButtonItem(label = "Option 4", isChecked = false),
+                )
+            ),
+            onItemClick = {}
+        )
+    }
+}
+
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Composable
+private fun HorizontalLabelRadioButtonGroupPreview() {
+    MaterialTheme {
+        HorizontalLabelRadioButtonGroup(
+            viewEntity = RadioGroupViewEntity(
+                listOf(
+                    RadioButtonItem(label = "Option 1", isChecked = true),
+                    RadioButtonItem(label = "Option 2", isChecked = false),
+                    RadioButtonItem(label = "Option 3", isChecked = false),
+                    RadioButtonItem(label = "Option 4", isChecked = false),
+                )
+            ),
+            onItemClick = {}
+        )
     }
 }

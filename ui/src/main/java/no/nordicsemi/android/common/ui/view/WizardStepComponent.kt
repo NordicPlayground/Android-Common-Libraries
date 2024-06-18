@@ -31,29 +31,50 @@
 
 package no.nordicsemi.android.common.ui.view
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 sealed class WizardStepAction {
@@ -174,7 +195,6 @@ private fun ActionButton(
         OutlinedButton(
             modifier = modifier,
             onClick = action.onClick,
-            enabled = action.enabled,
             colors = if (action.dangerous) {
                 ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
@@ -200,6 +220,118 @@ private fun ActionButton(
             },
         ) {
             Text(text = action.text)
+        }
+    }
+}
+
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Composable
+private fun WizardScreen() {
+    Box(
+        modifier = Modifier,
+        contentAlignment = Alignment.TopCenter
+    ) {
+        OutlinedCard(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .widthIn(max = 600.dp)
+                .padding(all = 16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                WizardStepComponent(
+                    icon = Icons.Default.Warning,
+                    title = "Identify",
+                    state = WizardStepState.COMPLETED,
+                    decor = WizardStepAction.Action(
+                        text = "Action",
+                        onClick = { }
+                    ),
+                ) {
+                    Text(text = "Identified")
+                }
+                WizardStepComponent(
+                    icon = Icons.Default.AccountBox,
+                    title = "Account",
+                    state = WizardStepState.CURRENT,
+                    decor = WizardStepAction.Action(
+                        text = "Action",
+                        onClick = { }
+                    ),
+                ) {
+                    Text(text = "Select color")
+                }
+                WizardStepComponent(
+                    icon = Icons.Default.AccountCircle,
+                    title = "Connect",
+                    state = WizardStepState.CURRENT,
+                    decor = WizardStepAction.ProgressIndicator,
+                    showVerticalDivider = false,
+                ) {
+                    ProgressItem(
+                        text = "Completed",
+                        status = ProgressItemStatus.SUCCESS,
+                        iconRightPadding = 24.dp,
+                    )
+
+                    val infiniteTransition =
+                        rememberInfiniteTransition(label = "ProgressTransition")
+                    val progress by infiniteTransition.animateFloat(
+                        initialValue = 0.0f,
+                        targetValue = 1.0f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(10000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                        ),
+                        label = "Progress"
+                    )
+
+                    ProgressItem(
+                        text = "In progress",
+                        status = ProgressItemStatus.WORKING,
+                        iconRightPadding = 24.dp,
+                    ) {
+                        LinearProgressIndicator(
+                            progress = { progress },
+                            modifier = Modifier.fillMaxWidth(),
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                            drawStopIndicator = {}
+                        )
+                        Text(
+                            text = "%.1f%%".format(progress * 100),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End
+                        )
+                    }
+
+                    ProgressItem(
+                        text = "Future",
+                        status = ProgressItemStatus.DISABLED,
+                        iconRightPadding = 24.dp,
+                    )
+
+                    ProgressItem(
+                        text = "Error happened",
+                        status = ProgressItemStatus.ERROR,
+                        iconRightPadding = 24.dp,
+                    )
+                }
+                WizardStepComponent(
+                    icon = Icons.Default.Build,
+                    title = "Destroy",
+                    state = WizardStepState.INACTIVE,
+                    decor = WizardStepAction.Action(
+                        text = "Terminate",
+                        dangerous = true,
+                        onClick = { }
+                    ),
+                ) {
+                    Text(text = "Engage warp 4")
+                }
+            }
         }
     }
 }

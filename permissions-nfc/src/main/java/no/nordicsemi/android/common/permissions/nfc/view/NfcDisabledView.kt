@@ -70,7 +70,7 @@ private fun enableNfc(context: Context) {
     context.startActivity(Intent(Settings.ACTION_NFC_SETTINGS))
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun NfcDisabledView_Preview() {
     MaterialTheme {

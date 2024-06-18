@@ -56,7 +56,7 @@ internal fun InternetNotAvailableView() {
     )
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun BluetoothNotAvailableView_Preview() {
     MaterialTheme {

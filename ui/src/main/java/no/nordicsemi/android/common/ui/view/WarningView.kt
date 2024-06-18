@@ -37,19 +37,21 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.view.internal.BigIcon
 import no.nordicsemi.android.common.ui.view.internal.Hint
-import no.nordicsemi.android.common.ui.view.internal.Title
 
 @Composable
 fun WarningView(
@@ -60,19 +62,14 @@ fun WarningView(
     hintTextAlign: TextAlign? = TextAlign.Center,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    WarningView(
+        painterResource = rememberVectorPainter(image = imageVector),
+        title = title,
+        hint = AnnotatedString(text = hint),
         modifier = modifier,
-    ) {
-        BigIcon(imageVector = imageVector)
-
-        Title(text = title)
-
-        Hint(text = hint, textAlign = hintTextAlign)
-
-        content()
-    }
+        hintTextAlign = hintTextAlign,
+        content = content,
+    )
 }
 
 @Composable
@@ -84,19 +81,32 @@ fun WarningView(
     hintTextAlign: TextAlign? = TextAlign.Center,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
-    Column(
+    WarningView(
+        painterResource = rememberVectorPainter(image = imageVector),
+        title = title,
+        hint = hint,
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        BigIcon(imageVector = imageVector)
+        hintTextAlign = hintTextAlign,
+        content = content,
+    )
+}
 
-        Title(text = title)
-
-        Hint(text = hint, textAlign = hintTextAlign)
-
-        content()
-    }
+@Composable
+fun WarningView(
+    painterResource: Painter,
+    title: String,
+    hint: AnnotatedString,
+    modifier: Modifier = Modifier,
+    hintTextAlign: TextAlign? = TextAlign.Center,
+    content: @Composable ColumnScope.() -> Unit = {}
+) {
+    WarningView(
+        painterResource = painterResource,
+        title = { Text(text = title) },
+        hint = { Hint(text = hint, textAlign = hintTextAlign) },
+        modifier = modifier,
+        content = content,
+    )
 }
 
 @Composable
@@ -108,6 +118,40 @@ fun WarningView(
     hintTextAlign: TextAlign? = TextAlign.Center,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
+    WarningView(
+        painterResource = painterResource,
+        title = { Text(text = title) },
+        hint = { Hint(text = hint, textAlign = hintTextAlign) },
+        modifier = modifier,
+        content = content,
+    )
+}
+
+@Composable
+fun WarningView(
+    imageVector: ImageVector,
+    title: @Composable () -> Unit,
+    hint: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit = {}
+) {
+    WarningView(
+        painterResource = rememberVectorPainter(image = imageVector),
+        title = title,
+        hint = hint,
+        modifier = modifier,
+        content = content,
+    )
+}
+
+@Composable
+fun WarningView(
+    painterResource: Painter,
+    title: @Composable () -> Unit,
+    hint: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit = {}
+) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -115,15 +159,15 @@ fun WarningView(
     ) {
         BigIcon(painterResource = painterResource)
 
-        Title(text = title)
+        title()
 
-        Hint(text = hint, textAlign = hintTextAlign)
+        hint()
 
         content()
     }
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun WarningViewPreview() {
     MaterialTheme {
@@ -132,6 +176,10 @@ private fun WarningViewPreview() {
             title = "Warning",
             hint = "This is a warning view",
             modifier = Modifier.fillMaxSize(),
-        )
+        ) {
+            Button(onClick = { /*TODO*/ }) {
+                Text(text = "This is content")
+            }
+        }
     }
 }

@@ -143,7 +143,7 @@ private fun ProgressItemPreview_Working() {
     }
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun ProgressItemPreview_Success() {
     MaterialTheme {
@@ -154,7 +154,7 @@ private fun ProgressItemPreview_Success() {
     }
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun ProgressItemPreview_Disabled() {
     MaterialTheme {
@@ -165,7 +165,7 @@ private fun ProgressItemPreview_Disabled() {
     }
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun ProgressItemPreview_Error() {
     MaterialTheme {

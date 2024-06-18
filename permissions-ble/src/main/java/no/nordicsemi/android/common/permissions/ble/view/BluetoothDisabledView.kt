@@ -73,7 +73,7 @@ private fun enableBluetooth(context: Context) {
     context.startActivity(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun BluetoothDisabledView_Preview() {
     MaterialTheme {

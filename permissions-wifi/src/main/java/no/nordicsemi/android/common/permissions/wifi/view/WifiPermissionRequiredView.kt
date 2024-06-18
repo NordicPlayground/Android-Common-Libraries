@@ -119,8 +119,7 @@ private fun openPermissionSettings(context: Context) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun WifiPermissionRequiredViewPreview() {
     MaterialTheme {

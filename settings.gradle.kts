@@ -45,7 +45,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-        maven(url = "https://jitpack.io")
     }
 }
 rootProject.name = "Common Libraries"
@@ -55,7 +54,6 @@ include(":core")
 include(":theme")
 include(":ui")
 include(":logger")
-//include(":scanner")
 include(":navigation")
 include(":analytics")
 include(":permissions-ble")

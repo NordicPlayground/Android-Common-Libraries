@@ -33,7 +33,9 @@ package no.nordicsemi.android.common.ui.view
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NetworkWifi
 import androidx.compose.material.icons.filled.NetworkWifi1Bar
@@ -45,6 +47,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.R
 
 private const val MEDIUM_RSSI = -80
@@ -62,7 +66,6 @@ fun RssiIcon(rssi: Int) {
             style = MaterialTheme.typography.labelSmall
         )
     }
-
 }
 
 @DrawableRes
@@ -79,5 +82,22 @@ fun getWiFiRes(rssi: Int): ImageVector {
         rssi < MEDIUM_RSSI -> Icons.Default.NetworkWifi1Bar
         rssi < MAX_RSSI -> Icons.Default.NetworkWifi3Bar
         else -> Icons.Default.NetworkWifi
+    }
+}
+
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true, widthDp = 500)
+@Composable
+private fun RssiIconPreview() {
+    MaterialTheme {
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            RssiIcon(rssi = -30)
+            RssiIcon(rssi = -40)
+            RssiIcon(rssi = -50)
+            RssiIcon(rssi = -60)
+            RssiIcon(rssi = -70)
+            RssiIcon(rssi = -80)
+            RssiIcon(rssi = -90)
+            RssiIcon(rssi = -100)
+        }
     }
 }

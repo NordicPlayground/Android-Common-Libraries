@@ -124,7 +124,7 @@ private fun openPermissionSettings(context: Context) {
     )
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun LocationPermissionRequiredView_Preview() {
     MaterialTheme {

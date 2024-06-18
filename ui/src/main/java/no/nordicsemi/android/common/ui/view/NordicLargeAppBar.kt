@@ -35,12 +35,15 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -48,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import no.nordicsemi.android.common.ui.R
 
@@ -103,4 +107,25 @@ fun NordicLargeAppBar(
         expandedHeight = expandedHeight,
         windowInsets = windowInsets,
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Composable
+private fun NordicLargeAppBarPreview() {
+    MaterialTheme {
+        NordicLargeAppBar(
+            title = { Text(text = "Title") },
+            actions = {
+                IconButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                }
+                IconButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "")
+                }
+            },
+            onHamburgerButtonClick = {},
+            showHamburgerButton = true,
+        )
+    }
 }

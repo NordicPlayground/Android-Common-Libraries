@@ -71,7 +71,7 @@ private fun enableWifi(context: Context) {
     context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun WifiDisabledViewPreview() {
     MaterialTheme {

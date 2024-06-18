@@ -46,10 +46,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -73,6 +78,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
@@ -245,4 +251,49 @@ private fun Scrim(onClose: () -> Unit, modifier: Modifier = Modifier) {
                 }
             }
     )
+}
+
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true, heightDp = 200)
+@Composable
+private fun FloatingActionMenuPreview() {
+    MaterialTheme {
+        Scaffold(
+            floatingActionButton = {
+                var showDialog by remember { mutableStateOf(false) }
+
+                FloatingActionMenu(
+                    onDismissRequest = { showDialog = false },
+                    expanded = showDialog,
+                    menuContent = {
+                        FloatingActionMenuItem(
+                            label = "Option 1",
+                            imageVector = Icons.Default.Add,
+                            onClick = { /*TODO*/ }
+                        )
+                        FloatingActionMenuItem(
+                            label = "Option 2",
+                            imageVector = Icons.Default.Restore,
+                            onClick = { /*TODO*/ }
+                        )
+                    }
+                ) {
+                    ExtendedFloatingActionButton(
+                        text = { Text(text = "Menu") },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                            )
+                        },
+                        // Open the dialog when the FAB is clicked.
+                        onClick = { showDialog = true },
+                        // Collapse the FAB when the dialog is shown.
+                        expanded = !showDialog
+                    )
+                }
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding))
+        }
+    }
 }

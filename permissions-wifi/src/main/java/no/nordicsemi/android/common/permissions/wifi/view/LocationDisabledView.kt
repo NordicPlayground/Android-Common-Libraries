@@ -71,7 +71,7 @@ private fun enableLocation(context: Context) {
     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun LocationDisabledViewPreview() {
     MaterialTheme {

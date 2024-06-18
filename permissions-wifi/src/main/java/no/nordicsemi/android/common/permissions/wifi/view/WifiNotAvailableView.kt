@@ -56,7 +56,7 @@ internal fun WifiNotAvailableView() {
     )
 }
 
-@Preview
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun WifiNotAvailableView_Preview() {
     MaterialTheme {
