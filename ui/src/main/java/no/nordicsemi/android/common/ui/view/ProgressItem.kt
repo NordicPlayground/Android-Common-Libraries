@@ -32,11 +32,15 @@
 package no.nordicsemi.android.common.ui.view
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -65,7 +69,7 @@ fun ProgressItem(
     text: String,
     status: ProgressItemStatus,
     modifier: Modifier = Modifier,
-    iconRightPadding: Dp = 16.dp,
+    iconRightPadding: Dp = 24.dp,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Row(
@@ -88,6 +92,27 @@ fun ProgressItem(
                 )
                 content()
             }
+        }
+    }
+}
+
+@Composable
+fun StatusItem(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .height(IntrinsicSize.Min)
+    ) {
+        VerticalDivider(
+            modifier = Modifier.padding(start = 10.dp, end = 26.dp)
+        )
+        Column(
+            modifier = Modifier.padding(start = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            content()
         }
     }
 }

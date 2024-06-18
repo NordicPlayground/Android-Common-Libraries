@@ -63,6 +63,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.view.PagerViewItem
 import no.nordicsemi.android.common.ui.view.ProgressItem
 import no.nordicsemi.android.common.ui.view.ProgressItemStatus
+import no.nordicsemi.android.common.ui.view.StatusItem
 import no.nordicsemi.android.common.ui.view.WizardStepAction
 import no.nordicsemi.android.common.ui.view.WizardStepComponent
 import no.nordicsemi.android.common.ui.view.WizardStepState
@@ -92,7 +93,9 @@ private fun WizardScreen() {
                     onClick = { }
                 ),
             ) {
-                Text(text = stringResource(id = R.string.wizard_text_completed))
+                StatusItem {
+                    Text(text = stringResource(id = R.string.wizard_text_completed))
+                }
             }
             WizardStepComponent(
                 icon = Icons.Default.AccountBox,
@@ -103,14 +106,15 @@ private fun WizardScreen() {
                     onClick = { }
                 ),
             ) {
-                Text(text = stringResource(id = R.string.wizard_text_current))
+                StatusItem {
+                    Text(text = stringResource(id = R.string.wizard_text_current))
+                }
             }
             WizardStepComponent(
                 icon = Icons.Default.AccountCircle,
                 title = stringResource(id = R.string.wizard_step_in_progress),
                 state = WizardStepState.CURRENT,
                 decor = WizardStepAction.ProgressIndicator,
-                showVerticalDivider = false,
             ) {
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_text_completed),
@@ -169,7 +173,9 @@ private fun WizardScreen() {
                     onClick = { }
                 ),
             ) {
-                Text(text = stringResource(id = R.string.wizard_text_inactive))
+                StatusItem {
+                    Text(text = stringResource(id = R.string.wizard_text_inactive))
+                }
             }
         }
     }

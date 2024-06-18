@@ -31,6 +31,7 @@
 
 package no.nordicsemi.android.common.ui.view
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -41,11 +42,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -64,16 +64,21 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -124,7 +129,42 @@ fun WizardStepComponent(
     decor: WizardStepAction? = null,
     color: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(color),
-    showVerticalDivider: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    WizardStepComponent(
+        icon = icon,
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        state = state,
+        modifier = modifier,
+        decor = decor,
+        contentColor = contentColor,
+        content = content,
+    )
+}
+
+/**
+ * A wizard step component.
+ *
+ * @param icon The icon will be placed in a circular container.
+ * @param title The title of the step.
+ * @param state Current state of the step.
+ * @param decor An optional action or decoration that will be shown on the right.
+ */
+@Composable
+fun WizardStepComponent(
+    icon: ImageVector,
+    title: @Composable () -> Unit,
+    state: WizardStepState,
+    modifier: Modifier = Modifier,
+    decor: WizardStepAction? = null,
+    contentColor: Color = LocalContentColor.current,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier = modifier) {
@@ -135,11 +175,9 @@ fun WizardStepComponent(
 
             Spacer(modifier = Modifier.size(16.dp))
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(1f)
-            )
+            Box(modifier = Modifier.weight(1.0f)) {
+                title()
+            }
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -159,27 +197,17 @@ fun WizardStepComponent(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .height(IntrinsicSize.Min)
+        CompositionLocalProvider(
+            LocalContentColor provides if (state == WizardStepState.INACTIVE)
+                contentColor.copy(alpha = 0.38f) else contentColor
         ) {
-            if (showVerticalDivider) {
-                VerticalDivider(
-                    modifier = Modifier.padding(start = 18.dp, end = 26.dp)
-                )
-            }
-
-            CompositionLocalProvider(
-                LocalContentColor provides if (state == WizardStepState.INACTIVE)
-                    contentColor.copy(alpha = 0.38f) else contentColor
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .padding(start = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Column(
-                    modifier = Modifier.padding(start = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    content()
-                }
+                content()
             }
         }
     }
@@ -224,112 +252,131 @@ private fun ActionButton(
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun WizardScreen() {
-    Box(
-        modifier = Modifier,
-        contentAlignment = Alignment.TopCenter
-    ) {
-        OutlinedCard(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .widthIn(max = 600.dp)
-                .padding(all = 16.dp),
+    MaterialTheme {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Column(
+            OutlinedCard(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .verticalScroll(rememberScrollState())
+                    .widthIn(max = 600.dp)
+                    .padding(all = 16.dp),
             ) {
-                WizardStepComponent(
-                    icon = Icons.Default.Warning,
-                    title = "Identify",
-                    state = WizardStepState.COMPLETED,
-                    decor = WizardStepAction.Action(
-                        text = "Action",
-                        onClick = { }
-                    ),
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 ) {
-                    Text(text = "Identified")
-                }
-                WizardStepComponent(
-                    icon = Icons.Default.AccountBox,
-                    title = "Account",
-                    state = WizardStepState.CURRENT,
-                    decor = WizardStepAction.Action(
-                        text = "Action",
-                        onClick = { }
-                    ),
-                ) {
-                    Text(text = "Select color")
-                }
-                WizardStepComponent(
-                    icon = Icons.Default.AccountCircle,
-                    title = "Connect",
-                    state = WizardStepState.CURRENT,
-                    decor = WizardStepAction.ProgressIndicator,
-                    showVerticalDivider = false,
-                ) {
-                    ProgressItem(
-                        text = "Completed",
-                        status = ProgressItemStatus.SUCCESS,
-                        iconRightPadding = 24.dp,
-                    )
-
-                    val infiniteTransition =
-                        rememberInfiniteTransition(label = "ProgressTransition")
-                    val progress by infiniteTransition.animateFloat(
-                        initialValue = 0.0f,
-                        targetValue = 1.0f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(10000, easing = LinearEasing),
-                            repeatMode = RepeatMode.Restart
+                    WizardStepComponent(
+                        icon = Icons.Default.Warning,
+                        title = "Identify",
+                        state = WizardStepState.COMPLETED,
+                        decor = WizardStepAction.Action(
+                            text = "Action",
+                            onClick = { }
                         ),
-                        label = "Progress"
-                    )
-
-                    ProgressItem(
-                        text = "In progress",
-                        status = ProgressItemStatus.WORKING,
-                        iconRightPadding = 24.dp,
                     ) {
-                        LinearProgressIndicator(
-                            progress = { progress },
-                            modifier = Modifier.fillMaxWidth(),
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                            drawStopIndicator = {}
-                        )
-                        Text(
-                            text = "%.1f%%".format(progress * 100),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End
-                        )
+                        StatusItem {
+                            Text(text = "Identified")
+                        }
                     }
+                    WizardStepComponent(
+                        icon = Icons.Default.AccountBox,
+                        title = "Very Long Title That Won't Fit",
+                        state = WizardStepState.CURRENT,
+                        decor = WizardStepAction.Action(
+                            text = "Action",
+                            onClick = { }
+                        ),
+                    ) {
+                        StatusItem {
+                            Text(text = "Select color")
+                        }
+                    }
+                    WizardStepComponent(
+                        icon = Icons.Default.AccountCircle,
+                        title = "Connect",
+                        state = WizardStepState.CURRENT,
+                        decor = WizardStepAction.ProgressIndicator,
+                    ) {
+                        ProgressItem(
+                            text = "Completed",
+                            status = ProgressItemStatus.SUCCESS,
+                        )
 
-                    ProgressItem(
-                        text = "Future",
-                        status = ProgressItemStatus.DISABLED,
-                        iconRightPadding = 24.dp,
-                    )
+                        val infiniteTransition =
+                            rememberInfiniteTransition(label = "ProgressTransition")
+                        val progress by infiniteTransition.animateFloat(
+                            initialValue = 0.0f,
+                            targetValue = 1.0f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(10000, easing = LinearEasing),
+                                repeatMode = RepeatMode.Restart
+                            ),
+                            label = "Progress"
+                        )
 
-                    ProgressItem(
-                        text = "Error happened",
-                        status = ProgressItemStatus.ERROR,
-                        iconRightPadding = 24.dp,
-                    )
-                }
-                WizardStepComponent(
-                    icon = Icons.Default.Build,
-                    title = "Destroy",
-                    state = WizardStepState.INACTIVE,
-                    decor = WizardStepAction.Action(
-                        text = "Terminate",
-                        dangerous = true,
-                        onClick = { }
-                    ),
-                ) {
-                    Text(text = "Engage warp 4")
+                        ProgressItem(
+                            text = "In progress",
+                            status = ProgressItemStatus.WORKING,
+                        ) {
+                            LinearProgressIndicator(
+                                progress = { progress },
+                                modifier = Modifier.fillMaxWidth(),
+                                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                drawStopIndicator = {}
+                            )
+                            Text(
+                                text = "%.1f%%".format(progress * 100),
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.End
+                            )
+                        }
+
+                        ProgressItem(
+                            text = "Future",
+                            status = ProgressItemStatus.DISABLED,
+                        )
+
+                        ProgressItem(
+                            text = "Error happened",
+                            status = ProgressItemStatus.ERROR,
+                        )
+
+                        StatusItem {
+                            Text(text = "Connect to the device")
+                        }
+                    }
+                    WizardStepComponent(
+                        icon = Icons.Default.Build,
+                        title = "Destroy",
+                        state = WizardStepState.INACTIVE,
+                        decor = WizardStepAction.Action(
+                            text = "Terminate",
+                            dangerous = true,
+                            onClick = { }
+                        ),
+                    ) {
+                        StatusItem {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = "Engage warp 4",
+                                    modifier = Modifier.weight(1f)
+                                )
+                                var checked by rememberSaveable { mutableStateOf(false) }
+                                Switch(
+                                    checked = checked,
+                                    onCheckedChange = { checked = it },
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
