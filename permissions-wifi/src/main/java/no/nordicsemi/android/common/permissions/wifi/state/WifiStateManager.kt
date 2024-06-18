@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.wifi.wifi
+package no.nordicsemi.android.common.permissions.wifi.state
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver

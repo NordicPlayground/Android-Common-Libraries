@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.android.common.permissions.wifi.location.LocationStateManager
 import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
-import no.nordicsemi.android.common.permissions.wifi.wifi.WifiStateManager
+import no.nordicsemi.android.common.permissions.wifi.state.WifiStateManager
 import javax.inject.Inject
 
 @HiltViewModel
