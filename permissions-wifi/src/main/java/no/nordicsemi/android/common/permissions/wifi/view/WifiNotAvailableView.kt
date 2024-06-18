@@ -32,8 +32,6 @@
 package no.nordicsemi.android.common.permissions.wifi.view
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +50,6 @@ internal fun WifiNotAvailableView() {
         hint = stringResource(id = R.string.wifi_not_available_des),
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     )
 }
 
