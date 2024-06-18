@@ -41,8 +41,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
@@ -81,7 +79,6 @@ internal fun WifiPermissionRequiredView() {
         hint = stringResource(id = R.string.wifi_permission_required_des),
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         val requiredPermissions = arrayOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
