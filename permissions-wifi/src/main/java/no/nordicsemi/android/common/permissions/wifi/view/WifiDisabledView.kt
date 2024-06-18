@@ -35,8 +35,6 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
@@ -58,7 +56,6 @@ internal fun WifiDisabledView() {
         hint = stringResource(id = R.string.wifi_disabled_des),
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         val context = LocalContext.current
         Button(onClick = { enableWifi(context) }) {
