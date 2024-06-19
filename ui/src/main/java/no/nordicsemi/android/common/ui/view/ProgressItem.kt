@@ -48,6 +48,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -101,10 +102,14 @@ fun ProgressItem(
 
         Spacer(modifier = Modifier.width(iconRightPadding))
 
-        Column(
-            modifier = Modifier.padding(vertical = 2.dp)
+        CompositionLocalProvider(
+            LocalContentColor provides status.toTextColor()
         ) {
-            content()
+            Column(
+                modifier = Modifier.padding(vertical = 2.dp)
+            ) {
+                content()
+            }
         }
     }
 }
@@ -132,23 +137,27 @@ fun StatusItem(
 }
 
 @Composable
-private fun ProgressItemStatus.toIconColor(): Color {
-    return when (this) {
-        ProgressItemStatus.DISABLED -> MaterialTheme.colorScheme.surfaceVariant
-        ProgressItemStatus.WORKING -> LocalContentColor.current
-        ProgressItemStatus.SUCCESS -> colorResource(id = R.color.colorSuccess)
-        ProgressItemStatus.ERROR -> MaterialTheme.colorScheme.error
-    }
+private fun ProgressItemStatus.toIconColor(): Color = when (this) {
+    ProgressItemStatus.DISABLED -> MaterialTheme.colorScheme.surfaceVariant
+    ProgressItemStatus.WORKING -> LocalContentColor.current
+    ProgressItemStatus.SUCCESS -> colorResource(id = R.color.colorSuccess)
+    ProgressItemStatus.ERROR -> MaterialTheme.colorScheme.error
+}
+
+@Composable
+private fun ProgressItemStatus.toTextColor(): Color = when (this) {
+    ProgressItemStatus.DISABLED -> LocalContentColor.current.copy(alpha = 0.38f)
+    ProgressItemStatus.WORKING,
+    ProgressItemStatus.SUCCESS,
+    ProgressItemStatus.ERROR -> LocalContentColor.current
 }
 
 @DrawableRes
-private fun ProgressItemStatus.toImageRes(): Int {
-    return when (this) {
-        ProgressItemStatus.DISABLED -> R.drawable.ic_dot
-        ProgressItemStatus.WORKING -> R.drawable.ic_arrow_right
-        ProgressItemStatus.SUCCESS -> R.drawable.ic_check
-        ProgressItemStatus.ERROR -> R.drawable.ic_cross
-    }
+private fun ProgressItemStatus.toImageRes(): Int = when (this) {
+    ProgressItemStatus.DISABLED -> R.drawable.ic_dot
+    ProgressItemStatus.WORKING -> R.drawable.ic_arrow_right
+    ProgressItemStatus.SUCCESS -> R.drawable.ic_check
+    ProgressItemStatus.ERROR -> R.drawable.ic_cross
 }
 
 @Preview(showBackground = true)
