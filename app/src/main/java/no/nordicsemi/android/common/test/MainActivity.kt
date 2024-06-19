@@ -38,6 +38,8 @@ import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -147,52 +149,56 @@ class MainActivity : NordicActivity() {
                                 .fillMaxHeight()
                                 .verticalScroll(rememberScrollState()),
                         ) {
-                            NordicLogo(
-                                modifier = Modifier
-                                    .padding(NavigationDrawerTitleDefaults.ItemPadding)
-                                    .padding(vertical = 16.dp)
-                            )
+                            Column(
+                                modifier = Modifier.displayCutoutPadding(),
+                            ) {
+                                NordicLogo(
+                                    modifier = Modifier
+                                        .padding(NavigationDrawerTitleDefaults.ItemPadding)
+                                        .padding(vertical = 16.dp)
+                                )
 
-                            NavigationDrawerTitle(
-                                title = "Menu",
-                                modifier = Modifier.padding(NavigationDrawerTitleDefaults.ItemPadding)
-                            )
+                                NavigationDrawerTitle(
+                                    title = "Menu",
+                                    modifier = Modifier.padding(NavigationDrawerTitleDefaults.ItemPadding)
+                                )
 
-                            NavigationDrawerItems(
-                                items = menuItems,
-                                navigator = navigator,
-                                onDismiss = { scope.launch { drawerState.close() } },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                            )
+                                NavigationDrawerItems(
+                                    items = menuItems,
+                                    navigator = navigator,
+                                    onDismiss = { scope.launch { drawerState.close() } },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
 
-                            HorizontalDivider(
-                                modifier = Modifier.padding(NavigationDrawerDividerDefaults.ItemPadding)
-                            )
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(NavigationDrawerDividerDefaults.ItemPadding)
+                                )
 
-                            NavigationDrawerTitle(
-                                title = "Advanced",
-                                modifier = Modifier.padding(NavigationDrawerTitleDefaults.ItemPadding)
-                            )
+                                NavigationDrawerTitle(
+                                    title = "Advanced",
+                                    modifier = Modifier.padding(NavigationDrawerTitleDefaults.ItemPadding)
+                                )
 
-                            NavigationDrawerItems(
-                                items = advancedMenuItems,
-                                navigator = navigator,
-                                onDismiss = { scope.launch { drawerState.close() } },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                            )
+                                NavigationDrawerItems(
+                                    items = advancedMenuItems,
+                                    navigator = navigator,
+                                    onDismiss = { scope.launch { drawerState.close() } },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
 
-                            NavigationDrawerItem(
-                                icon = {
-                                    Icon(
-                                        Icons.Filled.BrokenImage,
-                                        contentDescription = null
-                                    )
-                                },
-                                label = { Text("This does nothing") },
-                                selected = false,
-                                onClick = { },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                            )
+                                NavigationDrawerItem(
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.BrokenImage,
+                                            contentDescription = null
+                                        )
+                                    },
+                                    label = { Text("This does nothing") },
+                                    selected = false,
+                                    onClick = { },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
+                            }
                         }
                     }
                 ) {
