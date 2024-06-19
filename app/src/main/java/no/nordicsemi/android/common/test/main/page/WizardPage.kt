@@ -37,9 +37,11 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -53,6 +55,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -74,103 +77,110 @@ val WizardPage = PagerViewItem("Wizard") {
 
 @Composable
 private fun WizardScreen() {
-    OutlinedCard(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(vertical = 16.dp),
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        Column(
+        OutlinedCard(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 16.dp),
         ) {
-            WizardStepComponent(
-                icon = Icons.Default.Warning,
-                title = stringResource(id = R.string.wizard_step_completed),
-                state = WizardStepState.COMPLETED,
-                decor = WizardStepAction.Action(
-                    text = stringResource(id = R.string.action_no_op),
-                    onClick = { }
-                ),
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 600.dp)
+                    .fillMaxWidth()
+                    .padding(16.dp),
             ) {
-                StatusItem {
-                    Text(text = stringResource(id = R.string.wizard_text_completed))
-                }
-            }
-            WizardStepComponent(
-                icon = Icons.Default.AccountBox,
-                title = stringResource(id = R.string.wizard_step_current),
-                state = WizardStepState.CURRENT,
-                decor = WizardStepAction.Action(
-                    text = stringResource(id = R.string.action_no_op),
-                    onClick = { }
-                ),
-            ) {
-                StatusItem {
-                    Text(text = stringResource(id = R.string.wizard_text_current))
-                }
-            }
-            WizardStepComponent(
-                icon = Icons.Default.AccountCircle,
-                title = stringResource(id = R.string.wizard_step_in_progress),
-                state = WizardStepState.CURRENT,
-                decor = WizardStepAction.ProgressIndicator,
-            ) {
-                ProgressItem(
-                    text = stringResource(id = R.string.wizard_text_completed),
-                    status = ProgressItemStatus.SUCCESS,
-                )
-
-                val infiniteTransition = rememberInfiniteTransition(label = "ProgressTransition")
-                val progress by infiniteTransition.animateFloat(
-                    initialValue = 0.0f,
-                    targetValue = 1.0f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(10000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart
+                WizardStepComponent(
+                    icon = Icons.Default.Warning,
+                    title = stringResource(id = R.string.wizard_step_completed),
+                    state = WizardStepState.COMPLETED,
+                    decor = WizardStepAction.Action(
+                        text = stringResource(id = R.string.action_no_op),
+                        onClick = { }
                     ),
-                    label = "Progress"
-                )
-
-                ProgressItem(
-                    status = ProgressItemStatus.WORKING,
                 ) {
-                    Text(text = stringResource(id = R.string.wizard_task_in_progress))
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier.fillMaxWidth(),
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                        drawStopIndicator = {}
+                    StatusItem {
+                        Text(text = stringResource(id = R.string.wizard_text_completed))
+                    }
+                }
+                WizardStepComponent(
+                    icon = Icons.Default.AccountBox,
+                    title = stringResource(id = R.string.wizard_step_current),
+                    state = WizardStepState.CURRENT,
+                    decor = WizardStepAction.Action(
+                        text = stringResource(id = R.string.action_no_op),
+                        onClick = { }
+                    ),
+                ) {
+                    StatusItem {
+                        Text(text = stringResource(id = R.string.wizard_text_current))
+                    }
+                }
+                WizardStepComponent(
+                    icon = Icons.Default.AccountCircle,
+                    title = stringResource(id = R.string.wizard_step_in_progress),
+                    state = WizardStepState.CURRENT,
+                    decor = WizardStepAction.ProgressIndicator,
+                ) {
+                    ProgressItem(
+                        text = stringResource(id = R.string.wizard_text_completed),
+                        status = ProgressItemStatus.SUCCESS,
                     )
-                    Text(
-                        text = "%.1f%%".format(progress * 100),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End
+
+                    val infiniteTransition =
+                        rememberInfiniteTransition(label = "ProgressTransition")
+                    val progress by infiniteTransition.animateFloat(
+                        initialValue = 0.0f,
+                        targetValue = 1.0f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(10000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                        ),
+                        label = "Progress"
+                    )
+
+                    ProgressItem(
+                        status = ProgressItemStatus.WORKING,
+                    ) {
+                        Text(text = stringResource(id = R.string.wizard_task_in_progress))
+                        LinearProgressIndicator(
+                            progress = { progress },
+                            modifier = Modifier.fillMaxWidth(),
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                            drawStopIndicator = {}
+                        )
+                        Text(
+                            text = "%.1f%%".format(progress * 100),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End
+                        )
+                    }
+
+                    ProgressItem(
+                        text = stringResource(id = R.string.wizard_task_next),
+                        status = ProgressItemStatus.DISABLED,
+                    )
+
+                    ProgressItem(
+                        text = stringResource(id = R.string.wizard_task_error),
+                        status = ProgressItemStatus.ERROR,
                     )
                 }
-
-                ProgressItem(
-                    text = stringResource(id = R.string.wizard_task_next),
-                    status = ProgressItemStatus.DISABLED,
-                )
-
-                ProgressItem(
-                    text = stringResource(id = R.string.wizard_task_error),
-                    status = ProgressItemStatus.ERROR,
-                )
-            }
-            WizardStepComponent(
-                icon = Icons.Default.Build,
-                title = stringResource(id = R.string.wizard_step_inactive),
-                state = WizardStepState.INACTIVE,
-                decor = WizardStepAction.Action(
-                    text = stringResource(id = R.string.action_no_op),
-                    dangerous = true,
-                    onClick = { }
-                ),
-            ) {
-                StatusItem {
-                    Text(text = stringResource(id = R.string.wizard_text_inactive))
+                WizardStepComponent(
+                    icon = Icons.Default.Build,
+                    title = stringResource(id = R.string.wizard_step_inactive),
+                    state = WizardStepState.INACTIVE,
+                    decor = WizardStepAction.Action(
+                        text = stringResource(id = R.string.action_no_op),
+                        dangerous = true,
+                        onClick = { }
+                    ),
+                ) {
+                    StatusItem {
+                        Text(text = stringResource(id = R.string.wizard_text_inactive))
+                    }
                 }
             }
         }
