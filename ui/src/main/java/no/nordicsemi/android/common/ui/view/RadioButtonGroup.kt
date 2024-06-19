@@ -88,7 +88,7 @@ fun HorizontalLabelRadioButtonGroup(
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun RadioButtonGroupPreview() {
     MaterialTheme {
@@ -106,7 +106,7 @@ private fun RadioButtonGroupPreview() {
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun HorizontalLabelRadioButtonGroupPreview() {
     MaterialTheme {

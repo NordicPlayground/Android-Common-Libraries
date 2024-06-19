@@ -95,7 +95,7 @@ fun SectionTitle(
     )
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun SectionTitlePreview() {
     MaterialTheme {

@@ -167,7 +167,7 @@ fun WarningView(
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun WarningViewPreview() {
     MaterialTheme {

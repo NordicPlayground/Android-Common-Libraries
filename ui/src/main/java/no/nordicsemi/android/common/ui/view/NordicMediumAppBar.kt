@@ -107,7 +107,7 @@ fun NordicMediumAppBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun NordicMediumAppBarPreview() {
     MaterialTheme {

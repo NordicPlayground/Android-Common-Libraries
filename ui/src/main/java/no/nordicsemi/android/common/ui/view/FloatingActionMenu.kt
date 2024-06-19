@@ -253,7 +253,7 @@ private fun Scrim(onClose: () -> Unit, modifier: Modifier = Modifier) {
     )
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true, heightDp = 200)
+@Preview(showBackground = true, heightDp = 200)
 @Composable
 private fun FloatingActionMenuPreview() {
     MaterialTheme {

@@ -85,7 +85,7 @@ fun getWiFiRes(rssi: Int): ImageVector {
     }
 }
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true, widthDp = 500)
+@Preview(showBackground = true, widthDp = 500)
 @Composable
 private fun RssiIconPreview() {
     MaterialTheme {
