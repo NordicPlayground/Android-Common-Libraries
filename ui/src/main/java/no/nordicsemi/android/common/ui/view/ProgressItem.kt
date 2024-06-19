@@ -46,7 +46,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -69,12 +68,30 @@ fun ProgressItem(
     text: String,
     status: ProgressItemStatus,
     modifier: Modifier = Modifier,
+    verticalAlignment: Alignment.Vertical = Alignment.Top,
+    iconRightPadding: Dp = 24.dp,
+) {
+    ProgressItem(
+        status = status,
+        modifier = modifier,
+        verticalAlignment = verticalAlignment,
+        iconRightPadding = iconRightPadding,
+    ) {
+        Text(text = text)
+    }
+}
+
+@Composable
+fun ProgressItem(
+    status: ProgressItemStatus,
+    modifier: Modifier = Modifier,
+    verticalAlignment: Alignment.Vertical = Alignment.Top,
     iconRightPadding: Dp = 24.dp,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = verticalAlignment,
     ) {
         Icon(
             painter = painterResource(status.toImageRes()),
@@ -84,14 +101,10 @@ fun ProgressItem(
 
         Spacer(modifier = Modifier.width(iconRightPadding))
 
-        Column {
-            ProvideTextStyle(value = MaterialTheme.typography.bodyMedium) {
-                Text(
-                    text = text,
-                    color = status.toTextColor(),
-                )
-                content()
-            }
+        Column(
+            modifier = Modifier.padding(vertical = 2.dp)
+        ) {
+            content()
         }
     }
 }
@@ -102,14 +115,15 @@ fun StatusItem(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .height(IntrinsicSize.Min)
+            .then(modifier),
     ) {
         VerticalDivider(
-            modifier = Modifier.padding(start = 10.dp, end = 26.dp)
+            modifier = Modifier.padding(start = 10.dp, end = 34.dp)
         )
         Column(
-            modifier = Modifier.padding(start = 8.dp),
+            modifier = Modifier.padding(vertical = 2.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             content()
@@ -127,16 +141,6 @@ private fun ProgressItemStatus.toIconColor(): Color {
     }
 }
 
-@Composable
-private fun ProgressItemStatus.toTextColor(): Color {
-    return when (this) {
-        ProgressItemStatus.DISABLED -> LocalContentColor.current.copy(alpha = 0.38f)
-        ProgressItemStatus.WORKING,
-        ProgressItemStatus.SUCCESS,
-        ProgressItemStatus.ERROR -> LocalContentColor.current
-    }
-}
-
 @DrawableRes
 private fun ProgressItemStatus.toImageRes(): Int {
     return when (this) {
@@ -147,14 +151,14 @@ private fun ProgressItemStatus.toImageRes(): Int {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ProgressItemPreview_Working() {
     MaterialTheme {
         ProgressItem(
-            text = "Uploading",
-            status = ProgressItemStatus.WORKING,
+            status = ProgressItemStatus.ERROR,
         ) {
+            Text(text = "Uploading...")
             LinearProgressIndicator(
                 progress = { 0.3f },
                 modifier = Modifier.fillMaxWidth(),
@@ -173,7 +177,7 @@ private fun ProgressItemPreview_Working() {
 private fun ProgressItemPreview_Success() {
     MaterialTheme {
         ProgressItem(
-            text = "Completed",
+            text = "Success!\nBut there's more!\nAnd even more!",
             status = ProgressItemStatus.SUCCESS,
         )
     }

@@ -31,7 +31,6 @@
 
 package no.nordicsemi.android.common.ui.view
 
-import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -64,9 +63,9 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -77,6 +76,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -127,8 +127,8 @@ fun WizardStepComponent(
     state: WizardStepState,
     modifier: Modifier = Modifier,
     decor: WizardStepAction? = null,
-    color: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = contentColorFor(color),
+    contentColor: Color = LocalContentColor.current,
+    contentStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     content: @Composable ColumnScope.() -> Unit
 ) {
     WizardStepComponent(
@@ -145,6 +145,7 @@ fun WizardStepComponent(
         modifier = modifier,
         decor = decor,
         contentColor = contentColor,
+        contentStyle = contentStyle,
         content = content,
     )
 }
@@ -165,6 +166,7 @@ fun WizardStepComponent(
     modifier: Modifier = Modifier,
     decor: WizardStepAction? = null,
     contentColor: Color = LocalContentColor.current,
+    contentStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier = modifier) {
@@ -207,7 +209,9 @@ fun WizardStepComponent(
                     .padding(start = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                content()
+                ProvideTextStyle(value = contentStyle) {
+                    content()
+                }
             }
         }
     }
@@ -252,7 +256,7 @@ private fun ActionButton(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true)
 @Composable
 private fun WizardScreen() {
     MaterialTheme {
@@ -321,20 +325,22 @@ private fun WizardScreen() {
                         )
 
                         ProgressItem(
-                            text = "In progress",
                             status = ProgressItemStatus.WORKING,
                         ) {
-                            LinearProgressIndicator(
-                                progress = { progress },
-                                modifier = Modifier.fillMaxWidth(),
-                                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                                drawStopIndicator = {}
-                            )
-                            Text(
-                                text = "%.1f%%".format(progress * 100),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.End
-                            )
+                            Column {
+                                Text(text = "In progress")
+                                LinearProgressIndicator(
+                                    progress = { progress },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    drawStopIndicator = {}
+                                )
+                                Text(
+                                    text = "%.1f%%".format(progress * 100),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
                         }
 
                         ProgressItem(

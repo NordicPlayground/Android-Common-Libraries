@@ -119,7 +119,6 @@ private fun WizardScreen() {
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_text_completed),
                     status = ProgressItemStatus.SUCCESS,
-                    iconRightPadding = 24.dp,
                 )
 
                 val infiniteTransition = rememberInfiniteTransition(label = "ProgressTransition")
@@ -134,10 +133,9 @@ private fun WizardScreen() {
                 )
 
                 ProgressItem(
-                    text = stringResource(id = R.string.wizard_task_in_progress),
                     status = ProgressItemStatus.WORKING,
-                    iconRightPadding = 24.dp,
                 ) {
+                    Text(text = stringResource(id = R.string.wizard_task_in_progress))
                     LinearProgressIndicator(
                         progress = { progress },
                         modifier = Modifier.fillMaxWidth(),
@@ -154,13 +152,11 @@ private fun WizardScreen() {
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_task_next),
                     status = ProgressItemStatus.DISABLED,
-                    iconRightPadding = 24.dp,
                 )
 
                 ProgressItem(
                     text = stringResource(id = R.string.wizard_task_error),
                     status = ProgressItemStatus.ERROR,
-                    iconRightPadding = 24.dp,
                 )
             }
             WizardStepComponent(
