@@ -55,13 +55,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permissions.ble.R
 import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.view.WarningView
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -113,13 +111,4 @@ private fun openPermissionSettings(context: Context) {
         ),
         null
     )
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Preview
-@Composable
-private fun BluetoothPermissionRequiredView_Preview() {
-    NordicTheme {
-        BluetoothPermissionRequiredView()
-    }
 }

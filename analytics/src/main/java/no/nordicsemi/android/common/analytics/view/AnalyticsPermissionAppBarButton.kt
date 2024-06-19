@@ -40,7 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.analytics.R
-import no.nordicsemi.android.common.theme.view.AppBarIcon
+import no.nordicsemi.android.common.ui.view.AppBarIcon
 
 @Composable
 fun AnalyticsPermissionButton() {

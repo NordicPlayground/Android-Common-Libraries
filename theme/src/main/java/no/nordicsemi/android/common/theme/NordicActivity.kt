@@ -31,15 +31,13 @@
 
 package no.nordicsemi.android.common.theme
 
-import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
-import androidx.core.content.ContextCompat
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 
 /**
  * Base activity that sets the Nordic theme and the Splash Screen.
@@ -57,20 +55,9 @@ abstract class NordicActivity : ComponentActivity() {
         setTheme(R.style.NordicTheme)
         super.onCreate(savedInstanceState)
 
-        setDecorFitsSystemWindows(true)
-
-        val view = window.decorView
-        if (!isDarkMode()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                window.insetsController?.setSystemBarsAppearance(
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-                )
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val flags = view.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                view.systemUiVisibility = flags
-            }
-        }
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val splashScreen = installSplashScreen()
@@ -86,19 +73,5 @@ abstract class NordicActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    fun setDecorFitsSystemWindows(decorFitsSystemWindows: Boolean) {
-        if (!decorFitsSystemWindows) {
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
-        } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.statusBarColor)
-        }
-    }
-
-    fun isDarkMode(): Boolean {
-        val darkModeFlag = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return darkModeFlag == Configuration.UI_MODE_NIGHT_YES
     }
 }

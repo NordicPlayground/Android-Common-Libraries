@@ -31,8 +31,14 @@
 
 package no.nordicsemi.android.common.test.main
 
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.navigation.createSimpleDestination
 import no.nordicsemi.android.common.navigation.defineDestination
@@ -41,8 +47,8 @@ import no.nordicsemi.android.common.test.main.page.FontsPage
 import no.nordicsemi.android.common.test.main.page.WarningPage
 import no.nordicsemi.android.common.test.main.page.WizardPage
 import no.nordicsemi.android.common.test.simple.HelloDestinations
-import no.nordicsemi.android.common.theme.view.PagerView
-import no.nordicsemi.android.common.theme.view.PagerViewEntity
+import no.nordicsemi.android.common.ui.view.PagerView
+import no.nordicsemi.android.common.ui.view.PagerViewEntity
 
 /** This is the destination identifier. */
 val Main = createSimpleDestination("main")
@@ -64,9 +70,20 @@ private fun MainScreen() {
         WizardPage,
         WarningPage,
     ))
+    // Pad content with cutout, at least 16dp on each side.
+    val padding = WindowInsets.displayCutout
+        .only(WindowInsetsSides.Horizontal)
+        .union(WindowInsets(left = 16.dp, right = 16.dp))
+        .asPaddingValues()
+    // Use the greatest padding for the spacing, so that other pages aren't visible
+    // being the cutout.
+    val spacing = maxOf(
+        padding.calculateLeftPadding(LayoutDirection.Ltr),
+        padding.calculateRightPadding(LayoutDirection.Rtl)
+    )
     PagerView(
         viewEntity = pages,
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        itemSpacing = 16.dp,
+        contentPadding = padding,
+        itemSpacing = spacing,
     )
 }

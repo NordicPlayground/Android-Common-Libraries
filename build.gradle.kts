@@ -41,5 +41,5 @@ plugins {
     alias(libs.plugins.nordic.library) apply false
     alias(libs.plugins.nordic.feature) apply false
     alias(libs.plugins.nordic.hilt) apply false
-    alias(libs.plugins.nordic.nexus) apply false
+    alias(libs.plugins.nordic.nexus.android) apply false
 }

@@ -35,11 +35,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CopyAll
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -52,6 +64,9 @@ import no.nordicsemi.android.common.navigation.defineDialogDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.view.FloatingActionMenu
+import no.nordicsemi.android.common.ui.view.FloatingActionMenuItem
+import no.nordicsemi.android.common.ui.view.FloatingActionMenuItemSecondary
 
 /**
  * This is an example of a simple destination.
@@ -99,11 +114,51 @@ private fun HelloScreen(
     onShowDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+    Scaffold(
         modifier = modifier,
-    ) {
+        floatingActionButton = {
+            FloatingActionMenu(
+                onDismissRequest = { showDialog = false },
+                expanded = showDialog,
+                menuContent = {
+                    FloatingActionMenuItemSecondary(
+                        label = "Clone Tag",
+                        imageVector = Icons.Default.CopyAll,
+                        onClick = { /*TODO*/ }
+                    )
+                    FloatingActionMenuItemSecondary(
+                        label = "Existing Records",
+                        imageVector = Icons.Default.Restore,
+                        onClick = { /*TODO*/ }
+                    )
+                    FloatingActionMenuItem(
+                        label = "New Record",
+                        imageVector = Icons.Default.Add,
+                        onClick = { /*TODO*/ }
+                    )
+                }
+            ) {
+                ExtendedFloatingActionButton(
+                    text = { Text(text = "Add Record") },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                        )
+                    },
+                    // Open the dialog when the FAB is clicked.
+                    onClick = { showDialog = true },
+                    // Collapse the FAB when the dialog is shown.
+                    expanded = !showDialog
+                )
+            }
+        }
+    ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

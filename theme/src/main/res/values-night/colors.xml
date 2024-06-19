@@ -32,8 +32,7 @@
 
 <resources>
 
-    <color name="appBarColor">@color/nordicDarkGray</color>
-    <color name="statusBarColor">@color/appBarColor</color>
+    <color name="statusBarColor">@color/nordicDarkGray</color>
     <color name="navigationBarColor">#17282C</color>
 
 </resources>

@@ -32,24 +32,20 @@
 plugins {
     alias(libs.plugins.nordic.library.compose)
     alias(libs.plugins.nordic.hilt)
-    alias(libs.plugins.nordic.nexus)
+    alias(libs.plugins.nordic.nexus.android)
 }
 
 group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "permissions-ble"
-    POM_NAME = "Nordic library for checking required ble permissions."
+    POM_NAME = "Nordic library for checking Bluetooth LE and Location permissions."
 
     POM_DESCRIPTION = "Nordic Android Common Libraries"
     POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
     POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
     POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
     POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-
-    POM_DEVELOPER_ID = "syzi"
-    POM_DEVELOPER_NAME = "Sylwester Zieliński"
-    POM_DEVELOPER_EMAIL = "sylwester.zielinski@nordicsemi.no"
 }
 
 android {
@@ -58,7 +54,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":theme"))
+    implementation(project(":ui"))
     implementation(project(":navigation"))
 
     implementation(libs.androidx.compose.material.iconsExtended)

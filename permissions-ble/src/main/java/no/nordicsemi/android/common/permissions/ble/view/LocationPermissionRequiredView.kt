@@ -44,6 +44,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,8 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.core.parseBold
 import no.nordicsemi.android.common.permissions.ble.R
 import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
 internal fun LocationPermissionRequiredView() {
@@ -125,10 +125,10 @@ private fun openPermissionSettings(context: Context) {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun LocationPermissionRequiredView_Preview() {
-    NordicTheme {
+    MaterialTheme {
         LocationPermissionRequiredView(
             permissionDenied = false,
             onGrantClicked = { },

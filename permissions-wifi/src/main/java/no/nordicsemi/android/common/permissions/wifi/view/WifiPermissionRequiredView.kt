@@ -44,6 +44,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,8 +59,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permissions.wifi.R
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
 internal fun WifiPermissionRequiredView() {
@@ -116,11 +116,10 @@ private fun openPermissionSettings(context: Context) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun WifiPermissionRequiredViewPreview() {
-    NordicTheme {
+    MaterialTheme {
         WifiPermissionRequiredView()
     }
 }

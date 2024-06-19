@@ -133,7 +133,6 @@ private fun NavGraphBuilder.create(
             is ComposableDestination -> {
                 composable(
                     route = destination.id.name,
-
                 ) {
                     navigation.use(it.savedStateHandle)
                     destination.content()

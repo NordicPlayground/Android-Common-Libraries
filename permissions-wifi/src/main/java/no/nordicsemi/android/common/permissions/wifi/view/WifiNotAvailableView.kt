@@ -34,13 +34,13 @@ package no.nordicsemi.android.common.permissions.wifi.view
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permissions.wifi.R
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.theme.view.WarningView
+import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
 internal fun WifiNotAvailableView() {
@@ -53,10 +53,10 @@ internal fun WifiNotAvailableView() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun WifiNotAvailableView_Preview() {
-    NordicTheme {
+    MaterialTheme {
         WifiNotAvailableView()
     }
 }
