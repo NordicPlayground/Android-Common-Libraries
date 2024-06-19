@@ -31,9 +31,12 @@
 
 package no.nordicsemi.android.common.ui.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -50,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -98,9 +102,13 @@ fun PagerView(
     ) {
         val tabIndex = pagerState.currentPage
 
+        val edgePadding = maxOf(
+            contentPadding.calculateLeftPadding(LayoutDirection.Ltr),
+            contentPadding.calculateRightPadding(LayoutDirection.Rtl)
+        )
         if (scrollable) {
             ScrollableTabRow(
-                edgePadding = 0.dp,
+                edgePadding = edgePadding,
                 selectedTabIndex = tabIndex,
                 containerColor = colorResource(id = R.color.appBarColor),
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -126,30 +134,37 @@ fun PagerView(
                 }
             }
         } else {
-            TabRow(
-                modifier = Modifier.fillMaxWidth(),
-                selectedTabIndex = tabIndex,
-                containerColor = colorResource(id = R.color.appBarColor),
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                indicator = @Composable { tabPositions ->
-                    SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                },
+            // This box adds a padding on the sides to accommodate the cutout (edge padding).
+            Box(
+                modifier = Modifier
+                    .background(color = colorResource(id = R.color.appBarColor))
+                    .padding(horizontal = edgePadding)
             ) {
-                viewEntity.items.forEachIndexed { index, item ->
-                    Tab(
-                        selected = tabIndex == index,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
+                TabRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    selectedTabIndex = tabIndex,
+                    containerColor = colorResource(id = R.color.appBarColor),
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    indicator = @Composable { tabPositions ->
+                        SecondaryIndicator(
+                            Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    },
+                ) {
+                    viewEntity.items.forEachIndexed { index, item ->
+                        Tab(
+                            selected = tabIndex == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                            text = {
+                                Text(text = item.title)
                             }
-                        },
-                        text = {
-                            Text(text = item.title)
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
