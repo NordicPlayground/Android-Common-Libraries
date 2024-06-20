@@ -41,16 +41,14 @@ android {
 }
 
 dependencies {
-    implementation(project(":logger"))
-
     implementation(project(":theme"))
     implementation(project(":ui"))
+    implementation(project(":logger"))
     implementation(project(":navigation"))
     implementation(project(":permissions-ble"))
     implementation(project(":permissions-nfc"))
     implementation(project(":permissions-wifi"))
     implementation(project(":permissions-internet"))
-    implementation(project(":logger"))
 
     implementation(libs.androidx.compose.material.iconsExtended)
 
