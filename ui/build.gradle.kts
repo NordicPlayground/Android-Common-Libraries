@@ -31,14 +31,13 @@
 
 plugins {
     alias(libs.plugins.nordic.library.compose)
-    alias(libs.plugins.nordic.hilt)
     alias(libs.plugins.nordic.nexus.android)
 }
 
 group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
-    POM_ARTIFACT_ID = "theme"
+    POM_ARTIFACT_ID = "ui"
     POM_NAME = "Nordic UI library for Android."
 
     POM_DESCRIPTION = "Nordic Android Common Libraries"

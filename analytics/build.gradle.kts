@@ -30,8 +30,7 @@
  */
 
 plugins {
-    alias(libs.plugins.nordic.library.compose)
-    alias(libs.plugins.nordic.hilt)
+    alias(libs.plugins.nordic.feature)
     alias(libs.plugins.nordic.nexus.android)
 }
 
@@ -57,9 +56,6 @@ dependencies {
     implementation(project(":ui"))
 
     implementation(libs.androidx.dataStore.preferences)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

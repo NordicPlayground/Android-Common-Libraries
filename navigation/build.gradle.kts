@@ -30,8 +30,7 @@
  */
 
 plugins {
-    alias(libs.plugins.nordic.library.compose)
-    alias(libs.plugins.nordic.hilt)
+    alias(libs.plugins.nordic.feature)
     alias(libs.plugins.nordic.nexus.android)
     alias(libs.plugins.kotlin.parcelize)
 }
@@ -54,11 +53,4 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.test)
 }

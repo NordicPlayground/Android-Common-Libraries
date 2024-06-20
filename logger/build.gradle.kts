@@ -31,7 +31,6 @@
 
 plugins {
     alias(libs.plugins.nordic.library.compose)
-    alias(libs.plugins.nordic.kotlin)
     alias(libs.plugins.nordic.nexus.android)
 }
 
