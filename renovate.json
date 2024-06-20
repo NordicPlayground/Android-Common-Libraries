@@ -10,10 +10,8 @@
   "packageRules": [
     {
       "matchPackagePatterns": [
-        "androidx.compose.compiler:compiler",
         "org.jetbrains.kotlin.*",
-        "com.google.devtools.ksp",
-        "androidx.compose.compiler"
+        "com.google.devtools.ksp"
       ],
       "groupName": "kotlin"
     },
