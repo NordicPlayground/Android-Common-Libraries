@@ -44,6 +44,14 @@ import no.nordicsemi.android.common.permissions.wifi.view.WifiNotAvailableView
 import no.nordicsemi.android.common.permissions.wifi.view.WifiPermissionRequiredView
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
 
+
+/**
+ * Composable that requests Wi-Fi permission.
+ *
+ * @param onChanged Callback that is called when the Wi-Fi state changes.
+ * @param contentWithoutWifi The content to display when Wi-Fi is not available.
+ * @param content The content to display when Wi-Fi is available.
+ */
 @Composable
 fun RequireWifi(
     onChanged: (Boolean) -> Unit = {},
@@ -62,12 +70,46 @@ fun RequireWifi(
     when (val s = state) {
         WifiPermissionState.Available -> content()
 
-        is WifiPermissionState.NotAvailable -> contentWithoutWifi(s.reason)
+        is WifiPermissionState.NotAvailable -> {
+            contentWithoutWifi(s.reason)
+        }
+    }
+}
+
+
+/**
+ * Composable that requires Wi-Fi to be enabled.
+ *
+ * @param onChanged Callback that is called when the Wi-Fi state changes.
+ * @param content The content to display when Wi-Fi is enabled.
+ */
+@Composable
+fun RequireWifiEnabled(
+    onChanged: (Boolean) -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state by viewModel.wifiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state) {
+        onChanged(state is WifiPermissionState.Available)
+    }
+
+    when( val s = state) {
+        is WifiPermissionState.NotAvailable -> {
+            if(s.reason == WifiPermissionNotAvailableReason.DISABLED) {
+                WifiDisabledView()
+            }
+        }
+        else -> {
+            content()
+        }
     }
 }
 
 @Composable
-internal fun NoWifiView(
+private fun NoWifiView(
     reason: WifiPermissionNotAvailableReason,
 ) {
     when (reason) {
