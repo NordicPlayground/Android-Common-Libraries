@@ -48,12 +48,17 @@ import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewMod
 /**
  * Composable that requests Wi-Fi permission.
  *
- * @param onChanged Callback that is called when the Wi-Fi state changes.
- * @param contentWithoutWifi The content to display when Wi-Fi is not available.
- * @param content The content to display when Wi-Fi is available.
+ * @param isNearbyWifiDevicesPermissionRequired If `true`, [contentWithoutWifi] shall request for
+ *                                              Wi-Fi permission and if set to `false`,
+ *                                              [contentWithoutWifi] shall request Wi-Fi to be
+ *                                              enabled.
+ * @param onChanged                             Callback that is called when the Wi-Fi state changes.
+ * @param contentWithoutWifi                    The content to display when Wi-Fi is not available.
+ * @param content                               The content to display when Wi-Fi is available.
  */
 @Composable
 fun RequireWifi(
+    isNearbyWifiDevicesPermissionRequired: Boolean = true,
     onChanged: (Boolean) -> Unit = {},
     contentWithoutWifi: @Composable (WifiPermissionNotAvailableReason) -> Unit = {
         NoWifiView(reason = it)
@@ -71,39 +76,11 @@ fun RequireWifi(
         WifiPermissionState.Available -> content()
 
         is WifiPermissionState.NotAvailable -> {
-            contentWithoutWifi(s.reason)
-        }
-    }
-}
-
-
-/**
- * Composable that requires Wi-Fi to be enabled.
- *
- * @param onChanged Callback that is called when the Wi-Fi state changes.
- * @param content The content to display when Wi-Fi is enabled.
- */
-@Composable
-fun RequireWifiEnabled(
-    onChanged: (Boolean) -> Unit = {},
-    content: @Composable () -> Unit,
-) {
-
-    val viewModel = hiltViewModel<PermissionViewModel>()
-    val state by viewModel.wifiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(state) {
-        onChanged(state is WifiPermissionState.Available)
-    }
-
-    when( val s = state) {
-        is WifiPermissionState.NotAvailable -> {
-            if(s.reason == WifiPermissionNotAvailableReason.DISABLED) {
-                WifiDisabledView()
+            if (!isNearbyWifiDevicesPermissionRequired && s.reason == WifiPermissionNotAvailableReason.PERMISSION_REQUIRED) {
+                content()
+            } else {
+                contentWithoutWifi(s.reason)
             }
-        }
-        else -> {
-            content()
         }
     }
 }
