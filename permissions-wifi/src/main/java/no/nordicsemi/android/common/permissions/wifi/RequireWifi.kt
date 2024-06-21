@@ -58,7 +58,7 @@ import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewMod
  */
 @Composable
 fun RequireWifi(
-    isNearbyWifiDevicesPermissionRequired: Boolean = true,
+    isNearbyWifiDevicesPermissionRequired: Boolean,
     onChanged: (Boolean) -> Unit = {},
     contentWithoutWifi: @Composable (WifiPermissionNotAvailableReason) -> Unit = {
         NoWifiView(reason = it)
