@@ -32,15 +32,16 @@
 package no.nordicsemi.android.common.test
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -145,8 +146,10 @@ class MainActivity : NordicActivity() {
                                 .fillMaxHeight()
                                 .verticalScroll(rememberScrollState()),
                         ) {
+                            val insets = WindowInsets.displayCutout
+                                .only(WindowInsetsSides.Start)
                             Column(
-                                modifier = Modifier.displayCutoutPadding(),
+                                modifier = Modifier.padding(insets.asPaddingValues()),
                             ) {
                                 NordicLogo(
                                     modifier = Modifier
