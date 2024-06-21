@@ -115,10 +115,6 @@ class MainActivity : NordicActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
-        )
-
         val menuItems = listOf(
             Item("Main", Tabs, Icons.Filled.Verified),
             Item("Settings", Settings, Icons.Filled.Settings),
