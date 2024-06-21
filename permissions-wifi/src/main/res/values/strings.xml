@@ -35,7 +35,7 @@
     <string name="wifi_permission_required">WI-FI PERMISSION REQUIRED</string>
     <string name="wifi_permission_required_des">Wi-Fi permission is required to scan for Wi-Fi networks.</string>
     <string name="wifi_disabled">WI-FI DISABLED</string>
-    <string name="wifi_disabled_des">Wi-Fi is disabled. Please enable Wi-Fi to scan for Wi-Fi networks.</string>
+    <string name="wifi_disabled_rationale">Wi-Fi is disabled. Please enable Wi-Fi to continue.</string>
     <string name="enable_wifi">Enable Wi-Fi</string>
     <string name="wifi_not_available">WI-FI NOT AVAILABLE</string>
     <string name="wifi_not_available_des">Wi-Fi is not available on this device.</string>

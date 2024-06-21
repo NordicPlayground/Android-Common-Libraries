@@ -44,8 +44,21 @@ import no.nordicsemi.android.common.permissions.wifi.view.WifiNotAvailableView
 import no.nordicsemi.android.common.permissions.wifi.view.WifiPermissionRequiredView
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
 
+
+/**
+ * Composable that requests Wi-Fi permission.
+ *
+ * @param isNearbyWifiDevicesPermissionRequired If `true`, [contentWithoutWifi] shall request for
+ *                                              Wi-Fi permission and if set to `false`,
+ *                                              [contentWithoutWifi] shall request Wi-Fi to be
+ *                                              enabled.
+ * @param onChanged                             Callback that is called when the Wi-Fi state changes.
+ * @param contentWithoutWifi                    The content to display when Wi-Fi is not available.
+ * @param content                               The content to display when Wi-Fi is available.
+ */
 @Composable
 fun RequireWifi(
+    isNearbyWifiDevicesPermissionRequired: Boolean,
     onChanged: (Boolean) -> Unit = {},
     contentWithoutWifi: @Composable (WifiPermissionNotAvailableReason) -> Unit = {
         NoWifiView(reason = it)
@@ -62,12 +75,18 @@ fun RequireWifi(
     when (val s = state) {
         WifiPermissionState.Available -> content()
 
-        is WifiPermissionState.NotAvailable -> contentWithoutWifi(s.reason)
+        is WifiPermissionState.NotAvailable -> {
+            if (!isNearbyWifiDevicesPermissionRequired && s.reason == WifiPermissionNotAvailableReason.PERMISSION_REQUIRED) {
+                content()
+            } else {
+                contentWithoutWifi(s.reason)
+            }
+        }
     }
 }
 
 @Composable
-internal fun NoWifiView(
+private fun NoWifiView(
     reason: WifiPermissionNotAvailableReason,
 ) {
     when (reason) {
