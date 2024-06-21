@@ -53,7 +53,7 @@ internal fun WifiDisabledView() {
     WarningView(
         imageVector = Icons.Default.WifiOff,
         title = stringResource(id = R.string.wifi_disabled),
-        hint = stringResource(id = R.string.wifi_disabled_des),
+        hint = stringResource(id = R.string.wifi_disabled_rationale),
         modifier = Modifier
             .fillMaxSize()
     ) {
