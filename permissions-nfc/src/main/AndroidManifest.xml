@@ -31,14 +31,6 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--
-    Nfc permission to access the NFC hardware.
-    -->
+    <!--    Nfc permission to access the NFC hardware.    -->
     <uses-permission android:name="android.permission.NFC" />
-    <!--
-    Allow the application shows up in Google Play only for devices that have NFC hardware.
-    -->
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="true" />
 </manifest>
