@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,35 +29,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+package no.nordicsemi.android.common.permissions.notification.utils
+
+internal sealed class NotificationPermissionState {
+    /** Represents the notification permission is available. */
+    data object Available : NotificationPermissionState()
+
+    /**
+     * Represents the notification permission is not available.
+     * @param reason The reason for notification permission is not available.
+     */
+    data class NotAvailable(
+        val reason: NotAvailableReason,
+    ) : NotificationPermissionState()
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-    }
+/**
+ * Represents the reason for notification permission is not available.
+ */
+internal enum class NotAvailableReason {
+    PERMISSION_REQUIRED,
+    DENIED,
 }
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":permissions-notification")

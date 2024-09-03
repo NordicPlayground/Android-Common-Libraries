@@ -1,4 +1,5 @@
 [versions]
+accompanist = "0.34.0"
 androidDesugarJdkLibs = "2.1.2"
 androidGradlePlugin = "8.6.0"
 androidxActivity = "1.9.2"
@@ -49,8 +50,11 @@ nordicPlugins = "2.4"
 dokkaPlugin = "1.9.20"
 googleServicesPlugins = "4.4.2"
 firebaseCrashlyticsPlugins = "3.0.2"
+junit = "1.2.1"
+materialVersion = "1.12.0"
 
 [libraries]
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
@@ -129,6 +133,8 @@ test-robolectric = { group = "org.robolectric", name = "robolectric", version.re
 
 # Nordic
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 [plugins]
 nordic-application = { id = "no.nordicsemi.android.plugin.application", version.ref = "nordicPlugins" }

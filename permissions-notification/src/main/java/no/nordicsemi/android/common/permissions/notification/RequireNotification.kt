@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,35 +29,42 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package no.nordicsemi.android.common.permissions.notification
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import no.nordicsemi.android.common.permissions.notification.utils.NotAvailableReason
+import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionState
+import no.nordicsemi.android.common.permissions.notification.view.NotificationRequiredView
+import no.nordicsemi.android.common.permissions.notification.viewmodel.NotificationPermissionViewModel
+
+@Composable
+fun RequireNotification(
+    onChanged: (Boolean) -> Unit = {},
+    content: @Composable (Boolean) -> Unit,
+) {
+    val viewModel = hiltViewModel<NotificationPermissionViewModel>()
+    val state by viewModel.notificationState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state) {
+        onChanged(state is NotificationPermissionState.Available)
+    }
+
+    when (val s = state) {
+
+        NotificationPermissionState.Available -> content(true)
+        is NotificationPermissionState.NotAvailable -> {
+            when (s.reason) {
+                NotAvailableReason.PERMISSION_REQUIRED -> {
+                    // Request permission
+                    NotificationRequiredView(content)
+                }
+
+                NotAvailableReason.DENIED -> content(false)
+            }
+        }
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-    }
-}
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":permissions-notification")
