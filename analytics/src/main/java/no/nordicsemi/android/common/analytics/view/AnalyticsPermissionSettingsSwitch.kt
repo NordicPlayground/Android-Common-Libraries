@@ -73,8 +73,7 @@ fun AnalyticsPermissionSwitch(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { showDialog = true }
-            .padding(16.dp),
+            .clickable { showDialog = true },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
