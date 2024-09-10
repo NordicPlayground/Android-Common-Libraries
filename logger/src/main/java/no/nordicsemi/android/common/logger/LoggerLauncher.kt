@@ -36,7 +36,7 @@ package no.nordicsemi.android.common.logger
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import no.nordicsemi.android.log.LogSession
+import no.nordicsemi.android.log.ILogSession
 
 private const val LOGGER_PACKAGE_NAME = "no.nordicsemi.android.log"
 private const val LOGGER_LINK = "https://play.google.com/store/apps/details?id=no.nordicsemi.android.log"
@@ -49,7 +49,7 @@ object LoggerLauncher {
     /**
      * Opens the log session in nRF Logger app, or opens Google Play if the app is not installed.
      */
-    fun launch(context: Context, logSession: LogSession?) {
+    fun launch(context: Context, logSession: ILogSession?) {
         val sessionUri = logSession?.sessionUri
         val packageManger = context.packageManager
 
