@@ -47,10 +47,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -67,6 +69,7 @@ import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.simple.Hello
 import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.view.NordicSliderDefaults
 import no.nordicsemi.android.common.ui.view.PagerViewItem
 import javax.inject.Inject
 
@@ -172,6 +175,18 @@ private fun OtherWidgets() {
 
             Switch(checked = checkedSwitch, onCheckedChange = { checkedSwitch = it })
         }
+
+        var sliderValue by rememberSaveable { mutableFloatStateOf(5.0f) }
+        Text(
+            text = stringResource(id = R.string.slider, sliderValue.toInt()),
+        )
+        Slider(
+            value = sliderValue,
+            valueRange = 0.0f..10.0f,
+            onValueChange = { sliderValue = it },
+            steps = 9,
+            colors = NordicSliderDefaults.colors()
+        )
     }
 }
 
