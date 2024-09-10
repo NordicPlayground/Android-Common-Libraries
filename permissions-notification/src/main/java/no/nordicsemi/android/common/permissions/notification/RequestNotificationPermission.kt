@@ -54,7 +54,6 @@ fun RequestNotificationPermission(
     }
 
     when (val s = state) {
-
         NotificationPermissionState.Available -> content(true)
         is NotificationPermissionState.NotAvailable -> {
             when (s.reason) {
