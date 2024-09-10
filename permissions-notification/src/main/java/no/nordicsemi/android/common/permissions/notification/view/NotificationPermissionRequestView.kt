@@ -45,7 +45,7 @@ import no.nordicsemi.android.common.permissions.notification.viewmodel.Notificat
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-internal fun NotificationRequiredView(
+internal fun NotificationPermissionRequestView(
     content: @Composable (Boolean) -> Unit
 ) {
     val viewmodel: NotificationPermissionViewModel = hiltViewModel()

@@ -38,11 +38,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.permissions.notification.utils.NotAvailableReason
 import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionState
-import no.nordicsemi.android.common.permissions.notification.view.NotificationRequiredView
+import no.nordicsemi.android.common.permissions.notification.view.NotificationPermissionRequestView
 import no.nordicsemi.android.common.permissions.notification.viewmodel.NotificationPermissionViewModel
 
 @Composable
-fun RequireNotification(
+fun RequestNotificationPermission(
     onChanged: (Boolean) -> Unit = {},
     content: @Composable (Boolean) -> Unit,
 ) {
@@ -60,7 +60,7 @@ fun RequireNotification(
             when (s.reason) {
                 NotAvailableReason.PERMISSION_REQUIRED -> {
                     // Request permission
-                    NotificationRequiredView(content)
+                    NotificationPermissionRequestView(content)
                 }
 
                 NotAvailableReason.DENIED -> content(false)
