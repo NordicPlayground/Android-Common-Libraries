@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,35 +29,38 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
+package no.nordicsemi.android.common.permissions.notification.utils
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-    }
-}
-rootProject.name = "Common Libraries"
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.core.app.ActivityCompat
+import javax.inject.Inject
+import javax.inject.Singleton
 
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":permissions-notification")
+private const val SHARED_PREFS_NAME = "SHARED_PREFS_NOTIFICATION"
+
+private const val PREFS_PERMISSION_REQUESTED = "notification_permission_requested"
+
+@Singleton
+internal class LocalDataProvider @Inject constructor(
+    private val context: Context,
+) {
+    private val sharedPrefs: SharedPreferences
+        get() = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+
+    val isTiramisuOrAbove: Boolean
+        @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+    /**
+     * The first time an app requests a permission there is no 'Don't Allow' checkbox and
+     * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
+     */
+    var notificationPermissionRequested: Boolean
+        get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
+        set(value) {
+            sharedPrefs.edit().putBoolean(PREFS_PERMISSION_REQUESTED, value).apply()
+        }
+}

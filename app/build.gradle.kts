@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":permissions-nfc"))
     implementation(project(":permissions-wifi"))
     implementation(project(":permissions-internet"))
+    implementation(project(":permissions-notification"))
 
     implementation(libs.androidx.compose.material.iconsExtended)
 

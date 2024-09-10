@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,35 +29,38 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-pluginManagement {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
+package no.nordicsemi.android.common.permissions.notification.viewmodel
+
+import android.content.Context
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import no.nordicsemi.android.common.permissions.notification.repository.NotificationStateManager
+import no.nordicsemi.android.common.permissions.notification.utils.NotAvailableReason
+import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionState
+import javax.inject.Inject
+
+@HiltViewModel
+internal class NotificationPermissionViewModel @Inject constructor(
+    private val notificationStateManager: NotificationStateManager,
+): ViewModel() {
+    val notificationState = notificationStateManager.notificationState()
+        .stateIn(
+            viewModelScope, SharingStarted.Lazily,
+            NotificationPermissionState.NotAvailable(NotAvailableReason.PERMISSION_REQUIRED)
+        )
+
+    fun refreshNotificationPermission() {
+        notificationStateManager.refreshPermission()
+    }
+
+    fun markNotificationPermissionRequested() {
+        notificationStateManager.markNotificationPermissionRequested()
+    }
+
+    fun isNotificationPermissionDenied(context: Context): Boolean {
+        return notificationStateManager.isNotificationPermissionDenied(context)
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        maven(url = "https://androidx.dev/storage/compose-compiler/repository/")
-    }
-}
-rootProject.name = "Common Libraries"
-
-include(":app")
-include(":core")
-include(":theme")
-include(":ui")
-include(":logger")
-include(":navigation")
-include(":analytics")
-include(":permissions-ble")
-include(":permissions-internet")
-include(":permissions-nfc")
-include(":permissions-wifi")
-include(":permissions-notification")
