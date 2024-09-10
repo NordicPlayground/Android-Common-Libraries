@@ -32,6 +32,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.kotlin.dokka) apply false
     alias(libs.plugins.compose.compiler) apply false
 
     // Nordic plugins are defined in https://github.com/NordicSemiconductor/Android-Gradle-Plugins

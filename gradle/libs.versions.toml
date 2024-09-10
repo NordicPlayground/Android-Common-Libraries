@@ -40,7 +40,7 @@ publishPlugin = "1.2.2"
 markdown = "0.4.1"
 leakcanary = "2.14"
 mockk = "1.13.12"
-slf4j = "1.7.36" # don't update
+slf4j = "2.0.13"
 robolectric = "4.13"
 material3 = "1.3.0"
 material = "1.7.0"
@@ -50,8 +50,6 @@ nordicPlugins = "2.4"
 dokkaPlugin = "1.9.20"
 googleServicesPlugins = "4.4.2"
 firebaseCrashlyticsPlugins = "3.0.2"
-junit = "1.2.1"
-materialVersion = "1.12.0"
 
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -127,14 +125,13 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
 markdown = { group = "com.github.jeziellago", name = "compose-markdown", version.ref = "markdown" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+test-slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 test-slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 test-mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 test-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 # Nordic
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 [plugins]
 nordic-application = { id = "no.nordicsemi.android.plugin.application", version.ref = "nordicPlugins" }
