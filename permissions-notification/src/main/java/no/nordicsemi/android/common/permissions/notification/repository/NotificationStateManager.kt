@@ -36,6 +36,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.RECEIVER_EXPORTED
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -67,7 +68,9 @@ internal class NotificationStateManager @Inject constructor(
             }
         }
         val filter = IntentFilter().apply {
-            addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED)
+            }
             addAction(REFRESH_PERMISSIONS)
         }
 
