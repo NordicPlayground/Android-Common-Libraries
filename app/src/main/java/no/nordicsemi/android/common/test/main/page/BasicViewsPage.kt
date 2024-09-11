@@ -178,13 +178,25 @@ private fun OtherWidgets() {
 
         var sliderValue by rememberSaveable { mutableFloatStateOf(5.0f) }
         Text(
-            text = stringResource(id = R.string.slider, sliderValue.toInt()),
+            text = stringResource(id = R.string.slider_int, sliderValue.toInt()),
         )
         Slider(
             value = sliderValue,
             valueRange = 0.0f..10.0f,
             onValueChange = { sliderValue = it },
             steps = 9,
+            colors = NordicSliderDefaults.colors()
+        )
+
+        var disabledSliderValue by rememberSaveable { mutableFloatStateOf(5.0f) }
+        Text(
+            text = stringResource(id = R.string.slider_float, disabledSliderValue),
+        )
+        Slider(
+            value = disabledSliderValue,
+            valueRange = 0.0f..10.0f,
+            onValueChange = { disabledSliderValue = it },
+            enabled = checkedSwitch,
             colors = NordicSliderDefaults.colors()
         )
     }
