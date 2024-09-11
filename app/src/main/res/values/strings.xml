@@ -70,7 +70,8 @@
     <string name="action_dialog">Open Dialog</string>
 
     <string name="option">Important option</string>
-    <string name="slider">Value: %d</string>
+    <string name="slider_int">Value: %d</string>
+    <string name="slider_float">Value: %2.2f</string>
 
     <string name="hello">Hello!</string>
     <string name="hello_param">Param: %d</string>
