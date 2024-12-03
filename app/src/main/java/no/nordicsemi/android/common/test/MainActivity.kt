@@ -34,6 +34,7 @@ package no.nordicsemi.android.common.test
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -137,6 +138,12 @@ class MainActivity : NordicActivity() {
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
+
+                BackHandler(
+                    enabled = drawerState.isOpen,
+                ) {
+                    scope.launch { drawerState.close() }
+                }
 
                 ModalNavigationDrawer(
                     drawerState = drawerState,
@@ -266,14 +273,7 @@ class MainActivity : NordicActivity() {
                                 SettingsDestination,
                                 AdvancedDestination,
                             ),
-                            modifier = Modifier.padding(padding),
-                            backHandler = {
-                                // The back handler is called when user click the back button,
-                                // either the physical or any action that calls navigator.navigateUp().
-                                // The handler can handle it and return true (handled) or ignore,
-                                // to continue with a default behavior.
-                                drawerState.isOpen.also { if (it) scope.launch { drawerState.close() } }
-                            }
+                            modifier = Modifier.padding(padding)
                         )
                     }
                 }
