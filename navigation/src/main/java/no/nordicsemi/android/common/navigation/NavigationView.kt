@@ -59,14 +59,11 @@ import no.nordicsemi.android.common.navigation.internal.navigate
  *
  * @param destinations The list of possible destinations.
  * @param modifier The modifier to be applied to the layout.
- * @param backHandler The back handler to be called when the back button is pressed. It can
- * handle the back press and return true, or return false to let the navigation view handle it.
  */
 @Composable
 fun NavigationView(
     destinations: List<NavigationDestination>,
     modifier: Modifier = Modifier,
-    backHandler: () -> Boolean = { false },
 ) {
     val navHostController = rememberNavController()
 
@@ -112,8 +109,6 @@ fun NavigationView(
         }
         navigation.consumeEvent(e)
     }
-
-    BackHandler { if (!backHandler()) navigation.navigateUp() }
 
     NavHost(
         modifier = modifier,
