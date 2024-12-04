@@ -65,12 +65,14 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -101,7 +103,7 @@ import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.view.NavigationDrawerDividerDefaults
 import no.nordicsemi.android.common.ui.view.NavigationDrawerTitle
 import no.nordicsemi.android.common.ui.view.NavigationDrawerTitleDefaults
-import no.nordicsemi.android.common.ui.view.NordicAppBar
+import no.nordicsemi.android.common.ui.view.NordicLargeAppBar
 import no.nordicsemi.android.common.ui.view.NordicLogo
 
 data class Item(val title: String, val destinationId: DestinationId<Unit, *>, val icon: ImageVector)
@@ -139,16 +141,11 @@ class MainActivity : NordicActivity() {
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
 
-                BackHandler(
-                    enabled = drawerState.isOpen,
-                ) {
-                    scope.launch { drawerState.close() }
-                }
-
                 ModalNavigationDrawer(
                     drawerState = drawerState,
                     drawerContent = {
                         ModalDrawerSheet(
+                            drawerState = drawerState,
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .verticalScroll(rememberScrollState()),
@@ -210,9 +207,11 @@ class MainActivity : NordicActivity() {
                 ) {
                     val currentDestination by navigator.currentDestination()
                         .collectAsStateWithLifecycle()
+                    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
                     Scaffold(
+                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
-                            NordicAppBar(
+                            NordicLargeAppBar(
                                 title = { Text(text = stringResource(id = R.string.title_main)) },
                                 showBackButton = listOf(Hello, HelloDialog).contains(
                                     currentDestination
@@ -221,6 +220,7 @@ class MainActivity : NordicActivity() {
                                 onHamburgerButtonClick = {
                                     scope.launch { drawerState.open() }
                                 },
+                                scrollBehavior = scrollBehavior,
                                 actions = {
                                     val context = LocalContext.current
                                     LoggerAppBarIcon(
@@ -267,6 +267,12 @@ class MainActivity : NordicActivity() {
                             }
                         }
                     ) { padding ->
+                        // This is a workaround for the issue with the back button going back
+                        // to the previous tab instead of closing the drawer.
+//                        BackHandler(
+//                            enabled = drawerState.isOpen,
+//                            onBack = { scope.launch { drawerState.close() } }
+//                        )
                         NavigationView(
                             destinations = listOf(
                                 Tabs with ((FirstTab with MainDestinations) + (SecondTab with SecondDestinations) + ThirdDestination),
