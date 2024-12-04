@@ -33,6 +33,12 @@ package no.nordicsemi.android.common.ui.view
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -67,7 +73,10 @@ fun NordicLargeAppBar(
     showHamburgerButton: Boolean = onHamburgerButtonClick != null,
     collapsedHeight: Dp = TopAppBarDefaults.LargeAppBarCollapsedHeight,
     expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
-    windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+    windowInsets: WindowInsets = WindowInsets.displayCutout
+            .union(WindowInsets.statusBars)
+            .union(WindowInsets.navigationBars)
+            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
     scrollBehavior: TopAppBarScrollBehavior? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
@@ -76,6 +85,7 @@ fun NordicLargeAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.largeTopAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
+            scrolledContainerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
