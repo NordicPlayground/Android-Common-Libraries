@@ -66,11 +66,11 @@ import no.nordicsemi.android.common.navigation.internal.navigate
  *
  * @param destinations The list of possible destinations.
  * @param modifier The modifier to be applied to the layout.
- * @param enterTransition callback to define enter transitions for destination in this host
- * @param exitTransition callback to define exit transitions for destination in this host
- * @param popEnterTransition callback to define popEnter transitions for destination in this host
- * @param popExitTransition callback to define popExit transitions for destination in this host
- * @param sizeTransform callback to define the size transform for destinations in this host
+ * @param enterTransition Callback to define enter transitions for destination in this host
+ * @param exitTransition Callback to define exit transitions for destination in this host
+ * @param popEnterTransition Callback to define popEnter transitions for destination in this host
+ * @param popExitTransition Callback to define popExit transitions for destination in this host
+ * @param sizeTransform Callback to define the size transform for destinations in this host
  */
 @Composable
 fun NavigationView(
@@ -169,9 +169,14 @@ private fun NavGraphBuilder.create(
             is ComposableDestination -> {
                 composable(
                     route = destination.id.name,
+                    enterTransition = destination.enterTransition,
+                    exitTransition = destination.exitTransition,
+                    popEnterTransition = destination.popEnterTransition,
+                    popExitTransition = destination.popExitTransition,
+                    sizeTransform = destination.sizeTransform,
                 ) {
                     navigation.use(it.savedStateHandle)
-                    destination.content()
+                    destination.content(this)
                 }
             }
             is InnerNavigationDestination -> {
