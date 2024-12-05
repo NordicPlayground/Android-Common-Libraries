@@ -33,11 +33,18 @@
 
 package no.nordicsemi.android.common.navigation
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.SizeTransform
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavBackStackEntry
 
 /**
  * A navigation view allows navigating between different destinations.
+ *
  * @property id The destination id.
  */
 sealed class NavigationDestination(
@@ -58,16 +65,42 @@ sealed class NavigationDestination(
  * This class binds a destination identifier with a composable function that will be used to
  * render the content.
  *
- * @property id The destination identifier.
- * @property content The composable function that will be used to render the content.
+ * @param id The destination identifier.
+ * @param enterTransition Callback to determine the destination's enter transition
+ * @param exitTransition Callback to determine the destination's exit transition
+ * @param popEnterTransition Callback to determine the destination's popEnter transition
+ * @param popExitTransition Callback to determine the destination's popExit transition
+ * @param sizeTransform Callback to determine the destination's sizeTransform.
+ * @param content The composable function that will be used to render the content.
  */
 internal class ComposableDestination(
     id: DestinationId<*, *>,
-    val content: @Composable () -> Unit,
+    val enterTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)?,
+    val exitTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)?,
+    val popEnterTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)?,
+    val popExitTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)?,
+    val sizeTransform:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> SizeTransform?)?,
+    val content: @Composable AnimatedContentScope.() -> Unit,
 ): NavigationDestination(id)
 
 /**
  * Definition of an inner navigation.
+ *
+ * This class binds a destination identifier with a composable function that will be used to
+ * render the content.
+ *
+ * @property id The destination identifier.
+ * @property destinations The list of inner destinations.
  */
 internal class InnerNavigationDestination(
     id: DestinationId<*, *>,
@@ -80,8 +113,9 @@ internal class InnerNavigationDestination(
  * This class binds a destination identifier with a composable function that will be used to
  * render the content.
  *
- * @property id The destination identifier.
- * @property content The composable function that will be used to render the content.
+ * @param id The destination identifier.
+ * @param dialogProperties The dialog properties.
+ * @param content The composable function that will be used to render the content.
  */
 internal class DialogDestination(
     id: DestinationId<*, *>,
@@ -91,14 +125,45 @@ internal class DialogDestination(
 
 /**
  * Helper method for creating a composable [NavigationDestination].
+ *
+ * @param id The destination identifier.
+ * @param enterTransition Callback to determine the destination's enter transition
+ * @param exitTransition Callback to determine the destination's exit transition
+ * @param popEnterTransition Callback to determine the destination's popEnter transition
+ * @param popExitTransition Callback to determine the destination's popExit transition
+ * @param sizeTransform Callback to determine the destination's sizeTransform.
+ * @param content The composable function that will be used to render the content.
  */
 fun defineDestination(
     id: DestinationId<*, *>,
-    content: @Composable () -> Unit
-): NavigationDestination = ComposableDestination(id, content)
+    enterTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
+        null,
+    exitTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
+        null,
+    popEnterTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? =
+        enterTransition,
+    popExitTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? =
+        exitTransition,
+    sizeTransform:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> SizeTransform?)? =
+        null,
+    content: @Composable (AnimatedContentScope) -> Unit
+): NavigationDestination = ComposableDestination(id, enterTransition, exitTransition, popEnterTransition, popExitTransition, sizeTransform, content)
 
 /**
  * Helper method for creating inner navigation.
+ *
+ * @param id The destination identifier.
+ * @param destinations The list of inner destinations.
  */
 fun defineDestinationWithInnerNavigation(
     id: DestinationId<*, *>,
@@ -114,6 +179,10 @@ infix fun DestinationId<*, *>.with(destinations: List<NavigationDestination>): N
 
 /**
  * Helper method for creating a dialog [NavigationDestination].
+ *
+ * @param id The destination identifier.
+ * @param dialogProperties The dialog properties.
+ * @param content The composable function that will be used to render the content.
  */
 fun defineDialogDestination(
     id: DestinationId<*, *>,
