@@ -33,7 +33,6 @@ package no.nordicsemi.android.common.navigation.internal
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.core.net.toUri
 import androidx.navigation.*
 
 //FIXME Fix NavGraph methods() can only be called from within the same library group.
@@ -45,14 +44,8 @@ internal fun NavController.navigate(
     navOptions: NavOptions? = null,
     navigatorExtras: Navigator.Extras? = null
 ) {
-    val routeLink = NavDeepLinkRequest
-        .Builder
-        .fromUri(NavDestination.createRoute(route).toUri())
-        .build()
-
-    val deepLinkMatch = graph.matchDeepLink(routeLink)
-    if (deepLinkMatch != null) {
-        val destination = deepLinkMatch.destination
+    val destination = findDestination(route)
+    if (destination != null) {
         val id = destination.id
         navigate(id, args, navOptions, navigatorExtras)
     } else {

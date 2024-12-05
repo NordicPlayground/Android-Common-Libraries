@@ -33,13 +33,20 @@ package no.nordicsemi.android.common.navigation
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -59,11 +66,40 @@ import no.nordicsemi.android.common.navigation.internal.navigate
  *
  * @param destinations The list of possible destinations.
  * @param modifier The modifier to be applied to the layout.
+ * @param enterTransition callback to define enter transitions for destination in this host
+ * @param exitTransition callback to define exit transitions for destination in this host
+ * @param popEnterTransition callback to define popEnter transitions for destination in this host
+ * @param popExitTransition callback to define popExit transitions for destination in this host
+ * @param sizeTransform callback to define the size transform for destinations in this host
  */
 @Composable
 fun NavigationView(
     destinations: List<NavigationDestination>,
     modifier: Modifier = Modifier,
+    enterTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
+        {
+            fadeIn(animationSpec = tween(700))
+        },
+    exitTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
+        {
+            fadeOut(animationSpec = tween(700))
+        },
+    popEnterTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
+        enterTransition,
+    popExitTransition:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
+        exitTransition,
+    sizeTransform:
+    (@JvmSuppressWildcards
+    AnimatedContentTransitionScope<NavBackStackEntry>.() -> SizeTransform?)? =
+        null,
 ) {
     val navHostController = rememberNavController()
 
@@ -114,6 +150,11 @@ fun NavigationView(
         modifier = modifier,
         navController = navHostController,
         startDestination = destinations.first().id.name,
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
+        popEnterTransition = popEnterTransition,
+        popExitTransition = popExitTransition,
+        sizeTransform = sizeTransform,
     ) {
         create(destinations, navigation)
     }
