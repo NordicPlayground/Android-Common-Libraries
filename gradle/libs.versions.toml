@@ -1,16 +1,16 @@
 [versions]
-accompanist = "0.36.0"
+accompanist = "0.37.0"
 androidGradlePlugin = "8.7.3"
 androidxActivity = "1.9.3"
-androidxComposeBom = "2024.11.00" # https://developer.android.com/jetpack/compose/bom/bom-mapping
+androidxComposeBom = "2024.12.01" # https://developer.android.com/jetpack/compose/bom/bom-mapping
 androidxCore = "1.15.0"
 androidxCoreSplashscreen = "1.0.1"
 androidxDataStore = "1.1.1"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.8.7"
-androidxNavigation = "2.8.4"
+androidxNavigation = "2.8.5"
 firebaseBom = "33.7.0"
-hilt = "2.53"
+hilt = "2.53.1"
 hiltExt = "1.2.0"
 kotlin = "2.1.0"
 kotlinxCoroutines = "1.9.0"
@@ -22,7 +22,7 @@ leakcanary = "2.14"
 
 nordic-log = "2.5.0"
 nordicPlugins = "2.5"
-dokkaPlugin = "1.9.20"
+dokkaPlugin = "2.0.0"
 googleServicesPlugins = "4.4.2"
 firebaseCrashlyticsPlugins = "3.0.2"
 
