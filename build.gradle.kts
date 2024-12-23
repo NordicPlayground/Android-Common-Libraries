@@ -49,3 +49,11 @@ plugins {
     // https://github.com/NordicSemiconductor/Android-Gradle-Plugins/blob/main/plugins/src/main/kotlin/NordicDokkaPlugin.kt
     alias(libs.plugins.nordic.dokka) apply true
 }
+
+// Configure main Dokka page
+dokka {
+    moduleName.set("Nordic Common Libraries")
+    pluginsConfiguration.html {
+        homepageLink.set("https://github.com/NordicPlayground/Android-Common-Libraries")
+    }
+}
