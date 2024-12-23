@@ -53,6 +53,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * A section title is a component that displays a title with an icon
+ * and optionally a menu.
+ *
+ * @param painter The painter to be displayed.
+ * @param title The title of the section.
+ * @param modifier The modifier to be applied to the layout.
+ * @param menu The menu to be displayed on the right side of the title.
+ */
 @Composable
 fun SectionTitle(
     painter: Painter,
@@ -80,6 +89,15 @@ fun SectionTitle(
     }
 }
 
+/**
+ * A section title is a component that displays a title with an icon
+ * and optionally a menu.
+ *
+ * @param icon The icon to be displayed.
+ * @param title The title of the section.
+ * @param modifier The modifier to be applied to the layout.
+ * @param menu The menu to be displayed on the right side of the title.
+ */
 @Composable
 fun SectionTitle(
     icon: ImageVector,

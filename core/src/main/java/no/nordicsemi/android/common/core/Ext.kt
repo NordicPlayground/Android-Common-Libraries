@@ -37,6 +37,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 
+/**
+ * Parses the string and makes the text between `<b>` and `</b>` bold using [AnnotatedString].
+ */
 fun String.parseBold(): AnnotatedString {
     val parts = this.split("<b>", "</b>")
     return buildAnnotatedString {

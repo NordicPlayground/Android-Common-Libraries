@@ -41,7 +41,7 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.util.LocalDataProvider
 import no.nordicsemi.android.common.permissions.ble.util.PermissionUtils
@@ -52,7 +52,7 @@ private const val REFRESH_PERMISSIONS =
     "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
 
 @Singleton
-class LocationStateManager @Inject constructor(
+internal class LocationStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val dataProvider = LocalDataProvider(context)

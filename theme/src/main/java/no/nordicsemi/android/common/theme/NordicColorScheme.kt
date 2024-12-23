@@ -29,56 +29,57 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.theme
 
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 
-val ColorScheme.nordicBlue
+val nordicBlue
     @Composable
     get() = colorResource(id = R.color.nordicBlue)
 
-val ColorScheme.nordicSky
+val nordicSky
     @Composable
     get() = colorResource(id = R.color.nordicSky)
 
-val ColorScheme.nordicBlueslate
+val nordicBlueslate
     @Composable
     get() = colorResource(id = R.color.nordicBlueslate)
 
-val ColorScheme.nordicLake
+val nordicLake
     @Composable
     get() = colorResource(id = R.color.nordicLake)
 
-val ColorScheme.nordicGrass
+val nordicGrass
     @Composable
     get() = colorResource(id = R.color.nordicGrass)
 
-val ColorScheme.nordicGreen
+val nordicGreen
     @Composable
     get() = colorResource(id = R.color.nordicGreen)
 
-val ColorScheme.nordicSun
+val nordicSun
     @Composable
     get() = colorResource(id = R.color.nordicSun)
 
-val ColorScheme.nordicRed
+val nordicRed
     @Composable
     get() = colorResource(id = R.color.nordicRed)
 
-val ColorScheme.nordicFall
+val nordicFall
     @Composable
     get() = colorResource(id = R.color.nordicFall)
 
-val ColorScheme.nordicLightGray
+val nordicLightGray
     @Composable
     get() = colorResource(id = R.color.nordicLightGray)
 
-val ColorScheme.nordicMiddleGray
+val nordicMiddleGray
     @Composable
     get() = colorResource(id = R.color.nordicMiddleGray)
 
-val ColorScheme.nordicDarkGray
+val nordicDarkGray
     @Composable
     get() = colorResource(id = R.color.nordicDarkGray)

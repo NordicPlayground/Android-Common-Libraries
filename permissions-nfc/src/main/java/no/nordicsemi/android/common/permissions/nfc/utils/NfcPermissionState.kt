@@ -31,13 +31,10 @@
 
 package no.nordicsemi.android.common.permissions.nfc.utils
 
-sealed class NfcPermissionState {
+import no.nordicsemi.android.common.permissions.nfc.NfcNotAvailableReason
+
+internal sealed class NfcPermissionState {
     data object Available : NfcPermissionState()
     data class NotAvailable(val reason: NfcNotAvailableReason) :
         NfcPermissionState()
-}
-
-enum class NfcNotAvailableReason {
-    NOT_AVAILABLE,
-    DISABLED,
 }

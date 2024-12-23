@@ -40,6 +40,16 @@ import no.nordicsemi.android.common.navigation.get
 import no.nordicsemi.android.common.navigation.getOrNull
 import javax.inject.Inject
 
+/**
+ * A [ViewModel] that provides methods to get the parameter of the current destination.
+ *
+ * This is a helper view model. You may inject the [Navigator] directly into your view model instead.
+ *
+ * To get an instance of this view model use:
+ * ```
+ * val vm: SimpleNavigationViewModel = hiltViewModel()
+ * ```
+ */
 @Suppress("unused")
 @HiltViewModel
 open class SimpleNavigationViewModel @Inject constructor(
@@ -50,6 +60,7 @@ open class SimpleNavigationViewModel @Inject constructor(
     /**
      * Returns the parameter of the current destination, or null, if hasn't been set.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun <A> nullableParameterOf(destinationId: DestinationId<A?, *>): A? =
         savedStateHandle.getOrNull(destinationId)
 

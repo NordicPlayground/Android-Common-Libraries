@@ -52,6 +52,12 @@ android {
     namespace = "no.nordicsemi.android.common.navigation"
 }
 
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
+}
+
 dependencies {
     // NavBackStackEntry is exposed in the API of NavigationView.
     api(libs.androidx.navigation.compose)

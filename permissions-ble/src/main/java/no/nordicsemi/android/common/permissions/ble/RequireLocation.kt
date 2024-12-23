@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permissions.ble
 
 import androidx.compose.runtime.Composable
@@ -36,11 +38,36 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.view.LocationPermissionRequiredView
 import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
 
+/**
+ * A wrapper for composables that require Location.
+ *
+ * Location is required for Bluetooth LE scanning from Android 6 Marshmallow.
+ * Starting from Android 12 location may not be required if `BLUETOOTH_SCAN` permission was
+ * requested with `neverForLocation` flag.
+ *
+ * This composable will display a view based on the state of the location.
+ *
+ * ### Example:
+ * ```kotlin
+ * RequireBluetooth(
+ *     onChanged = { onScanningStateChanged(it) }
+ * ) {
+ *     RequireLocation(
+ *         onChanged = { onScanningStateChanged(it) }
+ *     ) {
+ *         // Bluetooth scanner views
+ *     }
+ * }
+ * ```
+ *
+ * @param onChanged A callback that will be called when the state of the location changes.
+ * @param contentWithoutLocation A composable that will be displayed when location is not available.
+ * @param content A composable that will be displayed when location is available.
+ */
 @Composable
 fun RequireLocation(
     onChanged: (Boolean) -> Unit = {},

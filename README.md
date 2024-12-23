@@ -1,73 +1,25 @@
 # Nordic Common Libraries for Android
+
 A libraries with Nordic's common code for Android apps.
 
-## Theme
+## Documentation
 
-### Usage
-```groovy
-implementation 'no.nordicsemi.android.common:theme:<version>'
+The latest documentation can be found [here](https://nordicplayground.github.io/KAndroid-Common-Libraries/html/index.html).
+
+## Usage
+
+To use this library, add the following to your `build.gradle` file:
+
+```gradle
+dependencies {
+    implementation 'no.nordicsemi.android.common:<module>:<version>'
+}
 ```
 
-### Content
-The library contains a few features which are necessary for theming Nordic Semiconductor apps:
+## Sample app
 
-* Color palette adopted to the new Material You
-* Typography
-* Nordic theme for dark and light mode
-* Abstract `NordicActivity` class which contain implementations for Nordic's splash screen animation.
-* `WizardStepComponent` for wizard-based app flow.
-* `CircularIcon` an icon with circular shape.
-* Other common views available for different projects.
+Run the sample app to see and test most of the components from the library.
 
-## Permission
-
-### Usage
-```groovy
-implementation 'no.nordicsemi.android.common:permission:<version>'
-```
-
-### Content
-Classes and views related to managing permissions, including Bluetooth and Internet permissions.
-
-## Navigation
-
-### Usage
-```groovy
-implementation 'no.nordicsemi.android.common:navigation:<version>'
-```
-
-### Content
-Common navigation components for the app.
-
-## UI Scanner
-
-### Usage
-```groovy
-implementation 'no.nordicsemi.android.common:uiscanner:<version>'
-```
-
-### Content
-Common Bluetooth LE scanner screen.
-
-## UI Logger
-
-### Usage
-```groovy
-implementation 'no.nordicsemi.android.common:uilogger:<version>'
-```
-
-### Content
-Common classes related with logging to nRF Logger app.
-
-## Analytics
-
-### Usage
-```groovy
-implementation 'no.nordicsemi.android.common:analytics:<version>'
-```
-
-### Content
-Common views and classes related with gathering analytics data.
-
-
-
+1. Clone the repository.
+2. Open the project in Android Studio.
+3. Run the `app` module on a connected device or emulator.

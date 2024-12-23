@@ -51,6 +51,12 @@ android {
     namespace = "no.nordicsemi.android.common.ui"
 }
 
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
+}
+
 dependencies {
     implementation(libs.androidx.compose.material.iconsExtended)
 }

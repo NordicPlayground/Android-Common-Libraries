@@ -42,8 +42,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 /**
  * Base activity that sets the Nordic theme and the Splash Screen.
  *
- * The Activity must be declared using NordicTheme.SplashScreen theme in the manifest.
- * The theme will be changed to NordicTheme when the splash screen animation is complete.
+ * The Activity must be declared using `NordicTheme.SplashScreen` theme in the manifest.
+ * The theme will be changed to `NordicTheme` when the splash screen animation is complete.
+ *
+ * The theme enables edge to edge views on supported devices.
  */
 abstract class NordicActivity : ComponentActivity() {
 

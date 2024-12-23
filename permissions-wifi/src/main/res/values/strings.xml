@@ -41,7 +41,7 @@
     <string name="wifi_not_available_des">Wi-Fi is not available on this device.</string>
 
     <string name="location_disabled">LOCATION DISABLED</string>
-    <string name="location_disabled_des">Location is disabled. Please enable location to scan for Wi-Fi networks.</string>
+    <string name="location_disabled_des">Location is disabled.\nEnable location to scan for Wi-Fi networks.</string>
     <string name="enable_location">Enable Location</string>
 
     <string name="grant_permission">Grant Permission</string>

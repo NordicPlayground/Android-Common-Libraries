@@ -54,6 +54,11 @@ import no.nordicsemi.android.common.ui.R
 private const val MEDIUM_RSSI = -80
 private const val MAX_RSSI = -60
 
+/**
+ * A component that displays an icon and a text representing the RSSI value.
+ *
+ * @param rssi The RSSI value.
+ */
 @Composable
 fun RssiIcon(rssi: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -74,14 +79,6 @@ private fun getImageRes(rssi: Int): Int {
         rssi < MEDIUM_RSSI -> R.drawable.ic_signal_min
         rssi < MAX_RSSI -> R.drawable.ic_signal_medium
         else -> R.drawable.ic_signal_max
-    }
-}
-
-fun getWiFiRes(rssi: Int): ImageVector {
-    return when {
-        rssi < MEDIUM_RSSI -> Icons.Default.NetworkWifi1Bar
-        rssi < MAX_RSSI -> Icons.Default.NetworkWifi3Bar
-        else -> Icons.Default.NetworkWifi
     }
 }
 

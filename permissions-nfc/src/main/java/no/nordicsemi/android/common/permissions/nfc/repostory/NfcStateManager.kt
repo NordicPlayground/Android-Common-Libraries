@@ -40,14 +40,14 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import no.nordicsemi.android.common.permissions.nfc.NfcNotAvailableReason
 import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionUtils
-import no.nordicsemi.android.common.permissions.nfc.utils.NfcNotAvailableReason
 import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NfcStateManager @Inject constructor(
+internal class NfcStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val utils = NfcPermissionUtils(context)

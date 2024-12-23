@@ -43,15 +43,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
+/**
+ * Representation of a set of items of radio button group.
+ *
+ * @param items The radio button group items.
+ */
 data class RadioGroupViewEntity(
     val items: List<RadioButtonItem>,
 )
 
+/**
+ * Representation of a radio button item.
+ *
+ * @param label The label of the radio button.
+ * @param isChecked The state of the radio button.
+ */
 data class RadioButtonItem(
     val label: String,
     val isChecked: Boolean = false
 )
 
+/**
+ * A radio button group is a component that displays a set of radio buttons
+ * in a vertical layout.
+ *
+ * @param viewEntity The radio button group view entity.
+ * @param onItemClick The callback to be invoked when a radio button is clicked.
+ */
 @Composable
 fun RadioButtonGroup(
     viewEntity: RadioGroupViewEntity,
@@ -70,6 +88,13 @@ fun RadioButtonGroup(
     }
 }
 
+/**
+ * A radio button group is a component that displays a set of radio buttons
+ * in a horizontal layout.
+ *
+ * @param viewEntity The radio button group view entity.
+ * @param onItemClick The callback to be invoked when a radio button is clicked.
+ */
 @Composable
 fun HorizontalLabelRadioButtonGroup(
     viewEntity: RadioGroupViewEntity,

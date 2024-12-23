@@ -37,9 +37,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.wifi.location.LocationStateManager
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
 import no.nordicsemi.android.common.permissions.wifi.state.WifiStateManager
 import javax.inject.Inject
 
@@ -51,13 +51,13 @@ internal class PermissionViewModel @Inject constructor(
     val wifiState = wifiStateManager.wifiState()
         .stateIn(
             viewModelScope, SharingStarted.Lazily,
-            WifiPermissionState.NotAvailable(WifiPermissionNotAvailableReason.NOT_AVAILABLE)
+            WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.NOT_AVAILABLE)
         )
 
     val locationPermission = locationManager.locationState()
         .stateIn(
             viewModelScope, SharingStarted.Lazily,
-            WifiPermissionState.NotAvailable(WifiPermissionNotAvailableReason.NOT_AVAILABLE)
+            WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.NOT_AVAILABLE)
         )
 
     fun refreshWifiPermission() {

@@ -60,10 +60,30 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.R
 
+/**
+ * The status of the progress item.
+ */
 enum class ProgressItemStatus {
-    DISABLED, WORKING, SUCCESS, ERROR
+    /** The item is disabled (grayed out). */
+    DISABLED,
+    /** The item is in progress. This will be displayed as a horizontal progress bar. */
+    WORKING,
+    /** The item has been completed successfully. */
+    SUCCESS,
+    /** The item has failed. */
+    ERROR,
 }
 
+/**
+ * A progress item is a component that displays a status of an operation in a
+ * Wizard component.
+ *
+ * @param text The text to be displayed.
+ * @param status The status of the progress item.
+ * @param modifier The modifier to be applied to the layout.
+ * @param verticalAlignment The vertical alignment of the content.
+ * @param iconRightPadding The padding between the icon and the text.
+ */
 @Composable
 fun ProgressItem(
     text: String,
@@ -82,6 +102,16 @@ fun ProgressItem(
     }
 }
 
+/**
+ * A progress item is a component that displays a status of an operation in a
+ * Wizard component.
+ *
+ * @param status The status of the progress item.
+ * @param modifier The modifier to be applied to the layout.
+ * @param verticalAlignment The vertical alignment of the content.
+ * @param iconRightPadding The padding between the icon and the text.
+ * @param content The content to be displayed.
+ */
 @Composable
 fun ProgressItem(
     status: ProgressItemStatus,
@@ -110,28 +140,6 @@ fun ProgressItem(
             ) {
                 content()
             }
-        }
-    }
-}
-
-@Composable
-fun StatusItem(
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .height(IntrinsicSize.Min)
-            .then(modifier),
-    ) {
-        VerticalDivider(
-            modifier = Modifier.padding(start = 10.dp, end = 34.dp)
-        )
-        Column(
-            modifier = Modifier.padding(vertical = 2.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            content()
         }
     }
 }

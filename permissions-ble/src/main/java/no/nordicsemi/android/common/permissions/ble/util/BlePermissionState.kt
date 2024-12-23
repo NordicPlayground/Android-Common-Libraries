@@ -31,14 +31,19 @@
 
 package no.nordicsemi.android.common.permissions.ble.util
 
-enum class BlePermissionNotAvailableReason {
-    PERMISSION_REQUIRED,
-    NOT_AVAILABLE,
-    DISABLED,
-}
+import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
 
-sealed class BlePermissionState {
+/**
+ * The state of Bluetooth permission.
+ */
+internal sealed class BlePermissionState {
+    /** Bluetooth permission is granted. */
     data object Available : BlePermissionState()
+    /**
+     * Bluetooth is not available.
+     *
+     * @param reason The reason why the BLE permission is not available.
+     */
     data class NotAvailable(
         val reason: BlePermissionNotAvailableReason,
     ) : BlePermissionState()
