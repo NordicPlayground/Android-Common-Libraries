@@ -36,10 +36,6 @@ plugins {
 
 group = "no.nordicsemi.android.common"
 
-android {
-    namespace = "no.nordicsemi.android.common.logger"
-}
-
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "logger"
     POM_NAME = "Set of helper classes and UI components for Nordic logger."
@@ -49,6 +45,16 @@ nordicNexusPublishing {
     POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
     POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
     POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+}
+
+android {
+    namespace = "no.nordicsemi.android.common.logger"
+}
+
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
 }
 
 dependencies {

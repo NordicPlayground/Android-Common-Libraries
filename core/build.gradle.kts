@@ -55,6 +55,12 @@ android {
     }
 }
 
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
+}
+
 dependencies {
     implementation(libs.androidx.core)
 }

@@ -51,6 +51,12 @@ android {
     namespace = "no.nordicsemi.android.common.theme"
 }
 
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
+}
+
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)

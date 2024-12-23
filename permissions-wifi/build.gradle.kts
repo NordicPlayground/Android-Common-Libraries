@@ -19,6 +19,12 @@ android {
     namespace = "no.nordicsemi.android.common.permissions.wifi"
 }
 
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
+}
+
 dependencies {
     implementation(project(":ui"))
 

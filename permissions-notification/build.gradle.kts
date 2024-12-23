@@ -20,6 +20,12 @@ android {
     namespace = "no.nordicsemi.android.common.permissions.notification"
 }
 
+dokka {
+    dokkaSourceSets.named("main") {
+        includes.from("Module.md")
+    }
+}
+
 dependencies {
     implementation(libs.accompanist.permissions)
 
