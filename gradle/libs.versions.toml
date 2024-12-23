@@ -21,7 +21,7 @@ publishPlugin = "1.3.0"
 leakcanary = "2.14"
 
 nordic-log = "2.5.0"
-nordicPlugins = "2.5"
+nordicPlugins = "2.6.1"
 dokkaPlugin = "2.0.0"
 googleServicesPlugins = "4.4.2"
 
@@ -68,6 +68,7 @@ nordic-feature = { id = "no.nordicsemi.android.plugin.feature", version.ref = "n
 nordic-hilt = { id = "no.nordicsemi.android.plugin.hilt", version.ref = "nordicPlugins" }
 nordic-kotlin-android = { id = "no.nordicsemi.android.plugin.kotlin", version.ref = "nordicPlugins" }
 nordic-nexus-android = { id = "no.nordicsemi.android.plugin.nexus", version.ref = "nordicPlugins" }
+nordic-dokka = { id = "no.nordicsemi.plugin.dokka", version.ref = "nordicPlugins" }
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
@@ -78,4 +79,3 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 publish = { id = "com.gradle.plugin-publish", version.ref = "publishPlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugins" }
-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugins" }
