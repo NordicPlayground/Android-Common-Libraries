@@ -41,7 +41,7 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.util.LocalDataProvider
 import no.nordicsemi.android.common.permissions.ble.util.PermissionUtils
