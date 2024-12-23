@@ -53,5 +53,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.navigation.compose)
+    // NavBackStackEntry is exposed in the API of NavigationView.
+    api(libs.androidx.navigation.compose)
 }

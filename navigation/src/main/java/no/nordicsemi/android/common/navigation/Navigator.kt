@@ -166,7 +166,7 @@ fun SavedStateHandle.get(destination: DestinationId<Unit, *>): Nothing =
  * Pop up to a given destination before navigating. This pops all non-matching destination routes
  * from the back stack until the destination with a matching route is found.
  */
-fun NavOptionsBuilder.popUpTo(
+fun NavOptionsBuilder.popUpToDestination(
     destination: DestinationId<*, *>,
     popUpToBuilder: PopUpToBuilder.() -> Unit = {}
 ) = popUpTo(destination.name, popUpToBuilder)
