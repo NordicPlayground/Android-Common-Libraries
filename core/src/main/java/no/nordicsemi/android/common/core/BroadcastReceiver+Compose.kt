@@ -41,6 +41,14 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
+/**
+ * Registers a [BroadcastReceiver] that will be automatically unregistered when the composable
+ * is disposed.
+ *
+ * @param intentFilter the [IntentFilter] to register the receiver for.
+ * @param flags additional flags to control the receiver. Default is [ContextCompat.RECEIVER_NOT_EXPORTED].
+ * @param onEvent the callback that will be called when a broadcast is received.
+ */
 @SuppressLint("ComposableNaming")
 @Composable
 fun registerReceiver(

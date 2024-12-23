@@ -42,10 +42,10 @@ import androidx.core.content.ContextCompat.RECEIVER_EXPORTED
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
 import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -99,18 +99,18 @@ internal class WifiStateManager @Inject constructor(
     }
 
     private fun getWifiPermissionState() = when {
-        !utils.isWifiAvailable -> WifiPermissionState.NotAvailable(
-            WifiPermissionNotAvailableReason.NOT_AVAILABLE
+        !utils.isWifiAvailable -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.NOT_AVAILABLE
         )
 
-        !utils.areNecessaryWifiPermissionsGranted -> WifiPermissionState.NotAvailable(
-            WifiPermissionNotAvailableReason.PERMISSION_REQUIRED
+        !utils.areNecessaryWifiPermissionsGranted -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED
         )
 
-        !utils.isWifiEnabled -> WifiPermissionState.NotAvailable(
-            WifiPermissionNotAvailableReason.DISABLED
+        !utils.isWifiEnabled -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.DISABLED
         )
 
-        else -> WifiPermissionState.Available
+        else -> WiFiPermissionState.Available
     }
 }

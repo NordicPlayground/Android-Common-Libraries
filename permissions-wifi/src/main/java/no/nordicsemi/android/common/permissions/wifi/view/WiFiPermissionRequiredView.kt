@@ -39,7 +39,6 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
@@ -62,7 +61,7 @@ import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewMod
 import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
-internal fun WifiPermissionRequiredView() {
+internal fun WiFiPermissionRequiredView() {
     val viewModel: PermissionViewModel = hiltViewModel()
     val context = LocalContext.current
     var permissionDenied by remember {
@@ -120,6 +119,6 @@ private fun openPermissionSettings(context: Context) {
 @Composable
 private fun WifiPermissionRequiredViewPreview() {
     MaterialTheme {
-        WifiPermissionRequiredView()
+        WiFiPermissionRequiredView()
     }
 }

@@ -33,6 +33,12 @@ package no.nordicsemi.android.common.core
 
 import android.util.SparseArray
 
+/**
+ * Maps the SparseArray to a new SparseArray using the provided modifier.
+ *
+ * @param modifier the modifier to apply to each element.
+ * @return a new SparseArray with the modified elements.
+ */
 fun <T, R> SparseArray<T>.map(
     modifier: (T) -> R,
 ): SparseArray<R> {

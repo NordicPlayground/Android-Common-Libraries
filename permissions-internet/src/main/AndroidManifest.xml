@@ -29,9 +29,9 @@
   ~ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
   ~ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- A permission to check Internet state. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

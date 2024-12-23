@@ -41,6 +41,28 @@ import no.nordicsemi.android.common.permissions.notification.utils.NotificationP
 import no.nordicsemi.android.common.permissions.notification.view.NotificationPermissionRequestView
 import no.nordicsemi.android.common.permissions.notification.viewmodel.NotificationPermissionViewModel
 
+/**
+ * A wrapper for composables that show notifications to the user.
+ *
+ * This composable will request the notification permission if needed.
+ *
+ * Content is displayed in any case and the state of the permission is given as a parameter.
+ *
+ * ### Example:
+ * ```kotlin
+ * RequestNotificationPermission(
+ *    onChanged = { granted ->
+ *    // Handle notification state change
+ *    }
+ * ) { canShowNotifications ->
+ *    // Your content
+ * }
+ * ```
+ *
+ * @param onChanged A callback that will be called when the state of the notification changes.
+ * @param content The content to display. The parameter is `true` if the notification permission
+ * is granted or not required, `false` otherwise.
+ */
 @Composable
 fun RequestNotificationPermission(
     onChanged: (Boolean) -> Unit = {},

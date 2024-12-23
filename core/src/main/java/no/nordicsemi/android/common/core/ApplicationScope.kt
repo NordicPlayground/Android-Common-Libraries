@@ -29,10 +29,17 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.core
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+/**
+ * Application scope for the application.
+ *
+ * Combines [SupervisorJob] with [Dispatchers.Default].
+ */
 val ApplicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)

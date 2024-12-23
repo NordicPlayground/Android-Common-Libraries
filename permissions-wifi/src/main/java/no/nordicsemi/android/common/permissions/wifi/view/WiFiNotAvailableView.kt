@@ -29,32 +29,34 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.wifi.utils
+package no.nordicsemi.android.common.permissions.wifi.view
 
-/**
- * Represents the reason for Wi-Fi permission is not available.
- */
-enum class WifiPermissionNotAvailableReason {
-    PERMISSION_REQUIRED,
-    NOT_AVAILABLE,
-    DISABLED,
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import no.nordicsemi.android.common.permissions.wifi.R
+import no.nordicsemi.android.common.ui.view.WarningView
+
+@Composable
+internal fun WiFiNotAvailableView() {
+    WarningView(
+        imageVector = Icons.Default.WifiOff,
+        title = stringResource(id = R.string.wifi_not_available),
+        hint = stringResource(id = R.string.wifi_not_available_des),
+        modifier = Modifier
+            .fillMaxSize()
+    )
 }
 
-/**
- * Represents the state of Wi-Fi permission.
- */
-sealed class WifiPermissionState {
-
-    /**
-     * Represents the Wi-Fi permission is available.
-     */
-    data object Available : WifiPermissionState()
-
-    /**
-     * Represents the Wi-Fi permission is not available.
-     * @param reason The reason for Wi-Fi permission is not available.
-     */
-    data class NotAvailable(
-        val reason: WifiPermissionNotAvailableReason,
-    ) : WifiPermissionState()
+@Preview(showBackground = true)
+@Composable
+private fun WifiNotAvailableView_Preview() {
+    MaterialTheme {
+        WiFiNotAvailableView()
+    }
 }

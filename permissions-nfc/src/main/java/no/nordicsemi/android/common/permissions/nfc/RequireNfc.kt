@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permissions.nfc
 
 import androidx.compose.runtime.Composable
@@ -36,12 +38,42 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.nfc.utils.NfcNotAvailableReason
 import no.nordicsemi.android.common.permissions.nfc.utils.NfcPermissionState
 import no.nordicsemi.android.common.permissions.nfc.view.NfcDisabledView
 import no.nordicsemi.android.common.permissions.nfc.view.NfcNotAvailableView
 import no.nordicsemi.android.common.permissions.nfc.viewmodel.NfcPermissionViewModel
 
+/**
+ * Reason why NFC is not available.
+ */
+enum class NfcNotAvailableReason {
+    /** NFC is not available on this device. */
+    NOT_AVAILABLE,
+    /** NFC is disabled in the system settings. */
+    DISABLED,
+}
+
+/**
+ * A wrapper for composables that require Bluetooth.
+ *
+ * ### Example:
+ * ```kotlin
+ * RequireNfc(
+ *     onChange = { enabled ->
+ *         //..
+ *     },
+ *     contentWithoutNfc = { reason ->
+ *         Text("NFC is not available: $reason")
+ *     },
+ * ) {
+ *     Text("NFC is available")
+ * }
+ * ```
+ *
+ * @param onChanged A callback that will be called when the state of the NFC changes.
+ * @param contentWithoutNfc A composable that will be displayed when NFC is not available.
+ * @param content A composable that will be displayed when NFC is available.
+ */
 @Composable
 fun RequireNfc(
     onChanged: (Boolean) -> Unit = {},

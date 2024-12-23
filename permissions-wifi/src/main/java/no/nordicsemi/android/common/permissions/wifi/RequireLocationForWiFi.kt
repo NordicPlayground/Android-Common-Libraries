@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permissions.wifi
 
 import androidx.compose.runtime.Composable
@@ -36,33 +38,43 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
 import no.nordicsemi.android.common.permissions.wifi.view.LocationDisabledView
 import no.nordicsemi.android.common.permissions.wifi.view.LocationPermissionRequiredView
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
 
+/**
+ * A wrapper for composables that require location permission for Wi-Fi scanning.
+ *
+ * This composable will request the location permission if needed.
+ *
+ * @param onChanged A callback that will be called when the permission state changes.
+ * @param contentWithoutLocation A composable that will be displayed when the location permission is not available.
+ * @param content A composable that will be displayed when the location permission is available.
+ */
 @Composable
-fun RequireLocationForWifi(
+fun RequireLocationForWiFi(
     onChanged: (Boolean) -> Unit = {},
-    contentWithoutLocation: @Composable () -> Unit = { LocationPermissionRequiredView() },
-    content: @Composable (isLocationRequiredAndDisabled: Boolean) -> Unit,
+    contentWithoutLocation: @Composable (WiFiPermissionNotAvailableReason) -> Unit = { reason ->
+        when (reason) {
+            WiFiPermissionNotAvailableReason.DISABLED -> LocationDisabledView()
+            else -> LocationPermissionRequiredView()
+        }
+    },
+    content: @Composable () -> Unit,
 ) {
     val viewModel = hiltViewModel<PermissionViewModel>()
     val state by viewModel.locationPermission.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {
         onChanged(
-            state is WifiPermissionState.Available ||
-                    (state as WifiPermissionState.NotAvailable).reason == WifiPermissionNotAvailableReason.DISABLED
+            state is WiFiPermissionState.Available ||
+                    (state as WiFiPermissionState.NotAvailable).reason == WiFiPermissionNotAvailableReason.DISABLED
         )
     }
 
     when (val s = state) {
-        WifiPermissionState.Available -> content(false)
-        is WifiPermissionState.NotAvailable -> when (s.reason) {
-            WifiPermissionNotAvailableReason.DISABLED -> LocationDisabledView()
-            else -> contentWithoutLocation()
-        }
+        WiFiPermissionState.Available -> content()
+        is WiFiPermissionState.NotAvailable -> contentWithoutLocation(s.reason)
     }
 }

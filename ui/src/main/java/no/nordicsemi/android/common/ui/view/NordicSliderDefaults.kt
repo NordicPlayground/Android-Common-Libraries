@@ -6,7 +6,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 
 /**
- * Object to hold defaults Nordic colors used by Slider.
+ * Object to hold defaults Nordic colors used by [Slider][androidx.compose.material3.Slider].
  */
 object NordicSliderDefaults {
 

@@ -45,7 +45,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.parcelize.RawValue
 import no.nordicsemi.android.common.navigation.internal.START_DESTINATION
+import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
 
+/**
+ * A navigation component that allows navigation between destinations.
+ *
+ * Use Hilt injection to get an instance of this interface.
+ *
+ * @see SimpleNavigationViewModel
+ */
 interface Navigator {
 
     /**

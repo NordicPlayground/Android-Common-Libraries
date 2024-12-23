@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permissions.ble
 
 import android.os.Build
@@ -37,13 +39,50 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.view.BluetoothDisabledView
 import no.nordicsemi.android.common.permissions.ble.view.BluetoothNotAvailableView
 import no.nordicsemi.android.common.permissions.ble.view.BluetoothPermissionRequiredView
 import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
 
+/**
+ * The reason why the BLE permission is not available.
+ */
+enum class BlePermissionNotAvailableReason {
+    /** Bluetooth Scan permission is required. */
+    PERMISSION_REQUIRED,
+    /** Bluetooth is not available on this device. */
+    NOT_AVAILABLE,
+    /** Bluetooth is disabled. */
+    DISABLED,
+}
+
+/**
+ * A wrapper for composables that require Bluetooth.
+ *
+ * This composable will display a view based on the Bluetooth state and permissions.
+ *
+ * On Android 12+ it will require `BLUETOOTH_SCAN`, `BLUETOOTH_CONNECT` and `BLUETOOTH_ADVERTISE`
+ * permission to be granted and will show a view allowing requesting them.
+ *
+ * ### Example:
+ * ```kotlin
+ * RequireBluetooth(
+ *     onChanged = { onScanningStateChanged(it) }
+ * ) {
+ *     RequireLocation(
+ *         onChanged = { onScanningStateChanged(it) }
+ *     ) {
+ *         // Bluetooth scanner views
+ *     }
+ * }
+ * ```
+ *
+ * @param onChanged A callback that will be called when the state of the Bluetooth changes.
+ * @param contentWithoutBluetooth A composable that will be displayed when Bluetooth is not available.
+ * @param content A composable that will be displayed when Bluetooth is available.
+ * @see BlePermissionNotAvailableReason
+ */
 @Composable
 fun RequireBluetooth(
     onChanged: (Boolean) -> Unit = {},

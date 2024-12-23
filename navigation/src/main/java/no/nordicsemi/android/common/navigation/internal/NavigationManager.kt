@@ -59,7 +59,7 @@ import javax.inject.Inject
  * result.
  */
 @ActivityRetainedScoped
-class NavigationManager @Inject constructor(
+internal class NavigationManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : Navigator {
     /** The navigation events class. */

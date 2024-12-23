@@ -42,7 +42,7 @@ import no.nordicsemi.android.common.navigation.internal.NavigationManager
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-interface NavigationModule {
+internal interface NavigationModule {
 
     @Binds
     fun bindNavigator(navigator: NavigationManager): Navigator

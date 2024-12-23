@@ -53,6 +53,16 @@ import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.view.internal.BigIcon
 import no.nordicsemi.android.common.ui.view.internal.Hint
 
+/**
+ * A warning view is a component that displays a warning icon, a title, and a hint.
+ *
+ * @param imageVector The vector icon to be displayed.
+ * @param title The title of the warning.
+ * @param hint The hint to be displayed.
+ * @param modifier The modifier to be applied to the layout.
+ * @param hintTextAlign The text alignment of the hint, defaults to [TextAlign.Center].
+ * @param content The content to be displayed below the hint.
+ */
 @Composable
 fun WarningView(
     imageVector: ImageVector,
@@ -72,6 +82,16 @@ fun WarningView(
     )
 }
 
+/**
+ * A warning view is a component that displays a warning icon, a title, and a hint.
+ *
+ * @param imageVector The vector icon to be displayed.
+ * @param title The title of the warning.
+ * @param hint The hint to be displayed, as [AnnotatedString].
+ * @param modifier The modifier to be applied to the layout.
+ * @param hintTextAlign The text alignment of the hint, defaults to [TextAlign.Center].
+ * @param content The content to be displayed below the hint.
+ */
 @Composable
 fun WarningView(
     imageVector: ImageVector,
@@ -91,6 +111,16 @@ fun WarningView(
     )
 }
 
+/**
+ * A warning view is a component that displays a warning icon, a title, and a hint.
+ *
+ * @param painterResource The painter to be displayed.
+ * @param title The title of the warning.
+ * @param hint The hint to be displayed, as [AnnotatedString].
+ * @param modifier The modifier to be applied to the layout.
+ * @param hintTextAlign The text alignment of the hint, defaults to [TextAlign.Center].
+ * @param content The content to be displayed below the hint.
+ */
 @Composable
 fun WarningView(
     painterResource: Painter,
@@ -109,6 +139,15 @@ fun WarningView(
     )
 }
 
+/**
+ * A warning view is a component that displays a warning icon, a title, and a hint.
+ *
+ * @param painterResource The painter to be displayed.
+ * @param title The title of the warning.
+ * @param hint The hint to be displayed.
+ * @param modifier The modifier to be applied to the layout.
+ * @param content The content to be displayed below the hint.
+ */
 @Composable
 fun WarningView(
     painterResource: Painter,
@@ -127,6 +166,15 @@ fun WarningView(
     )
 }
 
+/**
+ * A warning view is a component that displays a warning icon, a title, and a hint.
+ *
+ * @param imageVector The vector icon to be displayed.
+ * @param title The title of the warning.
+ * @param hint The hint to be displayed.
+ * @param modifier The modifier to be applied to the layout.
+ * @param content The content to be displayed below the hint.
+ */
 @Composable
 fun WarningView(
     imageVector: ImageVector,
@@ -144,6 +192,15 @@ fun WarningView(
     )
 }
 
+/**
+ * A warning view is a component that displays a warning icon, a title, and a hint.
+ *
+ * @param painterResource The painter to be displayed.
+ * @param title The title of the warning.
+ * @param hint The hint to be displayed.
+ * @param modifier The modifier to be applied to the layout.
+ * @param content The content to be displayed below the hint.
+ */
 @Composable
 fun WarningView(
     painterResource: Painter,

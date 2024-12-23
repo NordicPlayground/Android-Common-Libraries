@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permissions.wifi
 
 import android.os.Build
@@ -37,31 +39,36 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
-import no.nordicsemi.android.common.permissions.wifi.view.WifiDisabledView
-import no.nordicsemi.android.common.permissions.wifi.view.WifiNotAvailableView
-import no.nordicsemi.android.common.permissions.wifi.view.WifiPermissionRequiredView
+import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.view.WiFiDisabledView
+import no.nordicsemi.android.common.permissions.wifi.view.WiFiNotAvailableView
+import no.nordicsemi.android.common.permissions.wifi.view.WiFiPermissionRequiredView
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
 
+/**
+ * Represents the reason for Wi-Fi permission is not available.
+ */
+enum class WiFiPermissionNotAvailableReason {
+    PERMISSION_REQUIRED,
+    NOT_AVAILABLE,
+    DISABLED,
+}
 
 /**
  * Composable that requests Wi-Fi permission.
  *
  * @param isNearbyWifiDevicesPermissionRequired If `true`, [contentWithoutWifi] shall request for
- *                                              Wi-Fi permission and if set to `false`,
- *                                              [contentWithoutWifi] shall request Wi-Fi to be
- *                                              enabled.
- * @param onChanged                             Callback that is called when the Wi-Fi state changes.
- * @param contentWithoutWifi                    The content to display when Wi-Fi is not available.
- * @param content                               The content to display when Wi-Fi is available.
+ * Wi-Fi permission and if set to `false`, [contentWithoutWifi] shall request Wi-Fi to be enabled.
+ * @param onChanged Callback that is called when the Wi-Fi state changes.
+ * @param contentWithoutWifi The content to display when Wi-Fi is not available.
+ * @param content The content to display when Wi-Fi is available.
  */
 @Composable
-fun RequireWifi(
+fun RequireWiFi(
     isNearbyWifiDevicesPermissionRequired: Boolean,
     onChanged: (Boolean) -> Unit = {},
-    contentWithoutWifi: @Composable (WifiPermissionNotAvailableReason) -> Unit = {
-        NoWifiView(reason = it)
+    contentWithoutWifi: @Composable (WiFiPermissionNotAvailableReason) -> Unit = {
+        NoWiFiView(reason = it)
     },
     content: @Composable () -> Unit,
 ) {
@@ -69,14 +76,14 @@ fun RequireWifi(
     val state by viewModel.wifiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(state) {
-        onChanged(state is WifiPermissionState.Available)
+        onChanged(state is WiFiPermissionState.Available)
     }
 
     when (val s = state) {
-        WifiPermissionState.Available -> content()
+        WiFiPermissionState.Available -> content()
 
-        is WifiPermissionState.NotAvailable -> {
-            if (!isNearbyWifiDevicesPermissionRequired && s.reason == WifiPermissionNotAvailableReason.PERMISSION_REQUIRED) {
+        is WiFiPermissionState.NotAvailable -> {
+            if (!isNearbyWifiDevicesPermissionRequired && s.reason == WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED) {
                 content()
             } else {
                 contentWithoutWifi(s.reason)
@@ -86,16 +93,16 @@ fun RequireWifi(
 }
 
 @Composable
-private fun NoWifiView(
-    reason: WifiPermissionNotAvailableReason,
+private fun NoWiFiView(
+    reason: WiFiPermissionNotAvailableReason,
 ) {
     when (reason) {
-        WifiPermissionNotAvailableReason.NOT_AVAILABLE -> WifiNotAvailableView()
-        WifiPermissionNotAvailableReason.PERMISSION_REQUIRED ->
+        WiFiPermissionNotAvailableReason.NOT_AVAILABLE -> WiFiNotAvailableView()
+        WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                WifiPermissionRequiredView()
+                WiFiPermissionRequiredView()
             }
 
-        WifiPermissionNotAvailableReason.DISABLED -> WifiDisabledView()
+        WiFiPermissionNotAvailableReason.DISABLED -> WiFiDisabledView()
     }
 }

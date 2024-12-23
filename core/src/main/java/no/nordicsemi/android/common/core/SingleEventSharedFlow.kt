@@ -34,6 +34,10 @@ package no.nordicsemi.android.common.core
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
+/**
+ * Creates a simple [MutableSharedFlow] with a buffer of 1 element and [BufferOverflow.DROP_OLDEST]
+ * strategy.
+ */
 fun <T> simpleSharedFlow() = MutableSharedFlow<T>(
     extraBufferCapacity = 1,
     onBufferOverflow = BufferOverflow.DROP_OLDEST

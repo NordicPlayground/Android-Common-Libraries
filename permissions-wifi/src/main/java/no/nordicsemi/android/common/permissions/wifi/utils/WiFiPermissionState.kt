@@ -29,49 +29,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.wifi.view
+package no.nordicsemi.android.common.permissions.wifi.utils
 
-import android.content.Context
-import android.content.Intent
-import android.provider.Settings
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WifiOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import no.nordicsemi.android.common.permissions.wifi.R
-import no.nordicsemi.android.common.ui.view.WarningView
+import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
 
-@Composable
-internal fun WifiDisabledView() {
-    WarningView(
-        imageVector = Icons.Default.WifiOff,
-        title = stringResource(id = R.string.wifi_disabled),
-        hint = stringResource(id = R.string.wifi_disabled_rationale),
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        val context = LocalContext.current
-        Button(onClick = { enableWifi(context) }) {
-            Text(text = stringResource(id = R.string.enable_wifi))
-        }
-    }
-}
+/**
+ * Represents the state of Wi-Fi permission.
+ */
+internal sealed class WiFiPermissionState {
 
-private fun enableWifi(context: Context) {
-    context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-}
+    /**
+     * Represents the Wi-Fi permission is available.
+     */
+    data object Available : WiFiPermissionState()
 
-@Preview(showBackground = true)
-@Composable
-private fun WifiDisabledViewPreview() {
-    MaterialTheme {
-        WifiDisabledView()
-    }
+    /**
+     * Represents the Wi-Fi permission is not available.
+     * @param reason The reason for Wi-Fi permission is not available.
+     */
+    data class NotAvailable(
+        val reason: WiFiPermissionNotAvailableReason,
+    ) : WiFiPermissionState()
 }

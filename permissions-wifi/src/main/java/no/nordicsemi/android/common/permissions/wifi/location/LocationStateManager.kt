@@ -42,10 +42,10 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
 import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.WifiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -96,16 +96,16 @@ internal class LocationStateManager @Inject constructor(
         return utils.isLocationPermissionDeniedForever(context)
     }
 
-    private fun getLocationState(): WifiPermissionState {
+    private fun getLocationState(): WiFiPermissionState {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return when {
             !utils.isLocationPermissionGranted ->
-                WifiPermissionState.NotAvailable(WifiPermissionNotAvailableReason.PERMISSION_REQUIRED)
+                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED)
 
             dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
-                WifiPermissionState.NotAvailable(WifiPermissionNotAvailableReason.DISABLED)
+                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.DISABLED)
 
-            else -> WifiPermissionState.Available
+            else -> WiFiPermissionState.Available
         }
     }
 }

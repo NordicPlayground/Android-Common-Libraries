@@ -39,7 +39,16 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 
+/**
+ * Base link to the Google Play Store.
+ */
 const val GOOGLE_PLAY_LINK = "https://play.google.com/store/apps/details?id="
+
+/**
+ * AppLauncher is a utility class that can be used to launch an app with a given package name.
+ *
+ * If the activity is not installed, the Google Play Store will be opened.
+ */
 @Suppress("unused")
 object AppLauncher {
     /**

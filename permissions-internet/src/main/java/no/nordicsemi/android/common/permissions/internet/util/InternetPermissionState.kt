@@ -31,12 +31,12 @@
 
 package no.nordicsemi.android.common.permissions.internet.util
 
-enum class InternetPermissionNotAvailableReason {
+internal enum class InternetPermissionNotAvailableReason {
     NOT_AVAILABLE,
     DISABLED,
 }
 
-sealed class InternetPermissionState {
+internal sealed class InternetPermissionState {
 
     data object Available : InternetPermissionState()
 

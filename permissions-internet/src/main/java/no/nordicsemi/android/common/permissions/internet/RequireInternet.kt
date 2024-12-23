@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.permissions.internet
 
 import androidx.compose.runtime.Composable
@@ -40,6 +42,24 @@ import no.nordicsemi.android.common.permissions.internet.util.InternetPermission
 import no.nordicsemi.android.common.permissions.internet.view.InternetNotAvailableView
 import no.nordicsemi.android.common.permissions.internet.viewmodel.InternetPermissionViewModel
 
+/**
+ * A wrapper for composables that require Internet.
+ *
+ * ### Example:
+ * ```kotlin
+ * RequireBluetooth(
+ *     onChanged = { enabled ->
+ *         // Handle Internet state change
+ *     }
+ * ) {
+ *     // Your content
+ * }
+ * ```
+ *
+ * @param onChanged A callback that will be called when the state of the internet changes.
+ * @param contentWithoutInternet A composable that will be displayed when internet is not available.
+ * @param content A composable that will be displayed when internet is available.
+ */
 @Composable
 fun RequireInternet(
     onChanged: (Boolean) -> Unit = {},

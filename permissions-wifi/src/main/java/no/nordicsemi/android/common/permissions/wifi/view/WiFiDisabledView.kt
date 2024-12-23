@@ -31,32 +31,47 @@
 
 package no.nordicsemi.android.common.permissions.wifi.view
 
+import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permissions.wifi.R
 import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
-internal fun WifiNotAvailableView() {
+internal fun WiFiDisabledView() {
     WarningView(
         imageVector = Icons.Default.WifiOff,
-        title = stringResource(id = R.string.wifi_not_available),
-        hint = stringResource(id = R.string.wifi_not_available_des),
+        title = stringResource(id = R.string.wifi_disabled),
+        hint = stringResource(id = R.string.wifi_disabled_rationale),
         modifier = Modifier
             .fillMaxSize()
-    )
+    ) {
+        val context = LocalContext.current
+        Button(onClick = { enableWifi(context) }) {
+            Text(text = stringResource(id = R.string.enable_wifi))
+        }
+    }
+}
+
+private fun enableWifi(context: Context) {
+    context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun WifiNotAvailableView_Preview() {
+private fun WifiDisabledViewPreview() {
     MaterialTheme {
-        WifiNotAvailableView()
+        WiFiDisabledView()
     }
 }

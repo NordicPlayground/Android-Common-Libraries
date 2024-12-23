@@ -52,7 +52,7 @@ private const val REFRESH_PERMISSIONS =
     "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
 
 @Singleton
-class LocationStateManager @Inject constructor(
+internal class LocationStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val dataProvider = LocalDataProvider(context)

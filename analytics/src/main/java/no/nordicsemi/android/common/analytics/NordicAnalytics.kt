@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.analytics
 
 import android.content.Context
@@ -45,14 +47,31 @@ import javax.inject.Singleton
 
 private const val LOG_TAG = "ANALYTICS"
 
+/**
+ * This class is responsible for logging events to Firebase Analytics.
+ *
+ * Use Hilt injection to get an instance of this class.
+ */
 @Singleton
 class NordicAnalytics @Inject internal constructor(
     @ApplicationContext private val context: Context,
     private val repository: AnalyticsPermissionRepository,
 ) {
+    /**
+     * A flow that emits the current Analytics permission data.
+     *
+     * @see AnalyticsPermissionData
+     */
     val permissionData = repository.permissionData
+
     private val firebase by lazy { FirebaseAnalytics.getInstance(context) }
 
+    /**
+     * Logs an event to Firebase Analytics, if the user has granted permission.
+     *
+     * @param name The name of the event. Should be between 1 and 40 characters long.
+     * @param params Optional parameters to be sent with the event.
+     */
     fun logEvent(@Size(min = 1L, max = 40L) name: String, params: Bundle? = null) {
         runBlocking {
             repository.permissionData.firstOrNull()
@@ -64,6 +83,11 @@ class NordicAnalytics @Inject internal constructor(
         }
     }
 
+    /**
+     * Sets whether analytics collection is enabled or disabled.
+     *
+     * @param isEnabled True to enable analytics collection, false to disable it.
+     */
     suspend fun setAnalyticsEnabled(isEnabled: Boolean) {
         if (isEnabled) {
             repository.onPermissionGranted()

@@ -59,15 +59,36 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.ui.R
 
+/**
+ * Representation of a set of items of pager view.
+ *
+ * @param items The pager view items.
+ */
 class PagerViewEntity(
     val items: List<PagerViewItem>,
 )
 
+/**
+ * Representation of a pager view item.
+ *
+ * @param title The title of the pager view item.
+ * @param drawView The view to be displayed.
+ */
 class PagerViewItem(
     val title: String,
     val drawView: @Composable () -> Unit,
 )
 
+/**
+ * A pager view is a component that displays a set of views in a horizontal view pager
+ * with scrollable tabs.
+ *
+ * @param viewEntity The pager view entity.
+ * @param modifier The modifier to be applied to the layout.
+ * @param itemSpacing The spacing between items.
+ * @param contentPadding The padding to be applied to the content.
+ * @param verticalAlignment The vertical alignment of the content.
+ */
 @Composable
 fun PagerView(
     viewEntity: PagerViewEntity,
@@ -86,6 +107,19 @@ fun PagerView(
     )
 }
 
+/**
+ * A pager view is a component that displays a set of views in a horizontal view pager
+ * with tabs. Tabs are scrollable if [scrollable] is set to true.
+ *
+ * @param viewEntity The pager view entity.
+ * @param modifier The modifier to be applied to the layout.
+ * @param itemSpacing The spacing between items, by default 0.
+ * @param scrollable Whether the tabs should be scrollable.
+ * @param coroutineScope The coroutine scope to be used for scrolling.
+ * @param pagerState The pager state to be used for scrolling.
+ * @param contentPadding The padding to be applied to the content.
+ * @param verticalAlignment The vertical alignment of the content.
+ */
 @Composable
 fun PagerView(
     viewEntity: PagerViewEntity,
