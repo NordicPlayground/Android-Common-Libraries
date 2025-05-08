@@ -34,10 +34,14 @@ package no.nordicsemi.android.common.scanner
 import no.nordicsemi.android.common.navigation.createSimpleDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.scanner.view.ScannerView
+import kotlin.uuid.ExperimentalUuidApi
 
 // TODO: Remove the navigation style and make it independent.
 val ScannerDestinationId = createSimpleDestination("ble-scanner-destination")
 
+@OptIn(ExperimentalUuidApi::class)
 val ScannerDestination = defineDestination(ScannerDestinationId) {
-    ScannerView()
+    ScannerView {
+        println("AAA $it")
+    }
 }
