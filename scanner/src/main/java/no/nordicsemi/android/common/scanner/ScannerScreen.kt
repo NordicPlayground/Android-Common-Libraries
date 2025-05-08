@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,34 +29,5 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.nexus.android)
-}
+package no.nordicsemi.android.common.scanner
 
-group = "no.nordicsemi.android.common"
-
-nordicNexusPublishing {
-    POM_ARTIFACT_ID = "scanner"
-    POM_NAME = "Nordic library for BLE scanner."
-
-    POM_DESCRIPTION = "Nordic Android Common Libraries"
-    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-}
-
-android {
-    namespace = "no.nordicsemi.android.common.scanner"
-}
-
-dependencies {
-    implementation("no.nordicsemi.kotlin.ble:client-android")
-    implementation(project(":permissions-ble"))
-    implementation(project(":ui"))
-    implementation(project(":core"))
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(project(":navigation")) // todo: remove this dependency before release.
-
-}

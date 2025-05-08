@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,34 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.nexus.android)
+package no.nordicsemi.android.common.scanner.view
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.BluetoothSearching
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.ui.view.WarningView
+
+@Composable
+internal fun ScanErrorView(
+    error: Throwable? = null,
+) {
+    WarningView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        imageVector = Icons.AutoMirrored.Filled.BluetoothSearching,
+        title = "Scanning failed",
+        hint = "Scanning failed with error: ${error?.message}.",
+    )
 }
 
-group = "no.nordicsemi.android.common"
-
-nordicNexusPublishing {
-    POM_ARTIFACT_ID = "scanner"
-    POM_NAME = "Nordic library for BLE scanner."
-
-    POM_DESCRIPTION = "Nordic Android Common Libraries"
-    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-}
-
-android {
-    namespace = "no.nordicsemi.android.common.scanner"
-}
-
-dependencies {
-    implementation("no.nordicsemi.kotlin.ble:client-android")
-    implementation(project(":permissions-ble"))
-    implementation(project(":ui"))
-    implementation(project(":core"))
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(project(":navigation")) // todo: remove this dependency before release.
-
+@Preview(showBackground = true)
+@Composable
+private fun ErrorSectionPreview() {
+    MaterialTheme {
+        ScanErrorView(null)
+    }
 }

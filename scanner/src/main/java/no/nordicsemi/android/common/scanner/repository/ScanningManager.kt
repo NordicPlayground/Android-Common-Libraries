@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,34 +29,45 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    alias(libs.plugins.nordic.feature)
-    alias(libs.plugins.nordic.nexus.android)
-}
+package no.nordicsemi.android.common.scanner.repository
 
-group = "no.nordicsemi.android.common"
+import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import no.nordicsemi.kotlin.ble.client.android.CentralManager
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
-nordicNexusPublishing {
-    POM_ARTIFACT_ID = "scanner"
-    POM_NAME = "Nordic library for BLE scanner."
+@ViewModelScoped
+internal class ScanningManager @Inject constructor(
+    private val centralManager: CentralManager,
+) {
 
-    POM_DESCRIPTION = "Nordic Android Common Libraries"
-    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
-    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
-}
+    /**
+     * Scans for Bluetooth devices.
+     *
+     * @param scanDuration The duration of the scan in milliseconds. Default is 2000 ms.
+     * @return A flow of scan results.
+     */
+    fun scanDevices(
+        scanDuration: Long = 2000L,
+    ): Flow<ScanResult> {
+        return centralManager.scan(scanDuration.milliseconds)
+            .filter { it.isConnectable }
+            .catch { e ->
+                println("Error while scanning for devices: ${e.message}")
+            }
+            .flowOn(Dispatchers.IO)
 
-android {
-    namespace = "no.nordicsemi.android.common.scanner"
-}
+    }
 
-dependencies {
-    implementation("no.nordicsemi.kotlin.ble:client-android")
-    implementation(project(":permissions-ble"))
-    implementation(project(":ui"))
-    implementation(project(":core"))
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(project(":navigation")) // todo: remove this dependency before release.
+
+    fun close() {
+        centralManager.close()
+    }
 
 }

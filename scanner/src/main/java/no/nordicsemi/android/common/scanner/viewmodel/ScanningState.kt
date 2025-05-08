@@ -29,64 +29,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.scanner
+package no.nordicsemi.android.common.scanner.viewmodel
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
-import no.nordicsemi.android.common.permissions.ble.RequireLocation
-import no.nordicsemi.android.common.scanner.view.ScannerAppBar
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
-@Composable
-internal fun ScannerView() {
+/** ScanningState represents the state of the scanning process. */
+internal sealed interface ScanningState {
 
+    /** Loading state. */
+    data object Loading : ScanningState
 
-    Scaffold(
-        topBar = {
-            ScannerAppBar(
-                { Text(text = "Scanner") },
-                showProgress = true,
-                onNavigationButtonClick = {
-//                    TODO: Handle back button click
-                }
-            )
-        }
-    ) { paddingValues ->
-        RequireBluetooth(
-            onChanged = {
-                // TODO: Handle Bluetooth state change
-            }
-        ) {
-            Column(
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                RequireLocation(
-                    onChanged = {
-//                TODO: Handle Location state change
-                    }
-                ) { isLocationRequiredAndDisabled ->
+    /** Devices discovered state.
+     *
+     * @param result The list of discovered devices.
+     */
+    data class DevicesDiscovered(val result: List<ScanResult>) : ScanningState
 
-                    DevicesListView()
-
-
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ScannerViewPreview() {
-    ScannerView()
-}
-
-@Composable
-private fun DevicesListView() {
-
+    /** Error state.
+     *
+     * @param error The error that occurred.
+     */
+    data class Error(val error: Throwable) : ScanningState
 }
