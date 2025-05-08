@@ -29,27 +29,42 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.di
+package no.nordicsemi.android.common.scanner.view
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
-import android.content.Context
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.ui.view.NordicAppBar
 
-@Suppress("unused")
-@Module
-@InstallIn(SingletonComponent::class)
-internal class ScannerHiltModule {
-
-    @Provides
-    fun provideBluetoothAdapter(
-        @ApplicationContext context: Context
-    ): BluetoothAdapter {
-        val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        return manager.adapter
-    }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun ScannerAppBar(
+    title: @Composable () -> Unit,
+    showProgress: Boolean = false,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    onNavigationButtonClick: (() -> Unit)? = null,
+) {
+    NordicAppBar(
+        title = title,
+        backButtonIcon = backButtonIcon,
+        onNavigationButtonClick = onNavigationButtonClick,
+        actions = {
+            if (showProgress) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .size(30.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
+    )
 }

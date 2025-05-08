@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":permissions-wifi"))
     implementation(project(":permissions-internet"))
     implementation(project(":permissions-notification"))
+    implementation(project(":scanner"))
 
     implementation(libs.androidx.compose.material.iconsExtended)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,40 +29,64 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.view
+package no.nordicsemi.android.common.scanner
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.ui.view.NordicAppBar
+import androidx.compose.ui.tooling.preview.Preview
+import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
+import no.nordicsemi.android.common.permissions.ble.RequireLocation
+import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScannerAppBar(
-    text: String,
-    showProgress: Boolean = false,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    onNavigationButtonClick: (() -> Unit)? = null,
-) {
-    NordicAppBar(
-        text = text,
-        backButtonIcon = backButtonIcon,
-        onNavigationButtonClick = onNavigationButtonClick,
-        actions = {
-            if (showProgress) {
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(horizontal = 16.dp).size(30.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+internal fun ScannerView() {
+
+
+    Scaffold(
+        topBar = {
+            ScannerAppBar(
+                { Text(text = "Scanner") },
+                showProgress = true,
+                onNavigationButtonClick = {
+//                    TODO: Handle back button click
+                }
+            )
+        }
+    ) { paddingValues ->
+        RequireBluetooth(
+            onChanged = {
+                // TODO: Handle Bluetooth state change
             }
-        },
-    )
+        ) {
+            Column(
+                modifier = Modifier.padding(paddingValues)
+            ) {
+                RequireLocation(
+                    onChanged = {
+//                TODO: Handle Location state change
+                    }
+                ) { isLocationRequiredAndDisabled ->
+
+                    DevicesListView()
+
+
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ScannerViewPreview() {
+    ScannerView()
+}
+
+@Composable
+private fun DevicesListView() {
+
 }

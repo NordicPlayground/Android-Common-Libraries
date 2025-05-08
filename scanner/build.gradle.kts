@@ -32,20 +32,19 @@
 plugins {
     alias(libs.plugins.nordic.feature)
     alias(libs.plugins.nordic.nexus.android)
-    alias(libs.plugins.kotlin.parcelize)
 }
 
 group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
     POM_ARTIFACT_ID = "scanner"
-    POM_NAME = "Nordic Kotlin library for BLE server side."
+    POM_NAME = "Nordic library for BLE scanner."
 
-    POM_DESCRIPTION = "Nordic Android Kotlin BLE library"
-    POM_URL = "https://github.com/NordicPlayground/Kotlin-BLE-Library"
-    POM_SCM_URL = "https://github.com/NordicPlayground/Kotlin-BLE-Library"
-    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Kotlin-BLE-Library.git"
-    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Kotlin-BLE-Library.git"
+    POM_DESCRIPTION = "Nordic Android Common Libraries"
+    POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
+    POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
+    POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
+    POM_SCM_DEV_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
 }
 
 android {
@@ -53,12 +52,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":theme"))
-    implementation(project(":core"))
+    implementation("no.nordicsemi.kotlin.ble:client-android")
     implementation(project(":permissions-ble"))
-
-    api(libs.nordic.blek.client.android)
-
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(project(":ui"))
 }

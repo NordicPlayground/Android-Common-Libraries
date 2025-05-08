@@ -61,3 +61,8 @@ include(":permissions-internet")
 include(":permissions-nfc")
 include(":permissions-wifi")
 include(":permissions-notification")
+include(":scanner")
+
+if (file("../Kotlin-BLE-Library").exists()) {
+    includeBuild("../Kotlin-BLE-Library")
+}

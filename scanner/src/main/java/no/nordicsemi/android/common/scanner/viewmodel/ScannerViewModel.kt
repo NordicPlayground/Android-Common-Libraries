@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,10 +29,15 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.repository
+package no.nordicsemi.android.common.scanner.viewmodel
 
-internal data class DevicesScanFilter(
-    val filterUuidRequired: Boolean?,
-    val filterNearbyOnly: Boolean,
-    val filterWithNames: Boolean
-)
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+internal class ScannerViewModel @Inject constructor(
+
+) : ViewModel() {
+
+}
