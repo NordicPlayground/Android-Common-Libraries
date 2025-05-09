@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -67,6 +68,7 @@ import no.nordicsemi.android.common.scanner.spec.ServiceUuids
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.ui.view.CircularIcon
+import no.nordicsemi.android.common.ui.view.RssiIcon
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -82,6 +84,7 @@ internal fun ScannerView(
     val uiState by scannerViewModel.uiState.collectAsStateWithLifecycle()
     val pullToRefreshState = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -219,38 +222,51 @@ private fun ScanResultInfoRow(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(
-                text = deviceName
-                    ?: "N/A", // TODO: If name is null, then show N/A with service type of the device.
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = deviceAddress,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Row {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = deviceName
+                            ?: "Unknown name", // TODO: If name is null, then show N/A with service type of the device.
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        text = deviceAddress,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
 
-            rssi?.let {
-                Text(
-                    text = "RSSI: $it dBm",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                // Show RSSI if available
+                rssi?.let {
+                    RssiIcon(it)
+                }
             }
             if (serviceUuids.isNotEmpty()) {
-                serviceUuids.forEach {
-                    ServiceUuids.getServiceInfo(it)?.let { serviceInfo ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text(
-                                text = serviceInfo.service,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Icon(
-                                imageVector = serviceInfo.icon,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
+                // Each service UUID is displayed with its icon in the row. instead of a column.
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    println("Number of service UUIDs: ${serviceUuids.size}")
+                    serviceUuids.forEach {
+                        ServiceUuids.getServiceInfo(it)?.let { serviceInfo ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    text = serviceInfo.service,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Icon(
+                                    imageVector = serviceInfo.icon,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                                // if the service is not a standard service, then just show the number.
+
+                            }
                         }
                     }
                 }
