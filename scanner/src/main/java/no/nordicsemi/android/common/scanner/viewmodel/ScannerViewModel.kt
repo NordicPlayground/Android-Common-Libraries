@@ -39,12 +39,32 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import no.nordicsemi.android.common.scanner.data.AllowAddressScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowAllScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowUuidScanResultFilter
+import no.nordicsemi.android.common.scanner.data.OnFilterSelected
+import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
+import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
+import no.nordicsemi.android.common.scanner.data.ScanResultFilter
+import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.repository.ScanningManager
+import no.nordicsemi.kotlin.ble.client.android.CentralManager
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import no.nordicsemi.kotlin.ble.core.BondState
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.uuid.ExperimentalUuidApi
 
 /**
  * This class is responsible for managing the ui states of the scanner screen.
@@ -57,27 +77,50 @@ internal data class ScannerUiState(
     val scanningState: ScanningState = ScanningState.Loading,
 )
 
+private const val FILTER_RSSI = -50 // [dBm]
+
 @HiltViewModel
 internal class ScannerViewModel @Inject constructor(
     private val scanningManager: ScanningManager,
+    private val centralManager: CentralManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ScannerUiState())
     val uiState = _uiState.asStateFlow()
     private var job: Job? = null
 
-    fun startScanning() {
+    private val _scanResultFilter = MutableStateFlow<ScanResultFilter>(AllowAllScanResultFilter)
+    val scanResultFilterState = _scanResultFilter.asStateFlow()
+
+    fun startScanning(
+        scanDuration: Long = 2000L,
+    ) {
         job?.cancel()
-        job = scanningManager.scanDevices()
+        job = centralManager.scan(scanDuration.milliseconds)
+
+            // Filter out the scan results based on the provided filter in the scanResultFilter.
+            .filter { it.isConnectable }
+            .onStart {
+                _uiState.update {
+                    it.copy(
+                        isScanning = true,
+                        scanningState = ScanningState.DevicesDiscovered(emptyList()),
+                    )
+                }
+            }
+            .cancellable()
             .onEach { scanResult ->
                 val scanResults =
                     _uiState.value.scanningState.let { state ->
-                        if (state is ScanningState.DevicesDiscovered) state.result else emptyList()
+                        if (state is ScanningState.DevicesDiscovered) state.result.applyFilter(
+                            _scanResultFilter.value
+                        ) else emptyList()
                     }
                 // Check if the device is already in the list.
                 val isExistingDevice =
                     scanResults.firstOrNull { it.peripheral.address == scanResult.peripheral.address }
                 // Add the device to the list if it is not already in the list, otherwise ignore it.
                 if (isExistingDevice == null) {
+                    // Update the scanning state with the new scan result.
                     _uiState.update {
                         it.copy(
                             scanningState = ScanningState.DevicesDiscovered(
@@ -92,7 +135,6 @@ internal class ScannerViewModel @Inject constructor(
                 _uiState.update { it.copy(isScanning = false) }
                 job?.cancel()
             }
-            .cancellable()
             .catch { e ->
                 _uiState.update {
                     it.copy(
@@ -113,5 +155,72 @@ internal class ScannerViewModel @Inject constructor(
         }
         startScanning()
     }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun List<ScanResult>.applyFilter(filter: ScanResultFilter): List<ScanResult> {
+        println("Filter: $filter")
+        return when (filter) {
+            is AllowAddressScanResultFilter -> {
+                this.filter {
+                    it.peripheral.address == filter.address
+                }
+            }
+
+            AllowAllScanResultFilter -> this
+            is AllowBondedScanResultFilter -> {
+                this.filter {
+                    it.peripheral.bondState.value == BondState.BONDED
+                }
+            }
+
+            is AllowNameAndAddressScanResultFilter -> {
+                this.filter {
+                    it.peripheral.name == filter.name && it.peripheral.address == filter.address
+                }
+            }
+
+            is AllowNameScanResultFilter -> {
+                this.filter {
+                    it.peripheral.name == filter.name
+                }
+            }
+
+            AllowNearbyScanResultFilter -> {
+                this.filter { it.rssi >= FILTER_RSSI } // TODO: check if this statement is correct.
+            }
+
+            AllowNonEmptyNameScanResultFilter -> {
+                this.filter {
+                    it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
+                }
+            }
+
+            is AllowUuidScanResultFilter -> {
+                this.filter {
+                    it.advertisingData.serviceUuids.contains(filter.uuid)
+                }
+            }
+        }
+    }
+
+    fun onClick(event: UiClickEvent) {
+        when (event) {
+            is OnFilterSelected -> _scanResultFilter.value = event.filter
+            OnReloadScanResults -> {
+                _uiState.update {
+                    it.copy(
+                        scanningState = ScanningState.DevicesDiscovered(emptyList()),
+                    )
+                }
+                startScanning()
+            }
+
+            is OnScanResultSelected -> {
+                // TODO: Handle the scan result selection.
+                println("Selected scan result: ${event.device}")
+            }
+        }
+    }
+
 
 }

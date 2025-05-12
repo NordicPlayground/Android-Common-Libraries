@@ -64,6 +64,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
+import no.nordicsemi.android.common.scanner.data.OnFilterSelected
+import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
@@ -84,6 +86,7 @@ internal fun ScannerView(
     val uiState by scannerViewModel.uiState.collectAsStateWithLifecycle()
     val pullToRefreshState = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
+    val onEvent: (UiClickEvent) -> Unit = { scannerViewModel.onClick(it) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -91,6 +94,7 @@ internal fun ScannerView(
         ScannerAppBar(
             title = { Text(text = title) },
             showProgress = uiState.isScanning,
+            onFilterSelected = { onEvent(OnFilterSelected(it)) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.
             }
