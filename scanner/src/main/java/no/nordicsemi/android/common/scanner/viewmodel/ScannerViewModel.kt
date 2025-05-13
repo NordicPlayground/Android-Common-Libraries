@@ -87,7 +87,23 @@ internal class ScannerViewModel @Inject constructor(
     private var job: Job? = null
 
     private val _scanResultFilter = MutableStateFlow<ScanResultFilter>(AllowAllScanResultFilter)
-    val scanResultFilterState = _scanResultFilter.asStateFlow()
+
+    init {
+        _scanResultFilter.onEach { newFilter ->
+            println("New filter: $newFilter")
+            val currentState = _uiState.value.scanningState
+            if (currentState is ScanningState.DevicesDiscovered) {
+                val filteredResults = currentState.result.applyFilter(newFilter)
+                _uiState.update {
+                    it.copy(
+                        scanningState = ScanningState.DevicesDiscovered(
+                            result = filteredResults
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
 
     fun startScanning(
         scanDuration: Long = 2000L,
@@ -219,6 +235,5 @@ internal class ScannerViewModel @Inject constructor(
             }
         }
     }
-
 
 }
