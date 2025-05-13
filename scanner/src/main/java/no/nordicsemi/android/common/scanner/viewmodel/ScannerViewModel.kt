@@ -107,10 +107,10 @@ internal class ScannerViewModel @Inject constructor(
 
     fun startScanning(
         scanDuration: Long = 2000L,
+        scanFilter: ScanResultFilter = AllowAllScanResultFilter,
     ) {
         job?.cancel()
         job = centralManager.scan(scanDuration.milliseconds)
-
             // Filter out the scan results based on the provided filter in the scanResultFilter.
             .filter { it.isConnectable }
             .onStart {
@@ -125,20 +125,20 @@ internal class ScannerViewModel @Inject constructor(
             .onEach { scanResult ->
                 val scanResults =
                     _uiState.value.scanningState.let { state ->
-                        if (state is ScanningState.DevicesDiscovered) state.result.applyFilter(
-                            _scanResultFilter.value
-                        ) else emptyList()
+                        if (state is ScanningState.DevicesDiscovered) state.result else emptyList()
                     }
                 // Check if the device is already in the list.
                 val isExistingDevice =
                     scanResults.firstOrNull { it.peripheral.address == scanResult.peripheral.address }
                 // Add the device to the list if it is not already in the list, otherwise ignore it.
                 if (isExistingDevice == null) {
+                    // Apply the filter to the scan result in the reload scan results.
+                    val result = (scanResults + scanResult).applyFilter(scanFilter)
                     // Update the scanning state with the new scan result.
                     _uiState.update {
                         it.copy(
                             scanningState = ScanningState.DevicesDiscovered(
-                                result = scanResults + scanResult
+                                result = result
                             )
                         )
                     }
@@ -167,7 +167,7 @@ internal class ScannerViewModel @Inject constructor(
                 scanningState = ScanningState.DevicesDiscovered(emptyList()),
             )
         }
-        startScanning()
+        startScanning(scanFilter = _scanResultFilter.value)
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -226,7 +226,7 @@ internal class ScannerViewModel @Inject constructor(
                         scanningState = ScanningState.DevicesDiscovered(emptyList()),
                     )
                 }
-                startScanning()
+                startScanning(scanFilter = _scanResultFilter.value)
             }
 
             is OnScanResultSelected -> {
