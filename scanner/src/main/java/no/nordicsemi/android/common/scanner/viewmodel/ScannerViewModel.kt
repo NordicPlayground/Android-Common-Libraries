@@ -58,7 +58,6 @@ import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
-import no.nordicsemi.android.common.scanner.repository.ScanningManager
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.core.BondState
@@ -81,7 +80,6 @@ private const val FILTER_RSSI = -50 // [dBm]
 
 @HiltViewModel
 internal class ScannerViewModel @Inject constructor(
-    private val scanningManager: ScanningManager,
     private val centralManager: CentralManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ScannerUiState())
