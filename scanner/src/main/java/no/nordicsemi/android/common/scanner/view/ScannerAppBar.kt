@@ -42,103 +42,114 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.scanner.data.AllowAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowUuidScanResultFilter
+import no.nordicsemi.android.common.scanner.data.OnFilterApply
+import no.nordicsemi.android.common.scanner.data.OnFilterReset
+import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
+import no.nordicsemi.android.common.scanner.data.UiClickEvent
+import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
+import no.nordicsemi.android.common.theme.nordicGreen
 import no.nordicsemi.android.common.ui.view.NordicAppBar
-import java.util.UUID
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.toKotlinUuid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ScannerAppBar(
     title: @Composable () -> Unit,
-    showProgress: Boolean = false,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    onFilterSelected: (ScanResultFilter) -> Unit = { },
+    showProgress: Boolean = false,
+    scanningState: ScanningState,
+    filterSelected: List<ScanResultFilter> = emptyList(),
+    onFilterSelected: (UiClickEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
-    var openFilterDialog by rememberSaveable { mutableStateOf(false) }
+    var showFilterSettings by rememberSaveable { mutableStateOf(false) }
     NordicAppBar(
         title = title,
         backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
         actions = {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
                 if (showProgress) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
                             .size(30.dp),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    imageVector = Icons.Default.FilterList,
                     contentDescription = null,
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable {
-                            openFilterDialog = true
+                            showFilterSettings = true
                         }
-                        .padding(4.dp)
                 )
             }
         },
     )
 
-    if (openFilterDialog) {
+    if (showFilterSettings) {
         FilterDialog(
-            onDismissRequest = { openFilterDialog = false },
+            scanningState = scanningState,
+            filterSelected = filterSelected,
+            onDismissRequest = { showFilterSettings = false },
             onFilterSelected = {
                 onFilterSelected(it)
-                openFilterDialog = false
             }
         )
     }
 }
 
-val CHANNEL_SOUND_SERVICE_UUID: UUID = UUID.fromString("0000185B-0000-1000-8000-00805F9B34FB")
-
-@OptIn(ExperimentalUuidApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterDialog(
+internal fun FilterDialog(
+    scanningState: ScanningState,
+    filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
-    onFilterSelected: (ScanResultFilter) -> Unit
+    onFilterSelected: (UiClickEvent) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -161,38 +172,63 @@ fun FilterDialog(
             )
         }
     ) {
-        FilterDetails(onDismissRequest) {
+        FilterDetails(
+            scanningState,
+            filterSelected, onDismissRequest
+        ) {
             onFilterSelected(it)
         }
     }
 }
 
 @Composable
-@OptIn(ExperimentalUuidApi::class)
 private fun FilterDetails(
+    scanningState: ScanningState,
+    filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
-    onFilterSelected: (ScanResultFilter) -> Unit,
+    onEvent: (UiClickEvent) -> Unit,
+) {
+    val filterList = filterSelected.toMutableList()
 
+    // list of Peripheral devices with non-empty names
+    val displayNamePeripheralList =
+        (scanningState as ScanningState.DevicesDiscovered).result.filter { it.peripheral.name != null }
+            .distinctBy { it.peripheral.name }
+            .sortedBy { it.peripheral.name }
+            .map { it.peripheral }
+
+
+    Column(
+        modifier = Modifier.padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-    val filterSelected: MutableState<List<ScanResultFilter>> =
-        remember { mutableStateOf(emptyList()) }
-    val isSelected: (ScanResultFilter) -> Boolean = { filter ->
-        filterSelected.value.contains(filter)
-    }
+        Text(
+            "Search by",
+            style = MaterialTheme.typography.titleLarge
+        )
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Button(
                 onClick = {
-                    // Add filterSelected to the list.
-                    filterSelected.value += AllowNearbyScanResultFilter
+                    // Add filterSelected to the list and if it is already in the list, remove it.
+                    filterList.add(AllowNearbyScanResultFilter)
+                    onEvent(OnFilterSelected(AllowNearbyScanResultFilter))
+                    println("items inside filterSelected: $filterSelected")
                 },
-                modifier = Modifier
-                    .background(
-                        color = if (isSelected(AllowNearbyScanResultFilter)) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.surfaceContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    )
+                modifier = Modifier,
+                colors = ButtonColors(
+                    containerColor = filterList.getButtonContainerColor(
+                        AllowNearbyScanResultFilter
+                    ),
+                    contentColor = filterList.getButtonContentColor(AllowNearbyScanResultFilter),
+                    disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
+                    disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
+                )
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -204,18 +240,15 @@ private fun FilterDetails(
                     )
                     Text(
                         "NearBy",
-                        modifier = Modifier.clickable {
-                            onFilterSelected(AllowNearbyScanResultFilter)
-                            onDismissRequest()
-                        }
                     )
                 }
             }
 
             Button(
                 onClick = {
-                    // Add filterSelected to the list.
-                    filterSelected.value += AllowNonEmptyNameScanResultFilter
+                    filterList.add(AllowNonEmptyNameScanResultFilter)
+                    onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter))
+                    println("items inside filterSelected: $filterSelected")
                 },
             ) {
                 Row(
@@ -227,144 +260,173 @@ private fun FilterDetails(
                         contentDescription = null,
                     )
                     Text(
-                        "Non Empty Name",
-                        modifier = Modifier.clickable {
-                            onFilterSelected(AllowNonEmptyNameScanResultFilter)
-                            onDismissRequest()
-                        }
+                        "Names",
+                    )
+                }
+            }
+
+            Button(
+                onClick = {
+                    filterList.add(AllowBondedScanResultFilter)
+                    onEvent(OnFilterSelected(AllowBondedScanResultFilter))
+                    println("items inside filterSelected: $filterSelected")
+                }
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Done,
+                        contentDescription = null,
+                    )
+                    Text(
+                        "Bonded",
                     )
                 }
             }
         }
 
         Text(
-            "Search by",
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge
+            "Filter from the scanned devices",
+            modifier = Modifier.padding(start = 8.dp),
         )
-        val textFieldValue = remember { mutableStateOf("Name") }
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            OutlinedTextField(
-                value = textFieldValue.value,
-                onValueChange = {
-                    textFieldValue.value = it
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(8.dp),
-                label = { Text("Display name") }
-            )
-            Icon(
-                imageVector = Icons.Default.Done,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .clickable {
-                        if (textFieldValue.value.trim().isNotEmpty()) {
-                            onFilterSelected(AllowNameScanResultFilter(textFieldValue.value))
-                        }
+            var displayNameExpanded by rememberSaveable { mutableStateOf(false) }
+            Column {
+                Button(
+                    onClick = {
+                        displayNameExpanded = !displayNameExpanded
                     }
-                    .padding(8.dp)
-            )
-        }
-
-        val deviceAddress = remember { mutableStateOf("Device Address") }
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = deviceAddress.value,
-                onValueChange = {
-                    deviceAddress.value = it
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(8.dp),
-                label = { Text("Device Address") }
-            )
-            Icon(
-                imageVector = Icons.Default.Done,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .clickable {
-                        if (textFieldValue.value.trim().isNotEmpty()) {
-                            onFilterSelected(AllowNameScanResultFilter(textFieldValue.value))
-                        }
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Display Name",
+                        )
+                        Icon(
+                            imageVector = if (displayNameExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                            contentDescription = null,
+                        )
                     }
-                    .padding(8.dp)
-            )
-        }
-
-
-
-
-        Text(
-            "Name",
-            modifier = Modifier.clickable {
-                onFilterSelected(AllowNameScanResultFilter("Nordic CS Reflector 123"))
-                onDismissRequest()
-            })
-        Text(
-            "Bonded",
-            modifier = Modifier.clickable {
-                onFilterSelected(AllowBondedScanResultFilter)
-                onDismissRequest()
-            })
-        Text(
-            "UUID",
-            modifier = Modifier.clickable {
-                onFilterSelected(AllowUuidScanResultFilter(CHANNEL_SOUND_SERVICE_UUID.toKotlinUuid()))
-                onDismissRequest()
-            })
-        Text(
-            "Address",
-            modifier = Modifier.clickable {
-                onFilterSelected(
-                    AllowAddressScanResultFilter(
-                        "D4:09:B6:97:D1:EB"
-                    )
-                )
-                onDismissRequest()
-            })
-        ElevatedButton(
-            onClick = { onFilterSelected(filterSelected.value.first()) },
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = "Apply",
-                modifier = Modifier.clickable {
-                    onFilterSelected(filterSelected.value.first())
-                    onDismissRequest()
                 }
-            )
+                // Display the list of names in the dropdown
+                DropdownMenu(
+                    expanded = displayNameExpanded,
+                    onDismissRequest = { displayNameExpanded = false },
+                    modifier = Modifier
+                        .padding(16.dp),
+                    scrollState = rememberScrollState()
+                ) {
+                    displayNamePeripheralList.forEach { peripheral ->
+                        DropdownMenuItem(
+                            text = {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    horizontalAlignment = Alignment.Start,
+                                ) {
+                                    Text(peripheral.name!!)
+                                    Text(
+                                        text = peripheral.address,
+                                        style = MaterialTheme.typography.bodySmall
+                                            .copy(color = MaterialTheme.colorScheme.onSurface)
+                                    )
+                                }
+                                HorizontalDivider()
+                            },
+                            onClick = {
+                                // Add filterSelected to the list and if it is already in the list, remove it.
+                                filterList.add(AllowNameScanResultFilter(peripheral.name!!))
+                                filterList.add(AllowAddressScanResultFilter(peripheral.address))
+                                onEvent(OnFilterSelected(AllowNameScanResultFilter(peripheral.name!!)))
+                                onEvent(OnFilterSelected(AllowAddressScanResultFilter(peripheral.address)))
+                                displayNameExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Button(
+                onClick = {
+                    println("Apply: $filterList")
+                    onEvent(OnFilterApply(filterList))
+                },
+            ) {
+                Text(
+                    text = "Apply",
+                    modifier = Modifier.clickable {
+                        onEvent(OnFilterApply(filterList))
+                        onDismissRequest()
+                    }
+                )
+            }
+            if (filterList.isNotEmpty()) {
+                Button(
+                    onClick = {
+                        onEvent(OnFilterReset)
+                    },
+
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                ) {
+                    Text(
+                        text = "Clear All",
+                    )
+                }
+            }
         }
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 private fun FilterDetailsPreview() {
     FilterDetails(
+        scanState = ScanningState.DevicesDiscovered(
+            emptyList(), emptyList()
+        ),
         onDismissRequest = { },
         onFilterSelected = { }
     )
-}
+}*/
 
-@Preview
+/*@Preview
 @Composable
 private fun ScannerAppBarPreview() {
     ScannerAppBar(
         title = { },
-        showProgress = false,
-        onNavigationButtonClick = { }
+        onNavigationButtonClick = { },
+        scanningState = uiState.scanningState
     )
+}*/
+
+@Composable
+fun <T> MutableList<T>.getButtonContainerColor(item: T): Color {
+    println("this: $this")
+    return if (contains(item)) nordicGreen else ButtonDefaults.buttonColors().containerColor
 }
+
+@Composable
+fun <T> MutableList<T>.getButtonContentColor(item: T): Color {
+    return if (contains(item)) MaterialTheme.colorScheme.onPrimary else ButtonDefaults.buttonColors().contentColor
+}
+

@@ -55,7 +55,8 @@ dependencies {
     implementation("no.nordicsemi.kotlin.ble:client-android")
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
-    implementation(project(":core"))
+    implementation(project(":core")) // todo: remove this dependency before release.
+    implementation(project(":theme"))
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(project(":navigation")) // todo: remove this dependency before release.
 

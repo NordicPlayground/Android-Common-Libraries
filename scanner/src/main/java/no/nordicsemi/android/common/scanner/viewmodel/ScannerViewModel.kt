@@ -53,6 +53,8 @@ import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowUuidScanResultFilter
+import no.nordicsemi.android.common.scanner.data.OnFilterApply
+import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
@@ -86,38 +88,26 @@ internal class ScannerViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
     private var job: Job? = null
 
-    private val _scanResultFilter = MutableStateFlow<ScanResultFilter>(AllowAllScanResultFilter)
+    private val _scanResultFilter = MutableStateFlow<List<ScanResultFilter>>(emptyList())
+    val scanResultFilter = _scanResultFilter.asStateFlow()
 
-    init {
-        _scanResultFilter.onEach { newFilter ->
-            println("New filter: $newFilter")
-            val currentState = _uiState.value.scanningState
-            if (currentState is ScanningState.DevicesDiscovered) {
-                val filteredResults = currentState.result.applyFilter(newFilter)
-                _uiState.update {
-                    it.copy(
-                        scanningState = ScanningState.DevicesDiscovered(
-                            result = filteredResults
-                        )
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
+    private val _originalScanResults = MutableStateFlow<List<ScanResult>>(emptyList())
 
     fun startScanning(
         scanDuration: Long = 2000L,
-        scanFilter: ScanResultFilter = AllowAllScanResultFilter,
     ) {
         job?.cancel()
         job = centralManager.scan(scanDuration.milliseconds)
             // Filter out the scan results based on the provided filter in the scanResultFilter.
             .filter { it.isConnectable }
             .onStart {
+                // Update the scanning state to loading when the scan starts.
                 _uiState.update {
                     it.copy(
                         isScanning = true,
-                        scanningState = ScanningState.DevicesDiscovered(emptyList()),
+                        scanningState = ScanningState.DevicesDiscovered(
+                            emptyList()
+                        ),
                     )
                 }
             }
@@ -133,12 +123,13 @@ internal class ScannerViewModel @Inject constructor(
                 // Add the device to the list if it is not already in the list, otherwise ignore it.
                 if (isExistingDevice == null) {
                     // Apply the filter to the scan result in the reload scan results.
-                    val result = (scanResults + scanResult).applyFilter(scanFilter)
                     // Update the scanning state with the new scan result.
+                    val result = scanResults + scanResult
+                    _originalScanResults.value = result
                     _uiState.update {
                         it.copy(
                             scanningState = ScanningState.DevicesDiscovered(
-                                result = result
+                                result = result,
                             )
                         )
                     }
@@ -164,76 +155,159 @@ internal class ScannerViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isScanning = true,
-                scanningState = ScanningState.DevicesDiscovered(emptyList()),
-            )
+                scanningState = ScanningState.DevicesDiscovered(
+                    result = emptyList(),
+                ),
+
+                )
         }
-        startScanning(scanFilter = _scanResultFilter.value)
+        startScanning()
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    private fun List<ScanResult>.applyFilter(filter: ScanResultFilter): List<ScanResult> {
-        println("Filter: $filter")
-        return when (filter) {
-            is AllowAddressScanResultFilter -> {
-                this.filter {
-                    it.peripheral.address == filter.address
+    private fun List<ScanResult>.applyFilter(filters: List<ScanResultFilter>): List<ScanResult> {
+        if (filters.isEmpty()) return this
+        // Iterate through the filters and apply them to the scan results.
+        // Save the filtered results in a new list.
+        val newList = mutableListOf<ScanResult>()
+        filters.forEach { filter ->
+            when (filter) {
+                is AllowAddressScanResultFilter -> {
+                    // Filter the scan results based on the address.
+                    newList += this.filter {
+                        it.peripheral.address == filter.address
+                    }
                 }
-            }
 
-            AllowAllScanResultFilter -> this
-            is AllowBondedScanResultFilter -> {
-                this.filter {
-                    it.peripheral.bondState.value == BondState.BONDED
+                AllowAllScanResultFilter -> {
+                    // Allow all scan results.
+                    newList += this
                 }
-            }
 
-            is AllowNameAndAddressScanResultFilter -> {
-                this.filter {
-                    it.peripheral.name == filter.name && it.peripheral.address == filter.address
+                AllowBondedScanResultFilter -> {
+                    // Filter the scan results based on the bonded state.
+                    newList += this.filter {
+                        it.peripheral.bondState.value == BondState.BONDED
+                    }
                 }
-            }
 
-            is AllowNameScanResultFilter -> {
-                this.filter {
-                    it.peripheral.name == filter.name
+                is AllowNameAndAddressScanResultFilter -> {
+                    // Filter the scan results based on the name and address.
+                    newList += this.filter {
+                        it.peripheral.name == filter.name && it.peripheral.address == filter.address
+                    }
                 }
-            }
 
-            AllowNearbyScanResultFilter -> {
-                this.filter { it.rssi >= FILTER_RSSI } // TODO: check if this statement is correct.
-            }
-
-            AllowNonEmptyNameScanResultFilter -> {
-                this.filter {
-                    it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
+                is AllowNameScanResultFilter -> {
+                    // Filter the scan results based on the name.
+                    newList += this.filter {
+                        it.peripheral.name == filter.name
+                    }
                 }
-            }
 
-            is AllowUuidScanResultFilter -> {
-                this.filter {
-                    it.advertisingData.serviceUuids.contains(filter.uuid)
+                AllowNearbyScanResultFilter -> {
+                    // Filter the scan results based on the RSSI value.
+                    newList += this.filter {
+                        it.rssi >= FILTER_RSSI
+                    }
+                }
+
+                AllowNonEmptyNameScanResultFilter -> {
+                    // Filter the scan results based on the non-empty name.
+                    newList += this.filter {
+                        it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
+                    }
+                }
+
+                is AllowUuidScanResultFilter -> {
+                    // Filter the scan results based on the UUID.
+                    newList += this.filter {
+                        it.advertisingData.serviceUuids.contains(filter.uuid)
+                    }
                 }
             }
         }
+        return newList.distinct()
+    }
+    init {
+        _scanResultFilter.onEach {
+            // Apply the filter to the scan results.
+            val originalResults = _originalScanResults.value
+            val filteredResults = originalResults.applyFilter(it)
+            _uiState.update {
+                it.copy(
+                    scanningState = ScanningState.DevicesDiscovered(
+                        result = filteredResults,
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun onClick(event: UiClickEvent) {
         when (event) {
-            is OnFilterSelected -> _scanResultFilter.value = event.filter
+            is OnFilterSelected -> {
+                // Update the filter list with the selected filter.
+                println("event filter: ${event.filter}")
+                val currentFilter = _scanResultFilter.value.toMutableList()
+                // check if the items on the list is already  on the current filter list
+                currentFilter.addOrRemove(event.filter)
+                _scanResultFilter.update {
+                    currentFilter
+                }
+            }
+
             OnReloadScanResults -> {
                 _uiState.update {
                     it.copy(
-                        scanningState = ScanningState.DevicesDiscovered(emptyList()),
+                        scanningState = ScanningState.DevicesDiscovered(
+                            emptyList(),
+                        )
                     )
                 }
-                startScanning(scanFilter = _scanResultFilter.value)
+                // Clear the original scan filters.
+                _scanResultFilter.update { emptyList() }
+                startScanning()
             }
 
             is OnScanResultSelected -> {
                 // TODO: Handle the scan result selection.
                 println("Selected scan result: ${event.device}")
             }
+
+            is OnFilterApply -> {
+                val selectedFilter = event.filter
+                val originalResults = _originalScanResults.value
+                val filteredResults = originalResults.applyFilter(selectedFilter)
+                _uiState.update {
+                    it.copy(
+                        scanningState = ScanningState.DevicesDiscovered(
+                            result = filteredResults,
+                        )
+                    )
+                }
+            }
+
+            is OnFilterReset -> {
+                _scanResultFilter.update { emptyList() }
+                val originalResults = _originalScanResults.value
+                _uiState.update {
+                    it.copy(
+                        scanningState = ScanningState.DevicesDiscovered(
+                            result = originalResults,
+                        )
+                    )
+                }
+            }
         }
     }
 
+}
+
+private fun <T> MutableList<T>.addOrRemove(item: T) {
+    if (contains(item)) {
+        remove(item)
+    } else {
+        add(item)
+    }
 }

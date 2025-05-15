@@ -14,3 +14,9 @@ data object OnReloadScanResults : UiClickEvent
 data class OnFilterSelected(
     val filter: ScanResultFilter
 ) : UiClickEvent
+
+data object OnFilterReset : UiClickEvent
+
+data class OnFilterApply(
+    val filter: List<ScanResultFilter>
+) : UiClickEvent

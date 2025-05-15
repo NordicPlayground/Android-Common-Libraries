@@ -87,6 +87,7 @@ internal fun ScannerView(
     val pullToRefreshState = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
     val onEvent: (UiClickEvent) -> Unit = { scannerViewModel.onClick(it) }
+    val filterSelected by scannerViewModel.scanResultFilter.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -94,7 +95,9 @@ internal fun ScannerView(
         ScannerAppBar(
             title = { Text(text = title) },
             showProgress = uiState.isScanning,
-            onFilterSelected = { onEvent(OnFilterSelected(it)) },
+            scanningState = uiState.scanningState,
+            filterSelected = filterSelected,
+            onFilterSelected = { onEvent(it) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.
             }
@@ -252,7 +255,6 @@ private fun ScanResultInfoRow(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    println("Number of service UUIDs: ${serviceUuids.size}")
                     serviceUuids.forEach {
                         ServiceUuids.getServiceInfo(it)?.let { serviceInfo ->
                             Row(
