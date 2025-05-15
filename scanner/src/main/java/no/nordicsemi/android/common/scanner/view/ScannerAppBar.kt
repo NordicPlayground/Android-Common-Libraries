@@ -250,6 +250,14 @@ private fun FilterDetails(
                     onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter))
                     println("items inside filterSelected: $filterSelected")
                 },
+                colors = ButtonColors(
+                    containerColor = filterList.getButtonContainerColor(
+                        AllowNonEmptyNameScanResultFilter
+                    ),
+                    contentColor = filterList.getButtonContentColor(AllowNonEmptyNameScanResultFilter),
+                    disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
+                    disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
+                )
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -270,7 +278,15 @@ private fun FilterDetails(
                     filterList.add(AllowBondedScanResultFilter)
                     onEvent(OnFilterSelected(AllowBondedScanResultFilter))
                     println("items inside filterSelected: $filterSelected")
-                }
+                },
+                colors = ButtonColors(
+                    containerColor = filterList.getButtonContainerColor(
+                        AllowBondedScanResultFilter
+                    ),
+                    contentColor = filterList.getButtonContentColor(AllowBondedScanResultFilter),
+                    disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
+                    disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
+                )
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
