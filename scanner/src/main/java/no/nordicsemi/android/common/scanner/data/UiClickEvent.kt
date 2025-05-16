@@ -17,6 +17,6 @@ data class OnFilterSelected(
 
 data object OnFilterReset : UiClickEvent
 
-data class OnFilterApply(
-    val filter: List<ScanResultFilter>
+data class OnSortBySelected(
+    val sortBy: SortByFilter
 ) : UiClickEvent

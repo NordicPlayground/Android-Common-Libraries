@@ -43,16 +43,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -62,29 +64,34 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.scanner.data.AllowAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
-import no.nordicsemi.android.common.scanner.data.OnFilterApply
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
+import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
+import no.nordicsemi.android.common.scanner.data.SortByFilter
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
+import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.theme.nordicGreen
 import no.nordicsemi.android.common.ui.view.NordicAppBar
@@ -174,7 +181,7 @@ internal fun FilterDialog(
     ) {
         FilterDetails(
             scanningState,
-            filterSelected, onDismissRequest
+            filterSelected
         ) {
             onFilterSelected(it)
         }
@@ -185,132 +192,59 @@ internal fun FilterDialog(
 private fun FilterDetails(
     scanningState: ScanningState,
     filterSelected: List<ScanResultFilter> = emptyList(),
-    onDismissRequest: () -> Unit,
     onEvent: (UiClickEvent) -> Unit,
 ) {
-    val filterList = filterSelected.toMutableList()
+    val filterList: List<ScanResultFilter> = filterSelected
 
     // list of Peripheral devices with non-empty names
-    val displayNamePeripheralList =
-        (scanningState as ScanningState.DevicesDiscovered).result.filter { it.peripheral.name != null }
+    val displayNamePeripheralList = remember(scanningState) {
+        (scanningState as ScanningState.DevicesDiscovered).result
+            .filter { it.peripheral.name != null }
             .distinctBy { it.peripheral.name }
             .sortedBy { it.peripheral.name }
             .map { it.peripheral }
-
+    }
+    var selectedDeviceInDropdown by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            "Search by",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Button(
-                onClick = {
-                    // Add filterSelected to the list and if it is already in the list, remove it.
-                    filterList.add(AllowNearbyScanResultFilter)
-                    onEvent(OnFilterSelected(AllowNearbyScanResultFilter))
-                    println("items inside filterSelected: $filterSelected")
-                },
-                modifier = Modifier,
-                colors = ButtonColors(
-                    containerColor = filterList.getButtonContainerColor(
-                        AllowNearbyScanResultFilter
-                    ),
-                    contentColor = filterList.getButtonContentColor(AllowNearbyScanResultFilter),
-                    disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
-                    disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
-                )
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Done,
-                        contentDescription = null,
-                    )
-                    Text(
-                        "NearBy",
-                    )
-                }
-            }
-
-            Button(
-                onClick = {
-                    filterList.add(AllowNonEmptyNameScanResultFilter)
-                    onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter))
-                    println("items inside filterSelected: $filterSelected")
-                },
-                colors = ButtonColors(
-                    containerColor = filterList.getButtonContainerColor(
-                        AllowNonEmptyNameScanResultFilter
-                    ),
-                    contentColor = filterList.getButtonContentColor(AllowNonEmptyNameScanResultFilter),
-                    disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
-                    disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
-                )
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Done,
-                        contentDescription = null,
-                    )
-                    Text(
-                        "Names",
-                    )
-                }
-            }
-
-            Button(
-                onClick = {
-                    filterList.add(AllowBondedScanResultFilter)
-                    onEvent(OnFilterSelected(AllowBondedScanResultFilter))
-                    println("items inside filterSelected: $filterSelected")
-                },
-                colors = ButtonColors(
-                    containerColor = filterList.getButtonContainerColor(
-                        AllowBondedScanResultFilter
-                    ),
-                    contentColor = filterList.getButtonContentColor(AllowBondedScanResultFilter),
-                    disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
-                    disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
-                )
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Done,
-                        contentDescription = null,
-                    )
-                    Text(
-                        "Bonded",
-                    )
-                }
-            }
+        FilterTopView(filterSelected.isNotEmpty()) {
+            selectedDeviceInDropdown = ""
+            onEvent(it)
         }
 
-        Text(
-            "Filter from the scanned devices",
-            modifier = Modifier.padding(start = 8.dp),
-        )
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            FilterButton(
+                filter = AllowNearbyScanResultFilter,
+                isSelected = filterList.contains(AllowNearbyScanResultFilter),
+                onClick = { onEvent(OnFilterSelected(AllowNearbyScanResultFilter)) }
+            )
+            FilterButton(
+                filter = AllowNonEmptyNameScanResultFilter,
+                isSelected = filterList.contains(AllowNonEmptyNameScanResultFilter),
+                onClick = { onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
+            )
+            FilterButton(
+                filter = AllowBondedScanResultFilter,
+                isSelected = filterList.contains(AllowBondedScanResultFilter),
+                onClick = { onEvent(OnFilterSelected(AllowBondedScanResultFilter)) }
+            )
+        }
+
+        SortByFilterView(
+            onEvent = onEvent,
+        )
+
+        Text("Display Name")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             var displayNameExpanded by rememberSaveable { mutableStateOf(false) }
@@ -324,9 +258,7 @@ private fun FilterDetails(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            "Display Name",
-                        )
+                        Text(selectedDeviceInDropdown.takeIf { it.isNotEmpty() } ?: "Select device")
                         Icon(
                             imageVector = if (displayNameExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                             contentDescription = null,
@@ -361,88 +293,177 @@ private fun FilterDetails(
                                 HorizontalDivider()
                             },
                             onClick = {
-                                // Add filterSelected to the list and if it is already in the list, remove it.
-                                filterList.add(AllowNameScanResultFilter(peripheral.name!!))
-                                filterList.add(AllowAddressScanResultFilter(peripheral.address))
+                                selectedDeviceInDropdown = peripheral.name!!
                                 onEvent(OnFilterSelected(AllowNameScanResultFilter(peripheral.name!!)))
                                 onEvent(OnFilterSelected(AllowAddressScanResultFilter(peripheral.address)))
                                 displayNameExpanded = false
                             }
                         )
-                    }
-                }
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Button(
-                onClick = {
-                    println("Apply: $filterList")
-                    onEvent(OnFilterApply(filterList))
-                },
-            ) {
-                Text(
-                    text = "Apply",
-                    modifier = Modifier.clickable {
-                        onEvent(OnFilterApply(filterList))
-                        onDismissRequest()
-                    }
-                )
-            }
-            if (filterList.isNotEmpty()) {
-                Button(
-                    onClick = {
-                        onEvent(OnFilterReset)
-                    },
 
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
-                ) {
-                    Text(
-                        text = "Clear All",
-                    )
+                    }
                 }
             }
         }
     }
 }
-/*
+
+@Composable
+private fun FilterTopView(
+    isSelectedFilterNotEmpty: Boolean,
+    onEvent: (UiClickEvent) -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            "Filter scan results",
+            modifier = Modifier
+                .weight(1f)
+        )
+        if (isSelectedFilterNotEmpty) {
+            Button(
+                onClick = {
+                    onEvent(OnFilterReset)
+                },
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            ) {
+                Text(
+                    text = "Clear All",
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FilterButtonPreview() {
+    FilterButton(
+        filter = AllowNearbyScanResultFilter,
+        isSelected = true,
+        onClick = { }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FilterTopViewPreview() {
+    FilterTopView(
+        isSelectedFilterNotEmpty = true,
+        onEvent = { }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FilterDialogPreview() {
+    FilterDialog(
+        scanningState = ScanningState.DevicesDiscovered(
+            emptyList()
+        ),
+        filterSelected = emptyList(),
+        onDismissRequest = { },
+        onFilterSelected = { }
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun FilterDetailsPreview() {
     FilterDetails(
-        scanState = ScanningState.DevicesDiscovered(
-            emptyList(), emptyList()
+        scanningState = ScanningState.DevicesDiscovered(
+            emptyList()
         ),
-        onDismissRequest = { },
-        onFilterSelected = { }
+        filterSelected = emptyList(),
+        onEvent = {}
     )
-}*/
-
-/*@Preview
-@Composable
-private fun ScannerAppBarPreview() {
-    ScannerAppBar(
-        title = { },
-        onNavigationButtonClick = { },
-        scanningState = uiState.scanningState
-    )
-}*/
-
-@Composable
-fun <T> MutableList<T>.getButtonContainerColor(item: T): Color {
-    println("this: $this")
-    return if (contains(item)) nordicGreen else ButtonDefaults.buttonColors().containerColor
 }
 
 @Composable
-fun <T> MutableList<T>.getButtonContentColor(item: T): Color {
-    return if (contains(item)) MaterialTheme.colorScheme.onPrimary else ButtonDefaults.buttonColors().contentColor
+private fun FilterButton(
+    filter: ScanResultFilter,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSelected) nordicGreen else ButtonDefaults.buttonColors().containerColor,
+            contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else ButtonDefaults.buttonColors().contentColor
+        )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = if (isSelected) Icons.Default.Close else Icons.Default.Done,
+                contentDescription = null,
+            )
+            Text(filter.toDisplayTitle())
+        }
+    }
 }
+
+@Composable
+private fun SortByFilterView(onEvent: (UiClickEvent) -> Unit) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        val (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
+        HorizontalDivider()
+        Text("Sort by")
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.selectableGroup()
+        ) {
+            SortByFilter.entries.forEach { text ->
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .selectable(
+                            selected = text.toString() == selectedOption,
+                            onClick = {
+                                onOptionSelected(text.toString())
+                                // onClick event.
+                                onEvent(OnSortBySelected(text))
+                            },
+                            role = Role.RadioButton
+                        ),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(end = 8.dp, top = 8.dp, bottom = 8.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = text.toString() == selectedOption,
+                            onClick = null // null recommended for accessibility with screen readers
+                        )
+                        Text(
+                            text = text.toString(),
+                        )
+
+                    }
+                }
+            }
+        }
+        HorizontalDivider()
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SortByFilterViewPreview() {
+    SortByFilterView {}
+}
+
 

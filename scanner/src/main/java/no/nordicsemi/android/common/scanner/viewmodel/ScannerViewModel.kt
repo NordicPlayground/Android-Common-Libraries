@@ -46,19 +46,20 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import no.nordicsemi.android.common.scanner.data.AllowAddressScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowAllScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowUuidScanResultFilter
-import no.nordicsemi.android.common.scanner.data.OnFilterApply
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
+import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
+import no.nordicsemi.android.common.scanner.data.SortByFilter
+import no.nordicsemi.android.common.scanner.data.SortByRssi
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
@@ -92,6 +93,21 @@ internal class ScannerViewModel @Inject constructor(
     val scanResultFilter = _scanResultFilter.asStateFlow()
 
     private val _originalScanResults = MutableStateFlow<List<ScanResult>>(emptyList())
+
+    init {
+        _scanResultFilter.onEach {
+            // Apply the filter to the scan results.
+            val originalResults = _originalScanResults.value
+            val filteredResults = originalResults.applyFilter(it)
+            _uiState.update {
+                it.copy(
+                    scanningState = ScanningState.DevicesDiscovered(
+                        result = filteredResults,
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
 
     fun startScanning(
         scanDuration: Long = 2000L,
@@ -179,9 +195,9 @@ internal class ScannerViewModel @Inject constructor(
                     }
                 }
 
-                AllowAllScanResultFilter -> {
-                    // Allow all scan results.
-                    newList += this
+                SortByRssi -> {
+                    // Sort the scan results based on the RSSI value.
+                    newList += this.sortedByDescending { it.rssi }
                 }
 
                 AllowBondedScanResultFilter -> {
@@ -229,20 +245,6 @@ internal class ScannerViewModel @Inject constructor(
         }
         return newList.distinct()
     }
-    init {
-        _scanResultFilter.onEach {
-            // Apply the filter to the scan results.
-            val originalResults = _originalScanResults.value
-            val filteredResults = originalResults.applyFilter(it)
-            _uiState.update {
-                it.copy(
-                    scanningState = ScanningState.DevicesDiscovered(
-                        result = filteredResults,
-                    )
-                )
-            }
-        }.launchIn(viewModelScope)
-    }
 
     fun onClick(event: UiClickEvent) {
         when (event) {
@@ -275,19 +277,6 @@ internal class ScannerViewModel @Inject constructor(
                 println("Selected scan result: ${event.device}")
             }
 
-            is OnFilterApply -> {
-                val selectedFilter = event.filter
-                val originalResults = _originalScanResults.value
-                val filteredResults = originalResults.applyFilter(selectedFilter)
-                _uiState.update {
-                    it.copy(
-                        scanningState = ScanningState.DevicesDiscovered(
-                            result = filteredResults,
-                        )
-                    )
-                }
-            }
-
             is OnFilterReset -> {
                 _scanResultFilter.update { emptyList() }
                 val originalResults = _originalScanResults.value
@@ -297,6 +286,40 @@ internal class ScannerViewModel @Inject constructor(
                             result = originalResults,
                         )
                     )
+                }
+            }
+
+            is OnSortBySelected -> {
+                when (event.sortBy) {
+                    SortByFilter.RSSI -> {
+                        // Sort the scan results based on the RSSI value.
+                        val originalResults =
+                            _originalScanResults.value.applyFilter(_scanResultFilter.value)
+                        val sortedResults = originalResults.sortedByDescending { it.rssi }
+                        _uiState.update {
+                            it.copy(
+                                scanningState = ScanningState.DevicesDiscovered(
+                                    result = sortedResults,
+                                )
+                            )
+                        }
+                    }
+
+                    SortByFilter.NAME_ASCENDING -> {
+                        // Sort the scan results based on the name.
+                        val originalResults =
+                            _originalScanResults.value.applyFilter(_scanResultFilter.value)
+                        val sortedResults = originalResults
+                            .filter { it.peripheral.name != null }
+                            .sortedBy { it.peripheral.name }
+                        _uiState.update {
+                            it.copy(
+                                scanningState = ScanningState.DevicesDiscovered(
+                                    result = sortedResults,
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }

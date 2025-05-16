@@ -8,7 +8,7 @@ sealed interface ScanResultFilter
 /**
  * Filter that allows all scan results.
  */
-data object AllowAllScanResultFilter : ScanResultFilter
+data object SortByRssi : ScanResultFilter
 
 /**
  * Filter that allows scan results with a specific name.
@@ -88,40 +88,12 @@ data object AllowNearbyScanResultFilter : ScanResultFilter {
 fun ScanResultFilter.toDisplayTitle(): String {
     return when (this) {
         is AllowNameScanResultFilter -> "Display name"
-        is AllowNonEmptyNameScanResultFilter -> "Non-empty name"
+        is AllowNonEmptyNameScanResultFilter -> "Name"
         is AllowUuidScanResultFilter -> "Service UUID"
         is AllowAddressScanResultFilter -> "Address"
         is AllowNameAndAddressScanResultFilter -> "Name and Address"
-        is AllowBondedScanResultFilter -> "Bonded devices only"
+        is AllowBondedScanResultFilter -> "Bonded"
         is AllowNearbyScanResultFilter -> "Nearby"
-        else -> "Reset"
-    }
-}
-
-enum class ScanResultFilterType {
-    NAME,
-    NON_EMPTY_NAME,
-    UUID,
-    ADDRESS,
-    NAME_AND_ADDRESS,
-    BONDED,
-    ALL,
-    NEARBY;
-
-    override fun toString(): String {
-        return when (this) {
-            NAME -> "Name"
-            NON_EMPTY_NAME -> "Non-empty name"
-            UUID -> "Service UUID"
-            ADDRESS -> "Address"
-            NAME_AND_ADDRESS -> "Name and Address"
-            BONDED -> "Bonded devices only"
-            NEARBY -> "Nearby"
-            ALL -> "No filter"
-        }
-    }
-
-    companion object {
-        fun listOfScanFilters(): List<ScanResultFilterType> = entries
+        SortByRssi -> "RSSI"
     }
 }

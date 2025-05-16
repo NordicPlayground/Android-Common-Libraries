@@ -64,7 +64,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
-import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
