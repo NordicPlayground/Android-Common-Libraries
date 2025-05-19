@@ -18,5 +18,5 @@ data class OnFilterSelected(
 data object OnFilterReset : UiClickEvent
 
 data class OnSortBySelected(
-    val sortBy: SortByFilter
+    val sortBy: SortType
 ) : UiClickEvent

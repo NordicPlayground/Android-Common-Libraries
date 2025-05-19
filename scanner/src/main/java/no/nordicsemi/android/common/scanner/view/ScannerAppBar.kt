@@ -89,7 +89,8 @@ import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
-import no.nordicsemi.android.common.scanner.data.SortByFilter
+import no.nordicsemi.android.common.scanner.data.SortScanResult
+import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
@@ -238,6 +239,7 @@ private fun FilterDetails(
         }
 
         SortByFilterView(
+            filterSelected = filterSelected,
             onEvent = onEvent,
         )
 
@@ -411,25 +413,27 @@ private fun FilterButton(
 }
 
 @Composable
-private fun SortByFilterView(onEvent: (UiClickEvent) -> Unit) {
+private fun SortByFilterView(
+    filterSelected: List<ScanResultFilter> = emptyList(),
+    onEvent: (UiClickEvent) -> Unit
+) {
+    val currentSortByFilter = filterSelected.map { it as SortScanResult }.firstOrNull()
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
         HorizontalDivider()
         Text("Sort by")
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.selectableGroup()
         ) {
-            SortByFilter.entries.forEach { text ->
+            SortType.entries.forEach { text ->
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .selectable(
-                            selected = text.toString() == selectedOption,
+                            selected = text == currentSortByFilter?.sortType,
                             onClick = {
-                                onOptionSelected(text.toString())
                                 // onClick event.
                                 onEvent(OnSortBySelected(text))
                             },
@@ -438,13 +442,13 @@ private fun SortByFilterView(onEvent: (UiClickEvent) -> Unit) {
                 ) {
                     Row(
                         modifier = Modifier
-                            .padding(end = 8.dp, top = 8.dp, bottom = 8.dp)
+                            .padding(8.dp)
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = text.toString() == selectedOption,
+                            selected = text == currentSortByFilter?.sortType,
                             onClick = null // null recommended for accessibility with screen readers
                         )
                         Text(

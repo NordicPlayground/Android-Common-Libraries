@@ -51,15 +51,14 @@ import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFi
 import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowUuidScanResultFilter
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
 import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
-import no.nordicsemi.android.common.scanner.data.SortByFilter
-import no.nordicsemi.android.common.scanner.data.SortByRssi
+import no.nordicsemi.android.common.scanner.data.SortScanResult
+import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
@@ -195,11 +194,6 @@ internal class ScannerViewModel @Inject constructor(
                     }
                 }
 
-                SortByRssi -> {
-                    // Sort the scan results based on the RSSI value.
-                    newList += this.sortedByDescending { it.rssi }
-                }
-
                 AllowBondedScanResultFilter -> {
                     // Filter the scan results based on the bonded state.
                     newList += this.filter {
@@ -235,10 +229,15 @@ internal class ScannerViewModel @Inject constructor(
                     }
                 }
 
-                is AllowUuidScanResultFilter -> {
-                    // Filter the scan results based on the UUID.
-                    newList += this.filter {
-                        it.advertisingData.serviceUuids.contains(filter.uuid)
+                is SortScanResult -> {
+                    newList += when (filter.sortType) {
+                        SortType.RSSI -> {
+                            this.sortedByDescending { it.rssi }
+                        }
+
+                        SortType.ALPHABETICAL -> {
+                            this.sortedBy { it.peripheral.name }
+                        }
                     }
                 }
             }
@@ -250,7 +249,6 @@ internal class ScannerViewModel @Inject constructor(
         when (event) {
             is OnFilterSelected -> {
                 // Update the filter list with the selected filter.
-                println("event filter: ${event.filter}")
                 val currentFilter = _scanResultFilter.value.toMutableList()
                 // check if the items on the list is already  on the current filter list
                 currentFilter.addOrRemove(event.filter)
@@ -290,35 +288,19 @@ internal class ScannerViewModel @Inject constructor(
             }
 
             is OnSortBySelected -> {
+                // Remove the existing sort by filter from the list.
+                _scanResultFilter.value.filterIsInstance<SortScanResult>().forEach {
+                    _scanResultFilter.update { currentFilter ->
+                        currentFilter - it
+                    }
+                }
                 when (event.sortBy) {
-                    SortByFilter.RSSI -> {
-                        // Sort the scan results based on the RSSI value.
-                        val originalResults =
-                            _originalScanResults.value.applyFilter(_scanResultFilter.value)
-                        val sortedResults = originalResults.sortedByDescending { it.rssi }
-                        _uiState.update {
-                            it.copy(
-                                scanningState = ScanningState.DevicesDiscovered(
-                                    result = sortedResults,
-                                )
-                            )
-                        }
+                    SortType.RSSI -> {
+                        _scanResultFilter.update { it + SortScanResult(SortType.RSSI) }
                     }
 
-                    SortByFilter.NAME_ASCENDING -> {
-                        // Sort the scan results based on the name.
-                        val originalResults =
-                            _originalScanResults.value.applyFilter(_scanResultFilter.value)
-                        val sortedResults = originalResults
-                            .filter { it.peripheral.name != null }
-                            .sortedBy { it.peripheral.name }
-                        _uiState.update {
-                            it.copy(
-                                scanningState = ScanningState.DevicesDiscovered(
-                                    result = sortedResults,
-                                )
-                            )
-                        }
+                    SortType.ALPHABETICAL -> {
+                        _scanResultFilter.update { it + SortScanResult(SortType.ALPHABETICAL) }
                     }
                 }
             }

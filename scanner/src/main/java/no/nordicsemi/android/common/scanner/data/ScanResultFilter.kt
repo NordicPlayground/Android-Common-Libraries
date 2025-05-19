@@ -1,14 +1,13 @@
 package no.nordicsemi.android.common.scanner.data
 
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
-
 sealed interface ScanResultFilter
 
 /**
- * Filter that allows all scan results.
+ * Sort the scan result.
  */
-data object SortByRssi : ScanResultFilter
+data class SortScanResult(
+    val sortType: SortType
+) : ScanResultFilter
 
 /**
  * Filter that allows scan results with a specific name.
@@ -27,19 +26,6 @@ data class AllowNameScanResultFilter(val name: String) : ScanResultFilter {
 data object AllowNonEmptyNameScanResultFilter : ScanResultFilter {
     override fun toString(): String {
         return "AllowNonEmptyNameScanResultFilter"
-    }
-}
-
-/**
- * Filter that allows scan results with a specific UUID.
- *
- * @param uuid The UUID to filter by.
- */
-data class AllowUuidScanResultFilter @OptIn(ExperimentalUuidApi::class) constructor(val uuid: Uuid) :
-    ScanResultFilter {
-    @OptIn(ExperimentalUuidApi::class)
-    override fun toString(): String {
-        return "AllowUuidScanResultFilter(uuid='$uuid.')"
     }
 }
 
@@ -89,11 +75,16 @@ fun ScanResultFilter.toDisplayTitle(): String {
     return when (this) {
         is AllowNameScanResultFilter -> "Display name"
         is AllowNonEmptyNameScanResultFilter -> "Name"
-        is AllowUuidScanResultFilter -> "Service UUID"
         is AllowAddressScanResultFilter -> "Address"
         is AllowNameAndAddressScanResultFilter -> "Name and Address"
         is AllowBondedScanResultFilter -> "Bonded"
         is AllowNearbyScanResultFilter -> "Nearby"
-        SortByRssi -> "RSSI"
+
+        is SortScanResult -> {
+            when (sortType) {
+                SortType.RSSI -> "RSSI"
+                SortType.ALPHABETICAL -> "Alphabetical"
+            }
+        }
     }
 }

@@ -1,13 +1,13 @@
 package no.nordicsemi.android.common.scanner.data
 
-enum class SortByFilter {
+enum class SortType {
     RSSI,
-    NAME_ASCENDING,;
+    ALPHABETICAL,;
 
     override fun toString(): String {
         return when (this) {
             RSSI -> "RSSI"
-            NAME_ASCENDING -> "Name (Ascending)"
+            ALPHABETICAL -> "Alphabetical"
         }
     }
 }
