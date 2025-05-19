@@ -42,7 +42,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -76,13 +75,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.scanner.data.AllowAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
@@ -96,6 +95,7 @@ import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.theme.nordicGreen
 import no.nordicsemi.android.common.ui.view.NordicAppBar
+import no.nordicsemi.kotlin.ble.client.android.Peripheral
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -205,104 +205,132 @@ private fun FilterDetails(
             .sortedBy { it.peripheral.name }
             .map { it.peripheral }
     }
-    var selectedDeviceInDropdown by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         FilterTopView(filterSelected.isNotEmpty()) {
-            selectedDeviceInDropdown = ""
             onEvent(it)
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            FilterButton(
-                filter = AllowNearbyScanResultFilter,
-                isSelected = filterList.contains(AllowNearbyScanResultFilter),
-                onClick = { onEvent(OnFilterSelected(AllowNearbyScanResultFilter)) }
-            )
-            FilterButton(
-                filter = AllowNonEmptyNameScanResultFilter,
-                isSelected = filterList.contains(AllowNonEmptyNameScanResultFilter),
-                onClick = { onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
-            )
-            FilterButton(
-                filter = AllowBondedScanResultFilter,
-                isSelected = filterList.contains(AllowBondedScanResultFilter),
-                onClick = { onEvent(OnFilterSelected(AllowBondedScanResultFilter)) }
-            )
-        }
+        PreviousFilterOptions(filterSelected, onEvent)
 
         SortByFilterView(
             filterSelected = filterSelected,
             onEvent = onEvent,
         )
 
-        Text("Display Name")
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            var displayNameExpanded by rememberSaveable { mutableStateOf(false) }
-            Column {
-                Button(
-                    onClick = {
-                        displayNameExpanded = !displayNameExpanded
-                    }
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(selectedDeviceInDropdown.takeIf { it.isNotEmpty() } ?: "Select device")
-                        Icon(
-                            imageVector = if (displayNameExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            contentDescription = null,
-                        )
-                    }
-                }
-                // Display the list of names in the dropdown
-                DropdownMenu(
-                    expanded = displayNameExpanded,
-                    onDismissRequest = { displayNameExpanded = false },
-                    modifier = Modifier
-                        .padding(16.dp),
-                    scrollState = rememberScrollState()
-                ) {
-                    displayNamePeripheralList.forEach { peripheral ->
-                        DropdownMenuItem(
-                            text = {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                    horizontalAlignment = Alignment.Start,
-                                ) {
-                                    Text(peripheral.name!!)
-                                    Text(
-                                        text = peripheral.address,
-                                        style = MaterialTheme.typography.bodySmall
-                                            .copy(color = MaterialTheme.colorScheme.onSurface)
-                                    )
-                                }
-                                HorizontalDivider()
-                            },
-                            onClick = {
-                                selectedDeviceInDropdown = peripheral.name!!
-                                onEvent(OnFilterSelected(AllowNameScanResultFilter(peripheral.name!!)))
-                                onEvent(OnFilterSelected(AllowAddressScanResultFilter(peripheral.address)))
-                                displayNameExpanded = false
-                            }
-                        )
+        DisplayNameDropDown(
+            items = displayNamePeripheralList,
+            onItemSelected = { onEvent(it) },
+        )
+    }
+}
 
-                    }
+@Composable
+private fun PreviousFilterOptions(
+    filterList: List<ScanResultFilter>,
+    onEvent: (UiClickEvent) -> Unit,
+    isNearbyScanResultFilter: Boolean = true,
+    isNonEmptyNameScanResultFilter: Boolean = true,
+    isBondedScanResultFilter: Boolean = true
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (isNearbyScanResultFilter)
+            FilterButton(
+                filter = AllowNearbyScanResultFilter,
+                isSelected = filterList.contains(AllowNearbyScanResultFilter),
+                onClick = { onEvent(OnFilterSelected(AllowNearbyScanResultFilter)) }
+            )
+        if (isNonEmptyNameScanResultFilter)
+            FilterButton(
+                filter = AllowNonEmptyNameScanResultFilter,
+                isSelected = filterList.contains(AllowNonEmptyNameScanResultFilter),
+                onClick = { onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
+            )
+        if (isBondedScanResultFilter)
+            FilterButton(
+                filter = AllowBondedScanResultFilter,
+                isSelected = filterList.contains(AllowBondedScanResultFilter),
+                onClick = { onEvent(OnFilterSelected(AllowBondedScanResultFilter)) }
+            )
+    }
+}
+
+@Composable
+private fun DisplayNameDropDown(
+    items: List<Peripheral>,
+    onItemSelected: (UiClickEvent) -> Unit
+) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    var dropdownLabel by rememberSaveable { mutableStateOf("") }
+
+    Text("Display Name")
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Column {
+            Button(onClick = { expanded = !expanded }) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(dropdownLabel.takeIf { it.isNotEmpty() } ?: "Select item")
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = null
+                    )
+                }
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                items.forEach { peripheral ->
+                    DropdownMenuItem(
+                        text = {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                                horizontalAlignment = Alignment.Start,
+
+                                ) {
+                                Text(peripheral.name!!)
+                                Text(
+                                    text = peripheral.address,
+                                    style = MaterialTheme.typography.bodySmall
+                                        .copy(color = MaterialTheme.colorScheme.onSurface)
+                                )
+                                // show horizontal divider unless it's the last item
+                                if (peripheral != items.last()) {
+                                    HorizontalDivider()
+                                }
+                            }
+
+                        },
+                        onClick = {
+                            onItemSelected(
+                                OnFilterSelected(
+                                    AllowNameAndAddressScanResultFilter(
+                                        peripheral.name!!,
+                                        peripheral.address
+                                    )
+                                )
+                            )
+                            dropdownLabel = peripheral.name!!
+                            expanded = false
+                        }
+                    )
                 }
             }
         }
@@ -390,13 +418,15 @@ private fun FilterDetailsPreview() {
 private fun FilterButton(
     filter: ScanResultFilter,
     isSelected: Boolean,
-    onClick: () -> Unit
+    containerColor: Color = nordicGreen,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) nordicGreen else ButtonDefaults.buttonColors().containerColor,
-            contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else ButtonDefaults.buttonColors().contentColor
+            containerColor = if (isSelected) containerColor else ButtonDefaults.buttonColors().containerColor,
+            contentColor = if (isSelected) contentColor else ButtonDefaults.buttonColors().contentColor
         )
     ) {
         Row(
@@ -417,7 +447,8 @@ private fun SortByFilterView(
     filterSelected: List<ScanResultFilter> = emptyList(),
     onEvent: (UiClickEvent) -> Unit
 ) {
-    val currentSortByFilter = filterSelected.map { it as SortScanResult }.firstOrNull()
+    val currentSortByFilter = filterSelected.filterIsInstance<SortScanResult>()
+        .firstOrNull()
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -449,7 +480,7 @@ private fun SortByFilterView(
                     ) {
                         RadioButton(
                             selected = text == currentSortByFilter?.sortType,
-                            onClick = null // null recommended for accessibility with screen readers
+                            onClick = null
                         )
                         Text(
                             text = text.toString(),
