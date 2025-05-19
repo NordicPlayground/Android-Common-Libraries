@@ -65,7 +65,6 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.core.BondState
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.uuid.ExperimentalUuidApi
 
 /**
  * This class is responsible for managing the ui states of the scanner screen.
@@ -94,10 +93,10 @@ internal class ScannerViewModel @Inject constructor(
     private val _originalScanResults = MutableStateFlow<List<ScanResult>>(emptyList())
 
     init {
-        _scanResultFilter.onEach {
+        _scanResultFilter.onEach { filters ->
             // Apply the filter to the scan results.
             val originalResults = _originalScanResults.value
-            val filteredResults = originalResults.applyFilter(it)
+            val filteredResults = originalResults.applyFilter(filters)
             _uiState.update {
                 it.copy(
                     scanningState = ScanningState.DevicesDiscovered(
@@ -179,64 +178,62 @@ internal class ScannerViewModel @Inject constructor(
         startScanning()
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     private fun List<ScanResult>.applyFilter(filters: List<ScanResultFilter>): List<ScanResult> {
+        var filteredResult = this
         if (filters.isEmpty()) return this
         // Iterate through the filters and apply them to the scan results.
-        // Save the filtered results in a new list.
-        val newList = mutableListOf<ScanResult>()
         filters.forEach { filter ->
-            when (filter) {
+            filteredResult = when (filter) {
                 is AllowAddressScanResultFilter -> {
                     // Filter the scan results based on the address.
-                    newList += this.filter {
+                    filteredResult.filter {
                         it.peripheral.address == filter.address
                     }
                 }
 
                 AllowBondedScanResultFilter -> {
                     // Filter the scan results based on the bonded state.
-                    newList += this.filter {
+                    filteredResult.filter {
                         it.peripheral.bondState.value == BondState.BONDED
                     }
                 }
 
                 is AllowNameAndAddressScanResultFilter -> {
                     // Filter the scan results based on the name and address.
-                    newList += this.filter {
+                    filteredResult.filter {
                         it.peripheral.name == filter.name && it.peripheral.address == filter.address
                     }
                 }
 
                 is AllowNameScanResultFilter -> {
                     // Filter the scan results based on the name.
-                    newList += this.filter {
+                    filteredResult.filter {
                         it.peripheral.name == filter.name
                     }
                 }
 
                 AllowNearbyScanResultFilter -> {
                     // Filter the scan results based on the RSSI value.
-                    newList += this.filter {
+                    filteredResult.filter {
                         it.rssi >= FILTER_RSSI
                     }
                 }
 
                 AllowNonEmptyNameScanResultFilter -> {
                     // Filter the scan results based on the non-empty name.
-                    newList += this.filter {
+                    filteredResult.filter {
                         it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
                     }
                 }
 
                 is SortScanResult -> {
-                    newList += when (filter.sortType) {
+                    when (filter.sortType) {
                         SortType.RSSI -> {
-                            this.sortedByDescending { it.rssi }
+                            filteredResult.sortedByDescending { it.rssi }
                         }
 
                         SortType.ALPHABETICAL -> {
-                            this.sortedWith(
+                            filteredResult.sortedWith(
                                 compareBy(nullsLast()) { it.peripheral.name }
                             )
                         }
@@ -244,7 +241,7 @@ internal class ScannerViewModel @Inject constructor(
                 }
             }
         }
-        return newList.distinct()
+        return filteredResult.distinct()
     }
 
     fun onClick(event: UiClickEvent) {
@@ -291,18 +288,32 @@ internal class ScannerViewModel @Inject constructor(
 
             is OnSortBySelected -> {
                 // Remove the existing sort by filter from the list.
-                _scanResultFilter.value.filterIsInstance<SortScanResult>().forEach {
-                    _scanResultFilter.update { currentFilter ->
-                        currentFilter - it
-                    }
-                }
+                val currentFilter = _scanResultFilter.value.toMutableList()
+
                 when (event.sortBy) {
                     SortType.RSSI -> {
-                        _scanResultFilter.update { it + SortScanResult(SortType.RSSI) }
+                        currentFilter.forEach {
+                            if (it == SortScanResult(SortType.ALPHABETICAL)) {
+                                currentFilter.remove(it)
+                            }
+                        }
+                        currentFilter.add(SortScanResult(SortType.RSSI))
+                        _scanResultFilter.update {
+                            currentFilter
+                        }
+
                     }
 
                     SortType.ALPHABETICAL -> {
-                        _scanResultFilter.update { it + SortScanResult(SortType.ALPHABETICAL) }
+                        currentFilter.forEach {
+                            if (it == SortScanResult(SortType.RSSI)) {
+                                currentFilter.remove(it)
+                            }
+                        }
+                        currentFilter.add(SortScanResult(SortType.ALPHABETICAL))
+                        _scanResultFilter.update {
+                            currentFilter
+                        }
                     }
                 }
             }
