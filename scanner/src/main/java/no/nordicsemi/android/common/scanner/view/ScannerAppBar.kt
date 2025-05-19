@@ -116,27 +116,29 @@ internal fun ScannerAppBar(
         backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
         actions = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(8.dp)
-            ) {
-                if (showProgress) {
-                    CircularProgressIndicator(
+            if (showFilterOptions) {
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (showProgress) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(30.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.FilterList,
+                        contentDescription = null,
                         modifier = Modifier
-                            .size(30.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
+                            .clip(CircleShape)
+                            .clickable {
+                                expandFilterBottomSheet = true
+                            }
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.FilterList,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            showFilterSettings = true
-                        }
-                )
             }
         },
     )
