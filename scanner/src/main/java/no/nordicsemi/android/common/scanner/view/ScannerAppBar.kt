@@ -84,13 +84,13 @@ import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
-import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.theme.nordicGreen
@@ -101,14 +101,16 @@ import no.nordicsemi.kotlin.ble.client.android.Peripheral
 @Composable
 internal fun ScannerAppBar(
     title: @Composable () -> Unit,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     showProgress: Boolean = false,
     scanningState: ScanningState,
+    showFilterOptions: Boolean = true,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
-    var showFilterSettings by rememberSaveable { mutableStateOf(false) }
+    var expandFilterBottomSheet by rememberSaveable { mutableStateOf(false) }
+
     NordicAppBar(
         title = title,
         backButtonIcon = backButtonIcon,
@@ -139,11 +141,11 @@ internal fun ScannerAppBar(
         },
     )
 
-    if (showFilterSettings) {
+    if (expandFilterBottomSheet) {
         FilterDialog(
             scanningState = scanningState,
             filterSelected = filterSelected,
-            onDismissRequest = { showFilterSettings = false },
+            onDismissRequest = { expandFilterBottomSheet = false },
             onFilterSelected = {
                 onFilterSelected(it)
             }
@@ -180,7 +182,7 @@ internal fun FilterDialog(
             )
         }
     ) {
-        FilterDetails(
+        FilterContent(
             scanningState,
             filterSelected
         ) {
@@ -190,13 +192,11 @@ internal fun FilterDialog(
 }
 
 @Composable
-private fun FilterDetails(
+private fun FilterContent(
     scanningState: ScanningState,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onEvent: (FilterEvent) -> Unit,
 ) {
-    val filterList: List<ScanResultFilter> = filterSelected
-
     // list of Peripheral devices with non-empty names
     val displayNamePeripheralList = remember(scanningState) {
         (scanningState as ScanningState.DevicesDiscovered).result
@@ -340,7 +340,7 @@ private fun DisplayNameDropDown(
 @Composable
 private fun FilterTopView(
     isSelectedFilterNotEmpty: Boolean,
-    onEvent: (UiClickEvent) -> Unit
+    onEvent: (FilterEvent) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -405,7 +405,7 @@ private fun FilterDialogPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun FilterDetailsPreview() {
-    FilterDetails(
+    FilterContent(
         scanningState = ScanningState.DevicesDiscovered(
             emptyList()
         ),
