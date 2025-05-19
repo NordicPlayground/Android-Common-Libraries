@@ -236,7 +236,9 @@ internal class ScannerViewModel @Inject constructor(
                         }
 
                         SortType.ALPHABETICAL -> {
-                            this.sortedBy { it.peripheral.name }
+                            this.sortedWith(
+                                compareBy(nullsLast()) { it.peripheral.name }
+                            )
                         }
                     }
                 }
