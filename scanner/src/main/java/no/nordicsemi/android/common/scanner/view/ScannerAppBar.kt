@@ -136,6 +136,7 @@ internal fun ScannerAppBar(
                             .clickable {
                                 expandFilterBottomSheet = true
                             }
+                            .padding(8.dp)
                     )
                 }
             }
