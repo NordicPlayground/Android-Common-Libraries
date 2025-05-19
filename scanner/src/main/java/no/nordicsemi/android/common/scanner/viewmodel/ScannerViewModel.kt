@@ -45,17 +45,14 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
-import no.nordicsemi.android.common.scanner.data.AllowAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
-import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
@@ -179,49 +176,34 @@ internal class ScannerViewModel @Inject constructor(
     }
 
     private fun List<ScanResult>.applyFilter(filters: List<ScanResultFilter>): List<ScanResult> {
-        var filteredResult = this
         if (filters.isEmpty()) return this
         // Iterate through the filters and apply them to the scan results.
-        filters.forEach { filter ->
-            filteredResult = when (filter) {
-                is AllowAddressScanResultFilter -> {
-                    // Filter the scan results based on the address.
-                    filteredResult.filter {
-                        it.peripheral.address == filter.address
-                    }
-                }
-
+        return filters.fold(this) { results, filter ->
+            when (filter) {
                 AllowBondedScanResultFilter -> {
                     // Filter the scan results based on the bonded state.
-                    filteredResult.filter {
+                    results.filter {
                         it.peripheral.bondState.value == BondState.BONDED
                     }
                 }
 
                 is AllowNameAndAddressScanResultFilter -> {
                     // Filter the scan results based on the name and address.
-                    filteredResult.filter {
+                    results.filter {
                         it.peripheral.name == filter.name && it.peripheral.address == filter.address
-                    }
-                }
-
-                is AllowNameScanResultFilter -> {
-                    // Filter the scan results based on the name.
-                    filteredResult.filter {
-                        it.peripheral.name == filter.name
                     }
                 }
 
                 AllowNearbyScanResultFilter -> {
                     // Filter the scan results based on the RSSI value.
-                    filteredResult.filter {
+                    results.filter {
                         it.rssi >= FILTER_RSSI
                     }
                 }
 
                 AllowNonEmptyNameScanResultFilter -> {
                     // Filter the scan results based on the non-empty name.
-                    filteredResult.filter {
+                    results.filter {
                         it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
                     }
                 }
@@ -229,19 +211,18 @@ internal class ScannerViewModel @Inject constructor(
                 is SortScanResult -> {
                     when (filter.sortType) {
                         SortType.RSSI -> {
-                            filteredResult.sortedByDescending { it.rssi }
+                            results.sortedByDescending { it.rssi }
                         }
 
                         SortType.ALPHABETICAL -> {
-                            filteredResult.sortedWith(
+                            results.sortedWith(
                                 compareBy(nullsLast()) { it.peripheral.name }
                             )
                         }
                     }
                 }
             }
-        }
-        return filteredResult.distinct()
+        }.distinct()
     }
 
     fun onClick(event: UiClickEvent) {
@@ -279,47 +260,35 @@ internal class ScannerViewModel @Inject constructor(
             is OnFilterSelected -> {
                 // Update the filter list with the selected filter.
                 val currentFilter = _scanResultFilter.value.toMutableList()
-                // check if the items on the list is already  on the current filter list
-                currentFilter.addOrRemove(event.filter)
-                _scanResultFilter.update {
-                    currentFilter
-                }
-            }
-
-            is OnSortBySelected -> {
-                // Remove the existing sort by filter from the list.
-                val currentFilter = _scanResultFilter.value.toMutableList()
-
-                when (event.sortBy) {
-                    SortType.RSSI -> {
-                        currentFilter.forEach {
-                            if (it == SortScanResult(SortType.ALPHABETICAL)) {
-                                currentFilter.remove(it)
-                            }
-                        }
-                        currentFilter.add(SortScanResult(SortType.RSSI))
+                when (event.filter) {
+                    AllowNearbyScanResultFilter,
+                    AllowNonEmptyNameScanResultFilter,
+                    AllowBondedScanResultFilter -> {
+                        currentFilter.addOrRemove(event.filter)
                         _scanResultFilter.update {
                             currentFilter
                         }
-
                     }
 
-                    SortType.ALPHABETICAL -> {
-                        currentFilter.forEach {
-                            if (it == SortScanResult(SortType.RSSI)) {
-                                currentFilter.remove(it)
-                            }
-                        }
-                        currentFilter.add(SortScanResult(SortType.ALPHABETICAL))
-                        _scanResultFilter.update {
-                            currentFilter
-                        }
+                    is AllowNameAndAddressScanResultFilter -> {
+                        val updatedFilter =
+                            currentFilter.filterNot { it is AllowNameAndAddressScanResultFilter }
+                                .toMutableList()
+                        updatedFilter.add(event.filter)
+                        _scanResultFilter.update { updatedFilter }
+                    }
+
+                    is SortScanResult -> {
+                        val updatedFilter =
+                            currentFilter.filterNot { it is SortScanResult }.toMutableList()
+                        updatedFilter.add(event.filter)
+                        _scanResultFilter.update { updatedFilter }
+
                     }
                 }
             }
         }
     }
-
 }
 
 private fun <T> MutableList<T>.addOrRemove(item: T) {

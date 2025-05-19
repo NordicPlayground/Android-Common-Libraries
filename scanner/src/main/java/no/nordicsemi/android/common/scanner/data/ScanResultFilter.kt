@@ -10,33 +10,11 @@ data class SortScanResult(
 ) : ScanResultFilter
 
 /**
- * Filter that allows scan results with a specific name.
- *
- * @param name The name to filter by.
- */
-data class AllowNameScanResultFilter(val name: String) : ScanResultFilter {
-    override fun toString(): String {
-        return "AllowNameScanResultFilter(name='$name')"
-    }
-}
-
-/**
  * Filter that allows scan results with no empty names.
  */
 data object AllowNonEmptyNameScanResultFilter : ScanResultFilter {
     override fun toString(): String {
         return "AllowNonEmptyNameScanResultFilter"
-    }
-}
-
-/**
- * Filter that allows scan results with a specific address.
- *
- * @param address The address to filter by.
- */
-data class AllowAddressScanResultFilter(val address: String) : ScanResultFilter {
-    override fun toString(): String {
-        return "AllowAddressScanResultFilter(address='$address')"
     }
 }
 
@@ -73,9 +51,7 @@ data object AllowNearbyScanResultFilter : ScanResultFilter {
 
 fun ScanResultFilter.toDisplayTitle(): String {
     return when (this) {
-        is AllowNameScanResultFilter -> "Display name"
         is AllowNonEmptyNameScanResultFilter -> "Name"
-        is AllowAddressScanResultFilter -> "Address"
         is AllowNameAndAddressScanResultFilter -> "Name and Address"
         is AllowBondedScanResultFilter -> "Bonded"
         is AllowNearbyScanResultFilter -> "Nearby"

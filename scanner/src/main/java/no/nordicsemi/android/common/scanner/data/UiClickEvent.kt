@@ -18,7 +18,3 @@ data class OnFilterSelected(
 ) : FilterEvent
 
 data object OnFilterReset : FilterEvent
-
-data class OnSortBySelected(
-    val sortBy: SortType
-) : FilterEvent

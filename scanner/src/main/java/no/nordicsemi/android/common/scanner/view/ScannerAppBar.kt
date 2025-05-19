@@ -87,7 +87,6 @@ import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilt
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
-import no.nordicsemi.android.common.scanner.data.OnSortBySelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
@@ -460,15 +459,15 @@ private fun SortByFilterView(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.selectableGroup()
         ) {
-            SortType.entries.forEach { text ->
+            SortType.entries.forEach { sortType ->
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .selectable(
-                            selected = text == currentSortByFilter?.sortType,
+                            selected = sortType == currentSortByFilter?.sortType,
                             onClick = {
                                 // onClick event.
-                                onEvent(OnSortBySelected(text))
+                                onEvent(OnFilterSelected(SortScanResult(sortType)))
                             },
                             role = Role.RadioButton
                         ),
@@ -481,11 +480,11 @@ private fun SortByFilterView(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = text == currentSortByFilter?.sortType,
+                            selected = sortType == currentSortByFilter?.sortType,
                             onClick = null
                         )
                         Text(
-                            text = text.toString(),
+                            text = sortType.toString(),
                         )
 
                     }
