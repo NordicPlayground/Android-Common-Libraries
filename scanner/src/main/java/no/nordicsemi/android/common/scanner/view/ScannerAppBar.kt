@@ -105,7 +105,7 @@ internal fun ScannerAppBar(
     showProgress: Boolean = false,
     scanningState: ScanningState,
     filterSelected: List<ScanResultFilter> = emptyList(),
-    onFilterSelected: (UiClickEvent) -> Unit,
+    onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
     var showFilterSettings by rememberSaveable { mutableStateOf(false) }
@@ -157,7 +157,7 @@ internal fun FilterDialog(
     scanningState: ScanningState,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
-    onFilterSelected: (UiClickEvent) -> Unit,
+    onFilterSelected: (FilterEvent) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -193,7 +193,7 @@ internal fun FilterDialog(
 private fun FilterDetails(
     scanningState: ScanningState,
     filterSelected: List<ScanResultFilter> = emptyList(),
-    onEvent: (UiClickEvent) -> Unit,
+    onEvent: (FilterEvent) -> Unit,
 ) {
     val filterList: List<ScanResultFilter> = filterSelected
 
@@ -231,7 +231,7 @@ private fun FilterDetails(
 @Composable
 private fun PreviousFilterOptions(
     filterList: List<ScanResultFilter>,
-    onEvent: (UiClickEvent) -> Unit,
+    onEvent: (FilterEvent) -> Unit,
     isNearbyScanResultFilter: Boolean = true,
     isNonEmptyNameScanResultFilter: Boolean = true,
     isBondedScanResultFilter: Boolean = true
@@ -265,7 +265,7 @@ private fun PreviousFilterOptions(
 @Composable
 private fun DisplayNameDropDown(
     items: List<Peripheral>,
-    onItemSelected: (UiClickEvent) -> Unit
+    onItemSelected: (FilterEvent) -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var dropdownLabel by rememberSaveable { mutableStateOf("") }
@@ -445,7 +445,7 @@ private fun FilterButton(
 @Composable
 private fun SortByFilterView(
     filterSelected: List<ScanResultFilter> = emptyList(),
-    onEvent: (UiClickEvent) -> Unit
+    onEvent: (FilterEvent) -> Unit
 ) {
     val currentSortByFilter = filterSelected.filterIsInstance<SortScanResult>()
         .firstOrNull()

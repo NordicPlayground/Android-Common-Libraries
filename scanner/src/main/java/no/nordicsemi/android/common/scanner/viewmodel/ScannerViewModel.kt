@@ -249,16 +249,6 @@ internal class ScannerViewModel @Inject constructor(
 
     fun onClick(event: UiClickEvent) {
         when (event) {
-            is OnFilterSelected -> {
-                // Update the filter list with the selected filter.
-                val currentFilter = _scanResultFilter.value.toMutableList()
-                // check if the items on the list is already  on the current filter list
-                currentFilter.addOrRemove(event.filter)
-                _scanResultFilter.update {
-                    currentFilter
-                }
-            }
-
             OnReloadScanResults -> {
                 _uiState.update {
                     it.copy(
@@ -277,7 +267,7 @@ internal class ScannerViewModel @Inject constructor(
                 println("Selected scan result: ${event.device}")
             }
 
-            is OnFilterReset -> {
+            OnFilterReset -> {
                 _scanResultFilter.update { emptyList() }
                 val originalResults = _originalScanResults.value
                 _uiState.update {
@@ -286,6 +276,16 @@ internal class ScannerViewModel @Inject constructor(
                             result = originalResults,
                         )
                     )
+                }
+            }
+
+            is OnFilterSelected -> {
+                // Update the filter list with the selected filter.
+                val currentFilter = _scanResultFilter.value.toMutableList()
+                // check if the items on the list is already  on the current filter list
+                currentFilter.addOrRemove(event.filter)
+                _scanResultFilter.update {
+                    currentFilter
                 }
             }
 

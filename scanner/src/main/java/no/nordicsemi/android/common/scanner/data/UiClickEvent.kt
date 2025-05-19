@@ -11,12 +11,14 @@ data class OnScanResultSelected(
 
 data object OnReloadScanResults : UiClickEvent
 
+sealed interface FilterEvent : UiClickEvent
+
 data class OnFilterSelected(
     val filter: ScanResultFilter
-) : UiClickEvent
+) : FilterEvent
 
-data object OnFilterReset : UiClickEvent
+data object OnFilterReset : FilterEvent
 
 data class OnSortBySelected(
     val sortBy: SortType
-) : UiClickEvent
+) : FilterEvent
