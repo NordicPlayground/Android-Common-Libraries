@@ -53,20 +53,18 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
+import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
-import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
+import no.nordicsemi.android.common.scanner.viewmodel.ScannerUiState
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.ui.view.CircularIcon
 import no.nordicsemi.android.common.ui.view.RssiIcon
@@ -74,18 +72,17 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ScannerView(
     title: String = "Scanner",
-    uuid: Uuid? = null,
+    uiState: ScannerUiState,
+    startScanning: () -> Unit,
+    onEvent: (UiClickEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
 ) {
-    val scannerViewModel = hiltViewModel<ScannerViewModel>()
-    val uiState by scannerViewModel.uiState.collectAsStateWithLifecycle()
     val pullToRefreshState = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
-    val onEvent: (UiClickEvent) -> Unit = { scannerViewModel.onClick(it) }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -107,13 +104,13 @@ internal fun ScannerView(
                 // If the permission is not granted then the scanning will not start.
                 // So to start scanning we need to check if the location permission is granted.
                 LaunchedEffect(isLocationRequiredAndDisabled) {
-                    scannerViewModel.startScanning()
+                    startScanning()
                 }
                 Column(modifier = Modifier.fillMaxSize()) {
                     PullToRefreshBox(
                         isRefreshing = uiState.scanningState is ScanningState.Loading,
                         onRefresh = {
-                            scannerViewModel.refreshScanning()
+                            onEvent(OnReloadScanResults)
                             scope.launch {
                                 pullToRefreshState.animateToHidden()
                             }
@@ -157,7 +154,6 @@ internal fun DeviceListView(
             }
         }
     }
-
 }
 
 @Suppress("FunctionName")
@@ -175,7 +171,6 @@ internal fun LazyListScope.DeviceListItems(
         ) {
             DeviceListItem(
                 device = devices[index],
-//                onClick = { onScanResultSelected(it) }
             )
             if (index < devices.size) {
                 // Add a divider between items
@@ -190,7 +185,6 @@ internal fun LazyListScope.DeviceListItems(
 private fun DeviceListItem(
     peripheralIcon: ImageVector = Icons.Default.Bluetooth,
     device: ScanResult,
-//    onClick: (ScanResult) -> Unit,
 ) {
     val manufacturerData = device.advertisingData.manufacturerData
 
