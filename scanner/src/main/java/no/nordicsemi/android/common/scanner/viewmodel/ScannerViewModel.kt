@@ -172,20 +172,6 @@ internal class ScannerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    fun refreshScanning() {
-        _uiState.update {
-            it.copy(
-                isScanning = true,
-                scanningState = ScanningState.DevicesDiscovered(
-                    result = emptyList(),
-                    scanFilter = _scanResultFilter.value
-                ),
-
-                )
-        }
-        startScanning()
-    }
-
     private fun List<ScanResult>.applyFilter(filters: List<ScanResultFilter>): List<ScanResult> {
         if (filters.isEmpty()) return this
         // Iterate through the filters and apply them to the scan results.
