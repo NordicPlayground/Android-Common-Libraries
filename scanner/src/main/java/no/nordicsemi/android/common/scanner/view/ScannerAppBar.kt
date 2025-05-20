@@ -207,6 +207,7 @@ private fun FilterContent(
             .sortedBy { it.peripheral.name }
             .map { it.peripheral }
     }
+    var dropdownLabel by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(8.dp),
@@ -224,6 +225,8 @@ private fun FilterContent(
         )
 
         DisplayNameDropDown(
+            label = dropdownLabel,
+            onLabelChange = { dropdownLabel = it },
             items = displayNamePeripheralList,
             onItemSelected = { onEvent(it) },
         )
@@ -266,11 +269,12 @@ private fun PreviousFilterOptions(
 
 @Composable
 private fun DisplayNameDropDown(
+    label: String,
+    onLabelChange: (String) -> Unit,
     items: List<Peripheral>,
     onItemSelected: (FilterEvent) -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var dropdownLabel by rememberSaveable { mutableStateOf("") }
 
     Text("Display Name")
     Row(
@@ -284,7 +288,7 @@ private fun DisplayNameDropDown(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(dropdownLabel.takeIf { it.isNotEmpty() } ?: "Select item")
+                    Text(label.takeIf { it.isNotEmpty() } ?: "Select item")
                     Icon(
                         imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = null
@@ -329,7 +333,7 @@ private fun DisplayNameDropDown(
                                     )
                                 )
                             )
-                            dropdownLabel = peripheral.name!!
+                            onLabelChange(peripheral.name!!)
                             expanded = false
                         }
                     )
