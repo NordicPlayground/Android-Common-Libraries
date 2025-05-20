@@ -197,7 +197,7 @@ internal fun FilterDialog(
 private fun FilterContent(
     scanningState: ScanningState,
     filterSelected: List<ScanResultFilter> = emptyList(),
-    onEvent: (FilterEvent) -> Unit,
+    onFilterSelected: (FilterEvent) -> Unit,
 ) {
     // list of Peripheral devices with non-empty names
     val displayNamePeripheralList = remember(scanningState) {
@@ -213,22 +213,28 @@ private fun FilterContent(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        FilterTopView(filterSelected.isNotEmpty()) {
-            onEvent(it)
-        }
+        FilterTopView(
+            isSelectedFilterNotEmpty = filterSelected.isNotEmpty(),
+            onFilterReset = {
+                dropdownLabel = ""
+                onFilterSelected(it)
+            }
+        )
 
-        PreviousFilterOptions(filterSelected, onEvent)
+        PreviousFilterOptions(
+            filterList = filterSelected,
+            onFilterSelected = { onFilterSelected(it) })
 
         SortByFilterView(
             filterSelected = filterSelected,
-            onEvent = onEvent,
+            onSortOptionSelected = onFilterSelected,
         )
 
         DisplayNameDropDown(
             label = dropdownLabel,
             onLabelChange = { dropdownLabel = it },
             items = displayNamePeripheralList,
-            onItemSelected = { onEvent(it) },
+            onItemSelected = { onFilterSelected(it) },
         )
     }
 }
@@ -236,7 +242,7 @@ private fun FilterContent(
 @Composable
 private fun PreviousFilterOptions(
     filterList: List<ScanResultFilter>,
-    onEvent: (FilterEvent) -> Unit,
+    onFilterSelected: (FilterEvent) -> Unit,
     isNearbyScanResultFilter: Boolean = true,
     isNonEmptyNameScanResultFilter: Boolean = true,
     isBondedScanResultFilter: Boolean = true
@@ -250,19 +256,19 @@ private fun PreviousFilterOptions(
             FilterButton(
                 filter = AllowNearbyScanResultFilter,
                 isSelected = filterList.contains(AllowNearbyScanResultFilter),
-                onClick = { onEvent(OnFilterSelected(AllowNearbyScanResultFilter)) }
+                onClick = { onFilterSelected(OnFilterSelected(AllowNearbyScanResultFilter)) }
             )
         if (isNonEmptyNameScanResultFilter)
             FilterButton(
                 filter = AllowNonEmptyNameScanResultFilter,
                 isSelected = filterList.contains(AllowNonEmptyNameScanResultFilter),
-                onClick = { onEvent(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
+                onClick = { onFilterSelected(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
             )
         if (isBondedScanResultFilter)
             FilterButton(
                 filter = AllowBondedScanResultFilter,
                 isSelected = filterList.contains(AllowBondedScanResultFilter),
-                onClick = { onEvent(OnFilterSelected(AllowBondedScanResultFilter)) }
+                onClick = { onFilterSelected(OnFilterSelected(AllowBondedScanResultFilter)) }
             )
     }
 }
@@ -346,7 +352,7 @@ private fun DisplayNameDropDown(
 @Composable
 private fun FilterTopView(
     isSelectedFilterNotEmpty: Boolean,
-    onEvent: (FilterEvent) -> Unit
+    onFilterReset: (FilterEvent) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -360,7 +366,7 @@ private fun FilterTopView(
         if (isSelectedFilterNotEmpty) {
             Button(
                 onClick = {
-                    onEvent(OnFilterReset)
+                    onFilterReset(OnFilterReset)
                 },
 
                 colors = ButtonDefaults.buttonColors(
@@ -391,7 +397,7 @@ private fun FilterButtonPreview() {
 private fun FilterTopViewPreview() {
     FilterTopView(
         isSelectedFilterNotEmpty = true,
-        onEvent = { }
+        onFilterReset = { }
     )
 }
 
@@ -416,7 +422,7 @@ private fun FilterDetailsPreview() {
             emptyList()
         ),
         filterSelected = emptyList(),
-        onEvent = {}
+        onFilterSelected = {}
     )
 }
 
@@ -451,7 +457,7 @@ private fun FilterButton(
 @Composable
 private fun SortByFilterView(
     filterSelected: List<ScanResultFilter> = emptyList(),
-    onEvent: (FilterEvent) -> Unit
+    onSortOptionSelected: (FilterEvent) -> Unit
 ) {
     val currentSortByFilter = filterSelected.filterIsInstance<SortScanResult>()
         .firstOrNull()
@@ -472,7 +478,7 @@ private fun SortByFilterView(
                             selected = sortType == currentSortByFilter?.sortType,
                             onClick = {
                                 // onClick event.
-                                onEvent(OnFilterSelected(SortScanResult(sortType)))
+                                onSortOptionSelected(OnFilterSelected(SortScanResult(sortType)))
                             },
                             role = Role.RadioButton
                         ),
