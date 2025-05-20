@@ -134,14 +134,12 @@ internal class ScannerViewModel @Inject constructor(
                     scanResults.firstOrNull { it.peripheral.address == scanResult.peripheral.address }
                 // Add the device to the list if it is not already in the list, otherwise ignore it.
                 if (isExistingDevice == null) {
-                    // Apply the filter to the scan result in the reload scan results.
-                    // Update the scanning state with the new scan result.
-                    val result = scanResults + scanResult
+                    val result = (scanResults + scanResult)
                     _originalScanResults.value = result
                     _uiState.update {
                         it.copy(
                             scanningState = ScanningState.DevicesDiscovered(
-                                result = result,
+                                result = result.applyFilter(_scanResultFilter.value),
                                 scanFilter = _scanResultFilter.value,
                             )
                         )
