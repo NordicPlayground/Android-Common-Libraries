@@ -166,7 +166,6 @@ internal fun LazyListScope.DeviceListItems(
             modifier = Modifier
                 .clickable {
                     onScanResultSelected(devices[index])
-                    println("Clicked on device: ${devices[index]}")
                 }
         ) {
             DeviceListItem(

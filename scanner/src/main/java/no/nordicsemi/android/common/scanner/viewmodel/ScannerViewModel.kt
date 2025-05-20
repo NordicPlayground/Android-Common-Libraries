@@ -112,12 +112,6 @@ internal class ScannerViewModel @Inject constructor(
         scanDuration: Long = 2000L,
     ) {
         job?.cancel()
-        // Scanning State to Loading.
-        _uiState.update {
-            it.copy(
-                scanningState = ScanningState.Loading
-            )
-        }
         job = centralManager.scan(scanDuration.milliseconds) { uuid?.let { ServiceUuid(it) } }
             // Filter out the scan results based on the provided filter in the scanResultFilter.
             .filter { it.isConnectable }
