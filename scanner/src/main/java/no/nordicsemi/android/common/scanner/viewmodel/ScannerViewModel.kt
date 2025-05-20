@@ -62,6 +62,8 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.core.BondState
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * This class is responsible for managing the ui states of the scanner screen.
@@ -104,11 +106,19 @@ internal class ScannerViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     fun startScanning(
+        uuid: Uuid? = null,
         scanDuration: Long = 2000L,
     ) {
         job?.cancel()
-        job = centralManager.scan(scanDuration.milliseconds)
+        // Scanning State to Loading.
+        _uiState.update {
+            it.copy(
+                scanningState = ScanningState.Loading
+            )
+        }
+        job = centralManager.scan(scanDuration.milliseconds) { uuid?.let { ServiceUuid(it) } }
             // Filter out the scan results based on the provided filter in the scanResultFilter.
             .filter { it.isConnectable }
             .onStart {
@@ -226,6 +236,7 @@ internal class ScannerViewModel @Inject constructor(
         }.distinct()
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     fun onClick(event: UiClickEvent) {
         when (event) {
             OnReloadScanResults -> {
