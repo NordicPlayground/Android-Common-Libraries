@@ -69,7 +69,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -95,6 +94,7 @@ import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.theme.nordicGreen
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 import no.nordicsemi.kotlin.ble.client.android.Peripheral
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +104,6 @@ internal fun ScannerAppBar(
     scanningState: ScanningState,
     showFilterOptions: Boolean = true,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    filterSelected: List<ScanResultFilter> = emptyList(),
     onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
@@ -145,8 +144,8 @@ internal fun ScannerAppBar(
 
     if (expandFilterBottomSheet) {
         FilterDialog(
-            scanningState = scanningState,
-            filterSelected = filterSelected,
+            scannedResults = (scanningState as ScanningState.DevicesDiscovered).result,
+            filterSelected = scanningState.scanFilter,
             onDismissRequest = { expandFilterBottomSheet = false },
             onFilterSelected = {
                 onFilterSelected(it)
@@ -158,7 +157,7 @@ internal fun ScannerAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FilterDialog(
-    scanningState: ScanningState,
+    scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
     onFilterSelected: (FilterEvent) -> Unit,
@@ -185,7 +184,7 @@ internal fun FilterDialog(
         }
     ) {
         FilterContent(
-            scanningState,
+            scannedResults = scannedResults,
             filterSelected
         ) {
             onFilterSelected(it)
@@ -195,18 +194,16 @@ internal fun FilterDialog(
 
 @Composable
 private fun FilterContent(
-    scanningState: ScanningState,
+    scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onFilterSelected: (FilterEvent) -> Unit,
 ) {
     // list of Peripheral devices with non-empty names
-    val displayNamePeripheralList = remember(scanningState) {
-        (scanningState as ScanningState.DevicesDiscovered).result
-            .filter { it.peripheral.name != null }
-            .distinctBy { it.peripheral.name }
-            .sortedBy { it.peripheral.name }
-            .map { it.peripheral }
-    }
+    val displayNamePeripheralList = scannedResults
+        .filter { it.peripheral.name != null }
+        .distinctBy { it.peripheral.name }
+        .map { it.peripheral }
+
     var dropdownLabel by rememberSaveable { mutableStateOf("") }
 
     Column(
@@ -405,9 +402,7 @@ private fun FilterTopViewPreview() {
 @Composable
 private fun FilterDialogPreview() {
     FilterDialog(
-        scanningState = ScanningState.DevicesDiscovered(
-            emptyList()
-        ),
+        scannedResults = emptyList(),
         filterSelected = emptyList(),
         onDismissRequest = { },
         onFilterSelected = { }
@@ -418,9 +413,7 @@ private fun FilterDialogPreview() {
 @Composable
 private fun FilterDetailsPreview() {
     FilterContent(
-        scanningState = ScanningState.DevicesDiscovered(
-            emptyList()
-        ),
+        scannedResults = emptyList(),
         filterSelected = emptyList(),
         onFilterSelected = {}
     )

@@ -86,7 +86,6 @@ internal fun ScannerView(
     val pullToRefreshState = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
     val onEvent: (UiClickEvent) -> Unit = { scannerViewModel.onClick(it) }
-    val filterSelected by scannerViewModel.scanResultFilter.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -96,7 +95,6 @@ internal fun ScannerView(
             showProgress = uiState.isScanning,
             scanningState = uiState.scanningState,
             showFilterOptions = true, // TODO: Change it to take the filter list options from user and show if list is not empty.
-            filterSelected = filterSelected,
             onFilterSelected = { onEvent(it) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.

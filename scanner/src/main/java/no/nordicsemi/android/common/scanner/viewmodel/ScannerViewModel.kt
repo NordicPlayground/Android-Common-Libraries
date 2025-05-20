@@ -85,7 +85,6 @@ internal class ScannerViewModel @Inject constructor(
     private var job: Job? = null
 
     private val _scanResultFilter = MutableStateFlow<List<ScanResultFilter>>(emptyList())
-    val scanResultFilter = _scanResultFilter.asStateFlow()
 
     private val _originalScanResults = MutableStateFlow<List<ScanResult>>(emptyList())
 
@@ -98,6 +97,7 @@ internal class ScannerViewModel @Inject constructor(
                 it.copy(
                     scanningState = ScanningState.DevicesDiscovered(
                         result = filteredResults,
+                        scanFilter = filters,
                     )
                 )
             }
@@ -117,7 +117,8 @@ internal class ScannerViewModel @Inject constructor(
                     it.copy(
                         isScanning = true,
                         scanningState = ScanningState.DevicesDiscovered(
-                            emptyList()
+                            result = emptyList(),
+                            scanFilter = _scanResultFilter.value,
                         ),
                     )
                 }
@@ -141,6 +142,7 @@ internal class ScannerViewModel @Inject constructor(
                         it.copy(
                             scanningState = ScanningState.DevicesDiscovered(
                                 result = result,
+                                scanFilter = _scanResultFilter.value,
                             )
                         )
                     }
@@ -168,6 +170,7 @@ internal class ScannerViewModel @Inject constructor(
                 isScanning = true,
                 scanningState = ScanningState.DevicesDiscovered(
                     result = emptyList(),
+                    scanFilter = _scanResultFilter.value
                 ),
 
                 )
@@ -231,12 +234,11 @@ internal class ScannerViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         scanningState = ScanningState.DevicesDiscovered(
-                            emptyList(),
+                            result = emptyList(),
+                            scanFilter = _scanResultFilter.value
                         )
                     )
                 }
-                // Clear the original scan filters.
-                _scanResultFilter.update { emptyList() }
                 startScanning()
             }
 
@@ -252,6 +254,7 @@ internal class ScannerViewModel @Inject constructor(
                     it.copy(
                         scanningState = ScanningState.DevicesDiscovered(
                             result = originalResults,
+                            scanFilter = _scanResultFilter.value
                         )
                     )
                 }

@@ -31,6 +31,7 @@
 
 package no.nordicsemi.android.common.scanner.viewmodel
 
+import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 /** ScanningState represents the state of the scanning process. */
@@ -43,7 +44,10 @@ internal sealed interface ScanningState {
      *
      * @param result The list of discovered devices.
      */
-    data class DevicesDiscovered(val result: List<ScanResult>) : ScanningState
+    data class DevicesDiscovered(
+        val result: List<ScanResult>,
+        val scanFilter: List<ScanResultFilter>
+    ) : ScanningState
 
     /** Error state.
      *
