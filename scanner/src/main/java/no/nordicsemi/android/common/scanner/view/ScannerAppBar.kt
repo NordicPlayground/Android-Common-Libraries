@@ -91,7 +91,6 @@ import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
-import no.nordicsemi.android.common.theme.nordicGreen
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 import no.nordicsemi.kotlin.ble.client.android.Peripheral
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
@@ -423,15 +422,17 @@ private fun FilterDetailsPreview() {
 private fun FilterButton(
     filter: ScanResultFilter,
     isSelected: Boolean,
-    containerColor: Color = nordicGreen,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    containerColorEnabled: Color = ButtonDefaults.buttonColors().containerColor,
+    containerColorDisabled: Color = ButtonDefaults.buttonColors().disabledContainerColor,
     onClick: () -> Unit,
 ) {
+    val containerColor = if (isSelected)
+        containerColorEnabled else containerColorDisabled
+
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) containerColor else ButtonDefaults.buttonColors().containerColor,
-            contentColor = if (isSelected) contentColor else ButtonDefaults.buttonColors().contentColor
+            containerColor = containerColor,
         )
     ) {
         Row(
