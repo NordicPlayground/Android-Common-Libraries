@@ -74,6 +74,7 @@ import kotlin.uuid.Uuid
 internal data class ScannerUiState(
     val isScanning: Boolean = false,
     val scanningState: ScanningState = ScanningState.Loading,
+    val isFilteringEnabled: Boolean = true, // TODO: Make it dynamic based on the params of the scanner destination.
     // TODO: Collect the inputs from the navigation params and supplied it directly from there.
     //  Remove it from the UiState since it will be directly supplied by the user.
     val filterUiState: FilterUiState = FilterUiState(),

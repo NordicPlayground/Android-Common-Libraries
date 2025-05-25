@@ -77,6 +77,7 @@ import kotlin.uuid.Uuid
 internal fun ScannerView(
     title: String = "Scanner",
     uiState: ScannerUiState,
+    isFilteringEnabled: Boolean = false,
     startScanning: () -> Unit,
     onEvent: (UiClickEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
@@ -91,8 +92,8 @@ internal fun ScannerView(
             title = { Text(text = title) },
             showProgress = uiState.isScanning,
             scanningState = uiState.scanningState,
-            showFilterOptions = true, // TODO: Change it to take the filter list options from user and show if list is not empty.
             filterUiState = uiState.filterUiState,
+            showFilterOptions = isFilteringEnabled, // TODO: Change it to take the filter list options from user and show if list is not empty.
             onFilterSelected = { onEvent(it) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.

@@ -52,6 +52,7 @@ val ScannerDestination = defineDestination(ScannerDestinationId) {
         uiState = uiState,
         startScanning = viewModel::startScanning,
         onEvent = viewModel::onClick,
+        isFilteringEnabled = uiState.isFilteringEnabled,
     ) {
         println("AAA $it")
     }
