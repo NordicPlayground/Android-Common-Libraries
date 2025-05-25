@@ -85,13 +85,13 @@ import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterEvent
+import no.nordicsemi.android.common.scanner.data.FilterSettings
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
-import no.nordicsemi.android.common.scanner.viewmodel.FilterUiState
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 import no.nordicsemi.kotlin.ble.client.android.Peripheral
@@ -159,7 +159,7 @@ internal fun ScannerAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FilterDialog(
-    filterConfig: FilterUiState,
+    filterConfig: FilterSettings,
     scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
@@ -198,7 +198,7 @@ internal fun FilterDialog(
 
 @Composable
 private fun FilterContent(
-    filterUiState: FilterUiState,
+    filterUiState: FilterSettings,
     scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onFilterSelected: (FilterEvent) -> Unit,
@@ -229,12 +229,12 @@ private fun FilterContent(
             filterList = filterSelected,
             onFilterSelected = { onFilterSelected(it) })
 
-        SortByFilterView(
-            isRssiSortEnabled = filterUiState.showSortByRssi,
-            isNameSortEnabled = filterUiState.showSortAlphabetically,
-            filterSelected = filterSelected,
-            onSortOptionSelected = onFilterSelected,
-        )
+        if (filterUiState.showSortByOption) {
+            SortByFilterView(
+                filterSelected = filterSelected,
+                onSortOptionSelected = onFilterSelected,
+            )
+        }
 
         if (filterUiState.showNameAndAddress && displayNamePeripheralList.isNotEmpty()) {
             DisplayNameDropDown(
@@ -413,12 +413,10 @@ private fun FilterTopViewPreview() {
 @Composable
 private fun FilterDetailsPreview() {
     FilterContent(
-        filterUiState = FilterUiState(
+        filterUiState = FilterSettings(
             showNonEmptyName = true,
             showBonded = true,
             showNearby = true,
-            showSortByRssi = true,
-            showSortAlphabetically = true,
             showNameAndAddress = true
         ),
         scannedResults = emptyList(),
@@ -459,8 +457,6 @@ private fun FilterButton(
 
 @Composable
 private fun SortByFilterView(
-    isRssiSortEnabled: Boolean,
-    isNameSortEnabled: Boolean,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onSortOptionSelected: (FilterEvent) -> Unit
 ) {
@@ -516,8 +512,6 @@ private fun SortByFilterView(
 @Composable
 private fun SortByFilterViewPreview() {
     SortByFilterView(
-        isRssiSortEnabled = true,
-        isNameSortEnabled = true,
         filterSelected = listOf(SortScanResult(SortType.RSSI)),
         onSortOptionSelected = { }
     )

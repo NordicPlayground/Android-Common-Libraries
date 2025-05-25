@@ -50,6 +50,7 @@ import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFi
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.FilterConfig
+import no.nordicsemi.android.common.scanner.data.FilterSettings
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
@@ -81,15 +82,6 @@ internal data class ScannerUiState(
     val filterConfig: FilterConfig = FilterConfig.Disabled,
 )
 
-internal data class FilterUiState(
-    val showNearby: Boolean = false,
-    val showNonEmptyName: Boolean = false,
-    val showBonded: Boolean = false,
-    val showNameAndAddress: Boolean = false,
-    val showSortByRssi: Boolean = false,
-    val showSortAlphabetically: Boolean = false,
-)
-
 private const val FILTER_RSSI = -50 // [dBm]
 
 @HiltViewModel
@@ -109,13 +101,11 @@ internal class ScannerViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 filterConfig = FilterConfig.Enabled(
-                    FilterUiState(
+                    FilterSettings(
                         showNearby = true,
                         showNonEmptyName = true,
                         showBonded = true,
-                        showNameAndAddress = true,
-                        showSortByRssi = true,
-                        showSortAlphabetically = true,
+                        showSortByOption = true,
                     )
                 )
             )
