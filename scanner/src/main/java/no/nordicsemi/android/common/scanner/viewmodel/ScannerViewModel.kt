@@ -74,6 +74,18 @@ import kotlin.uuid.Uuid
 internal data class ScannerUiState(
     val isScanning: Boolean = false,
     val scanningState: ScanningState = ScanningState.Loading,
+    // TODO: Collect the inputs from the navigation params and supplied it directly from there.
+    //  Remove it from the UiState since it will be directly supplied by the user.
+    val filterUiState: FilterUiState = FilterUiState(),
+)
+
+internal data class FilterUiState(
+    val showNearby: Boolean = false,
+    val showNonEmptyName: Boolean = false,
+    val showBonded: Boolean = false,
+    val showNameAndAddress: Boolean = false,
+    val showSortByRssi: Boolean = false,
+    val showSortAlphabetically: Boolean = false,
 )
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -91,6 +103,20 @@ internal class ScannerViewModel @Inject constructor(
     private val _originalScanResults = MutableStateFlow<List<ScanResult>>(emptyList())
 
     init {
+        //  TODO: Remove it from the UiState since it will be directly supplied by the user.
+        _uiState.update {
+            it.copy(
+                filterUiState = FilterUiState(
+                    showNearby = true,
+                    showNonEmptyName = true,
+                    showBonded = true,
+                    showNameAndAddress = true,
+                    showSortByRssi = true,
+                    showSortAlphabetically = true,
+                )
+            )
+        }
+
         _scanResultFilter.onEach { filters ->
             // Apply the filter to the scan results.
             val originalResults = _originalScanResults.value

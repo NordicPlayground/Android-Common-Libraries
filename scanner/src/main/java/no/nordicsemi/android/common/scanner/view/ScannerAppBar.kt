@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -90,6 +91,7 @@ import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
+import no.nordicsemi.android.common.scanner.viewmodel.FilterUiState
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 import no.nordicsemi.kotlin.ble.client.android.Peripheral
@@ -102,6 +104,7 @@ internal fun ScannerAppBar(
     showProgress: Boolean = false,
     scanningState: ScanningState,
     showFilterOptions: Boolean = true,
+    filterUiState: FilterUiState,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
@@ -143,6 +146,7 @@ internal fun ScannerAppBar(
 
     if (expandFilterBottomSheet) {
         FilterDialog(
+            filterUiState = filterUiState,
             scannedResults = (scanningState as ScanningState.DevicesDiscovered).result,
             filterSelected = scanningState.scanFilter,
             onDismissRequest = { expandFilterBottomSheet = false },
@@ -156,6 +160,7 @@ internal fun ScannerAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FilterDialog(
+    filterUiState: FilterUiState,
     scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
@@ -183,6 +188,7 @@ internal fun FilterDialog(
         }
     ) {
         FilterContent(
+            filterUiState = filterUiState,
             scannedResults = scannedResults,
             filterSelected
         ) {
@@ -193,13 +199,13 @@ internal fun FilterDialog(
 
 @Composable
 private fun FilterContent(
+    filterUiState: FilterUiState,
     scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onFilterSelected: (FilterEvent) -> Unit,
 ) {
     // list of Peripheral devices with non-empty names
     val displayNamePeripheralList = scannedResults
-        .filter { it.peripheral.name != null }
         .distinctBy { it.peripheral.name }
         .map { it.peripheral }
 
@@ -218,20 +224,27 @@ private fun FilterContent(
         )
 
         PreviousFilterOptions(
+            isNonEmptyNameScanResultFilter = filterUiState.showNonEmptyName,
+            isBondedScanResultFilter = filterUiState.showBonded,
+            isNearbyScanResultFilter = filterUiState.showNearby,
             filterList = filterSelected,
             onFilterSelected = { onFilterSelected(it) })
 
         SortByFilterView(
+            isRssiSortEnabled = filterUiState.showSortByRssi,
+            isNameSortEnabled = filterUiState.showSortAlphabetically,
             filterSelected = filterSelected,
             onSortOptionSelected = onFilterSelected,
         )
 
-        DisplayNameDropDown(
-            label = dropdownLabel,
-            onLabelChange = { dropdownLabel = it },
-            items = displayNamePeripheralList,
-            onItemSelected = { onFilterSelected(it) },
-        )
+        if (filterUiState.showNameAndAddress && displayNamePeripheralList.isNotEmpty()) {
+            DisplayNameDropDown(
+                label = dropdownLabel,
+                onLabelChange = { dropdownLabel = it },
+                items = displayNamePeripheralList,
+                onItemSelected = { onFilterSelected(it) },
+            )
+        }
     }
 }
 
@@ -276,7 +289,7 @@ private fun DisplayNameDropDown(
     items: List<Peripheral>,
     onItemSelected: (FilterEvent) -> Unit
 ) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(true) }
 
     Text("Display Name")
     Row(
@@ -300,7 +313,6 @@ private fun DisplayNameDropDown(
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.padding(16.dp)
             ) {
                 items.forEach { peripheral ->
                     DropdownMenuItem(
@@ -313,7 +325,7 @@ private fun DisplayNameDropDown(
                                 horizontalAlignment = Alignment.Start,
 
                                 ) {
-                                Text(peripheral.name!!)
+                                Text(peripheral.name ?: "Unknown Device")
                                 Text(
                                     text = peripheral.address,
                                     style = MaterialTheme.typography.bodySmall
@@ -321,6 +333,7 @@ private fun DisplayNameDropDown(
                                 )
                                 // show horizontal divider unless it's the last item
                                 if (peripheral != items.last()) {
+                                    Spacer(modifier = Modifier.height(4.dp))
                                     HorizontalDivider()
                                 }
                             }
@@ -330,7 +343,7 @@ private fun DisplayNameDropDown(
                             onItemSelected(
                                 OnFilterSelected(
                                     AllowNameAndAddressScanResultFilter(
-                                        peripheral.name!!,
+                                        peripheral.name ?: "Unknown Device",
                                         peripheral.address
                                     )
                                 )
@@ -399,19 +412,16 @@ private fun FilterTopViewPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun FilterDialogPreview() {
-    FilterDialog(
-        scannedResults = emptyList(),
-        filterSelected = emptyList(),
-        onDismissRequest = { },
-        onFilterSelected = { }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
 private fun FilterDetailsPreview() {
     FilterContent(
+        filterUiState = FilterUiState(
+            showNonEmptyName = true,
+            showBonded = true,
+            showNearby = true,
+            showSortByRssi = true,
+            showSortAlphabetically = true,
+            showNameAndAddress = true
+        ),
         scannedResults = emptyList(),
         filterSelected = emptyList(),
         onFilterSelected = {}
@@ -450,6 +460,8 @@ private fun FilterButton(
 
 @Composable
 private fun SortByFilterView(
+    isRssiSortEnabled: Boolean,
+    isNameSortEnabled: Boolean,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onSortOptionSelected: (FilterEvent) -> Unit
 ) {
@@ -504,7 +516,12 @@ private fun SortByFilterView(
 @Preview(showBackground = true)
 @Composable
 private fun SortByFilterViewPreview() {
-    SortByFilterView {}
+    SortByFilterView(
+        isRssiSortEnabled = true,
+        isNameSortEnabled = true,
+        filterSelected = listOf(SortScanResult(SortType.RSSI)),
+        onSortOptionSelected = { }
+    )
 }
 
 
