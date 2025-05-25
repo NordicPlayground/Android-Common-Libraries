@@ -92,8 +92,7 @@ internal fun ScannerView(
             title = { Text(text = title) },
             showProgress = uiState.isScanning,
             scanningState = uiState.scanningState,
-            filterUiState = uiState.filterUiState,
-            showFilterOptions = isFilteringEnabled, // TODO: Change it to take the filter list options from user and show if list is not empty.
+            filterConfig = uiState.filterConfig,
             onFilterSelected = { onEvent(it) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.

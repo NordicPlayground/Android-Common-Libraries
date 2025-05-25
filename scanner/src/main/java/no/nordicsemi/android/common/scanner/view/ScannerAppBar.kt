@@ -53,7 +53,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -84,6 +83,7 @@ import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
@@ -102,9 +102,8 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 internal fun ScannerAppBar(
     title: @Composable () -> Unit,
     showProgress: Boolean = false,
+    filterConfig: FilterConfig,
     scanningState: ScanningState,
-    showFilterOptions: Boolean = true,
-    filterUiState: FilterUiState,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
@@ -116,26 +115,26 @@ internal fun ScannerAppBar(
         backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
         actions = {
-            if (showFilterOptions) {
-                Row(
-                    modifier = Modifier.padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    if (showProgress) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(30.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (showProgress) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(30.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+                if (filterConfig is FilterConfig.Enabled) {
                     Icon(
-                        imageVector = Icons.Default.FilterList,
+                        imageVector = Icons.Default.Close,
                         contentDescription = null,
                         modifier = Modifier
                             .clip(CircleShape)
                             .clickable {
-                                expandFilterBottomSheet = true
+                                onFilterSelected(OnFilterReset)
                             }
                             .padding(8.dp)
                     )
@@ -146,7 +145,7 @@ internal fun ScannerAppBar(
 
     if (expandFilterBottomSheet) {
         FilterDialog(
-            filterUiState = filterUiState,
+            filterConfig = (filterConfig as FilterConfig.Enabled).filter,
             scannedResults = (scanningState as ScanningState.DevicesDiscovered).result,
             filterSelected = scanningState.scanFilter,
             onDismissRequest = { expandFilterBottomSheet = false },
@@ -160,7 +159,7 @@ internal fun ScannerAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FilterDialog(
-    filterUiState: FilterUiState,
+    filterConfig: FilterUiState,
     scannedResults: List<ScanResult>,
     filterSelected: List<ScanResultFilter> = emptyList(),
     onDismissRequest: () -> Unit,
@@ -188,7 +187,7 @@ internal fun FilterDialog(
         }
     ) {
         FilterContent(
-            filterUiState = filterUiState,
+            filterUiState = filterConfig,
             scannedResults = scannedResults,
             filterSelected
         ) {

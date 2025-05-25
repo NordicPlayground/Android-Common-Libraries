@@ -49,6 +49,7 @@ import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
@@ -77,7 +78,7 @@ internal data class ScannerUiState(
     val isFilteringEnabled: Boolean = true, // TODO: Make it dynamic based on the params of the scanner destination.
     // TODO: Collect the inputs from the navigation params and supplied it directly from there.
     //  Remove it from the UiState since it will be directly supplied by the user.
-    val filterUiState: FilterUiState = FilterUiState(),
+    val filterConfig: FilterConfig = FilterConfig.Disabled,
 )
 
 internal data class FilterUiState(
@@ -107,13 +108,15 @@ internal class ScannerViewModel @Inject constructor(
         //  TODO: Remove it from the UiState since it will be directly supplied by the user.
         _uiState.update {
             it.copy(
-                filterUiState = FilterUiState(
-                    showNearby = true,
-                    showNonEmptyName = true,
-                    showBonded = true,
-                    showNameAndAddress = true,
-                    showSortByRssi = true,
-                    showSortAlphabetically = true,
+                filterConfig = FilterConfig.Enabled(
+                    FilterUiState(
+                        showNearby = true,
+                        showNonEmptyName = true,
+                        showBonded = true,
+                        showNameAndAddress = true,
+                        showSortByRssi = true,
+                        showSortAlphabetically = true,
+                    )
                 )
             )
         }
