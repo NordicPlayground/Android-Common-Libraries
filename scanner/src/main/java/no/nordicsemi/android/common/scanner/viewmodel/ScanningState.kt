@@ -53,5 +53,5 @@ internal sealed interface ScanningState {
      *
      * @param error The error that occurred.
      */
-    data class Error(val error: Throwable) : ScanningState
+    data class Error(val error: String?) : ScanningState
 }

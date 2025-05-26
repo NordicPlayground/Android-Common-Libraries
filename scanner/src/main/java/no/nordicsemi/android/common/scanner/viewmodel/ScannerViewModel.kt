@@ -64,6 +64,7 @@ import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.spec.CHANNEL_SOUND_SERVICE_UUID
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import no.nordicsemi.kotlin.ble.client.android.exception.ScanningFailedToStartException
 import no.nordicsemi.kotlin.ble.core.BondState
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -184,12 +185,14 @@ internal class ScannerViewModel @Inject constructor(
                 _uiState.update { it.copy(isScanning = false) }
                 job?.cancel()
             }
-            .catch { e ->
-                _uiState.update {
-                    it.copy(
-                        isScanning = false,
-                        scanningState = ScanningState.Error(e)
-                    )
+            .catch { throwable ->
+                (throwable as? ScanningFailedToStartException)?.let { exception ->
+                    _uiState.update {
+                        it.copy(
+                            isScanning = false,
+                            scanningState = ScanningState.Error(exception.message)
+                        )
+                    }
                 }
             }
             .launchIn(viewModelScope)
