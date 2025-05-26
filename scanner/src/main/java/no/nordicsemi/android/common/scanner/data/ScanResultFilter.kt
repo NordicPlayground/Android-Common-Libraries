@@ -1,5 +1,7 @@
 package no.nordicsemi.android.common.scanner.data
 
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
+
 sealed interface ScanResultFilter
 
 /**
@@ -19,19 +21,12 @@ data object AllowNonEmptyNameScanResultFilter : ScanResultFilter {
 }
 
 /**
- * Filter that allows scan results with a specific name and address.
- *
- * @param name The name to filter by.
- * @param address The address to filter by.
+ * Group scan results by name.
  */
-data class AllowNameAndAddressScanResultFilter(
+data class GroupByName(
     val name: String,
-    val address: String
-) : ScanResultFilter {
-    override fun toString(): String {
-        return "AllowNameAndAddressScanResultFilter(name='$name', address='$address')"
-    }
-}
+    val items: List<ScanResult>
+) : ScanResultFilter
 
 /**
  * Filter bonded devices.
@@ -52,7 +47,7 @@ data object AllowNearbyScanResultFilter : ScanResultFilter {
 fun ScanResultFilter.toDisplayTitle(): String {
     return when (this) {
         is AllowNonEmptyNameScanResultFilter -> "Name"
-        is AllowNameAndAddressScanResultFilter -> "Name and Address"
+        is GroupByName -> "Group by name"
         is AllowBondedScanResultFilter -> "Bonded"
         is AllowNearbyScanResultFilter -> "Nearby"
 

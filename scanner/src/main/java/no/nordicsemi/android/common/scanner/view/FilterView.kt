@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,18 +44,17 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.data.FilterSettings
+import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.ScanResultFilter
 import no.nordicsemi.android.common.scanner.data.SortScanResult
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
-import no.nordicsemi.kotlin.ble.client.android.Peripheral
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,11 +104,6 @@ private fun FilterContent(
     activeFilters: List<ScanResultFilter>,
     onFilterSelected: (FilterEvent) -> Unit,
 ) {
-    val peripherals = scannedResults
-        .filter { it.peripheral.name != null }
-        .distinctBy { it.peripheral.address }
-        .map { it.peripheral }
-
     var dropdownLabel by rememberSaveable { mutableStateOf("") }
 
     Column(
@@ -157,11 +150,11 @@ private fun FilterContent(
             )
         }
 
-        if (filterSettings.showPeripheralDropdown && peripherals.isNotEmpty()) {
-            DisplayNameDropDown(
-                label = dropdownLabel,
+        if (filterSettings.showGroupByDropdown && scannedResults.isNotEmpty()) {
+            GroupByNameDropdown(
+                dropdownLabel = dropdownLabel,
                 onLabelChange = { dropdownLabel = it },
-                items = peripherals,
+                scanResults = scannedResults,
                 onItemSelected = { onFilterSelected(it) },
             )
         }
@@ -169,75 +162,67 @@ private fun FilterContent(
 }
 
 @Composable
-private fun DisplayNameDropDown(
-    label: String,
+private fun GroupByNameDropdown(
+    title: String = "Group by display name",
+    dropdownLabel: String,
     onLabelChange: (String) -> Unit,
-    items: List<Peripheral>,
+    scanResults: List<ScanResult>,
     onItemSelected: (FilterEvent) -> Unit,
 ) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
 
-    Text("Display Name")
+    Text(title)
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Column {
-            Button(onClick = { expanded = !expanded }) {
+            Button(onClick = { isExpanded = !isExpanded }) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(label.takeIf { it.isNotEmpty() } ?: "Select item")
+                    Text(dropdownLabel.takeIf { it.isNotEmpty() } ?: "Select item")
                     Icon(
-                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = null
                     )
                 }
             }
             DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
             ) {
-                items.forEach { peripheral ->
-                    DropdownMenuItem(
-                        text = {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                                horizontalAlignment = Alignment.Start,
+                val groupedResults = scanResults.groupBy { it.peripheral.name }
+                groupedResults.forEach { (name, items) ->
+                    name?.let {
+                        DropdownMenuItem(
+                            text = {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    horizontalAlignment = Alignment.Start,
 
-                                ) {
-                                Text(peripheral.name ?: "Unknown Device")
-                                Text(
-                                    text = peripheral.address,
-                                    style = MaterialTheme.typography.bodySmall
-                                        .copy(color = MaterialTheme.colorScheme.onSurface)
-                                )
-                                // show horizontal divider unless it's the last item
-                                if (peripheral != items.last()) {
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    HorizontalDivider()
+                                    ) {
+                                    Text(name)
+                                    // show horizontal divider if there are multiple items
+                                    if (groupedResults.values.size > 1) {
+                                        HorizontalDivider()
+                                    }
                                 }
-                            }
-
-                        },
-                        onClick = {
-                            onItemSelected(
-                                OnFilterSelected(
-                                    AllowNameAndAddressScanResultFilter(
-                                        peripheral.name ?: "Unknown Device",
-                                        peripheral.address
-                                    )
+                            },
+                            onClick = {
+                                onItemSelected(
+                                    OnFilterSelected(GroupByName(name, items))
                                 )
-                            )
-                            onLabelChange(peripheral.name!!)
-                            expanded = false
-                        }
-                    )
+                                onLabelChange(name)
+                                isExpanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -316,7 +301,7 @@ private fun FilterDetailsPreview() {
             showNonEmptyName = true,
             showBonded = true,
             showNearby = true,
-            showPeripheralDropdown = true
+            showGroupByDropdown = true
         ),
         scannedResults = emptyList(),
         activeFilters = emptyList(),

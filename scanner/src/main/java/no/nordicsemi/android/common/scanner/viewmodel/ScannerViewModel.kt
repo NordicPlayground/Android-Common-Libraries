@@ -46,11 +46,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
 import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterSettings
+import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
@@ -76,10 +76,10 @@ import kotlin.uuid.Uuid
 internal data class ScannerUiState(
     val isScanning: Boolean = false,
     val scanningState: ScanningState = ScanningState.Loading,
-    val isFilteringEnabled: Boolean = true, // TODO: Make it dynamic based on the params of the scanner destination.
     // TODO: Collect the inputs from the navigation params and supplied it directly from there.
     //  Remove it from the UiState since it will be directly supplied by the user.
     val filterConfig: FilterConfig = FilterConfig.Disabled,
+    val isGroupByNameEnabled: Boolean = false,
 )
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -106,7 +106,7 @@ internal class ScannerViewModel @Inject constructor(
                         showNonEmptyName = true,
                         showBonded = true,
                         showSortByOption = true,
-                        showPeripheralDropdown = true,
+                        showGroupByDropdown = true,
                     )
                 )
             )
@@ -199,10 +199,10 @@ internal class ScannerViewModel @Inject constructor(
                     }
                 }
 
-                is AllowNameAndAddressScanResultFilter -> {
-                    // Filter the scan results based on the name and address.
+                is GroupByName -> {
+                    // Filter the scan results based on the name.
                     results.filter {
-                        it.peripheral.name == filter.name && it.peripheral.address == filter.address
+                        it.peripheral.name == filter.name
                     }
                 }
 
@@ -262,6 +262,7 @@ internal class ScannerViewModel @Inject constructor(
                 val originalResults = _originalScanResults.value
                 _uiState.update {
                     it.copy(
+                        isGroupByNameEnabled = false,
                         scanningState = ScanningState.DevicesDiscovered(
                             result = originalResults,
                             scanFilter = _scanResultFilter.value
@@ -283,10 +284,13 @@ internal class ScannerViewModel @Inject constructor(
                         }
                     }
 
-                    is AllowNameAndAddressScanResultFilter -> {
+                    is GroupByName -> {
                         val updatedFilter =
-                            currentFilter.filterNot { it is AllowNameAndAddressScanResultFilter }
+                            currentFilter.filterNot { it is GroupByName }
                                 .toMutableList()
+                        _uiState.update {
+                            it.copy(isGroupByNameEnabled = true)
+                        }
                         updatedFilter.add(event.filter)
                         _scanResultFilter.update { updatedFilter }
                     }
