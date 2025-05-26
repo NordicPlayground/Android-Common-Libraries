@@ -31,41 +31,19 @@
 
 package no.nordicsemi.android.common.scanner.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,28 +52,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNameAndAddressScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
 import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterEvent
-import no.nordicsemi.android.common.scanner.data.FilterSettings
-import no.nordicsemi.android.common.scanner.data.OnFilterReset
-import no.nordicsemi.android.common.scanner.data.OnFilterSelected
-import no.nordicsemi.android.common.scanner.data.ScanResultFilter
-import no.nordicsemi.android.common.scanner.data.SortScanResult
-import no.nordicsemi.android.common.scanner.data.SortType
-import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.ui.view.NordicAppBar
-import no.nordicsemi.kotlin.ble.client.android.Peripheral
-import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,12 +91,12 @@ internal fun ScannerAppBar(
                 }
                 if (filterConfig is FilterConfig.Enabled) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        imageVector = Icons.Default.FilterList,
                         contentDescription = null,
                         modifier = Modifier
                             .clip(CircleShape)
                             .clickable {
-                                onFilterSelected(OnFilterReset)
+                                expandFilterBottomSheet = true
                             }
                             .padding(8.dp)
                     )
@@ -145,376 +107,11 @@ internal fun ScannerAppBar(
 
     if (expandFilterBottomSheet) {
         FilterDialog(
-            filterConfig = (filterConfig as FilterConfig.Enabled).filter,
+            filterSettings = (filterConfig as FilterConfig.Enabled).filter,
             scannedResults = (scanningState as ScanningState.DevicesDiscovered).result,
-            filterSelected = scanningState.scanFilter,
+            activeFilters = scanningState.scanFilter,
             onDismissRequest = { expandFilterBottomSheet = false },
-            onFilterSelected = {
-                onFilterSelected(it)
-            }
+            onFilterSelected = { onFilterSelected(it) }
         )
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun FilterDialog(
-    filterConfig: FilterSettings,
-    scannedResults: List<ScanResult>,
-    filterSelected: List<ScanResultFilter> = emptyList(),
-    onDismissRequest: () -> Unit,
-    onFilterSelected: (FilterEvent) -> Unit,
-) {
-    val sheetState = rememberModalBottomSheetState()
-
-    ModalBottomSheet(
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 16.dp,
-        dragHandle = {
-            Box(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .width(50.dp)
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.primary)
-            )
-        }
-    ) {
-        FilterContent(
-            filterUiState = filterConfig,
-            scannedResults = scannedResults,
-            filterSelected
-        ) {
-            onFilterSelected(it)
-        }
-    }
-}
-
-@Composable
-private fun FilterContent(
-    filterUiState: FilterSettings,
-    scannedResults: List<ScanResult>,
-    filterSelected: List<ScanResultFilter> = emptyList(),
-    onFilterSelected: (FilterEvent) -> Unit,
-) {
-    // list of Peripheral devices with non-empty names
-    val displayNamePeripheralList = scannedResults
-        .distinctBy { it.peripheral.name }
-        .map { it.peripheral }
-
-    var dropdownLabel by rememberSaveable { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        FilterTopView(
-            isSelectedFilterNotEmpty = filterSelected.isNotEmpty(),
-            onFilterReset = {
-                dropdownLabel = ""
-                onFilterSelected(it)
-            }
-        )
-
-        PreviousFilterOptions(
-            isNonEmptyNameScanResultFilter = filterUiState.showNonEmptyName,
-            isBondedScanResultFilter = filterUiState.showBonded,
-            isNearbyScanResultFilter = filterUiState.showNearby,
-            filterList = filterSelected,
-            onFilterSelected = { onFilterSelected(it) })
-
-        if (filterUiState.showSortByOption) {
-            SortByFilterView(
-                filterSelected = filterSelected,
-                onSortOptionSelected = onFilterSelected,
-            )
-        }
-
-        if (filterUiState.showNameAndAddress && displayNamePeripheralList.isNotEmpty()) {
-            DisplayNameDropDown(
-                label = dropdownLabel,
-                onLabelChange = { dropdownLabel = it },
-                items = displayNamePeripheralList,
-                onItemSelected = { onFilterSelected(it) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun PreviousFilterOptions(
-    filterList: List<ScanResultFilter>,
-    onFilterSelected: (FilterEvent) -> Unit,
-    isNearbyScanResultFilter: Boolean = true,
-    isNonEmptyNameScanResultFilter: Boolean = true,
-    isBondedScanResultFilter: Boolean = true
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        if (isNearbyScanResultFilter)
-            FilterButton(
-                filter = AllowNearbyScanResultFilter,
-                isSelected = filterList.contains(AllowNearbyScanResultFilter),
-                onClick = { onFilterSelected(OnFilterSelected(AllowNearbyScanResultFilter)) }
-            )
-        if (isNonEmptyNameScanResultFilter)
-            FilterButton(
-                filter = AllowNonEmptyNameScanResultFilter,
-                isSelected = filterList.contains(AllowNonEmptyNameScanResultFilter),
-                onClick = { onFilterSelected(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
-            )
-        if (isBondedScanResultFilter)
-            FilterButton(
-                filter = AllowBondedScanResultFilter,
-                isSelected = filterList.contains(AllowBondedScanResultFilter),
-                onClick = { onFilterSelected(OnFilterSelected(AllowBondedScanResultFilter)) }
-            )
-    }
-}
-
-@Composable
-private fun DisplayNameDropDown(
-    label: String,
-    onLabelChange: (String) -> Unit,
-    items: List<Peripheral>,
-    onItemSelected: (FilterEvent) -> Unit
-) {
-    var expanded by rememberSaveable { mutableStateOf(true) }
-
-    Text("Display Name")
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Column {
-            Button(onClick = { expanded = !expanded }) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(label.takeIf { it.isNotEmpty() } ?: "Select item")
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = null
-                    )
-                }
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                items.forEach { peripheral ->
-                    DropdownMenuItem(
-                        text = {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                                horizontalAlignment = Alignment.Start,
-
-                                ) {
-                                Text(peripheral.name ?: "Unknown Device")
-                                Text(
-                                    text = peripheral.address,
-                                    style = MaterialTheme.typography.bodySmall
-                                        .copy(color = MaterialTheme.colorScheme.onSurface)
-                                )
-                                // show horizontal divider unless it's the last item
-                                if (peripheral != items.last()) {
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    HorizontalDivider()
-                                }
-                            }
-
-                        },
-                        onClick = {
-                            onItemSelected(
-                                OnFilterSelected(
-                                    AllowNameAndAddressScanResultFilter(
-                                        peripheral.name ?: "Unknown Device",
-                                        peripheral.address
-                                    )
-                                )
-                            )
-                            onLabelChange(peripheral.name!!)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun FilterTopView(
-    isSelectedFilterNotEmpty: Boolean,
-    onFilterReset: (FilterEvent) -> Unit
-) {
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            "Filter scan results",
-            modifier = Modifier
-                .weight(1f)
-        )
-        if (isSelectedFilterNotEmpty) {
-            Button(
-                onClick = {
-                    onFilterReset(OnFilterReset)
-                },
-
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
-                )
-            ) {
-                Text(
-                    text = "Clear All",
-                )
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun FilterButtonPreview() {
-    FilterButton(
-        filter = AllowNearbyScanResultFilter,
-        isSelected = true,
-        onClick = { }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun FilterTopViewPreview() {
-    FilterTopView(
-        isSelectedFilterNotEmpty = true,
-        onFilterReset = { }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun FilterDetailsPreview() {
-    FilterContent(
-        filterUiState = FilterSettings(
-            showNonEmptyName = true,
-            showBonded = true,
-            showNearby = true,
-            showNameAndAddress = true
-        ),
-        scannedResults = emptyList(),
-        filterSelected = emptyList(),
-        onFilterSelected = {}
-    )
-}
-
-@Composable
-private fun FilterButton(
-    filter: ScanResultFilter,
-    isSelected: Boolean,
-    containerColorEnabled: Color = ButtonDefaults.buttonColors().containerColor,
-    containerColorDisabled: Color = ButtonDefaults.buttonColors().disabledContainerColor,
-    onClick: () -> Unit,
-) {
-    val containerColor = if (isSelected)
-        containerColorEnabled else containerColorDisabled
-
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-        )
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                imageVector = if (isSelected) Icons.Default.Close else Icons.Default.Done,
-                contentDescription = null,
-            )
-            Text(filter.toDisplayTitle())
-        }
-    }
-}
-
-@Composable
-private fun SortByFilterView(
-    filterSelected: List<ScanResultFilter> = emptyList(),
-    onSortOptionSelected: (FilterEvent) -> Unit
-) {
-    val currentSortByFilter = filterSelected.filterIsInstance<SortScanResult>()
-        .firstOrNull()
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        HorizontalDivider()
-        Text("Sort by")
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.selectableGroup()
-        ) {
-            SortType.entries.forEach { sortType ->
-                Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .selectable(
-                            selected = sortType == currentSortByFilter?.sortType,
-                            onClick = {
-                                // onClick event.
-                                onSortOptionSelected(OnFilterSelected(SortScanResult(sortType)))
-                            },
-                            role = Role.RadioButton
-                        ),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        RadioButton(
-                            selected = sortType == currentSortByFilter?.sortType,
-                            onClick = null
-                        )
-                        Text(
-                            text = sortType.toString(),
-                        )
-
-                    }
-                }
-            }
-        }
-        HorizontalDivider()
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SortByFilterViewPreview() {
-    SortByFilterView(
-        filterSelected = listOf(SortScanResult(SortType.RSSI)),
-        onSortOptionSelected = { }
-    )
-}
-
-

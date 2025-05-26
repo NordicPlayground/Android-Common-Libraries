@@ -11,5 +11,5 @@ internal data class FilterSettings(
     val showNonEmptyName: Boolean = false,
     val showBonded: Boolean = false,
     val showSortByOption: Boolean = false,
-    val showNameAndAddress: Boolean = false,
+    val showPeripheralDropdown: Boolean = false,
 )

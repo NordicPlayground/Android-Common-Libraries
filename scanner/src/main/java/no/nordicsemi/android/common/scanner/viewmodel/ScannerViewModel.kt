@@ -106,6 +106,7 @@ internal class ScannerViewModel @Inject constructor(
                         showNonEmptyName = true,
                         showBonded = true,
                         showSortByOption = true,
+                        showPeripheralDropdown = true,
                     )
                 )
             )
