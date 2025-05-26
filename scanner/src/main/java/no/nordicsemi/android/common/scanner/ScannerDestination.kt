@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.navigation.createSimpleDestination
 import no.nordicsemi.android.common.navigation.defineDestination
+import no.nordicsemi.android.common.scanner.data.ScanWithServiceUuid
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import kotlin.uuid.ExperimentalUuidApi
@@ -47,10 +48,14 @@ val ScannerDestinationId = createSimpleDestination("ble-scanner-destination")
 val ScannerDestination = defineDestination(ScannerDestinationId) {
     val viewModel = hiltViewModel<ScannerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uuid = when (val data = uiState.filterConfig.scanWithServiceUuid) {
+        ScanWithServiceUuid.None -> null
+        is ScanWithServiceUuid.Specific -> data.serviceUuid
+    }
 
     ScannerView(
         uiState = uiState,
-        startScanning = viewModel::startScanning,
+        startScanning = { viewModel.startScanning(uuid) },
         onEvent = viewModel::onClick,
     ) {
         println("AAA $it")

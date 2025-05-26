@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.update
 import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterSettings
+import no.nordicsemi.android.common.scanner.data.FilterSettingsState
 import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
@@ -56,9 +57,11 @@ import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
 import no.nordicsemi.android.common.scanner.data.OnlyBonded
 import no.nordicsemi.android.common.scanner.data.OnlyNearby
 import no.nordicsemi.android.common.scanner.data.OnlyWithNames
+import no.nordicsemi.android.common.scanner.data.ScanWithServiceUuid
 import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
+import no.nordicsemi.android.common.scanner.spec.CHANNEL_SOUND_SERVICE_UUID
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.core.BondState
@@ -66,6 +69,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import kotlin.uuid.toKotlinUuid
 
 /**
  * This class is responsible for managing the ui states of the scanner screen.
@@ -78,12 +82,13 @@ internal data class ScannerUiState(
     val scanningState: ScanningState = ScanningState.Loading,
     // TODO: Collect the inputs from the navigation params and supplied it directly from there.
     //  Remove it from the UiState since it will be directly supplied by the user.
-    val filterConfig: FilterConfig = FilterConfig.Disabled,
+    val filterConfig: FilterConfig = FilterConfig(FilterSettingsState.Disabled),
     val isGroupByNameEnabled: Boolean = false,
 )
 
 private const val FILTER_RSSI = -50 // [dBm]
 
+@OptIn(ExperimentalUuidApi::class)
 @HiltViewModel
 internal class ScannerViewModel @Inject constructor(
     private val centralManager: CentralManager,
@@ -100,14 +105,17 @@ internal class ScannerViewModel @Inject constructor(
         //  TODO: Remove it from the UiState since it will be directly supplied by the user.
         _uiState.update {
             it.copy(
-                filterConfig = FilterConfig.Enabled(
-                    FilterSettings(
-                        showNearby = false,
-                        showNonEmptyName = false,
-                        showBonded = false,
-                        showSortByOption = true,
-                        showGroupByDropdown = true,
-                    )
+                filterConfig = FilterConfig(
+                    FilterSettingsState.Enabled(
+                        FilterSettings(
+                            showNearby = true,
+                            showNonEmptyName = true,
+                            showBonded = true,
+                            showSortByOption = true,
+                            showGroupByDropdown = true,
+                        )
+                    ),
+                    ScanWithServiceUuid.Specific(CHANNEL_SOUND_SERVICE_UUID.toKotlinUuid())
                 )
             )
         }

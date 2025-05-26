@@ -81,13 +81,15 @@ import no.nordicsemi.android.common.ui.view.CircularIcon
 import no.nordicsemi.android.common.ui.view.RssiIcon
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
 @Composable
 internal fun ScannerView(
+    uuid: Uuid? = null,
     title: String = "Scanner",
     uiState: ScannerUiState,
-    startScanning: () -> Unit,
+    startScanning: (Uuid?) -> Unit,
     onEvent: (UiClickEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
 ) {
@@ -101,7 +103,7 @@ internal fun ScannerView(
             title = { Text(text = title) },
             showProgress = uiState.isScanning,
             scanningState = uiState.scanningState,
-            filterConfig = uiState.filterConfig,
+            filterConfig = uiState.filterConfig.filterSettings,
             onFilterSelected = { onEvent(it) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.
@@ -114,7 +116,7 @@ internal fun ScannerView(
                 // If the permission is not granted then the scanning will not start.
                 // So to start scanning we need to check if the location permission is granted.
                 LaunchedEffect(isLocationRequiredAndDisabled) {
-                    startScanning()
+                    startScanning(uuid)
                 }
                 Column(modifier = Modifier.fillMaxSize()) {
                     PullToRefreshBox(
