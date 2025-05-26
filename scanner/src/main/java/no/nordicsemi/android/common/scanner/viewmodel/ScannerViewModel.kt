@@ -45,9 +45,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
-import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterSettings
 import no.nordicsemi.android.common.scanner.data.GroupByName
@@ -55,8 +53,10 @@ import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
-import no.nordicsemi.android.common.scanner.data.ScanResultFilter
-import no.nordicsemi.android.common.scanner.data.SortScanResult
+import no.nordicsemi.android.common.scanner.data.OnlyBonded
+import no.nordicsemi.android.common.scanner.data.OnlyNearby
+import no.nordicsemi.android.common.scanner.data.OnlyWithNames
+import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
@@ -92,7 +92,7 @@ internal class ScannerViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
     private var job: Job? = null
 
-    private val _scanResultFilter = MutableStateFlow<List<ScanResultFilter>>(emptyList())
+    private val _scanResultFilter = MutableStateFlow<List<Filter>>(emptyList())
 
     private val _originalScanResults = MutableStateFlow<List<ScanResult>>(emptyList())
 
@@ -102,9 +102,9 @@ internal class ScannerViewModel @Inject constructor(
             it.copy(
                 filterConfig = FilterConfig.Enabled(
                     FilterSettings(
-                        showNearby = true,
-                        showNonEmptyName = true,
-                        showBonded = true,
+                        showNearby = false,
+                        showNonEmptyName = false,
+                        showBonded = false,
                         showSortByOption = true,
                         showGroupByDropdown = true,
                     )
@@ -187,12 +187,12 @@ internal class ScannerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun List<ScanResult>.applyFilter(filters: List<ScanResultFilter>): List<ScanResult> {
+    private fun List<ScanResult>.applyFilter(filters: List<Filter>): List<ScanResult> {
         if (filters.isEmpty()) return this
         // Iterate through the filters and apply them to the scan results.
         return filters.fold(this) { results, filter ->
             when (filter) {
-                AllowBondedScanResultFilter -> {
+                OnlyBonded -> {
                     // Filter the scan results based on the bonded state.
                     results.filter {
                         it.peripheral.bondState.value == BondState.BONDED
@@ -206,21 +206,21 @@ internal class ScannerViewModel @Inject constructor(
                     }
                 }
 
-                AllowNearbyScanResultFilter -> {
+                OnlyNearby -> {
                     // Filter the scan results based on the RSSI value.
                     results.filter {
                         it.rssi >= FILTER_RSSI
                     }
                 }
 
-                AllowNonEmptyNameScanResultFilter -> {
+                OnlyWithNames -> {
                     // Filter the scan results based on the non-empty name.
                     results.filter {
                         it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
                     }
                 }
 
-                is SortScanResult -> {
+                is SortBy -> {
                     when (filter.sortType) {
                         SortType.RSSI -> {
                             results.sortedByDescending { it.rssi }
@@ -275,9 +275,9 @@ internal class ScannerViewModel @Inject constructor(
                 // Update the filter list with the selected filter.
                 val currentFilter = _scanResultFilter.value.toMutableList()
                 when (event.filter) {
-                    AllowNearbyScanResultFilter,
-                    AllowNonEmptyNameScanResultFilter,
-                    AllowBondedScanResultFilter -> {
+                    OnlyNearby,
+                    OnlyWithNames,
+                    OnlyBonded -> {
                         currentFilter.addOrRemove(event.filter)
                         _scanResultFilter.update {
                             currentFilter
@@ -295,9 +295,9 @@ internal class ScannerViewModel @Inject constructor(
                         _scanResultFilter.update { updatedFilter }
                     }
 
-                    is SortScanResult -> {
+                    is SortBy -> {
                         val updatedFilter =
-                            currentFilter.filterNot { it is SortScanResult }.toMutableList()
+                            currentFilter.filterNot { it is SortBy }.toMutableList()
                         updatedFilter.add(event.filter)
                         _scanResultFilter.update { updatedFilter }
 

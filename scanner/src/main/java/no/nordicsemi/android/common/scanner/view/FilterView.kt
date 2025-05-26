@@ -43,16 +43,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.scanner.data.AllowBondedScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNearbyScanResultFilter
-import no.nordicsemi.android.common.scanner.data.AllowNonEmptyNameScanResultFilter
+import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.data.FilterSettings
 import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
-import no.nordicsemi.android.common.scanner.data.ScanResultFilter
-import no.nordicsemi.android.common.scanner.data.SortScanResult
+import no.nordicsemi.android.common.scanner.data.OnlyBonded
+import no.nordicsemi.android.common.scanner.data.OnlyNearby
+import no.nordicsemi.android.common.scanner.data.OnlyWithNames
+import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
@@ -62,7 +62,7 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 internal fun FilterDialog(
     filterSettings: FilterSettings,
     scannedResults: List<ScanResult>,
-    activeFilters: List<ScanResultFilter>,
+    activeFilters: List<Filter>,
     onDismissRequest: () -> Unit,
     onFilterSelected: (FilterEvent) -> Unit,
 ) {
@@ -101,7 +101,7 @@ internal fun FilterDialog(
 private fun FilterContent(
     filterSettings: FilterSettings,
     scannedResults: List<ScanResult>,
-    activeFilters: List<ScanResultFilter>,
+    activeFilters: List<Filter>,
     onFilterSelected: (FilterEvent) -> Unit,
 ) {
     var dropdownLabel by rememberSaveable { mutableStateOf("") }
@@ -125,21 +125,21 @@ private fun FilterContent(
         ) {
             if (filterSettings.showNearby)
                 FilterButton(
-                    filter = AllowNearbyScanResultFilter,
-                    isSelected = activeFilters.contains(AllowNearbyScanResultFilter),
-                    onClick = { onFilterSelected(OnFilterSelected(AllowNearbyScanResultFilter)) }
+                    filter = OnlyNearby,
+                    isSelected = activeFilters.contains(OnlyNearby),
+                    onClick = { onFilterSelected(OnFilterSelected(OnlyNearby)) }
                 )
             if (filterSettings.showNonEmptyName)
                 FilterButton(
-                    filter = AllowNonEmptyNameScanResultFilter,
-                    isSelected = activeFilters.contains(AllowNonEmptyNameScanResultFilter),
-                    onClick = { onFilterSelected(OnFilterSelected(AllowNonEmptyNameScanResultFilter)) }
+                    filter = OnlyWithNames,
+                    isSelected = activeFilters.contains(OnlyWithNames),
+                    onClick = { onFilterSelected(OnFilterSelected(OnlyWithNames)) }
                 )
             if (filterSettings.showBonded)
                 FilterButton(
-                    filter = AllowBondedScanResultFilter,
-                    isSelected = activeFilters.contains(AllowBondedScanResultFilter),
-                    onClick = { onFilterSelected(OnFilterSelected(AllowBondedScanResultFilter)) }
+                    filter = OnlyBonded,
+                    isSelected = activeFilters.contains(OnlyBonded),
+                    onClick = { onFilterSelected(OnFilterSelected(OnlyBonded)) }
                 )
         }
 
@@ -287,7 +287,7 @@ private fun FilterTopViewPreview() {
 @Composable
 private fun FilterButtonPreview() {
     FilterButton(
-        filter = AllowNearbyScanResultFilter,
+        filter = OnlyNearby,
         isSelected = true,
         onClick = { }
     )
@@ -311,7 +311,7 @@ private fun FilterDetailsPreview() {
 
 @Composable
 private fun FilterButton(
-    filter: ScanResultFilter,
+    filter: Filter,
     isSelected: Boolean,
     containerColorEnabled: Color = ButtonDefaults.buttonColors().containerColor,
     containerColorDisabled: Color = ButtonDefaults.buttonColors().disabledContainerColor,
@@ -341,10 +341,10 @@ private fun FilterButton(
 
 @Composable
 private fun SortByFilterView(
-    activeFilters: List<ScanResultFilter>,
+    activeFilters: List<Filter>,
     onSortOptionSelected: (FilterEvent) -> Unit
 ) {
-    val currentSortByFilter = activeFilters.filterIsInstance<SortScanResult>()
+    val currentSortByFilter = activeFilters.filterIsInstance<SortBy>()
         .firstOrNull()
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -363,7 +363,7 @@ private fun SortByFilterView(
                             selected = sortType == currentSortByFilter?.sortType,
                             onClick = {
                                 // onClick event.
-                                onSortOptionSelected(OnFilterSelected(SortScanResult(sortType)))
+                                onSortOptionSelected(OnFilterSelected(SortBy(sortType)))
                             },
                             role = Role.RadioButton
                         ),
@@ -396,7 +396,7 @@ private fun SortByFilterView(
 @Composable
 private fun SortByFilterViewPreview() {
     SortByFilterView(
-        activeFilters = listOf(SortScanResult(SortType.RSSI)),
+        activeFilters = listOf(SortBy(SortType.RSSI)),
         onSortOptionSelected = { }
     )
 }

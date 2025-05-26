@@ -14,7 +14,7 @@ data object OnReloadScanResults : UiClickEvent
 sealed interface FilterEvent : UiClickEvent
 
 data class OnFilterSelected(
-    val filter: ScanResultFilter
+    val filter: Filter
 ) : FilterEvent
 
 data object OnFilterReset : FilterEvent
