@@ -31,3 +31,60 @@
 
 package no.nordicsemi.android.common.scanner
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import no.nordicsemi.android.common.scanner.view.ScannerAppBar
+import no.nordicsemi.android.common.scanner.view.ScannerView
+import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
+import kotlin.uuid.ExperimentalUuidApi
+
+@OptIn(ExperimentalUuidApi::class)
+@Composable
+fun ScannerScreen(
+    title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
+    scannerConfig: ScannerConfig,
+    cancellable: Boolean,
+    onResultSelected: (ScannerScreenResult) -> Unit,
+) {
+    val viewModel = hiltViewModel<ScannerViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uuid = when (val data = scannerConfig.scanWithServiceUuid) {
+        ScanWithServiceUuid.None -> null
+        is ScanWithServiceUuid.Specific -> data.serviceUuid
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        if (cancellable) {
+            ScannerAppBar(
+                title = title,
+                showProgress = uiState.isScanning,
+                scanningState = uiState.scanningState,
+                filterConfig = scannerConfig.filterConfig,
+                onFilterSelected = viewModel::onClick,
+            ) { onResultSelected(ScanningCancelled) }
+        } else {
+            ScannerAppBar(
+                title = title,
+                showProgress = uiState.isScanning,
+                scanningState = uiState.scanningState,
+                filterConfig = scannerConfig.filterConfig,
+                onFilterSelected = viewModel::onClick,
+            )
+        }
+
+        ScannerView(
+            uiState = uiState,
+            startScanning = { viewModel.startScanning(uuid) },
+            onEvent = viewModel::onClick,
+        ) { onResultSelected(DeviceSelected(it)) }
+    }
+}

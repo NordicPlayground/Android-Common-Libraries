@@ -1,9 +1,9 @@
-package no.nordicsemi.android.common.scanner.data
+package no.nordicsemi.android.common.scanner
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import no.nordicsemi.android.common.scanner.data.FilterConfig.Disabled
-import no.nordicsemi.android.common.scanner.data.FilterConfig.Enabled
+import no.nordicsemi.android.common.scanner.FilterConfig.Disabled
+import no.nordicsemi.android.common.scanner.FilterConfig.Enabled
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -13,7 +13,7 @@ import kotlin.uuid.Uuid
  * @param scanWithServiceUuid The service UUID to filter the scan results, or None if no specific UUID is used.
  */
 @Parcelize
-data class ScannerDestinationParams(
+data class ScannerConfig(
     val filterConfig: FilterConfig,
     val scanWithServiceUuid: ScanWithServiceUuid
 ): Parcelable

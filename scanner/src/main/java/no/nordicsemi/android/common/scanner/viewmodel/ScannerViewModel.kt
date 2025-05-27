@@ -56,7 +56,7 @@ import no.nordicsemi.android.common.scanner.data.OnlyNearby
 import no.nordicsemi.android.common.scanner.data.OnlyWithNames
 import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.data.SortType
-import no.nordicsemi.android.common.scanner.data.UiClickEvent
+import no.nordicsemi.android.common.scanner.data.UiEvent
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.client.android.exception.ScanningFailedToStartException
@@ -222,7 +222,7 @@ internal class ScannerViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    fun onClick(event: UiClickEvent) {
+    fun onClick(event: UiEvent) {
         when (event) {
             OnReloadScanResults -> {
                 _uiState.update {

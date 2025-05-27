@@ -72,9 +72,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
-import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
-import no.nordicsemi.android.common.scanner.data.UiClickEvent
+import no.nordicsemi.android.common.scanner.data.UiEvent
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerUiState
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
@@ -88,11 +87,9 @@ import kotlin.uuid.Uuid
 @Composable
 internal fun ScannerView(
     uuid: Uuid? = null,
-    title: String = "Scanner",
     uiState: ScannerUiState,
-    filterConfig: FilterConfig,
     startScanning: (Uuid?) -> Unit,
-    onEvent: (UiClickEvent) -> Unit,
+    onEvent: (UiEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -101,17 +98,6 @@ internal fun ScannerView(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        ScannerAppBar(
-            title = { Text(text = title) },
-            showProgress = uiState.isScanning,
-            scanningState = uiState.scanningState,
-            filterConfig = filterConfig,
-            onFilterSelected = { onEvent(it) },
-            onNavigationButtonClick = {
-                // TODO: Handle back navigation.
-            }
-        )
-
         RequireBluetooth {
             RequireLocation { isLocationRequiredAndDisabled ->
                 // Both Bluetooth and Location permissions are granted.
