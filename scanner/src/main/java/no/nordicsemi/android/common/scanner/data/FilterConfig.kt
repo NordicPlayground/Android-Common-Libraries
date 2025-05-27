@@ -39,7 +39,17 @@ internal data class FilterSettings(
     val showBonded: Boolean = false,
     val showSortByOption: Boolean = false,
     val showGroupByDropdown: Boolean = false,
-)
+) {
+    companion object {
+        val Default = FilterSettings(
+            showNearby = true,
+            showNonEmptyName = true,
+            showBonded = true,
+            showSortByOption = true,
+            showGroupByDropdown = true
+        )
+    }
+}
 
 /**
  * Represents the configuration for scanning with a specific service UUID.

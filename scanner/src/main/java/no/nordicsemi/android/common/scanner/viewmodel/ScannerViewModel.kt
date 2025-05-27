@@ -107,15 +107,7 @@ internal class ScannerViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 filterConfig = FilterConfig(
-                    FilterSettingsState.Enabled(
-                        FilterSettings(
-                            showNearby = true,
-                            showNonEmptyName = true,
-                            showBonded = true,
-                            showSortByOption = true,
-                            showGroupByDropdown = true,
-                        )
-                    ),
+                    FilterSettingsState.Enabled(FilterSettings.Default),
                     ScanWithServiceUuid.Specific(CHANNEL_SOUND_SERVICE_UUID.toKotlinUuid())
                 )
             )
