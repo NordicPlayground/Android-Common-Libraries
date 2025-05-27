@@ -12,7 +12,7 @@ import kotlin.uuid.Uuid
  * @param filterConfig The current state of the filter settings, which can be enabled or disabled.
  * @param scanWithServiceUuid The service UUID to filter the scan results, or None if no specific UUID is used.
  */
-@Parcelize
+@Parcelize // TODO: Remove the Parcelable annotation when scanner destination is removed.
 data class ScannerConfig(
     val filterConfig: FilterConfig,
     val scanWithServiceUuid: ScanWithServiceUuid
