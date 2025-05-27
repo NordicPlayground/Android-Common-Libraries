@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":navigation"))
+    implementation(project(":navigation"))// TODO: Remove this dependency when the scanner destination file is removed.
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
     implementation("no.nordicsemi.kotlin.ble:client-android")

@@ -31,39 +31,34 @@
 
 package no.nordicsemi.android.common.scanner
 
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
-import no.nordicsemi.android.common.scanner.data.ScannerDestinationParams
-import no.nordicsemi.android.common.scanner.data.ScanWithServiceUuid
-import no.nordicsemi.android.common.scanner.view.ScannerView
-import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
-import kotlin.uuid.ExperimentalUuidApi
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
-// TODO: Remove the navigation style and make it independent.
-val ScannerDestinationId = createDestination<ScannerDestinationParams, Unit>("ble-scanner-destination")
+// TODO: This is a testing of scanner page. This should be removed in the final version.
+//  Don't forget to remove the navigation dependency.
+val ScannerDestinationId = createDestination<ScannerConfig, ScanResult>("ble-scanner-destination")
 
-@OptIn(ExperimentalUuidApi::class)
 val ScannerDestination = defineDestination(ScannerDestinationId) {
-    val viewModel = hiltViewModel<ScannerViewModel>()
     val navigationVM = hiltViewModel<SimpleNavigationViewModel>()
     val scannerDestinationParams = navigationVM.parameterOf(ScannerDestinationId)
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uuid = when (val data = scannerDestinationParams.scanWithServiceUuid) {
-        ScanWithServiceUuid.None -> null
-        is ScanWithServiceUuid.Specific -> data.serviceUuid
-    }
-    val filterConfig = scannerDestinationParams.filterConfig
 
-    ScannerView(
-        uiState = uiState,
-        filterConfig = filterConfig,
-        startScanning = { viewModel.startScanning(uuid) },
-        onEvent = viewModel::onClick,
+    ScannerScreen(
+        scannerConfig = scannerDestinationParams,
+        cancellable = true
     ) {
-        println("AAA $it")
+        when (it) {
+            is DeviceSelected -> {
+                navigationVM.navigateUpWithResult(ScannerDestinationId, it.scanResult)
+                println("Device selected: ${it.scanResult}")
+            }
+
+            ScanningCancelled -> {
+                navigationVM.navigateUp()
+                println("Scanning cancelled")
+            }
+        }
     }
 }
