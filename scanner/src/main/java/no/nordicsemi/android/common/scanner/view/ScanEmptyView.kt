@@ -43,11 +43,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.core.parseBold
 import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
@@ -78,6 +82,7 @@ internal fun ScanEmptyView(locationRequiredAndDisabled: Boolean) {
         }
     }
 }
+
 private fun openLocationSettings(context: Context) {
     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -98,4 +103,24 @@ private fun ScanEmptyViewPreview() {
     ScanEmptyView(
         locationRequiredAndDisabled = false,
     )
+}
+
+/**
+ * Parses the string and makes the text between `<b>` and `</b>` bold using [AnnotatedString].
+ */
+internal fun String.parseBold(): AnnotatedString {
+    val parts = this.split("<b>", "</b>")
+    return buildAnnotatedString {
+        var bold = false
+        for (part in parts) {
+            if (bold) {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(part)
+                }
+            } else {
+                append(part)
+            }
+            bold = !bold
+        }
+    }
 }

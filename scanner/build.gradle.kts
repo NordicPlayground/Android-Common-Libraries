@@ -53,12 +53,10 @@ android {
 }
 
 dependencies {
-    implementation("no.nordicsemi.kotlin.ble:client-android")
+    implementation(project(":navigation"))
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
-    implementation(project(":core")) // todo: remove this dependency before release.
-    implementation(project(":theme"))
+    implementation("no.nordicsemi.kotlin.ble:client-android")
     implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(project(":navigation")) // todo: remove this dependency before release.
 
 }
