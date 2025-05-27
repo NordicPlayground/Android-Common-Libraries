@@ -34,27 +34,33 @@ package no.nordicsemi.android.common.scanner
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.navigation.createSimpleDestination
+import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
+import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
+import no.nordicsemi.android.common.scanner.data.ScannerDestinationParams
 import no.nordicsemi.android.common.scanner.data.ScanWithServiceUuid
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import kotlin.uuid.ExperimentalUuidApi
 
 // TODO: Remove the navigation style and make it independent.
-val ScannerDestinationId = createSimpleDestination("ble-scanner-destination")
+val ScannerDestinationId = createDestination<ScannerDestinationParams, Unit>("ble-scanner-destination")
 
 @OptIn(ExperimentalUuidApi::class)
 val ScannerDestination = defineDestination(ScannerDestinationId) {
     val viewModel = hiltViewModel<ScannerViewModel>()
+    val navigationVM = hiltViewModel<SimpleNavigationViewModel>()
+    val scannerDestinationParams = navigationVM.parameterOf(ScannerDestinationId)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uuid = when (val data = uiState.filterConfig.scanWithServiceUuid) {
+    val uuid = when (val data = scannerDestinationParams.scanWithServiceUuid) {
         ScanWithServiceUuid.None -> null
         is ScanWithServiceUuid.Specific -> data.serviceUuid
     }
+    val filterConfig = scannerDestinationParams.filterConfig
 
     ScannerView(
         uiState = uiState,
+        filterConfig = filterConfig,
         startScanning = { viewModel.startScanning(uuid) },
         onEvent = viewModel::onClick,
     ) {

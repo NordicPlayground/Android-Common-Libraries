@@ -297,12 +297,7 @@ private fun FilterButtonPreview() {
 @Composable
 private fun FilterDetailsPreview() {
     FilterContent(
-        filterSettings = FilterSettings(
-            showNonEmptyName = true,
-            showBonded = true,
-            showNearby = true,
-            showGroupByDropdown = true
-        ),
+        filterSettings = FilterSettings.Default,
         scannedResults = emptyList(),
         activeFilters = emptyList(),
         onFilterSelected = {}

@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
+import no.nordicsemi.android.common.scanner.data.FilterConfig
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.UiClickEvent
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
@@ -89,6 +90,7 @@ internal fun ScannerView(
     uuid: Uuid? = null,
     title: String = "Scanner",
     uiState: ScannerUiState,
+    filterConfig: FilterConfig,
     startScanning: (Uuid?) -> Unit,
     onEvent: (UiClickEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
@@ -103,7 +105,7 @@ internal fun ScannerView(
             title = { Text(text = title) },
             showProgress = uiState.isScanning,
             scanningState = uiState.scanningState,
-            filterConfig = uiState.filterConfig.filterSettings,
+            filterConfig = filterConfig,
             onFilterSelected = { onEvent(it) },
             onNavigationButtonClick = {
                 // TODO: Handle back navigation.

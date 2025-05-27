@@ -1,28 +1,32 @@
 package no.nordicsemi.android.common.scanner.data
 
-import no.nordicsemi.android.common.scanner.data.FilterSettingsState.Disabled
-import no.nordicsemi.android.common.scanner.data.FilterSettingsState.Enabled
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import no.nordicsemi.android.common.scanner.data.FilterConfig.Disabled
+import no.nordicsemi.android.common.scanner.data.FilterConfig.Enabled
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 /**
  * Configuration for the filter settings in the scanner.
- * @param filterSettings The current state of the filter settings, which can be enabled or disabled.
+ * @param filterConfig The current state of the filter settings, which can be enabled or disabled.
  * @param scanWithServiceUuid The service UUID to filter the scan results, or None if no specific UUID is used.
  */
-internal data class FilterConfig(
-    val filterSettings: FilterSettingsState = Disabled,
-    val scanWithServiceUuid: ScanWithServiceUuid = ScanWithServiceUuid.None
-)
+@Parcelize
+data class ScannerDestinationParams(
+    val filterConfig: FilterConfig,
+    val scanWithServiceUuid: ScanWithServiceUuid
+): Parcelable
 
 /**
  * Represents the state of the filter settings in the scanner.
  * @property Disabled Indicates that the filter settings are disabled.
  * @property Enabled Contains the filter settings when they are enabled.
  */
-internal sealed class FilterSettingsState {
-    data object Disabled : FilterSettingsState()
-    data class Enabled(val filter: FilterSettings) : FilterSettingsState()
+@Parcelize
+sealed class FilterConfig: Parcelable  {
+    data object Disabled : FilterConfig()
+    data class Enabled(val filter: FilterSettings) : FilterConfig()
 }
 
 /**
@@ -33,13 +37,14 @@ internal sealed class FilterSettingsState {
  * @property showSortByOption Indicates whether to show the sort by option.
  * @property showGroupByDropdown Indicates whether to show the group by dropdown.
  */
-internal data class FilterSettings(
-    val showNearby: Boolean = false,
-    val showNonEmptyName: Boolean = false,
-    val showBonded: Boolean = false,
-    val showSortByOption: Boolean = false,
-    val showGroupByDropdown: Boolean = false,
-) {
+@Parcelize
+data class FilterSettings(
+    val showNearby: Boolean,
+    val showNonEmptyName: Boolean,
+    val showBonded: Boolean,
+    val showSortByOption: Boolean,
+    val showGroupByDropdown: Boolean,
+): Parcelable  {
     companion object {
         val Default = FilterSettings(
             showNearby = true,
@@ -56,7 +61,8 @@ internal data class FilterSettings(
  * This can either be set to None, indicating no specific UUID is used,
  * or to a Specific UUID, which filters the scan results based on the provided service UUID.
  */
-internal sealed class ScanWithServiceUuid {
+@Parcelize
+sealed class ScanWithServiceUuid: Parcelable  {
     data object None : ScanWithServiceUuid()
 
     @OptIn(ExperimentalUuidApi::class)
