@@ -1,54 +1,124 @@
 package no.nordicsemi.android.common.scanner.data
 
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import no.nordicsemi.kotlin.ble.core.BondState
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-sealed interface Filter
+sealed class Filter(
+    open val title: String,
+    open val isInitiallySelected: Boolean,
+    open val filter: (ScanResult) -> Boolean
+)
 
 /**
  * Sort the scan result.
  * @param sortType The type of sorting to be applied.
  */
 data class SortBy(
-    val sortType: SortType
-) : Filter
+    val sortType: SortType,
+    override val isInitiallySelected: Boolean = true,
+    override val filter: (scanResult: ScanResult) -> Boolean = { true },
+    override val title: String = when (sortType) {
+        SortType.RSSI -> "RSSI"
+        SortType.ALPHABETICAL -> "Alphabetical"
+    },
+) : Filter(
+    title = title,
+    isInitiallySelected = isInitiallySelected,
+    filter = filter
+)
 
 /**
  * Filter that allows scan results with no empty names.
  */
-data object OnlyWithNames : Filter
+data class OnlyWithNames(
+    override val title: String = ONLY_WITH_NAMES,
+    override val isInitiallySelected: Boolean = true,
+) : Filter(
+    title = title,
+    isInitiallySelected = isInitiallySelected,
+    filter = { scanResult ->
+        scanResult.peripheral.name?.isNotEmpty() == true
+    }
+)
 
 /**
  * Group scan results by name.
  */
 data class GroupByName(
     val name: String,
-    val items: List<ScanResult>
-) : Filter
+    val items: List<ScanResult>,
+    override val isInitiallySelected: Boolean = true,
+    override val title: String = GROUP_BY_NAME,
+) : Filter(
+    title = title,
+    isInitiallySelected = isInitiallySelected,
+    filter = { scanResult ->
+        scanResult.peripheral.name == name
+    }
+)
 
 /**
  * Filter bonded devices.
  * isBonded is true if the device is bonded, false otherwise.
  */
-data object OnlyBonded : Filter
+data class OnlyBonded(
+    override val title: String = ONLY_BONDED,
+    override val isInitiallySelected: Boolean = true,
+) : Filter(
+    title = title,
+    isInitiallySelected = isInitiallySelected,
+    filter = { scanResult ->
+        scanResult.peripheral.bondState.value == BondState.BONDED
+    }
+)
 
 /**
  * Filter nearby devices based on RSSI value. It will allow devices with RSSI value greater
  * or equal to  the -50 dBm.
  */
-data object OnlyNearby : Filter
-
-fun Filter.toDisplayTitle(): String {
-    return when (this) {
-        is OnlyWithNames -> "Name"
-        is GroupByName -> "Group by name"
-        is OnlyBonded -> "Bonded"
-        is OnlyNearby -> "Nearby"
-
-        is SortBy -> {
-            when (sortType) {
-                SortType.RSSI -> "RSSI"
-                SortType.ALPHABETICAL -> "Alphabetical"
-            }
-        }
+data class OnlyNearby(
+    val rssi: Int = -50, // Default RSSI value to filter nearby devices
+    override val title: String = "Nearby",
+    override val isInitiallySelected: Boolean = true,
+) : Filter(
+    title = title,
+    isInitiallySelected = isInitiallySelected,
+    filter = { scanResult ->
+        scanResult.rssi >= rssi
     }
-}
+)
+
+@OptIn(ExperimentalUuidApi::class)
+data class WithServiceUuid(
+    val uuid: Uuid,
+    override val title: String,
+    override val isInitiallySelected: Boolean = true,
+) : Filter(
+    title = title,
+    isInitiallySelected = isInitiallySelected,
+    filter = { scanResult ->
+        scanResult.advertisingData.serviceUuids.contains(uuid)
+    }
+)
+
+/**
+ * Custom filter.
+ *
+ * The filter shows only devices that match the given predicate.
+ */
+data class CustomFilter(
+    override val title: String,
+    override val isInitiallySelected: Boolean,
+    override val filter: (scanResult: ScanResult) -> Boolean,
+) : Filter(title, isInitiallySelected, filter)
+
+// TODO: Remove this later.
+const val SORT_By = "Sort by"
+const val ONLY_WITH_NAMES = "Names"
+const val GROUP_BY_NAME = "Group by name"
+const val ONLY_BONDED = "Bonded"
+const val ONLY_NEARBY = "Nearby"
+const val WITH_SERVICE_UUID = "With service UUID"
+const val CUSTOM_FILTER = "Custom filter"

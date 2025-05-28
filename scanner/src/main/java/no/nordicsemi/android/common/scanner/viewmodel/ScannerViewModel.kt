@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import no.nordicsemi.android.common.scanner.data.CustomFilter
 import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
@@ -57,10 +58,10 @@ import no.nordicsemi.android.common.scanner.data.OnlyWithNames
 import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.data.UiEvent
+import no.nordicsemi.android.common.scanner.data.WithServiceUuid
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.client.android.exception.ScanningFailedToStartException
-import no.nordicsemi.kotlin.ble.core.BondState
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
@@ -173,52 +174,21 @@ internal class ScannerViewModel @Inject constructor(
 
     private fun List<ScanResult>.applyFilter(filters: List<Filter>): List<ScanResult> {
         if (filters.isEmpty()) return this
-        // Iterate through the filters and apply them to the scan results.
-        return filters.fold(this) { results, filter ->
-            when (filter) {
-                OnlyBonded -> {
-                    // Filter the scan results based on the bonded state.
-                    results.filter {
-                        it.peripheral.bondState.value == BondState.BONDED
-                    }
-                }
+        val sortBy = filters.filterIsInstance<SortBy>().firstOrNull()
 
-                is GroupByName -> {
-                    // Filter the scan results based on the name.
-                    results.filter {
-                        it.peripheral.name == filter.name
-                    }
-                }
-
-                OnlyNearby -> {
-                    // Filter the scan results based on the RSSI value.
-                    results.filter {
-                        it.rssi >= FILTER_RSSI
-                    }
-                }
-
-                OnlyWithNames -> {
-                    // Filter the scan results based on the non-empty name.
-                    results.filter {
-                        it.peripheral.name != null && it.peripheral.name?.isNotEmpty() == true
-                    }
-                }
-
-                is SortBy -> {
-                    when (filter.sortType) {
-                        SortType.RSSI -> {
-                            results.sortedByDescending { it.rssi }
-                        }
-
-                        SortType.ALPHABETICAL -> {
-                            results.sortedWith(
-                                compareBy(nullsLast()) { it.peripheral.name }
-                            )
-                        }
-                    }
-                }
-            }
+        // Apply all filters to all options except SortBy
+        val filtered = this.filter { scanResult ->
+            filters.filterNot { it is SortBy }.all { it.filter(scanResult) }
         }.distinct()
+
+        return when (sortBy?.sortType) {
+            SortType.RSSI -> filtered.sortedByDescending { it.rssi }
+            SortType.ALPHABETICAL -> filtered.sortedWith(
+                compareBy(nullsLast()) { it.peripheral.name }
+            )
+
+            null -> filtered
+        }
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -259,9 +229,12 @@ internal class ScannerViewModel @Inject constructor(
                 // Update the filter list with the selected filter.
                 val currentFilter = _scanResultFilter.value.toMutableList()
                 when (event.filter) {
-                    OnlyNearby,
-                    OnlyWithNames,
-                    OnlyBonded -> {
+                    is CustomFilter,
+                    is OnlyBonded,
+                    is OnlyNearby,
+                    is OnlyWithNames,
+                        // todo: remove the service uuid from here later. It should go on the scan result.
+                    is WithServiceUuid -> {
                         currentFilter.addOrRemove(event.filter)
                         _scanResultFilter.update {
                             currentFilter

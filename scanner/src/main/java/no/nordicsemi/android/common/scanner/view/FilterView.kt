@@ -45,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.FilterEvent
-import no.nordicsemi.android.common.scanner.FilterSettings
 import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
@@ -54,13 +53,11 @@ import no.nordicsemi.android.common.scanner.data.OnlyNearby
 import no.nordicsemi.android.common.scanner.data.OnlyWithNames
 import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.data.SortType
-import no.nordicsemi.android.common.scanner.data.toDisplayTitle
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FilterDialog(
-    filterSettings: FilterSettings,
     scannedResults: List<ScanResult>,
     activeFilters: List<Filter>,
     onDismissRequest: () -> Unit,
@@ -88,7 +85,6 @@ internal fun FilterDialog(
         }
     ) {
         FilterContent(
-            filterSettings = filterSettings,
             scannedResults = scannedResults,
             activeFilters
         ) {
@@ -99,7 +95,6 @@ internal fun FilterDialog(
 
 @Composable
 private fun FilterContent(
-    filterSettings: FilterSettings,
     scannedResults: List<ScanResult>,
     activeFilters: List<Filter>,
     onFilterSelected: (FilterEvent) -> Unit,
@@ -123,41 +118,34 @@ private fun FilterContent(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (filterSettings.showNearby)
-                FilterButton(
-                    filter = OnlyNearby,
-                    isSelected = activeFilters.contains(OnlyNearby),
-                    onClick = { onFilterSelected(OnFilterSelected(OnlyNearby)) }
-                )
-            if (filterSettings.showNonEmptyName)
-                FilterButton(
-                    filter = OnlyWithNames,
-                    isSelected = activeFilters.contains(OnlyWithNames),
-                    onClick = { onFilterSelected(OnFilterSelected(OnlyWithNames)) }
-                )
-            if (filterSettings.showBonded)
-                FilterButton(
-                    filter = OnlyBonded,
-                    isSelected = activeFilters.contains(OnlyBonded),
-                    onClick = { onFilterSelected(OnFilterSelected(OnlyBonded)) }
-                )
-        }
-
-        if (filterSettings.showSortByOption) {
-            SortByFilterView(
-                activeFilters = activeFilters,
-                onSortOptionSelected = onFilterSelected,
+            FilterButton(
+                filter = OnlyNearby(),
+                isSelected = activeFilters.contains(OnlyNearby()),
+                onClick = { onFilterSelected(OnFilterSelected(OnlyNearby())) }
+            )
+            FilterButton(
+                filter = OnlyWithNames(),
+                isSelected = activeFilters.contains(OnlyWithNames()),
+                onClick = { onFilterSelected(OnFilterSelected(OnlyWithNames())) }
+            )
+            FilterButton(
+                filter = OnlyBonded(),
+                isSelected = activeFilters.contains(OnlyBonded()),
+                onClick = { onFilterSelected(OnFilterSelected(OnlyBonded())) }
             )
         }
 
-        if (filterSettings.showGroupByDropdown && scannedResults.isNotEmpty()) {
-            GroupByNameDropdown(
-                dropdownLabel = dropdownLabel,
-                onLabelChange = { dropdownLabel = it },
-                scanResults = scannedResults,
-                onItemSelected = { onFilterSelected(it) },
-            )
-        }
+        SortByFilterView(
+            activeFilters = activeFilters,
+            onSortOptionSelected = onFilterSelected,
+        )
+
+        GroupByNameDropdown(
+            dropdownLabel = dropdownLabel,
+            onLabelChange = { dropdownLabel = it },
+            scanResults = scannedResults,
+            onItemSelected = { onFilterSelected(it) },
+        )
     }
 }
 
@@ -287,7 +275,7 @@ private fun FilterTopViewPreview() {
 @Composable
 private fun FilterButtonPreview() {
     FilterButton(
-        filter = OnlyNearby,
+        filter = OnlyNearby(),
         isSelected = true,
         onClick = { }
     )
@@ -297,7 +285,6 @@ private fun FilterButtonPreview() {
 @Composable
 private fun FilterDetailsPreview() {
     FilterContent(
-        filterSettings = FilterSettings.Default,
         scannedResults = emptyList(),
         activeFilters = emptyList(),
         onFilterSelected = {}
@@ -329,7 +316,7 @@ private fun FilterButton(
                 imageVector = if (isSelected) Icons.Default.Close else Icons.Default.Done,
                 contentDescription = null,
             )
-            Text(filter.toDisplayTitle())
+            Text(filter.title)
         }
     }
 }

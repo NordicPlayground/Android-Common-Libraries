@@ -43,10 +43,8 @@ val ScannerDestinationId = createDestination<ScannerConfig, ScanResult>("ble-sca
 
 val ScannerDestination = defineDestination(ScannerDestinationId) {
     val navigationVM = hiltViewModel<SimpleNavigationViewModel>()
-    val scannerDestinationParams = navigationVM.parameterOf(ScannerDestinationId)
 
     ScannerScreen(
-        scannerConfig = scannerDestinationParams,
         cancellable = true
     ) {
         when (it) {

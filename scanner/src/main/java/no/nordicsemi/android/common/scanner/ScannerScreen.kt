@@ -49,16 +49,11 @@ import kotlin.uuid.ExperimentalUuidApi
 @Composable
 fun ScannerScreen(
     title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
-    scannerConfig: ScannerConfig,
     cancellable: Boolean,
     onResultSelected: (ScannerScreenResult) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uuid = when (val data = scannerConfig.scanWithServiceUuid) {
-        ScanWithServiceUuid.None -> null
-        is ScanWithServiceUuid.Specific -> data.serviceUuid
-    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -68,7 +63,6 @@ fun ScannerScreen(
                 title = title,
                 showProgress = uiState.isScanning,
                 scanningState = uiState.scanningState,
-                filterConfig = scannerConfig.filterConfig,
                 onFilterSelected = viewModel::onClick,
             ) { onResultSelected(ScanningCancelled) }
         } else {
@@ -76,14 +70,13 @@ fun ScannerScreen(
                 title = title,
                 showProgress = uiState.isScanning,
                 scanningState = uiState.scanningState,
-                filterConfig = scannerConfig.filterConfig,
                 onFilterSelected = viewModel::onClick,
             )
         }
 
         ScannerView(
             uiState = uiState,
-            startScanning = { viewModel.startScanning(uuid) },
+            startScanning = { viewModel.startScanning(null) },
             onEvent = viewModel::onClick,
         ) { onResultSelected(DeviceSelected(it)) }
     }

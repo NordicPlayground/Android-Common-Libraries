@@ -54,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.scanner.FilterConfig
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.ui.view.NordicAppBar
@@ -64,7 +63,6 @@ import no.nordicsemi.android.common.ui.view.NordicAppBar
 internal fun ScannerAppBar(
     title: @Composable () -> Unit,
     showProgress: Boolean = false,
-    filterConfig: FilterConfig,
     scanningState: ScanningState,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onFilterSelected: (FilterEvent) -> Unit,
@@ -89,25 +87,22 @@ internal fun ScannerAppBar(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                if (filterConfig is FilterConfig.Enabled) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable {
-                                expandFilterBottomSheet = true
-                            }
-                            .padding(8.dp)
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable {
+                            expandFilterBottomSheet = true
+                        }
+                        .padding(8.dp)
+                )
             }
         },
     )
 
     if (expandFilterBottomSheet) {
         FilterDialog(
-            filterSettings = (filterConfig as FilterConfig.Enabled).filter,
             scannedResults = (scanningState as ScanningState.DevicesDiscovered).result,
             activeFilters = scanningState.scanFilter,
             onDismissRequest = { expandFilterBottomSheet = false },
