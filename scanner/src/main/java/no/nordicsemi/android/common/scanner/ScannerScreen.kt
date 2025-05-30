@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
@@ -50,10 +51,16 @@ import kotlin.uuid.ExperimentalUuidApi
 fun ScannerScreen(
     title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
     cancellable: Boolean,
+    filters: List<Filter> = emptyList(),
     onResultSelected: (ScannerScreenResult) -> Unit,
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Have the filters to be passed to the view model.
+    if (filters.isNotEmpty()) {
+        viewModel.setFilters(filters)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()

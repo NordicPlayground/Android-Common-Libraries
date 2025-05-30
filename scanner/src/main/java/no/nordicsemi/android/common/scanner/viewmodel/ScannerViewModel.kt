@@ -77,6 +77,8 @@ internal data class ScannerUiState(
     val isScanning: Boolean = false,
     val scanningState: ScanningState = ScanningState.Loading,
     val isGroupByNameEnabled: Boolean = false,
+    val scanFilter: List<Filter> = emptyList(),// The current scan filter applied to the scan results.
+    // todo: Remove the scanFilter from ScanningState and move it to ScannerUiState
 )
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -104,7 +106,8 @@ internal class ScannerViewModel @Inject constructor(
                     scanningState = ScanningState.DevicesDiscovered(
                         result = filteredResults,
                         scanFilter = filters,
-                    )
+                    ),
+                    scanFilter = filters,
                 )
             }
         }.launchIn(viewModelScope)
@@ -261,6 +264,20 @@ internal class ScannerViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Sets the filters for the scanner.
+     */
+    fun setFilters(filters: List<Filter>) {
+        _uiState.update {
+            it.copy(
+                scanningState = ScanningState.DevicesDiscovered(
+                    result = emptyList(),
+                    scanFilter = filters
+                )
+            )
         }
     }
 }
