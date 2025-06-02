@@ -73,12 +73,10 @@ import kotlin.uuid.Uuid
  * @param isScanning True if the scanner is scanning.
  * @param scanningState The current scanning state.
  */
-internal data class ScannerUiState(
+internal data class UiState(
     val isScanning: Boolean = false,
     val scanningState: ScanningState = ScanningState.Loading,
     val isGroupByNameEnabled: Boolean = false,
-    val scanFilter: List<Filter> = emptyList(),// The current scan filter applied to the scan results.
-    // todo: Remove the scanFilter from ScanningState and move it to ScannerUiState
 )
 
 private const val FILTER_RSSI = -50 // [dBm]
@@ -88,9 +86,10 @@ private const val FILTER_RSSI = -50 // [dBm]
 internal class ScannerViewModel @Inject constructor(
     private val centralManager: CentralManager,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(ScannerUiState())
+    private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
     private var job: Job? = null
+    private var uuid: Uuid? = null
 
     private val _scanResultFilter = MutableStateFlow<List<Filter>>(emptyList())
 
@@ -105,9 +104,8 @@ internal class ScannerViewModel @Inject constructor(
                 it.copy(
                     scanningState = ScanningState.DevicesDiscovered(
                         result = filteredResults,
-                        scanFilter = filters,
-                    ),
-                    scanFilter = filters,
+                        filters = filters,
+                    )
                 )
             }
         }.launchIn(viewModelScope)
@@ -115,7 +113,6 @@ internal class ScannerViewModel @Inject constructor(
 
     @OptIn(ExperimentalUuidApi::class)
     fun startScanning(
-        uuid: Uuid? = null,
         scanDuration: Long = 2000L,
     ) {
         job?.cancel()
@@ -129,8 +126,8 @@ internal class ScannerViewModel @Inject constructor(
                         isScanning = true,
                         scanningState = ScanningState.DevicesDiscovered(
                             result = emptyList(),
-                            scanFilter = _scanResultFilter.value,
-                        ),
+                            filters = _scanResultFilter.value
+                        )
                     )
                 }
             }
@@ -151,7 +148,7 @@ internal class ScannerViewModel @Inject constructor(
                         it.copy(
                             scanningState = ScanningState.DevicesDiscovered(
                                 result = result.applyFilter(_scanResultFilter.value),
-                                scanFilter = _scanResultFilter.value,
+                                filters = _scanResultFilter.value
                             )
                         )
                     }
@@ -202,7 +199,7 @@ internal class ScannerViewModel @Inject constructor(
                     it.copy(
                         scanningState = ScanningState.DevicesDiscovered(
                             result = emptyList(),
-                            scanFilter = _scanResultFilter.value
+                            filters = _scanResultFilter.value
                         )
                     )
                 }
@@ -222,7 +219,7 @@ internal class ScannerViewModel @Inject constructor(
                         isGroupByNameEnabled = false,
                         scanningState = ScanningState.DevicesDiscovered(
                             result = originalResults,
-                            scanFilter = _scanResultFilter.value
+                            filters = _scanResultFilter.value
                         )
                     )
                 }
@@ -271,21 +268,27 @@ internal class ScannerViewModel @Inject constructor(
      * Sets the filters for the scanner.
      */
     fun setFilters(filters: List<Filter>) {
-        _uiState.update {
-            it.copy(
-                scanningState = ScanningState.DevicesDiscovered(
-                    result = emptyList(),
-                    scanFilter = filters
-                )
-            )
+        filters.forEach { filter ->
+            when (filter) {
+                // If uuid is set, it will be used to filter the scan results.
+                is WithServiceUuid -> uuid = filter.uuid
+                else -> {
+                    // For other filters, we will add or remove them from the filter list.
+                    val currentFilter = _scanResultFilter.value.toMutableList()
+                    currentFilter.addOrRemove(filter)
+                    _scanResultFilter.update {
+                        currentFilter
+                    }
+                }
+            }
         }
     }
-}
 
-private fun <T> MutableList<T>.addOrRemove(item: T) {
-    if (contains(item)) {
-        remove(item)
-    } else {
-        add(item)
+    private fun <T> MutableList<T>.addOrRemove(item: T) {
+        if (contains(item)) {
+            remove(item)
+        } else {
+            add(item)
+        }
     }
 }

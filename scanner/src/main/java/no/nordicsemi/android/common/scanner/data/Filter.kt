@@ -93,7 +93,7 @@ data class OnlyNearby(
 @OptIn(ExperimentalUuidApi::class)
 data class WithServiceUuid(
     val uuid: Uuid,
-    override val title: String,
+    override val title: String = WITH_SERVICE_UUID,
     override val isInitiallySelected: Boolean = true,
 ) : Filter(
     title = title,

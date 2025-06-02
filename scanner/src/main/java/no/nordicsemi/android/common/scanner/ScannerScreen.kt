@@ -35,18 +35,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
-import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalUuidApi::class)
 @Composable
 fun ScannerScreen(
     title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
@@ -57,8 +55,8 @@ fun ScannerScreen(
     val viewModel = hiltViewModel<ScannerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // Have the filters to be passed to the view model.
-    if (filters.isNotEmpty()) {
+    // If filters to be passed to the view model.
+    LaunchedEffect(filters.isNotEmpty()) {
         viewModel.setFilters(filters)
     }
 
@@ -68,15 +66,13 @@ fun ScannerScreen(
         if (cancellable) {
             ScannerAppBar(
                 title = title,
-                showProgress = uiState.isScanning,
-                scanningState = uiState.scanningState,
+                uiState = uiState,
                 onFilterSelected = viewModel::onClick,
             ) { onResultSelected(ScanningCancelled) }
         } else {
             ScannerAppBar(
                 title = title,
-                showProgress = uiState.isScanning,
-                scanningState = uiState.scanningState,
+                uiState = uiState,
                 onFilterSelected = viewModel::onClick,
             )
         }

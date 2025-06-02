@@ -75,20 +75,18 @@ import no.nordicsemi.android.common.permissions.ble.RequireLocation
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
 import no.nordicsemi.android.common.scanner.data.UiEvent
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
-import no.nordicsemi.android.common.scanner.viewmodel.ScannerUiState
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
+import no.nordicsemi.android.common.scanner.viewmodel.UiState
 import no.nordicsemi.android.common.ui.view.CircularIcon
 import no.nordicsemi.android.common.ui.view.RssiIcon
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
 @Composable
 internal fun ScannerView(
-    uuid: Uuid? = null,
-    uiState: ScannerUiState,
-    startScanning: (Uuid?) -> Unit,
+    uiState: UiState,
+    startScanning: () -> Unit,
     onEvent: (UiEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
 ) {
@@ -104,7 +102,7 @@ internal fun ScannerView(
                 // If the permission is not granted then the scanning will not start.
                 // So to start scanning we need to check if the location permission is granted.
                 LaunchedEffect(isLocationRequiredAndDisabled) {
-                    startScanning(uuid)
+                    startScanning()
                 }
                 Column(modifier = Modifier.fillMaxSize()) {
                     PullToRefreshBox(
@@ -133,7 +131,7 @@ internal fun ScannerView(
 @Composable
 internal fun DeviceListView(
     isLocationRequiredAndDisabled: Boolean,
-    uiState: ScannerUiState,
+    uiState: UiState,
     onClick: (ScanResult) -> Unit,
 ) {
     LazyColumn {

@@ -46,7 +46,7 @@ internal sealed interface ScanningState {
      */
     data class DevicesDiscovered(
         val result: List<ScanResult>,
-        val scanFilter: List<Filter>
+        val filters: List<Filter>
     ) : ScanningState
 
     /** Error state.
