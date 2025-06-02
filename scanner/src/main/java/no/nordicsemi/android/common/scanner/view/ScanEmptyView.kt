@@ -43,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.android.common.ui.view.WarningView
 
 @Composable
@@ -61,14 +63,9 @@ internal fun ScanEmptyView(locationRequiredAndDisabled: Boolean) {
             .fillMaxWidth()
             .padding(16.dp),
         imageVector = Icons.AutoMirrored.Filled.BluetoothSearching,
-        title = "CAN\'T SEE YOUR DEVICE?",
-        hint = "1. Make sure the device is turned on and is connected to a power source." +
-                "\n\n2. Make sure the appropriate firmware and SoftDevice are flashed.\n" +
-                "   " + if (locationRequiredAndDisabled) {
-            "\n\n" + "3. Location is turned off. Most Android phones " +
-                    " require it in order to scan for Bluetooth LE devices. If you are sure your " +
-                    " device is advertising and it doesn\'t show up here, click the button below to " +
-                    " enable Location."
+        title = stringResource(id = R.string.scan_empty_title),
+        hint = stringResource(id = R.string.no_device_guide_info) + if (locationRequiredAndDisabled) {
+            "\n\n" + stringResource(id = R.string.no_device_guide_location_info)
         } else {
             ""
         }.parseBold(),
@@ -77,7 +74,7 @@ internal fun ScanEmptyView(locationRequiredAndDisabled: Boolean) {
         if (locationRequiredAndDisabled) {
             val context = LocalContext.current
             Button(onClick = { openLocationSettings(context) }) {
-                Text(text = "Enable location")
+                Text(text = stringResource(id = R.string.enable_location))
             }
         }
     }

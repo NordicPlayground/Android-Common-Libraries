@@ -1,7 +1,5 @@
 package no.nordicsemi.android.common.scanner.data
 
-import no.nordicsemi.kotlin.ble.client.android.ScanResult
-
 /**
  * Represents the events that can occur in the scanner UI.
  */
