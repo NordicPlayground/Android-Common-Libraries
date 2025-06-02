@@ -253,8 +253,6 @@ private fun DeviceListItem(
     device: ScanResult,
     onClick: (ScanResult) -> Unit
 ) {
-    val manufacturerData = device.advertisingData.manufacturerData
-
     ScanResultInfoRow(
         device = device,
         peripheralIcon = peripheralIcon,
