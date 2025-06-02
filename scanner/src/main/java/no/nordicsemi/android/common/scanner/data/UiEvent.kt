@@ -8,15 +8,6 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 sealed interface UiEvent
 
 /**
- * Event triggered when a scan result (e.g., a Bluetooth device) is selected by the user.
- *
- * @property device The selected scan result.
- */
-data class OnScanResultSelected(
-    val device: ScanResult
-) : UiEvent
-
-/**
  * Event triggered when the user requests to reload or refresh the scan results.
  */
 data object OnReloadScanResults : UiEvent

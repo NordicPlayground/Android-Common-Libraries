@@ -40,9 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.data.GroupByName
@@ -151,7 +153,7 @@ private fun FilterContent(
 
 @Composable
 private fun GroupByNameDropdown(
-    title: String = "Group by display name",
+    title: String = stringResource(id = R.string.group_by_title),
     dropdownLabel: String,
     onLabelChange: (String) -> Unit,
     scanResults: List<ScanResult>,
@@ -171,7 +173,8 @@ private fun GroupByNameDropdown(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(dropdownLabel.takeIf { it.isNotEmpty() } ?: "Select item")
+                    Text(dropdownLabel.takeIf { it.isNotEmpty() }
+                        ?: stringResource(id = R.string.empty_dropdown_label))
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = null
@@ -229,7 +232,7 @@ private fun FilterTopView(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            "Filter results",
+            text = stringResource(id = R.string.filter_title),
             modifier = Modifier
                 .weight(1f)
         )
@@ -254,7 +257,7 @@ private fun FilterTopView(
                     )
 
                     Text(
-                        text = "Clear all",
+                        text = stringResource(id = R.string.clear_all),
                     )
                 }
             }
@@ -332,7 +335,7 @@ private fun SortByFilterView(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         HorizontalDivider()
-        Text("Sort by")
+        Text(text = stringResource(id = R.string.sort_by_title))
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.selectableGroup()

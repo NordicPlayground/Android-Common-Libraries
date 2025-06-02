@@ -82,7 +82,7 @@ import no.nordicsemi.android.common.ui.view.RssiIcon
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.uuid.ExperimentalUuidApi
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ScannerView(
     uiState: UiState,

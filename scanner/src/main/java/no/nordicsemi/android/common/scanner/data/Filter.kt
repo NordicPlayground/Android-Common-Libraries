@@ -7,7 +7,6 @@ import kotlin.uuid.Uuid
 
 sealed class Filter(
     open val title: String,
-    open val isInitiallySelected: Boolean,
     open val filter: (ScanResult) -> Boolean
 )
 
@@ -17,15 +16,13 @@ sealed class Filter(
  */
 data class SortBy(
     val sortType: SortType,
-    override val isInitiallySelected: Boolean = true,
     override val filter: (scanResult: ScanResult) -> Boolean = { true },
     override val title: String = when (sortType) {
-        SortType.RSSI -> "RSSI"
-        SortType.ALPHABETICAL -> "Alphabetical"
+        SortType.RSSI -> RSSI
+        SortType.ALPHABETICAL -> ALPHABETICAL
     },
 ) : Filter(
     title = title,
-    isInitiallySelected = isInitiallySelected,
     filter = filter
 )
 
@@ -34,10 +31,8 @@ data class SortBy(
  */
 data class OnlyWithNames(
     override val title: String = ONLY_WITH_NAMES,
-    override val isInitiallySelected: Boolean = true,
 ) : Filter(
     title = title,
-    isInitiallySelected = isInitiallySelected,
     filter = { scanResult ->
         scanResult.peripheral.name?.isNotEmpty() == true
     }
@@ -49,11 +44,9 @@ data class OnlyWithNames(
 data class GroupByName(
     val name: String,
     val items: List<ScanResult>,
-    override val isInitiallySelected: Boolean = true,
     override val title: String = GROUP_BY_NAME,
 ) : Filter(
     title = title,
-    isInitiallySelected = isInitiallySelected,
     filter = { scanResult ->
         scanResult.peripheral.name == name
     }
@@ -65,10 +58,8 @@ data class GroupByName(
  */
 data class OnlyBonded(
     override val title: String = ONLY_BONDED,
-    override val isInitiallySelected: Boolean = true,
 ) : Filter(
     title = title,
-    isInitiallySelected = isInitiallySelected,
     filter = { scanResult ->
         scanResult.peripheral.bondState.value == BondState.BONDED
     }
@@ -80,11 +71,9 @@ data class OnlyBonded(
  */
 data class OnlyNearby(
     val rssi: Int = -50, // Default RSSI value to filter nearby devices
-    override val title: String = "Nearby",
-    override val isInitiallySelected: Boolean = true,
+    override val title: String = ONLY_NEARBY
 ) : Filter(
     title = title,
-    isInitiallySelected = isInitiallySelected,
     filter = { scanResult ->
         scanResult.rssi >= rssi
     }
@@ -94,10 +83,8 @@ data class OnlyNearby(
 data class WithServiceUuid(
     val uuid: Uuid,
     override val title: String = WITH_SERVICE_UUID,
-    override val isInitiallySelected: Boolean = true,
 ) : Filter(
     title = title,
-    isInitiallySelected = isInitiallySelected,
     filter = { scanResult ->
         scanResult.advertisingData.serviceUuids.contains(uuid)
     }
@@ -110,15 +97,14 @@ data class WithServiceUuid(
  */
 data class CustomFilter(
     override val title: String,
-    override val isInitiallySelected: Boolean,
     override val filter: (scanResult: ScanResult) -> Boolean,
-) : Filter(title, isInitiallySelected, filter)
+) : Filter(title, filter)
 
 // TODO: Remove this later.
-const val SORT_By = "Sort by"
+private const val RSSI = "RSSI"
+const val ALPHABETICAL = "Alphabetical"
 const val ONLY_WITH_NAMES = "Names"
 const val GROUP_BY_NAME = "Group by name"
 const val ONLY_BONDED = "Bonded"
 const val ONLY_NEARBY = "Nearby"
 const val WITH_SERVICE_UUID = "With service UUID"
-const val CUSTOM_FILTER = "Custom filter"

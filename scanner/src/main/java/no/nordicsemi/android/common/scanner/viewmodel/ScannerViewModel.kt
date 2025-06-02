@@ -51,7 +51,6 @@ import no.nordicsemi.android.common.scanner.data.GroupByName
 import no.nordicsemi.android.common.scanner.data.OnFilterReset
 import no.nordicsemi.android.common.scanner.data.OnFilterSelected
 import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
-import no.nordicsemi.android.common.scanner.data.OnScanResultSelected
 import no.nordicsemi.android.common.scanner.data.OnlyBonded
 import no.nordicsemi.android.common.scanner.data.OnlyNearby
 import no.nordicsemi.android.common.scanner.data.OnlyWithNames
@@ -78,8 +77,6 @@ internal data class UiState(
     val scanningState: ScanningState = ScanningState.Loading,
     val isGroupByNameEnabled: Boolean = false,
 )
-
-private const val FILTER_RSSI = -50 // [dBm]
 
 @OptIn(ExperimentalUuidApi::class)
 @HiltViewModel
@@ -191,7 +188,6 @@ internal class ScannerViewModel @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     fun onClick(event: UiEvent) {
         when (event) {
             OnReloadScanResults -> {
@@ -204,11 +200,6 @@ internal class ScannerViewModel @Inject constructor(
                     )
                 }
                 startScanning()
-            }
-
-            is OnScanResultSelected -> {
-                // TODO: Handle the scan result selection.
-                println("Selected scan result: ${event.device}")
             }
 
             OnFilterReset -> {

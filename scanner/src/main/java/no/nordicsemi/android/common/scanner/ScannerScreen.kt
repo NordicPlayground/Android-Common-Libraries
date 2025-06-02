@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.scanner.data.Filter
@@ -79,7 +80,7 @@ fun ScannerScreen(
 
         ScannerView(
             uiState = uiState,
-            startScanning = { viewModel.startScanning(null) },
+            startScanning = viewModel::startScanning,
             onEvent = viewModel::onClick,
         ) { onResultSelected(DeviceSelected(it)) }
     }
