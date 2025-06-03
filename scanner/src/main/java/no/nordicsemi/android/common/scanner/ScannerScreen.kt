@@ -42,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.scanner.data.Filter
+import no.nordicsemi.android.common.scanner.view.DeviceListItem
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel

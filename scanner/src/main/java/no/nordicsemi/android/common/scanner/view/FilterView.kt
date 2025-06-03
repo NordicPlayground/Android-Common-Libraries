@@ -138,6 +138,7 @@ private fun FilterContent(
         }
 
         SortByFilterView(
+            sortByFilters = listOf(SortBy(SortType.RSSI), SortBy(SortType.ALPHABETICAL)),
             activeFilters = activeFilters,
             onSortOptionSelected = onFilterSelected,
         )
@@ -276,16 +277,6 @@ private fun FilterTopViewPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun FilterButtonPreview() {
-    FilterButton(
-        filter = OnlyNearby(),
-        isSelected = true,
-        onClick = { }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
 private fun FilterDetailsPreview() {
     FilterContent(
         scannedResults = emptyList(),
@@ -324,8 +315,19 @@ private fun FilterButton(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+private fun FilterButtonPreview() {
+    FilterButton(
+        filter = OnlyNearby(),
+        isSelected = true,
+        onClick = { }
+    )
+}
+
 @Composable
 private fun SortByFilterView(
+    sortByFilters: List<SortBy>,
     activeFilters: List<Filter>,
     onSortOptionSelected: (FilterEvent) -> Unit
 ) {
@@ -340,16 +342,13 @@ private fun SortByFilterView(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.selectableGroup()
         ) {
-            SortType.entries.forEach { sortType ->
+            sortByFilters.forEach { sortBy ->
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .selectable(
-                            selected = sortType == currentSortByFilter?.sortType,
-                            onClick = {
-                                // onClick event.
-                                onSortOptionSelected(OnFilterSelected(SortBy(sortType)))
-                            },
+                            selected = sortBy.sortType == currentSortByFilter?.sortType,
+                            onClick = { onSortOptionSelected(OnFilterSelected(SortBy(sortBy.sortType))) },
                             role = Role.RadioButton
                         ),
                 ) {
@@ -361,11 +360,11 @@ private fun SortByFilterView(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = sortType == currentSortByFilter?.sortType,
+                            selected = sortBy.sortType == currentSortByFilter?.sortType,
                             onClick = null
                         )
                         Text(
-                            text = sortType.toString(),
+                            text = sortBy.sortType.toString(),
                         )
 
                     }
@@ -381,6 +380,10 @@ private fun SortByFilterView(
 @Composable
 private fun SortByFilterViewPreview() {
     SortByFilterView(
+        sortByFilters = listOf(
+            SortBy(SortType.RSSI),
+            SortBy(SortType.ALPHABETICAL)
+        ),
         activeFilters = listOf(SortBy(SortType.RSSI)),
         onSortOptionSelected = { }
     )

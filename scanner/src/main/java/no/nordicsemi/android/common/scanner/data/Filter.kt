@@ -1,5 +1,7 @@
 package no.nordicsemi.android.common.scanner.data
 
+import androidx.compose.runtime.Composable
+import no.nordicsemi.android.common.scanner.view.FilterButton
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.core.BondState
 import kotlin.uuid.ExperimentalUuidApi
@@ -7,8 +9,17 @@ import kotlin.uuid.Uuid
 
 sealed class Filter(
     open val title: String,
-    open val filter: (ScanResult) -> Boolean
+    open val filter: (ScanResult) -> Boolean,
+    open val type: FilterUiType,
+    open val content: (@Composable () -> Unit)? = null
 )
+
+enum class FilterUiType {
+    BUTTON,
+    SORT,
+    GROUP,
+    //  CUSTOM
+}
 
 /**
  * Sort the scan result.
@@ -16,14 +27,15 @@ sealed class Filter(
  */
 data class SortBy(
     val sortType: SortType,
-    override val filter: (scanResult: ScanResult) -> Boolean = { true },
-    override val title: String = when (sortType) {
-        SortType.RSSI -> RSSI
-        SortType.ALPHABETICAL -> ALPHABETICAL
-    },
+    override val filter: (ScanResult) -> Boolean = { true },
+    override val title: String = sortType.toString(),
+    override val type: FilterUiType = FilterUiType.SORT,
+    override val content: (@Composable () -> Unit)? = null
 ) : Filter(
     title = title,
-    filter = filter
+    filter = filter,
+    type = type,
+    content = content
 )
 
 /**
@@ -31,10 +43,20 @@ data class SortBy(
  */
 data class OnlyWithNames(
     override val title: String = ONLY_WITH_NAMES,
+    override val type: FilterUiType = FilterUiType.BUTTON,
 ) : Filter(
     title = title,
     filter = { scanResult ->
         scanResult.peripheral.name?.isNotEmpty() == true
+    },
+    type = FilterUiType.BUTTON,
+    content = {
+        FilterButton(
+            filter = OnlyWithNames(),
+            isSelected = false,
+        ) {
+            OnFilterSelected(filter = OnlyWithNames())
+        }
     }
 )
 
@@ -44,9 +66,11 @@ data class OnlyWithNames(
 data class GroupByName(
     val name: String,
     val items: List<ScanResult>,
+    override val type: FilterUiType = FilterUiType.GROUP,
     override val title: String = GROUP_BY_NAME,
 ) : Filter(
     title = title,
+    type = type,
     filter = { scanResult ->
         scanResult.peripheral.name == name
     }
@@ -58,8 +82,10 @@ data class GroupByName(
  */
 data class OnlyBonded(
     override val title: String = ONLY_BONDED,
+    override val type: FilterUiType = FilterUiType.BUTTON,
 ) : Filter(
     title = title,
+    type = type,
     filter = { scanResult ->
         scanResult.peripheral.bondState.value == BondState.BONDED
     }
@@ -71,11 +97,21 @@ data class OnlyBonded(
  */
 data class OnlyNearby(
     val rssi: Int = -50, // Default RSSI value to filter nearby devices
-    override val title: String = ONLY_NEARBY
+    override val title: String = ONLY_NEARBY,
+    override val type: FilterUiType = FilterUiType.BUTTON,
 ) : Filter(
     title = title,
     filter = { scanResult ->
         scanResult.rssi >= rssi
+    },
+    type = FilterUiType.BUTTON,
+    content = {
+        FilterButton(
+            filter = OnlyNearby(rssi),
+            isSelected = false
+        ) {
+            OnFilterSelected(filter = OnlyNearby(rssi))
+        }
     }
 )
 
@@ -83,8 +119,10 @@ data class OnlyNearby(
 data class WithServiceUuid(
     val uuid: Uuid,
     override val title: String = WITH_SERVICE_UUID,
+    override val type: FilterUiType = FilterUiType.BUTTON,
 ) : Filter(
     title = title,
+    type = type,
     filter = { scanResult ->
         scanResult.advertisingData.serviceUuids.contains(uuid)
     }
@@ -98,7 +136,8 @@ data class WithServiceUuid(
 data class CustomFilter(
     override val title: String,
     override val filter: (scanResult: ScanResult) -> Boolean,
-) : Filter(title, filter)
+    override val type: FilterUiType,
+) : Filter(title, filter, type)
 
 // TODO: Remove this later.
 private const val RSSI = "RSSI"
