@@ -89,6 +89,9 @@ internal fun ScannerView(
     startScanning: () -> Unit,
     onEvent: (UiEvent) -> Unit,
     onScanResultSelected: (ScanResult) -> Unit,
+    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
+        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+    }
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val scope = rememberCoroutineScope()
@@ -119,6 +122,7 @@ internal fun ScannerView(
                                 isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
                                 uiState = uiState,
                                 onClick = { onScanResultSelected(it) },
+                                deviceItem = deviceItem
                             )
                         }
                     )
@@ -133,6 +137,9 @@ internal fun DeviceListView(
     isLocationRequiredAndDisabled: Boolean,
     uiState: UiState,
     onClick: (ScanResult) -> Unit,
+    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
+        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+    },
 ) {
     LazyColumn {
         when (uiState.scanningState) {
@@ -152,10 +159,15 @@ internal fun DeviceListView(
                             GroupByNameDeviceList(
                                 devices = uiState.scanningState.result,
                                 onClick = onClick,
+                                deviceItem = deviceItem,
                             )
                         }
                     } else {
-                        DeviceListItems(uiState.scanningState.result, onClick)
+                        DeviceListItems(
+                            uiState.scanningState.result,
+                            onClick,
+                            deviceItem
+                        )
                     }
                 }
             }
@@ -168,6 +180,9 @@ private fun GroupByNameDeviceList(
     devices: List<ScanResult>,
     peripheralIcon: ImageVector = Icons.Default.Bluetooth,
     onClick: (ScanResult) -> Unit,
+    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
+        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+    },
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val expandIcon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
@@ -206,14 +221,16 @@ private fun GroupByNameDeviceList(
                 HorizontalDivider()
                 VerticalBlueBar {
                     devices.forEach { scanResult ->
-                        ScanResultInfoRow(
-                            device = scanResult,
-                            peripheralIcon = null, // No icon for grouped items.
-                            onScanResultSelected = onClick
-                        )
-                        // Add a divider between items if not the last item
-                        if (scanResult != devices.last()) {
-                            HorizontalDivider()
+                        Row(
+                            modifier = Modifier.clickable {
+                                onClick(scanResult)
+                            }
+                        ) {
+                            deviceItem(scanResult)
+                            // Add a divider between items if not the last item
+                            if (scanResult != devices.last()) {
+                                HorizontalDivider()
+                            }
                         }
                     }
                 }
@@ -227,6 +244,9 @@ private fun GroupByNameDeviceList(
 internal fun LazyListScope.DeviceListItems(
     devices: List<ScanResult>,
     onScanResultSelected: (ScanResult) -> Unit,
+    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
+        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+    },
 ) {
     items(devices.size) { index ->
         Box(
@@ -235,10 +255,7 @@ internal fun LazyListScope.DeviceListItems(
                     onScanResultSelected(devices[index])
                 }
         ) {
-            DeviceListItem(
-                device = devices[index],
-                onClick = onScanResultSelected
-            )
+            deviceItem(devices[index])
             if (index < devices.size) {
                 // Add a divider between items
                 HorizontalDivider()
@@ -247,32 +264,17 @@ internal fun LazyListScope.DeviceListItems(
     }
 }
 
-@Composable
-private fun DeviceListItem(
-    peripheralIcon: ImageVector = Icons.Default.Bluetooth,
-    device: ScanResult,
-    onClick: (ScanResult) -> Unit
-) {
-    ScanResultInfoRow(
-        device = device,
-        peripheralIcon = peripheralIcon,
-        onScanResultSelected = onClick,
-    )
-}
-
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-private fun ScanResultInfoRow(
+internal fun DeviceListItem(
     device: ScanResult,
     peripheralIcon: ImageVector? = Icons.Default.Bluetooth,
-    onScanResultSelected: (ScanResult) -> Unit,
 ) {
     val serviceUuids = device.advertisingData.serviceUuids
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clickable { onScanResultSelected(device) },
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {

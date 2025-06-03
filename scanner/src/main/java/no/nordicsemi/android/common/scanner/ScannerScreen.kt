@@ -45,6 +45,7 @@ import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 @Composable
 fun ScannerScreen(
@@ -52,6 +53,9 @@ fun ScannerScreen(
     cancellable: Boolean,
     filters: List<Filter> = emptyList(),
     onResultSelected: (ScannerScreenResult) -> Unit,
+    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
+        DeviceListItem(scanResult)
+    }
 ) {
     val viewModel = hiltViewModel<ScannerViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,6 +86,8 @@ fun ScannerScreen(
             uiState = uiState,
             startScanning = viewModel::startScanning,
             onEvent = viewModel::onClick,
-        ) { onResultSelected(DeviceSelected(it)) }
+            onScanResultSelected = { onResultSelected(DeviceSelected(it)) },
+            deviceItem = deviceItem,
+        )
     }
 }

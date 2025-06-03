@@ -39,24 +39,25 @@ import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
 // TODO: This is a testing of scanner page. This should be removed in the final version.
 //  Don't forget to remove the navigation dependency. Don't forget to remove the parcelable from ScannerConfig file.
-val ScannerDestinationId = createDestination<ScannerConfig, ScanResult>("ble-scanner-destination")
+val ScannerDestinationId = createDestination<Unit, ScanResult>("ble-scanner-destination")
 
 val ScannerDestination = defineDestination(ScannerDestinationId) {
     val navigationVM = hiltViewModel<SimpleNavigationViewModel>()
 
     ScannerScreen(
-        cancellable = true
-    ) {
-        when (it) {
-            is DeviceSelected -> {
-                navigationVM.navigateUpWithResult(ScannerDestinationId, it.scanResult)
-                println("Device selected: ${it.scanResult}")
-            }
+        cancellable = true,
+        onResultSelected = {
+            when (it) {
+                is DeviceSelected -> {
+                    navigationVM.navigateUpWithResult(ScannerDestinationId, it.scanResult)
+                    println("Device selected: ${it.scanResult}")
+                }
 
-            ScanningCancelled -> {
-                navigationVM.navigateUp()
-                println("Scanning cancelled")
+                ScanningCancelled -> {
+                    navigationVM.navigateUp()
+                    println("Scanning cancelled")
+                }
             }
         }
-    }
+    )
 }
