@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.scanner.di
+package no.nordicsemi.android.common.test.main.di
 
 import android.content.Context
 import dagger.Module

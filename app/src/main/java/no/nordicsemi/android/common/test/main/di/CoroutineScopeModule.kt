@@ -1,4 +1,4 @@
-package no.nordicsemi.android.common.scanner.di
+package no.nordicsemi.android.common.test.main.di
 
 import dagger.Module
 import dagger.Provides
