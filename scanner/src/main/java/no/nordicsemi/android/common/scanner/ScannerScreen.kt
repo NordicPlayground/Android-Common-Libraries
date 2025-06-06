@@ -42,16 +42,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.nordicsemi.android.common.scanner.data.Filter
+import no.nordicsemi.android.common.scanner.data.GroupByName
+import no.nordicsemi.android.common.scanner.data.OnlyBonded
+import no.nordicsemi.android.common.scanner.data.OnlyNearby
+import no.nordicsemi.android.common.scanner.data.OnlyWithNames
+import no.nordicsemi.android.common.scanner.data.SortBy
+import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.view.DeviceListItem
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
+val Default_Filters = listOf(
+    OnlyWithNames(),
+    OnlyNearby(),
+    OnlyBonded(),
+    SortBy(SortType.RSSI),
+    SortBy(SortType.ALPHABETICAL),
+    GroupByName(""),
+
+    )
+
 @Composable
 fun ScannerScreen(
     title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
     cancellable: Boolean,
+    availableFilters: List<Filter> = Default_Filters,
     filters: List<Filter> = emptyList(),
     onResultSelected: (ScannerScreenResult) -> Unit,
     deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
@@ -73,12 +90,14 @@ fun ScannerScreen(
             ScannerAppBar(
                 title = title,
                 uiState = uiState,
+                availableFilters = availableFilters,
                 onFilterSelected = viewModel::onClick,
             ) { onResultSelected(ScanningCancelled) }
         } else {
             ScannerAppBar(
                 title = title,
                 uiState = uiState,
+                availableFilters = availableFilters,
                 onFilterSelected = viewModel::onClick,
             )
         }

@@ -1,24 +1,21 @@
 package no.nordicsemi.android.common.scanner.data
 
+import android.annotation.SuppressLint
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.android.common.scanner.view.FilterButton
+import no.nordicsemi.android.common.scanner.view.GroupByNameDropdown
+import no.nordicsemi.android.common.scanner.view.SortByView
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import no.nordicsemi.kotlin.ble.core.BondState
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-sealed class Filter(
-    open val title: String,
-    open val filter: (ScanResult) -> Boolean,
-    open val type: FilterUiType,
-    open val content: (@Composable () -> Unit)? = null
-)
-
-enum class FilterUiType {
-    BUTTON,
-    SORT,
-    GROUP,
-    //  CUSTOM
+sealed interface Filter {
+    val title: StringResource
+    val filter: (ScanResult) -> Boolean
 }
 
 /**
@@ -27,69 +24,111 @@ enum class FilterUiType {
  */
 data class SortBy(
     val sortType: SortType,
-    override val filter: (ScanResult) -> Boolean = { true },
-    override val title: String = sortType.toString(),
-    override val type: FilterUiType = FilterUiType.SORT,
-    override val content: (@Composable () -> Unit)? = null
-) : Filter(
-    title = title,
-    filter = filter,
-    type = type,
-    content = content
-)
+    override val filter: (ScanResult) -> Boolean = { true } // Default filter that allows all scan results
+) : Filter {
+    override val title: StringResource
+        get() = when (sortType) {
+            SortType.RSSI -> StringResource.RSSI
+            SortType.ALPHABETICAL -> StringResource.ALPHABETICAL
+        }
+
+    @SuppressLint("ComposableNaming")
+    @Composable
+    internal fun draw(
+        sortByFilters: List<SortBy> = listOf(
+            SortBy(SortType.RSSI),
+            SortBy(SortType.ALPHABETICAL)
+        ),
+        activeFilters: List<Filter>,
+        onSortOptionSelected: (FilterEvent) -> Unit
+    ) {
+        SortByView(
+            sortByFilters = sortByFilters,
+            activeFilters = activeFilters,
+            onSortOptionSelected = onSortOptionSelected
+        )
+    }
+}
+
 
 /**
  * Filter that allows scan results with no empty names.
  */
 data class OnlyWithNames(
-    override val title: String = ONLY_WITH_NAMES,
-    override val type: FilterUiType = FilterUiType.BUTTON,
-) : Filter(
-    title = title,
-    filter = { scanResult ->
-        scanResult.peripheral.name?.isNotEmpty() == true
-    },
-    type = FilterUiType.BUTTON,
-    content = {
-        FilterButton(
-            filter = OnlyWithNames(),
-            isSelected = false,
-        ) {
-            OnFilterSelected(filter = OnlyWithNames())
+    override val title: StringResource = StringResource.ONLY_WITH_NAMES,
+) : Filter {
+    override val filter: (ScanResult) -> Boolean
+        get() = { scanResult ->
+            scanResult.peripheral.name?.isNotEmpty() == true
         }
+
+    @Composable
+    fun draw(
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        FilterButton(
+            title = stringResource(id = title.value),
+            isSelected = isSelected,
+            onClick = onClick
+        )
     }
-)
+}
 
 /**
  * Group scan results by name.
  */
 data class GroupByName(
     val name: String,
-    val items: List<ScanResult>,
-    override val type: FilterUiType = FilterUiType.GROUP,
-    override val title: String = GROUP_BY_NAME,
-) : Filter(
-    title = title,
-    type = type,
-    filter = { scanResult ->
-        scanResult.peripheral.name == name
+    override val title: StringResource = StringResource.GROUP_BY_NAME,
+) : Filter {
+    override val filter: (ScanResult) -> Boolean
+        get() = { scanResult ->
+            scanResult.peripheral.name == name
+        }
+
+    @Composable
+    fun draw(
+        dropdownLabel: String,
+        onLabelChange: (String) -> Unit,
+        scanResults: List<ScanResult>,
+        onItemSelected: (FilterEvent) -> Unit
+    ) {
+        GroupByNameDropdown(
+            title = stringResource(title.value),
+            dropdownLabel = dropdownLabel,
+            onLabelChange = { onLabelChange(it) },
+            scanResults = scanResults,
+            onItemSelected = { onItemSelected(it) }
+        )
     }
-)
+}
 
 /**
  * Filter bonded devices.
  * isBonded is true if the device is bonded, false otherwise.
  */
 data class OnlyBonded(
-    override val title: String = ONLY_BONDED,
-    override val type: FilterUiType = FilterUiType.BUTTON,
-) : Filter(
-    title = title,
-    type = type,
-    filter = { scanResult ->
-        scanResult.peripheral.bondState.value == BondState.BONDED
+    override val title: StringResource = StringResource.ONLY_BONDED,
+) : Filter {
+    override val filter: (ScanResult) -> Boolean
+        get() = { scanResult ->
+            scanResult.peripheral.bondState.value == BondState.BONDED
+        }
+
+    @Composable
+    fun draw(
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        FilterButton(
+            title = stringResource(id = title.value),
+            isSelected = isSelected,
+            onClick = onClick
+        )
     }
-)
+}
+
 
 /**
  * Filter nearby devices based on RSSI value. It will allow devices with RSSI value greater
@@ -97,36 +136,36 @@ data class OnlyBonded(
  */
 data class OnlyNearby(
     val rssi: Int = -50, // Default RSSI value to filter nearby devices
-    override val title: String = ONLY_NEARBY,
-    override val type: FilterUiType = FilterUiType.BUTTON,
-) : Filter(
-    title = title,
-    filter = { scanResult ->
-        scanResult.rssi >= rssi
-    },
-    type = FilterUiType.BUTTON,
-    content = {
-        FilterButton(
-            filter = OnlyNearby(rssi),
-            isSelected = false
-        ) {
-            OnFilterSelected(filter = OnlyNearby(rssi))
+    override val title: StringResource = StringResource.ONLY_NEARBY,
+) : Filter {
+    override val filter: (ScanResult) -> Boolean
+        get() = { scanResult ->
+            scanResult.rssi >= rssi
         }
+
+    @Composable
+    fun draw(
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        FilterButton(
+            title = stringResource(id = title.value),
+            isSelected = isSelected,
+            onClick = onClick
+        )
     }
-)
+}
 
 @OptIn(ExperimentalUuidApi::class)
 data class WithServiceUuid(
-    val uuid: Uuid,
-    override val title: String = WITH_SERVICE_UUID,
-    override val type: FilterUiType = FilterUiType.BUTTON,
-) : Filter(
-    title = title,
-    type = type,
-    filter = { scanResult ->
-        scanResult.advertisingData.serviceUuids.contains(uuid)
-    }
-)
+    val uuid: Uuid?,
+    override val title: StringResource = StringResource.WITH_SERVICE_UUID,
+) : Filter {
+    override val filter: (ScanResult) -> Boolean
+        get() = { scanResult ->
+            scanResult.advertisingData.serviceUuids.contains(uuid)
+        }
+}
 
 /**
  * Custom filter.
@@ -134,16 +173,20 @@ data class WithServiceUuid(
  * The filter shows only devices that match the given predicate.
  */
 data class CustomFilter(
-    override val title: String,
+    override val title: StringResource,
     override val filter: (scanResult: ScanResult) -> Boolean,
-    override val type: FilterUiType,
-) : Filter(title, filter, type)
+) : Filter
 
-// TODO: Remove this later.
-private const val RSSI = "RSSI"
-const val ALPHABETICAL = "Alphabetical"
-const val ONLY_WITH_NAMES = "Names"
-const val GROUP_BY_NAME = "Group by name"
-const val ONLY_BONDED = "Bonded"
-const val ONLY_NEARBY = "Nearby"
-const val WITH_SERVICE_UUID = "With service UUID"
+/**
+ * Enum class for Filter item string resources.
+ */
+enum class StringResource(@StringRes val value: Int) {
+    ONLY_NEARBY(R.string.filter_only_nearby),
+    ONLY_BONDED(R.string.filter_only_bonded),
+    ONLY_WITH_NAMES(R.string.filter_only_with_names),
+    GROUP_BY_NAME(R.string.filter_group_by_name),
+    WITH_SERVICE_UUID(R.string.filter_with_service_uuid),
+    RSSI(R.string.filter_rssi),
+    ALPHABETICAL(R.string.filter_alphabetical),
+}
+

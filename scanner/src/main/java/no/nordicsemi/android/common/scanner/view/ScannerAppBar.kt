@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.scanner.data.Filter
 import no.nordicsemi.android.common.scanner.data.FilterEvent
 import no.nordicsemi.android.common.scanner.viewmodel.UiState
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
@@ -64,6 +65,7 @@ import no.nordicsemi.android.common.ui.view.NordicAppBar
 internal fun ScannerAppBar(
     title: @Composable () -> Unit,
     uiState: UiState,
+    availableFilters : List<Filter>,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
@@ -103,6 +105,7 @@ internal fun ScannerAppBar(
 
     if (expandFilterBottomSheet) {
         FilterDialog(
+            availableFilters = availableFilters,
             scannedResults = (uiState.scanningState as ScanningState.DevicesDiscovered).result,
             activeFilters = uiState.scanningState.filters,
             onDismissRequest = { expandFilterBottomSheet = false },

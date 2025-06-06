@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filter_rssi">RSSI</string>
+    <string name="filter_alphabetical">Alphabetical</string>
+    <string name="filter_only_with_names">Names</string>
+    <string name="filter_group_by_name">Group by name</string>
+    <string name="filter_only_bonded">Bonded</string>
+    <string name="filter_only_nearby">Nearby</string>
+    <string name="filter_with_service_uuid">With service UUID</string>
+</resources>

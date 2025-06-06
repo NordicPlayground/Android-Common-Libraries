@@ -181,7 +181,7 @@ private fun GroupByNameDeviceList(
     peripheralIcon: ImageVector = Icons.Default.Bluetooth,
     onClick: (ScanResult) -> Unit,
     deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
-        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+        DeviceListItem(scanResult, peripheralIcon = null)
     },
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
