@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.37.0"
-androidGradlePlugin = "8.9.2"
+androidGradlePlugin = "8.10.1"
 androidxActivity = "1.9.3"
 androidxComposeBom = "2024.12.01" # https://developer.android.com/jetpack/compose/bom/bom-mapping
 androidxCore = "1.15.0"
@@ -21,6 +21,7 @@ publishPlugin = "1.3.0"
 leakcanary = "2.14"
 
 nordic-log = "2.5.0"
+nordic-blek = "2.0.0-alpha02"
 nordicPlugins = "2.7"
 dokkaPlugin = "2.0.0"
 googleServicesPlugins = "4.4.2"
@@ -58,6 +59,7 @@ leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", v
 
 # Nordic
 nordic-log = { group = "no.nordicsemi.android", name = "log", version.ref = "nordic-log" }
+nordic-blek-client-android = { group = "no.nordicsemi.kotlin.ble", name = "client-android", version.ref = "nordic-blek" }
 
 [plugins]
 nordic-application = { id = "no.nordicsemi.android.plugin.application", version.ref = "nordicPlugins" }

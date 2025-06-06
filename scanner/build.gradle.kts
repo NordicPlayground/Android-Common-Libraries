@@ -55,7 +55,7 @@ dependencies {
     implementation(project(":navigation"))// TODO: Remove this dependency when the scanner destination file is removed.
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
-    implementation("no.nordicsemi.kotlin.ble:client-android")
+    implementation(libs.nordic.blek.client.android)
     implementation(libs.androidx.compose.material.iconsExtended)
 
 }
