@@ -118,7 +118,7 @@ private fun FilterContent(
         ) {
             availableFilters.any { it::class == OnlyNearby::class }.let { isAvailable ->
                 if (isAvailable) {
-                    OnlyNearby().draw(
+                    OnlyNearby().Draw(
                         isSelected = activeFilters.any { it::class == OnlyNearby::class }
                     ) {
                         onFilterSelected(OnFilterSelected(OnlyNearby()))
@@ -136,7 +136,7 @@ private fun FilterContent(
             }
             availableFilters.any { it::class == OnlyBonded::class }.let { isAvailable ->
                 if (isAvailable) {
-                    OnlyBonded().draw(
+                    OnlyBonded().Draw(
                         isSelected = activeFilters.any { it::class == OnlyBonded::class }
                     ) {
                         onFilterSelected(OnFilterSelected(OnlyBonded()))
@@ -147,7 +147,7 @@ private fun FilterContent(
 
         availableFilters.any { it::class == SortBy::class }.let { isAvailable ->
             if (isAvailable) {
-                SortBy(SortType.RSSI).draw(
+                SortBy().Draw(
                     activeFilters = activeFilters,
                     onSortOptionSelected = onFilterSelected,
                 )
@@ -155,7 +155,7 @@ private fun FilterContent(
         }
         availableFilters.any { it::class == GroupByName::class }.let { isAvailable ->
             if (isAvailable && scannedResults.isNotEmpty()) {
-                GroupByName(dropdownLabel).draw(
+                GroupByName(dropdownLabel).Draw(
                     dropdownLabel = dropdownLabel,
                     onLabelChange = { dropdownLabel = it },
                     scanResults = scannedResults,

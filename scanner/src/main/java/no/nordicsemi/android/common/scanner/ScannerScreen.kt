@@ -47,7 +47,6 @@ import no.nordicsemi.android.common.scanner.data.OnlyBonded
 import no.nordicsemi.android.common.scanner.data.OnlyNearby
 import no.nordicsemi.android.common.scanner.data.OnlyWithNames
 import no.nordicsemi.android.common.scanner.data.SortBy
-import no.nordicsemi.android.common.scanner.data.SortType
 import no.nordicsemi.android.common.scanner.view.DeviceListItem
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
@@ -58,8 +57,7 @@ val Default_Filters = listOf(
     OnlyWithNames(),
     OnlyNearby(),
     OnlyBonded(),
-    SortBy(SortType.RSSI),
-    SortBy(SortType.ALPHABETICAL),
+    SortBy(),
     GroupByName(""),
 
     )

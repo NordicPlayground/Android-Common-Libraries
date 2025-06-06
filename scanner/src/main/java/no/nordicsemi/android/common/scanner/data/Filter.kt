@@ -23,18 +23,21 @@ sealed interface Filter {
  * @param sortType The type of sorting to be applied.
  */
 data class SortBy(
-    val sortType: SortType,
+    val sortType: SortType? = null, // Nullable to allow for default sorting
     override val filter: (ScanResult) -> Boolean = { true } // Default filter that allows all scan results
 ) : Filter {
     override val title: StringResource
         get() = when (sortType) {
             SortType.RSSI -> StringResource.RSSI
             SortType.ALPHABETICAL -> StringResource.ALPHABETICAL
+            null -> {
+                // Default case when sortType is null, can be used for initial state or no sorting
+                StringResource.RSSI // Default to RSSI sorting
+            }
         }
 
-    @SuppressLint("ComposableNaming")
     @Composable
-    internal fun draw(
+    internal fun Draw(
         sortByFilters: List<SortBy> = listOf(
             SortBy(SortType.RSSI),
             SortBy(SortType.ALPHABETICAL)
@@ -62,6 +65,7 @@ data class OnlyWithNames(
             scanResult.peripheral.name?.isNotEmpty() == true
         }
 
+    @SuppressLint("ComposableNaming")
     @Composable
     fun draw(
         isSelected: Boolean,
@@ -79,7 +83,7 @@ data class OnlyWithNames(
  * Group scan results by name.
  */
 data class GroupByName(
-    val name: String,
+    val name: String = "",
     override val title: StringResource = StringResource.GROUP_BY_NAME,
 ) : Filter {
     override val filter: (ScanResult) -> Boolean
@@ -88,7 +92,7 @@ data class GroupByName(
         }
 
     @Composable
-    fun draw(
+    internal fun Draw(
         dropdownLabel: String,
         onLabelChange: (String) -> Unit,
         scanResults: List<ScanResult>,
@@ -117,7 +121,7 @@ data class OnlyBonded(
         }
 
     @Composable
-    fun draw(
+    internal fun Draw(
         isSelected: Boolean,
         onClick: () -> Unit
     ) {
@@ -144,7 +148,7 @@ data class OnlyNearby(
         }
 
     @Composable
-    fun draw(
+    internal fun Draw(
         isSelected: Boolean,
         onClick: () -> Unit
     ) {
