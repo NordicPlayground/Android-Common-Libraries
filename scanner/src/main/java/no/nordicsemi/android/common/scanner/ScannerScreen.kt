@@ -58,7 +58,7 @@ val Default_Filters = listOf(
     OnlyNearby(),
     OnlyBonded(),
     SortBy(),
-    GroupByName(""),
+    GroupByName(),
 
     )
 
