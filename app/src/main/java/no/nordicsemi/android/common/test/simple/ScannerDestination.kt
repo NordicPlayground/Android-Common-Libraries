@@ -29,17 +29,18 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.scanner
+package no.nordicsemi.android.common.test.simple
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
 import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewModel
+import no.nordicsemi.android.common.scanner.DeviceSelected
+import no.nordicsemi.android.common.scanner.ScannerScreen
+import no.nordicsemi.android.common.scanner.ScanningCancelled
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
-// TODO: This is a testing of scanner page. This should be removed in the final version.
-//  Don't forget to remove the navigation dependency. Don't forget to remove the parcelable from ScannerConfig file.
-val ScannerDestinationId = createDestination<Unit, ScanResult>("ble-scanner-destination")
+val ScannerDestinationId = createDestination<Unit, ScanResult>("ble-scanner")
 
 val ScannerDestination = defineDestination(ScannerDestinationId) {
     val navigationVM = hiltViewModel<SimpleNavigationViewModel>()
