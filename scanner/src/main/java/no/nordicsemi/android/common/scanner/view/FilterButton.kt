@@ -1,54 +1,60 @@
 package no.nordicsemi.android.common.scanner.view
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun FilterButton(
     title: String,
+    icon: ImageVector,
     isSelected: Boolean,
-    containerColorEnabled: Color = ButtonDefaults.buttonColors().containerColor,
-    containerColorDisabled: Color = ButtonDefaults.buttonColors().disabledContainerColor,
+    containerColorEnabled: Color = Color.Unspecified,
+    containerColorDisabled: Color = Color.Unspecified,
     onClick: () -> Unit = {},
 ) {
-    val containerColor = if (isSelected)
-        containerColorEnabled else containerColorDisabled
-    Button(
+    FilterChip(
+        selected = isSelected,
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-        )
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        label = { Text(title) },
+        leadingIcon = {
             Icon(
-                imageVector = if (isSelected) Icons.Default.Close else Icons.Default.Done,
-                contentDescription = null,
+                imageVector = if (isSelected) Icons.Default.Close else icon,
+                contentDescription = null
             )
-            Text(title)
-        }
-    }
+        },
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = containerColorDisabled,
+            selectedContainerColor = containerColorEnabled,
+        ),
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FilterButtonPreviewSelected() {
+    FilterButton(
+        title = "Nearby",
+        icon = Icons.Default.MyLocation,
+        isSelected = true
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun FilterButtonPreview() {
     FilterButton(
-        title = "Nearby",
-        isSelected = true
+        title = "Named",
+        icon = Icons.AutoMirrored.Default.Label,
+        isSelected = false
     )
 }

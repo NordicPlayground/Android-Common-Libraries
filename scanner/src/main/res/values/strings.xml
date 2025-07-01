@@ -43,11 +43,9 @@
     <string name="scan_failed_info"> Scanning failed with %s</string>
     <string name="enable_location">Enable location</string>
 
-    <string name="filter_title">Filter results</string>
-    <string name="clear_all">Clear all</string>
-
-    <string name="group_by_title">Group by name</string>
+    <string name="filter_title">Filter</string>
     <string name="sort_by_title">Sort by</string>
+    <string name="clear_all">Clear</string>
+    <string name="no_name">No name</string>
 
-    <string name="empty_dropdown_label">Select item</string>
 </resources>

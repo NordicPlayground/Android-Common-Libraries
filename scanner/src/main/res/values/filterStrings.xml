@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="filter_rssi">RSSI</string>
-    <string name="filter_alphabetical">Alphabetical</string>
+    <string name="sort_by_none">Discovery Time (default)</string>
+    <string name="sort_by_rssi">Signal Strength (RSSI)</string>
+    <string name="sort_by_alphabetical">Name (alphabetical)</string>
+
     <string name="filter_only_with_names">Names</string>
-    <string name="filter_group_by_name">Group by name</string>
     <string name="filter_only_bonded">Bonded</string>
     <string name="filter_only_nearby">Nearby</string>
-    <string name="filter_with_service_uuid">With service UUID</string>
+    <string name="filter_with_service_uuid">Type</string>
 </resources>

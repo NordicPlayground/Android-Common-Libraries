@@ -31,6 +31,8 @@
 
 package no.nordicsemi.android.common.test.simple
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.navigation.createDestination
 import no.nordicsemi.android.common.navigation.defineDestination
@@ -38,25 +40,44 @@ import no.nordicsemi.android.common.navigation.viewmodel.SimpleNavigationViewMod
 import no.nordicsemi.android.common.scanner.DeviceSelected
 import no.nordicsemi.android.common.scanner.ScannerScreen
 import no.nordicsemi.android.common.scanner.ScanningCancelled
+import no.nordicsemi.android.common.scanner.data.OnlyNearby
+import no.nordicsemi.android.common.scanner.data.OnlyWithNames
+import no.nordicsemi.android.common.scanner.data.WithServiceUuid
+import no.nordicsemi.android.common.scanner.rememberFilterState
+import no.nordicsemi.android.common.test.R
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import no.nordicsemi.kotlin.ble.core.util.fromShortUuid
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 val ScannerDestinationId = createDestination<Unit, ScanResult>("ble-scanner")
 
+@OptIn(ExperimentalUuidApi::class)
 val ScannerDestination = defineDestination(ScannerDestinationId) {
     val navigationVM = hiltViewModel<SimpleNavigationViewModel>()
 
     ScannerScreen(
         cancellable = true,
+        state = rememberFilterState(
+            dynamicFilters = listOf(
+                OnlyNearby(),
+                OnlyWithNames(),
+                WithServiceUuid(
+                    title = R.string.filter_hrm,
+                    icon = Icons.Default.MonitorHeart,
+                    uuid = Uuid.fromShortUuid(0x180D), // Heart Rate Service UUID,
+                    isInitiallySelected = true
+                )
+            )
+        ),
         onResultSelected = {
             when (it) {
                 is DeviceSelected -> {
                     navigationVM.navigateUpWithResult(ScannerDestinationId, it.scanResult)
-                    println("Device selected: ${it.scanResult}")
                 }
 
                 ScanningCancelled -> {
                     navigationVM.navigateUp()
-                    println("Scanning cancelled")
                 }
             }
         }

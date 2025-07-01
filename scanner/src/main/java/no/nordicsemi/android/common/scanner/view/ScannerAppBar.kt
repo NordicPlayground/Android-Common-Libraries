@@ -45,34 +45,27 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.scanner.data.Filter
-import no.nordicsemi.android.common.scanner.data.FilterEvent
-import no.nordicsemi.android.common.scanner.viewmodel.UiState
-import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
+import no.nordicsemi.android.common.scanner.ScanFilterState
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ScannerAppBar(
     title: @Composable () -> Unit,
-    uiState: UiState,
-    availableFilters : List<Filter>,
+    isScanning: Boolean,
+    state: ScanFilterState,
+    modifier: Modifier = Modifier,
+    onFilterClicked: () -> Unit,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
-    var expandFilterBottomSheet by rememberSaveable { mutableStateOf(false) }
-
     NordicAppBar(
+        modifier = modifier,
         title = title,
         backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
@@ -82,34 +75,24 @@ internal fun ScannerAppBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (uiState.isScanning) {
+                if (isScanning) {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .size(30.dp),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.FilterList,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            expandFilterBottomSheet = true
-                        }
-                        .padding(8.dp)
-                )
+                if (state.dynamicFilters.isNotEmpty() || state.sortingOptions.isNotEmpty()) {
+                    Icon(
+                        imageVector = Icons.Default.FilterList,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable { onFilterClicked() }
+                            .padding(8.dp)
+                    )
+                }
             }
         },
     )
-
-    if (expandFilterBottomSheet) {
-        FilterDialog(
-            availableFilters = availableFilters,
-            scannedResults = (uiState.scanningState as ScanningState.DevicesDiscovered).result,
-            activeFilters = uiState.scanningState.filters,
-            onDismissRequest = { expandFilterBottomSheet = false },
-            onFilterSelected = { onFilterSelected(it) }
-        )
-    }
 }

@@ -32,11 +32,16 @@
 package no.nordicsemi.android.common.scanner.spec
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DirectionsBike
+import androidx.compose.material.icons.automirrored.filled.DirectionsRun
 import androidx.compose.material.icons.filled.BatteryStd
 import androidx.compose.material.icons.filled.Bloodtype
-import androidx.compose.material.icons.filled.SocialDistance
+import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material.icons.filled.Thermostat
+import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.ui.graphics.vector.ImageVector
 import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
@@ -68,29 +73,29 @@ object ServiceUuids {
             BPS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Blood Pressure", Icons.Default.Bloodtype)
             CSC_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
                 "Cycling Speed and Cadence",
-                Icons.Default.Thermostat
+                Icons.AutoMirrored.Default.DirectionsBike,
             )
 
             CGMS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
                 "Continuous Glucose Monitoring",
-                Icons.Default.Thermostat
+                Icons.Outlined.WaterDrop
             )
 
-            DF_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("DFU", Icons.Default.Thermostat)
-            GLS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Glucose", Icons.Default.Thermostat)
-            HRS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Heart Rate", Icons.Default.Thermostat)
+            DF_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Direction Finding", Icons.Default.MyLocation)
+            GLS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Glucose", Icons.Outlined.WaterDrop)
+            HRS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Heart Rate", Icons.Default.MonitorHeart)
             PRX_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Proximity", Icons.Default.Thermostat)
             RSCS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
                 "Running Speed and Cadence",
-                Icons.Default.Thermostat
+                Icons.AutoMirrored.Default.DirectionsRun
             )
 
-            UART_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("UART", Icons.Default.Thermostat)
+            UART_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("UART", Icons.Default.SwapHoriz)
             BATTERY_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Battery", Icons.Default.BatteryStd)
             THROUGHPUT_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Throughput", Icons.Default.SyncAlt)
             CHANNEL_SOUND_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
                 "Channel Sounding",
-                Icons.Default.SocialDistance
+                Icons.Default.MyLocation
             )
 
             else -> null

@@ -31,8 +31,31 @@
 
 package no.nordicsemi.android.common.scanner.viewmodel
 
-import no.nordicsemi.android.common.scanner.data.Filter
+import no.nordicsemi.kotlin.ble.client.android.Peripheral
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import kotlin.math.max
+
+data class ScannedPeripheral(
+    val peripheral: Peripheral,
+    var latestScanResult: ScanResult,
+    var highestRssi: Int,
+) {
+    constructor(scanResult: ScanResult, previousHighestRssi: Int = -128) : this(
+        peripheral = scanResult.peripheral,
+        latestScanResult = scanResult,
+        highestRssi = max(previousHighestRssi, scanResult.rssi)
+    )
+
+    override fun equals(other: Any?): Boolean {
+        return other is ScannedPeripheral &&
+               other.peripheral == peripheral &&
+               other.latestScanResult.rssi == latestScanResult.rssi
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
+}
 
 /** ScanningState represents the state of the scanning process. */
 internal sealed interface ScanningState {
@@ -45,8 +68,7 @@ internal sealed interface ScanningState {
      * @param result The list of discovered devices.
      */
     data class DevicesDiscovered(
-        val result: List<ScanResult>,
-        val filters: List<Filter>
+        val result: List<ScannedPeripheral>,
     ) : ScanningState
 
     /** Error state.
@@ -55,3 +77,14 @@ internal sealed interface ScanningState {
      */
     data class Error(val error: String?) : ScanningState
 }
+
+/**
+ * This class is responsible for managing the ui states of the scanner screen.
+ *
+ * @param isScanning True if the scanner is scanning.
+ * @param scanningState The current scanning state.
+ */
+internal data class UiState(
+    val isScanning: Boolean = false,
+    val scanningState: ScanningState = ScanningState.Loading,
+)

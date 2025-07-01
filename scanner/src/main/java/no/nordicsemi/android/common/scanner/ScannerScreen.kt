@@ -32,80 +32,76 @@
 package no.nordicsemi.android.common.scanner
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.scanner.data.Filter
-import no.nordicsemi.android.common.scanner.data.GroupByName
-import no.nordicsemi.android.common.scanner.data.OnlyBonded
-import no.nordicsemi.android.common.scanner.data.OnlyNearby
-import no.nordicsemi.android.common.scanner.data.OnlyWithNames
-import no.nordicsemi.android.common.scanner.data.SortBy
 import no.nordicsemi.android.common.scanner.view.DeviceListItem
+import no.nordicsemi.android.common.scanner.view.FilterDialog
 import no.nordicsemi.android.common.scanner.view.ScannerAppBar
 import no.nordicsemi.android.common.scanner.view.ScannerView
-import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
-val Default_Filters = listOf(
-    OnlyWithNames(),
-    OnlyNearby(),
-    OnlyBonded(),
-    SortBy(),
-    GroupByName(),
-
-    )
-
+/**
+ * A scanner screen with an AppBar and a list of devices.
+ *
+ * @param cancellable If true, the screen will have a navigation button to cancel scanning.
+ * @param onResultSelected Callback invoked when a device is selected or scanning is cancelled.
+ * @param modifier Modifier to be applied to the screen.
+ * @param state The state of the scan filter. Use this to set a static filter and dynamic filters.
+ * @param title Composable function to display the title of the App Bar.
+ * @param deviceItem Composable function to display each device in the list.
+ */
 @Composable
 fun ScannerScreen(
-    title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
     cancellable: Boolean,
-    availableFilters: List<Filter> = Default_Filters,
-    filters: List<Filter> = emptyList(),
     onResultSelected: (ScannerScreenResult) -> Unit,
+    modifier: Modifier = Modifier,
+    state: ScanFilterState = rememberFilterState(),
+    title: @Composable () -> Unit = { Text(stringResource(id = R.string.scanner_screen)) },
     deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
         DeviceListItem(scanResult)
-    }
+    },
 ) {
-    val viewModel = hiltViewModel<ScannerViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // If filters to be passed to the view model.
-    LaunchedEffect(filters.isNotEmpty()) {
-        viewModel.setFilters(filters)
-    }
+    var isScanning by rememberSaveable { mutableStateOf(false) }
+    var expandFilterBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
     ) {
         if (cancellable) {
             ScannerAppBar(
                 title = title,
-                uiState = uiState,
-                availableFilters = availableFilters,
-                onFilterSelected = viewModel::onClick,
-            ) { onResultSelected(ScanningCancelled) }
+                isScanning = isScanning,
+                state = state,
+                onFilterClicked = { expandFilterBottomSheet = true },
+                onNavigationButtonClick = { onResultSelected(ScanningCancelled) }
+            )
         } else {
             ScannerAppBar(
                 title = title,
-                uiState = uiState,
-                availableFilters = availableFilters,
-                onFilterSelected = viewModel::onClick,
+                isScanning = isScanning,
+                state = state,
+                onFilterClicked = { expandFilterBottomSheet = true },
             )
         }
 
         ScannerView(
-            uiState = uiState,
-            startScanning = viewModel::startScanning,
-            onEvent = viewModel::onClick,
+            state = state,
+            onScanningStateChanged = { isScanning = it },
             onScanResultSelected = { onResultSelected(DeviceSelected(it)) },
             deviceItem = deviceItem,
+        )
+    }
+
+    if (expandFilterBottomSheet) {
+        FilterDialog(
+            state = state,
+            onDismissRequest = { expandFilterBottomSheet = false },
         )
     }
 }
