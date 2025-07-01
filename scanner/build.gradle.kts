@@ -56,5 +56,4 @@ dependencies {
     implementation(project(":ui"))
     implementation(libs.nordic.blek.client.android)
     implementation(libs.androidx.compose.material.iconsExtended)
-
 }
