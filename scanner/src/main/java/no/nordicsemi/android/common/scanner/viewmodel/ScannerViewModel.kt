@@ -46,7 +46,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import no.nordicsemi.android.common.scanner.ScanFilterState
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
-import no.nordicsemi.kotlin.ble.client.android.ConjunctionFilterScope
+import no.nordicsemi.kotlin.ble.client.exception.BluetoothUnavailableException
+import no.nordicsemi.kotlin.ble.client.exception.ScanningException
+import no.nordicsemi.kotlin.ble.core.exception.ManagerClosedException
 import javax.inject.Inject
 import kotlin.time.Duration
 
@@ -73,6 +75,10 @@ internal class ScannerViewModel @Inject constructor(
      * This method works only once. If you want to restart the scan, call [reload] instead.
      *
      * @param timeout The duration after which the scan will stop. Defaults to [Duration.INFINITE].
+     * @throws SecurityException If the app does not have the required permissions to scan for devices.
+     * @throws ManagerClosedException If the [CentralManager] is closed.
+     * @throws BluetoothUnavailableException If Bluetooth is not available on the device.
+     * @throws ScanningException If the scan could not be started due to an error.
      */
     fun initiateScanning(
         timeout: Duration = Duration.INFINITE,
@@ -81,6 +87,7 @@ internal class ScannerViewModel @Inject constructor(
 
         if (!wasScanningStarted) {
             startScanning()
+            wasScanningStarted = true
         }
     }
 
@@ -88,7 +95,6 @@ internal class ScannerViewModel @Inject constructor(
         if (scanning != null) {
             return
         }
-        wasScanningStarted = true
 
         scanning = centralManager.scan(
             timeout = timeout,
