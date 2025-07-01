@@ -110,7 +110,7 @@ internal class PermissionUtils(
                 !isLocationPermissionGranted // Location permission must be denied
                 && dataProvider.locationPermissionRequested // Permission must have been requested before
                 && !context.findActivity()
-            .shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+                    .shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     /**
