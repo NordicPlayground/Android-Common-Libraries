@@ -35,6 +35,13 @@ import no.nordicsemi.kotlin.ble.client.android.Peripheral
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.math.max
 
+/**
+ * A record containing information about a scanned peripheral.
+ *
+ * @property peripheral The peripheral instance.
+ * @property latestScanResult The latest scan result received from the peripheral.
+ * @property highestRssi The highest RSSI value recorded for this peripheral during the scanning session.
+ */
 data class ScannedPeripheral(
     val peripheral: Peripheral,
     var latestScanResult: ScanResult,
@@ -63,17 +70,19 @@ internal sealed interface ScanningState {
     /** Loading state. */
     data object Loading : ScanningState
 
-    /** Devices discovered state.
+    /**
+     * Devices discovered state.
      *
-     * @param result The list of discovered devices.
+     * @property result The list of discovered devices.
      */
     data class DevicesDiscovered(
         val result: List<ScannedPeripheral>,
     ) : ScanningState
 
-    /** Error state.
+    /**
+     * Error state.
      *
-     * @param error The error that occurred.
+     * @property error The error that occurred.
      */
     data class Error(val error: String?) : ScanningState
 }
@@ -81,8 +90,8 @@ internal sealed interface ScanningState {
 /**
  * This class is responsible for managing the ui states of the scanner screen.
  *
- * @param isScanning True if the scanner is scanning.
- * @param scanningState The current scanning state.
+ * @property isScanning True if the scanner is scanning.
+ * @property scanningState The current scanning state.
  */
 internal data class UiState(
     val isScanning: Boolean = false,

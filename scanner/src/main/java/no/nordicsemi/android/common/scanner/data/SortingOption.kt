@@ -15,6 +15,8 @@ sealed class SortingOption(
  * Sort results alphabetically by device name.
  * 
  * Devices are ordered based on their names in ascending order.
+ *
+ * Devices without a name will be sorted after those with names.
  */
 class SortByName(
     @StringRes title: Int = R.string.sort_by_alphabetical,
@@ -33,6 +35,9 @@ class SortByName(
     }
 )
 
+/**
+ * Sort results by highest RSSI value.
+ */
 class SortByRssi(
     @StringRes title: Int = R.string.sort_by_rssi,
 ) : SortingOption(
@@ -43,6 +48,9 @@ class SortByRssi(
     }
 )
 
+/**
+ * Sort results using a custom comparator.
+ */
 class CustomSorting(
     @StringRes title: Int,
     comparator: Comparator<ScannedPeripheral>
@@ -51,6 +59,11 @@ class CustomSorting(
     comparator = comparator
 )
 
+/**
+ * Sort results by first found order.
+ *
+ * The comparator returns equals for any two scanned peripherals.
+ */
 data object SortingDisabled : SortingOption(
     title = R.string.sort_by_none,
     comparator = Comparator { _, _ -> 0 } // No sorting applied
