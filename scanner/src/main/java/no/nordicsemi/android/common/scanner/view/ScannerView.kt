@@ -58,6 +58,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -89,7 +90,7 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScannerView(
+fun ScannerView(
     onScanResultSelected: (ScanResult) -> Unit,
     state: ScanFilterState = rememberFilterState(),
     onScanningStateChanged: (Boolean) -> Unit = {},
@@ -131,8 +132,11 @@ internal fun ScannerView(
                 state = pullToRefreshState,
             ) {
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                LaunchedEffect(uiState.isScanning) {
+                DisposableEffect(uiState.isScanning) {
                     isScanningChanged(uiState.isScanning)
+                    onDispose {
+                        isScanningChanged(false)
+                    }
                 }
 
                 ScannerContent(

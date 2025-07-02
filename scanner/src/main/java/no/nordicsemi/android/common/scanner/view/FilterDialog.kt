@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,7 @@ import no.nordicsemi.android.common.scanner.rememberFilterState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun FilterDialog(
+fun FilterDialog(
     state: ScanFilterState,
     onDismissRequest: () -> Unit,
 ) {
@@ -79,9 +80,10 @@ private fun FilterContent(
             }
         )
         if (state.dynamicFilters.isNotEmpty()) {
-            Row(
+            FlowRow(
                 modifier = Modifier.padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
                 state.dynamicFilters.forEachIndexed { index, filter ->
                     FilterButton(

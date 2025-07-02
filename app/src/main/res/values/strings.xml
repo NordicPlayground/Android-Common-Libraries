@@ -82,4 +82,5 @@
     <string name="warning_dangerous">Give up</string>
 
     <string name="filter_hrm">Heart Rate</string>
+    <string name="filter_show_all">Not Heart Rate</string>
 </resources>
