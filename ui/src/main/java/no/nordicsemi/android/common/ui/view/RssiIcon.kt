@@ -61,7 +61,10 @@ private const val MAX_RSSI = -60
  */
 @Composable
 fun RssiIcon(rssi: Int) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
         Image(
             painter = painterResource(id = getImageRes(rssi)),
             contentDescription = null
