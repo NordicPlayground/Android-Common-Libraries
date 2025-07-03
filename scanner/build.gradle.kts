@@ -54,6 +54,7 @@ android {
 dependencies {
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
-    implementation(libs.nordic.blek.client.android)
     implementation(libs.androidx.compose.material.iconsExtended)
+
+    api(libs.nordic.blek.client.core.android)
 }
