@@ -29,6 +29,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:OptIn(ExperimentalUuidApi::class)
+
 package no.nordicsemi.android.common.scanner.spec
 
 import androidx.compose.material.icons.Icons
@@ -42,60 +44,68 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import no.nordicsemi.android.common.scanner.R
 import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.toKotlinUuid
 
-internal val HTS_SERVICE_UUID = UUID.fromString("00001809-0000-1000-8000-00805f9b34fb")
-internal val BPS_SERVICE_UUID: UUID = UUID.fromString("00001810-0000-1000-8000-00805f9b34fb")
-internal val CSC_SERVICE_UUID: UUID = UUID.fromString("00001816-0000-1000-8000-00805f9b34fb")
-internal val CGMS_SERVICE_UUID: UUID = UUID.fromString("0000181F-0000-1000-8000-00805f9b34fb")
-internal val DF_SERVICE_UUID: UUID = UUID.fromString("21490000-494a-4573-98af-f126af76f490")
-internal val GLS_SERVICE_UUID: UUID = UUID.fromString("00001808-0000-1000-8000-00805f9b34fb")
-internal val HRS_SERVICE_UUID: UUID = UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb")
-internal val PRX_SERVICE_UUID: UUID = UUID.fromString("00001802-0000-1000-8000-00805f9b34fb")
-internal val RSCS_SERVICE_UUID: UUID = UUID.fromString("00001814-0000-1000-8000-00805F9B34FB")
-internal val UART_SERVICE_UUID: UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
-internal val BATTERY_SERVICE_UUID: UUID = UUID.fromString("0000180F-0000-1000-8000-00805f9b34fb")
-internal val THROUGHPUT_SERVICE_UUID: UUID = UUID.fromString("0483DADD-6C9D-6CA9-5D41-03AD4FFF4ABB")
-internal val CHANNEL_SOUND_SERVICE_UUID: UUID =
-    UUID.fromString("0000185B-0000-1000-8000-00805F9B34FB")
+internal val HTS_SERVICE_UUID= Uuid.parse("00001809-0000-1000-8000-00805f9b34fb")
+internal val BPS_SERVICE_UUID= Uuid.parse("00001810-0000-1000-8000-00805f9b34fb")
+internal val CSC_SERVICE_UUID= Uuid.parse("00001816-0000-1000-8000-00805f9b34fb")
+internal val CGMS_SERVICE_UUID= Uuid.parse("0000181F-0000-1000-8000-00805f9b34fb")
+internal val DF_SERVICE_UUID= Uuid.parse("21490000-494a-4573-98af-f126af76f490")
+internal val GLS_SERVICE_UUID= Uuid.parse("00001808-0000-1000-8000-00805f9b34fb")
+internal val HRS_SERVICE_UUID= Uuid.parse("0000180D-0000-1000-8000-00805f9b34fb")
+internal val PRX_SERVICE_UUID= Uuid.parse("00001802-0000-1000-8000-00805f9b34fb")
+internal val RSCS_SERVICE_UUID= Uuid.parse("00001814-0000-1000-8000-00805F9B34FB")
+internal val UART_SERVICE_UUID= Uuid.parse("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
+internal val BATTERY_SERVICE_UUID= Uuid.parse("0000180F-0000-1000-8000-00805f9b34fb")
+internal val THROUGHPUT_SERVICE_UUID = Uuid.parse("0483DADD-6C9D-6CA9-5D41-03AD4FFF4ABB")
+internal val CHANNEL_SOUND_SERVICE_UUID = Uuid.parse("0000185B-0000-1000-8000-00805F9B34FB")
+internal val MDS_SERVICE_UUID = Uuid.parse("54220000-f6a5-4007-a371-722f4ebd8436")
 
 // TODO: make a callback which checks the uuid and returns the name and icon for the service.
 object ServiceUuids {
 
+    @Composable
     @OptIn(ExperimentalUuidApi::class)
     fun getServiceInfo(uuid: Uuid): ServiceNameWithIcon? {
         return when (uuid) {
-            HTS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Health Thermometer", Icons.Default.Thermostat)
-            BPS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Blood Pressure", Icons.Default.Bloodtype)
-            CSC_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
+            HTS_SERVICE_UUID -> ServiceNameWithIcon("Health Thermometer", Icons.Default.Thermostat)
+            BPS_SERVICE_UUID -> ServiceNameWithIcon("Blood Pressure", Icons.Default.Bloodtype)
+            CSC_SERVICE_UUID -> ServiceNameWithIcon(
                 "Cycling Speed and Cadence",
                 Icons.AutoMirrored.Default.DirectionsBike,
             )
 
-            CGMS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
+            CGMS_SERVICE_UUID -> ServiceNameWithIcon(
                 "Continuous Glucose Monitoring",
                 Icons.Outlined.WaterDrop
             )
 
-            DF_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Direction Finding", Icons.Default.MyLocation)
-            GLS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Glucose", Icons.Outlined.WaterDrop)
-            HRS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Heart Rate", Icons.Default.MonitorHeart)
-            PRX_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Proximity", Icons.Default.Thermostat)
-            RSCS_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
+            DF_SERVICE_UUID -> ServiceNameWithIcon("Direction Finding", Icons.Default.MyLocation)
+            GLS_SERVICE_UUID -> ServiceNameWithIcon("Glucose", Icons.Outlined.WaterDrop)
+            HRS_SERVICE_UUID -> ServiceNameWithIcon("Heart Rate", Icons.Default.MonitorHeart)
+            PRX_SERVICE_UUID -> ServiceNameWithIcon("Proximity", Icons.Default.Thermostat)
+            RSCS_SERVICE_UUID -> ServiceNameWithIcon(
                 "Running Speed and Cadence",
                 Icons.AutoMirrored.Default.DirectionsRun
             )
 
-            UART_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("UART", Icons.Default.SwapHoriz)
-            BATTERY_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Battery", Icons.Default.BatteryStd)
-            THROUGHPUT_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon("Throughput", Icons.Default.SyncAlt)
-            CHANNEL_SOUND_SERVICE_UUID.toKotlinUuid() -> ServiceNameWithIcon(
+            UART_SERVICE_UUID -> ServiceNameWithIcon("UART", Icons.Default.SwapHoriz)
+            BATTERY_SERVICE_UUID -> ServiceNameWithIcon("Battery", Icons.Default.BatteryStd)
+            THROUGHPUT_SERVICE_UUID -> ServiceNameWithIcon("Throughput", Icons.Default.SyncAlt)
+            CHANNEL_SOUND_SERVICE_UUID -> ServiceNameWithIcon(
                 "Channel Sounding",
                 Icons.Default.MyLocation
+            )
+            MDS_SERVICE_UUID -> ServiceNameWithIcon(
+                "Memfault",
+                ImageVector.vectorResource(R.drawable.ic_memfault_app_logo)
             )
 
             else -> null
