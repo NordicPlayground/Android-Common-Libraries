@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -31,85 +31,53 @@
 
 package no.nordicsemi.android.common.scanner.view
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.scanner.data.Filter
-import no.nordicsemi.android.common.scanner.data.FilterEvent
-import no.nordicsemi.android.common.scanner.viewmodel.UiState
-import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
+import no.nordicsemi.android.common.scanner.ScanFilterState
+import no.nordicsemi.android.common.ui.view.AppBarIcon
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScannerAppBar(
+fun ScannerAppBar(
     title: @Composable () -> Unit,
-    uiState: UiState,
-    availableFilters : List<Filter>,
+    isScanning: Boolean,
+    state: ScanFilterState,
+    modifier: Modifier = Modifier,
+    onFilterClicked: () -> Unit,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    onFilterSelected: (FilterEvent) -> Unit,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
-    var expandFilterBottomSheet by rememberSaveable { mutableStateOf(false) }
-
     NordicAppBar(
+        modifier = modifier,
         title = title,
         backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
         actions = {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                if (uiState.isScanning) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(30.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-                Icon(
+            if (isScanning) {
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(4.dp).size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp,
+                )
+            }
+            if (state.dynamicFilters.isNotEmpty() || state.sortingOptions.isNotEmpty()) {
+                AppBarIcon(
                     imageVector = Icons.Default.FilterList,
                     contentDescription = null,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            expandFilterBottomSheet = true
-                        }
-                        .padding(8.dp)
+                    onClick = onFilterClicked
                 )
             }
         },
     )
-
-    if (expandFilterBottomSheet) {
-        FilterDialog(
-            availableFilters = availableFilters,
-            scannedResults = (uiState.scanningState as ScanningState.DevicesDiscovered).result,
-            activeFilters = uiState.scanningState.filters,
-            onDismissRequest = { expandFilterBottomSheet = false },
-            onFilterSelected = { onFilterSelected(it) }
-        )
-    }
 }

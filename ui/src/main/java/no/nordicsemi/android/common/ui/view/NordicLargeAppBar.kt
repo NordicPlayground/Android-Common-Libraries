@@ -37,13 +37,17 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +63,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.R
 
 @ExperimentalMaterial3Api
@@ -127,6 +132,12 @@ private fun NordicLargeAppBarPreview() {
         NordicLargeAppBar(
             title = { Text(text = "Title") },
             actions = {
+                IconButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.FilterList, contentDescription = "")
+                }
+                CircularProgressIndicator(
+                    modifier = Modifier.padding(4.dp).size(24.dp),
+                )
                 IconButton(onClick = {}) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "")
                 }

@@ -1,196 +1,148 @@
+/*
+ * Copyright (c) 2025, Nordic Semiconductor
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are
+ * permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list
+ * of conditions and the following disclaimer in the documentation and/or other materials
+ * provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors may be
+ * used to endorse or promote products derived from this software without specific prior
+ * written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+ * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+@file:Suppress("unused")
+
 package no.nordicsemi.android.common.scanner.data
 
-import android.annotation.SuppressLint
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Label
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.ui.graphics.vector.ImageVector
 import no.nordicsemi.android.common.scanner.R
-import no.nordicsemi.android.common.scanner.view.FilterButton
-import no.nordicsemi.android.common.scanner.view.GroupByNameDropdown
-import no.nordicsemi.android.common.scanner.view.SortByView
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
-import no.nordicsemi.kotlin.ble.core.BondState
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-sealed interface Filter {
-    val title: StringResource
-    val filter: (ScanResult) -> Boolean
-}
-
-/**
- * Sort the scan result.
- * @param sortType The type of sorting to be applied.
- */
-data class SortBy(
-    val sortType: SortType? = null, // Nullable to allow for default sorting
-    override val filter: (ScanResult) -> Boolean = { true } // Default filter that allows all scan results
-) : Filter {
-    override val title: StringResource
-        get() = when (sortType) {
-            SortType.RSSI -> StringResource.RSSI
-            SortType.ALPHABETICAL -> StringResource.ALPHABETICAL
-            null -> {
-                // Default case when sortType is null, can be used for initial state or no sorting
-                StringResource.RSSI // Default to RSSI sorting
-            }
-        }
-
-    @Composable
-    internal fun Draw(
-        sortByFilters: List<SortBy> = listOf(
-            SortBy(SortType.RSSI),
-            SortBy(SortType.ALPHABETICAL)
-        ),
-        activeFilters: List<Filter>,
-        onSortOptionSelected: (FilterEvent) -> Unit
-    ) {
-        SortByView(
-            sortByFilters = sortByFilters,
-            activeFilters = activeFilters,
-            onSortOptionSelected = onSortOptionSelected
-        )
-    }
-}
-
+sealed class Filter(
+    @StringRes val title: Int,
+    val icon: ImageVector,
+    val isInitiallySelected: Boolean,
+    val predicate: (selected: Boolean, result: ScanResult, highestRssi: Int) -> Boolean,
+)
 
 /**
  * Filter that allows scan results with no empty names.
+ *
+ * This filter will only allow devices that have a non-empty name in their advertising data.
+ * If the device does not advertise a name, it will be excluded from the results.
+ *
+ * @param title The title of the filter..
+ * @param isInitiallySelected Whether the filter is initially selected, defaults to `false`.
  */
-data class OnlyWithNames(
-    override val title: StringResource = StringResource.ONLY_WITH_NAMES,
-) : Filter {
-    override val filter: (ScanResult) -> Boolean
-        get() = { scanResult ->
-            scanResult.peripheral.name?.isNotEmpty() == true
-        }
-
-    @SuppressLint("ComposableNaming")
-    @Composable
-    fun draw(
-        isSelected: Boolean,
-        onClick: () -> Unit
-    ) {
-        FilterButton(
-            title = stringResource(id = title.value),
-            isSelected = isSelected,
-            onClick = onClick
-        )
-    }
-}
+class OnlyWithNames(
+    @StringRes title: Int = R.string.filter_only_with_names,
+    isInitiallySelected: Boolean = false,
+) : Filter(
+    title = title,
+    icon = Icons.AutoMirrored.Default.Label,
+    isInitiallySelected = isInitiallySelected,
+    predicate = { selected, result, _ ->
+        !selected || result.advertisingData.name?.isNotEmpty() == true
+    },
+)
 
 /**
- * Group scan results by name.
+ * Filter nearby devices based on RSSI value.
+ *
+ * It will allow devices with RSSI value greater or equal to the given RSSI value.
+ *
+ * @param rssiThreshold The RSSI threshold to filter nearby devices, defaults to `-50 dBm`.
+ * @param title The title of the filter.
+ * @param isInitiallySelected Whether the filter is initially selected, defaults to `false`.
  */
-data class GroupByName(
-    val name: String = "",
-    override val title: StringResource = StringResource.GROUP_BY_NAME,
-) : Filter {
-    override val filter: (ScanResult) -> Boolean
-        get() = { scanResult ->
-            scanResult.peripheral.name == name
-        }
-
-    @Composable
-    internal fun Draw(
-        dropdownLabel: String,
-        onLabelChange: (String) -> Unit,
-        scanResults: List<ScanResult>,
-        onItemSelected: (FilterEvent) -> Unit
-    ) {
-        GroupByNameDropdown(
-            title = stringResource(title.value),
-            dropdownLabel = dropdownLabel,
-            onLabelChange = { onLabelChange(it) },
-            scanResults = scanResults,
-            onItemSelected = { onItemSelected(it) }
-        )
+class OnlyNearby(
+    rssiThreshold: Int = -50, // Default RSSI value to filter nearby devices
+    @StringRes title: Int = R.string.filter_only_nearby,
+    isInitiallySelected: Boolean = false,
+) : Filter(
+    title = title,
+    icon = Icons.Default.MyLocation,
+    isInitiallySelected = isInitiallySelected,
+    predicate = { selected, _, highestRssi ->
+        !selected || highestRssi >= rssiThreshold
     }
-}
+)
 
 /**
- * Filter bonded devices.
- * isBonded is true if the device is bonded, false otherwise.
+ * Filter devices based on a Service UUID.
+ *
+ * This filter will match devices that advertise the given service UUID in their advertising data,
+ * service data, or service solicitation UUIDs.
+ *
+ * @param uuid The UUID to filter.
+ * @param icon The icon to display for the filter.
+ * @param title The title of the filter.
+ * @param isInitiallySelected Whether the filter is initially selected, defaults to `false`.
  */
-data class OnlyBonded(
-    override val title: StringResource = StringResource.ONLY_BONDED,
-) : Filter {
-    override val filter: (ScanResult) -> Boolean
-        get() = { scanResult ->
-            scanResult.peripheral.bondState.value == BondState.BONDED
-        }
-
-    @Composable
-    internal fun Draw(
-        isSelected: Boolean,
-        onClick: () -> Unit
-    ) {
-        FilterButton(
-            title = stringResource(id = title.value),
-            isSelected = isSelected,
-            onClick = onClick
-        )
-    }
-}
-
-
-/**
- * Filter nearby devices based on RSSI value. It will allow devices with RSSI value greater
- * or equal to  the -50 dBm.
- */
-data class OnlyNearby(
-    val rssi: Int = -50, // Default RSSI value to filter nearby devices
-    override val title: StringResource = StringResource.ONLY_NEARBY,
-) : Filter {
-    override val filter: (ScanResult) -> Boolean
-        get() = { scanResult ->
-            scanResult.rssi >= rssi
-        }
-
-    @Composable
-    internal fun Draw(
-        isSelected: Boolean,
-        onClick: () -> Unit
-    ) {
-        FilterButton(
-            title = stringResource(id = title.value),
-            isSelected = isSelected,
-            onClick = onClick
-        )
-    }
-}
-
 @OptIn(ExperimentalUuidApi::class)
-data class WithServiceUuid(
-    val uuid: Uuid?,
-    override val title: StringResource = StringResource.WITH_SERVICE_UUID,
-) : Filter {
-    override val filter: (ScanResult) -> Boolean
-        get() = { scanResult ->
-            scanResult.advertisingData.serviceUuids.contains(uuid)
-        }
-}
+class WithServiceUuid(
+    uuid: Uuid,
+    icon: ImageVector = Icons.Default.Check,
+    @StringRes title: Int = R.string.filter_with_service_uuid,
+    isInitiallySelected: Boolean = false,
+) : Filter(
+    title = title,
+    icon = icon,
+    isInitiallySelected = isInitiallySelected,
+    predicate = { selected, result, _ ->
+        !selected ||
+        result.advertisingData.serviceUuids.contains(uuid) ||
+        result.advertisingData.serviceData.keys.any { it == uuid } ||
+        result.advertisingData.serviceSolicitationUuids.contains(uuid)
+    }
+)
 
 /**
  * Custom filter.
  *
  * The filter shows only devices that match the given predicate.
+ *
+ * @param title The title of the filter.
+ * @param icon The icon to display for the filter.
+ * @param isInitiallySelected Whether the filter is initially selected, defaults to `false`.
+ * @param predicate The predicate function that takes the selection state, scan result, and highest RSSI,
+ *                  and returns `true` if the result should be included in the filtered list.
  */
-data class CustomFilter(
-    override val title: StringResource,
-    override val filter: (scanResult: ScanResult) -> Boolean,
-) : Filter
-
-/**
- * Enum class for Filter item string resources.
- */
-enum class StringResource(@StringRes val value: Int) {
-    ONLY_NEARBY(R.string.filter_only_nearby),
-    ONLY_BONDED(R.string.filter_only_bonded),
-    ONLY_WITH_NAMES(R.string.filter_only_with_names),
-    GROUP_BY_NAME(R.string.filter_group_by_name),
-    WITH_SERVICE_UUID(R.string.filter_with_service_uuid),
-    RSSI(R.string.filter_rssi),
-    ALPHABETICAL(R.string.filter_alphabetical),
-}
+class CustomFilter(
+    @StringRes title: Int,
+    icon: ImageVector = Icons.Default.Check,
+    isInitiallySelected: Boolean = false,
+    predicate:  (selected: Boolean, result: ScanResult, highestRssi: Int) -> Boolean,
+) : Filter(
+    title = title,
+    icon = icon,
+    isInitiallySelected = isInitiallySelected,
+    predicate = predicate
+)
 

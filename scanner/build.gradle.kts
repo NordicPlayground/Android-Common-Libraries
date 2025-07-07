@@ -37,10 +37,10 @@ plugins {
 group = "no.nordicsemi.android.common"
 
 nordicNexusPublishing {
-    POM_ARTIFACT_ID = "scanner"
-    POM_NAME = "Nordic library for BLE scanner."
+    POM_ARTIFACT_ID = "scanner-ble"
+    POM_NAME = "Common Nordic scanner for Bluetooth LE devices."
 
-    POM_DESCRIPTION = "Nordic Android Common Libraries"
+    POM_DESCRIPTION = "Common Nordic scanner for Bluetooth LE devices"
     POM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
     POM_SCM_URL = "https://github.com/NordicPlayground/Android-Common-Libraries"
     POM_SCM_CONNECTION = "scm:git@github.com:NordicPlayground/Android-Common-Libraries.git"
@@ -54,7 +54,7 @@ android {
 dependencies {
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
-    implementation(libs.nordic.blek.client.android)
     implementation(libs.androidx.compose.material.iconsExtended)
 
+    api(libs.nordic.blek.client.core.android)
 }

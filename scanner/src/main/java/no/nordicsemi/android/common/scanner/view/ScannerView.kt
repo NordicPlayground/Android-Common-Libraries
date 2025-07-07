@@ -31,100 +31,163 @@
 
 package no.nordicsemi.android.common.scanner.view
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bluetooth
-import androidx.compose.material.icons.outlined.ExpandLess
-import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
-import no.nordicsemi.android.common.scanner.data.OnReloadScanResults
-import no.nordicsemi.android.common.scanner.data.UiEvent
+import no.nordicsemi.android.common.scanner.R
+import no.nordicsemi.android.common.scanner.ScanFilterState
+import no.nordicsemi.android.common.scanner.rememberFilterState
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
+import no.nordicsemi.android.common.scanner.data.ScannedPeripheral
+import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.scanner.viewmodel.UiState
 import no.nordicsemi.android.common.ui.view.CircularIcon
 import no.nordicsemi.android.common.ui.view.RssiIcon
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
+import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ScannerView(
-    uiState: UiState,
-    startScanning: () -> Unit,
-    onEvent: (UiEvent) -> Unit,
+fun ScannerView(
     onScanResultSelected: (ScanResult) -> Unit,
+    state: ScanFilterState = rememberFilterState(),
+    onScanningStateChanged: (Boolean) -> Unit = {},
     deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
-        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+        DeviceListItem(scanResult)
     }
 ) {
-    val pullToRefreshState = rememberPullToRefreshState()
-    val scope = rememberCoroutineScope()
+    val viewModel = hiltViewModel<ScannerViewModel>()
+    viewModel.setFilterState(state)
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    val isScanningChanged by rememberUpdatedState(onScanningStateChanged)
+
+    RequireBluetooth(
+        onChanged = { isEnabled ->
+            if (!isEnabled) {
+                isScanningChanged(false)
+            }
+        }
     ) {
-        RequireBluetooth {
-            RequireLocation { isLocationRequiredAndDisabled ->
-                // Both Bluetooth and Location permissions are granted.
-                // If the permission is not granted then the scanning will not start.
-                // So to start scanning we need to check if the location permission is granted.
-                LaunchedEffect(isLocationRequiredAndDisabled) {
-                    startScanning()
+        RequireLocation { isLocationRequiredAndDisabled ->
+            LaunchedEffect(isLocationRequiredAndDisabled) {
+                // This would start scanning on each orientation change,
+                // but there is a flag set in the ViewModel to prevent that.
+                // User needs to pull to refresh to start scanning again.
+                viewModel.initiateScanning(timeout = 4.seconds)
+            }
+
+            val pullToRefreshState = rememberPullToRefreshState()
+            val scope = rememberCoroutineScope()
+
+            PullToRefreshBox(
+                isRefreshing = false,
+                onRefresh = {
+                    viewModel.reload()
+                    scope.launch {
+                        pullToRefreshState.animateToHidden()
+                    }
+                },
+                state = pullToRefreshState,
+            ) {
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                DisposableEffect(uiState.isScanning) {
+                    isScanningChanged(uiState.isScanning)
+                    onDispose {
+                        isScanningChanged(false)
+                    }
                 }
-                Column(modifier = Modifier.fillMaxSize()) {
-                    PullToRefreshBox(
-                        isRefreshing = uiState.scanningState is ScanningState.Loading,
-                        onRefresh = {
-                            onEvent(OnReloadScanResults)
-                            scope.launch {
-                                pullToRefreshState.animateToHidden()
-                            }
-                        },
-                        state = pullToRefreshState,
-                        content = {
-                            DeviceListView(
-                                isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
-                                uiState = uiState,
-                                onClick = { onScanResultSelected(it) },
-                                deviceItem = deviceItem
-                            )
-                        }
+                println("Recomposing scanner view content")
+
+                ScannerContent(
+                    isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,
+                    uiState = uiState,
+                    onClick = onScanResultSelected,
+                    deviceItem = deviceItem
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun ScannerContent(
+    isLocationRequiredAndDisabled: Boolean,
+    uiState: UiState,
+    onClick: (ScanResult) -> Unit,
+    deviceItem: @Composable (ScanResult) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = WindowInsets.displayCutout
+            .only(WindowInsetsSides.Horizontal)
+            .union(WindowInsets(left = 8.dp, right = 8.dp, top = 8.dp, bottom = 8.dp))
+            .asPaddingValues()
+    ) {
+        when (uiState.scanningState) {
+            is ScanningState.Loading -> item {
+                ScanEmptyView(
+                    locationRequiredAndDisabled = isLocationRequiredAndDisabled,
+                )
+            }
+            is ScanningState.Error -> item {
+                ScanErrorView(
+                    error = uiState.scanningState.error
+                )
+            }
+            is ScanningState.DevicesDiscovered -> {
+                if (uiState.scanningState.result.isEmpty()) {
+                    item {
+                        ScanEmptyView(
+                            locationRequiredAndDisabled = isLocationRequiredAndDisabled
+                        )
+                    }
+                } else {
+                    DeviceListItems(
+                        devices = uiState.scanningState.result,
+                        onScanResultSelected = onClick,
+                        deviceItem = deviceItem
                     )
                 }
             }
@@ -132,134 +195,21 @@ internal fun ScannerView(
     }
 }
 
-@Composable
-internal fun DeviceListView(
-    isLocationRequiredAndDisabled: Boolean,
-    uiState: UiState,
-    onClick: (ScanResult) -> Unit,
-    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
-        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
-    },
-) {
-    LazyColumn {
-        when (uiState.scanningState) {
-            is ScanningState.Loading -> item {
-                ScanEmptyView(
-                    locationRequiredAndDisabled = isLocationRequiredAndDisabled,
-                )
-            }
-
-            is ScanningState.Error -> item { ScanErrorView(uiState.scanningState.error) }
-            is ScanningState.DevicesDiscovered -> {
-                if (uiState.scanningState.result.isEmpty()) {
-                    item { ScanEmptyView(isLocationRequiredAndDisabled) }
-                } else {
-                    if (uiState.isGroupByNameEnabled) {
-                        item {
-                            GroupByNameDeviceList(
-                                devices = uiState.scanningState.result,
-                                onClick = onClick,
-                                deviceItem = deviceItem,
-                            )
-                        }
-                    } else {
-                        DeviceListItems(
-                            uiState.scanningState.result,
-                            onClick,
-                            deviceItem
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun GroupByNameDeviceList(
-    devices: List<ScanResult>,
-    peripheralIcon: ImageVector = Icons.Default.Bluetooth,
-    onClick: (ScanResult) -> Unit,
-    deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
-        DeviceListItem(scanResult, peripheralIcon = null)
-    },
-) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
-    val expandIcon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { isExpanded = !isExpanded }
-                .padding(8.dp)
-        ) {
-            CircularIcon(peripheralIcon)
-            Text(text = devices.first().peripheral.name ?: "Unknown Device")
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                imageVector = expandIcon,
-                contentDescription = null,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
-
-        AnimatedVisibility(
-            visible = isExpanded,
-            enter = expandIn(expandFrom = Alignment.TopCenter) + fadeIn(),
-            exit = shrinkOut(shrinkTowards = Alignment.TopCenter) + fadeOut()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp)
-            ) {
-                HorizontalDivider()
-                VerticalBlueBar {
-                    devices.forEach { scanResult ->
-                        Row(
-                            modifier = Modifier.clickable {
-                                onClick(scanResult)
-                            }
-                        ) {
-                            deviceItem(scanResult)
-                            // Add a divider between items if not the last item
-                            if (scanResult != devices.last()) {
-                                HorizontalDivider()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        HorizontalDivider()
-    }
-}
-
 @Suppress("FunctionName")
 internal fun LazyListScope.DeviceListItems(
-    devices: List<ScanResult>,
+    devices: List<ScannedPeripheral>,
     onScanResultSelected: (ScanResult) -> Unit,
     deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
         DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
     },
 ) {
-    items(devices.size) { index ->
+    items(devices) {device ->
         Box(
             modifier = Modifier
-                .clickable {
-                    onScanResultSelected(devices[index])
-                }
+                .clip(RoundedCornerShape(16.dp))
+                .clickable { onScanResultSelected(device.latestScanResult) }
         ) {
-            deviceItem(devices[index])
-            if (index < devices.size) {
-                // Add a divider between items
-                HorizontalDivider()
-            }
+            deviceItem(device.latestScanResult)
         }
     }
 }
@@ -267,10 +217,11 @@ internal fun LazyListScope.DeviceListItems(
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 internal fun DeviceListItem(
-    device: ScanResult,
-    peripheralIcon: ImageVector? = Icons.Default.Bluetooth,
+    result: ScanResult,
+    peripheralIcon: ImageVector? = result.advertisingData.serviceUuids
+        .firstNotNullOfOrNull { ServiceUuids.getServiceInfo(it)?.icon }
+        ?: Icons.Default.Bluetooth,
 ) {
-    val serviceUuids = device.advertisingData.serviceUuids
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -289,43 +240,23 @@ internal fun DeviceListItem(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = device.peripheral.name ?: "Unknown Device",
+                        text = result.peripheral.name ?: stringResource(R.string.no_name),
+                        color = if (result.peripheral.name != null) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        },
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        text = device.peripheral.address,
+                        text = result.peripheral.address,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
 
                 // Show RSSI if available
-                RssiIcon(device.rssi)
-            }
-            if (serviceUuids.isNotEmpty()) {
-                // Each service UUID is displayed with its icon in the row. instead of a column.
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    serviceUuids.forEach {
-                        ServiceUuids.getServiceInfo(it)?.let { serviceInfo ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(2.dp)
-                            ) {
-                                Text(
-                                    text = serviceInfo.service,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Icon(
-                                    imageVector = serviceInfo.icon,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
-                            }
-                        }
-                    }
-                }
+                RssiIcon(result.rssi)
             }
         }
     }

@@ -80,4 +80,7 @@
     <string name="warning_text">It\'s too late to do anything.</string>
     <string name="warning_normal">Try anyway</string>
     <string name="warning_dangerous">Give up</string>
+
+    <string name="filter_hrm">Heart Rate</string>
+    <string name="filter_show_all">Not Heart Rate</string>
 </resources>
