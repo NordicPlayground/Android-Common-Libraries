@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,27 +29,27 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.di
+package no.nordicsemi.android.common.test.main.di
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
 import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import no.nordicsemi.kotlin.ble.client.android.CentralManager
+import no.nordicsemi.kotlin.ble.client.android.native
 
-@Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
-internal class ScannerHiltModule {
+object CentralManagerModule {
 
     @Provides
-    fun provideBluetoothAdapter(
-        @ApplicationContext context: Context
-    ): BluetoothAdapter {
-        val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        return manager.adapter
+    fun provideCentralManager(
+        @ApplicationContext context: Context,
+        scope: CoroutineScope
+    ): CentralManager {
+        return CentralManager.Factory.native(context, scope)
     }
 }

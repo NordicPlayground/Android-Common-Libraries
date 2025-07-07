@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -28,43 +28,41 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package no.nordicsemi.android.kotlin.ble.ui.scanner
 
-import android.os.ParcelUuid
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
-import no.nordicsemi.android.kotlin.ble.ui.scanner.main.DeviceListItem
-import no.nordicsemi.android.kotlin.ble.ui.scanner.view.ScannerAppBar
-import no.nordicsemi.android.kotlin.ble.core.scanner.BleScanResults
+package no.nordicsemi.android.common.scanner.viewmodel
 
-@Composable
-fun ScannerScreen(
-    title: String = stringResource(id = R.string.scanner_screen),
-    uuid: ParcelUuid?,
-    cancellable: Boolean = true,
-    onResult: (ScannerScreenResult) -> Unit,
-    deviceItem: @Composable (BleScanResults) -> Unit = {
-        DeviceListItem(it.advertisedName ?: it.device.name, it.device.address)
-    }
-) {
-    var isScanning by rememberSaveable { mutableStateOf(false) }
+import no.nordicsemi.android.common.scanner.data.ScannedPeripheral
 
-    Column {
-        if (cancellable) {
-            ScannerAppBar(title, isScanning) { onResult(ScanningCancelled) }
-        } else {
-            ScannerAppBar(title, isScanning)
-        }
-        ScannerView(
-            uuid = uuid,
-            onScanningStateChanged = { isScanning = it },
-            onResult = { onResult(DeviceSelected(it)) },
-            deviceItem = deviceItem,
-        )
-    }
+/** ScanningState represents the state of the scanning process. */
+internal sealed interface ScanningState {
+
+    /** Loading state. */
+    data object Loading : ScanningState
+
+    /**
+     * Devices discovered state.
+     *
+     * @property result The list of discovered devices.
+     */
+    data class DevicesDiscovered(
+        val result: List<ScannedPeripheral>,
+    ) : ScanningState
+
+    /**
+     * Error state.
+     *
+     * @property error The error that occurred.
+     */
+    data class Error(val error: String?) : ScanningState
 }
+
+/**
+ * This class is responsible for managing the ui states of the scanner screen.
+ *
+ * @property isScanning True if the scanner is scanning.
+ * @property scanningState The current scanning state.
+ */
+internal data class UiState(
+    val isScanning: Boolean = false,
+    val scanningState: ScanningState = ScanningState.Loading,
+)

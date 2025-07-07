@@ -68,6 +68,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import no.nordicsemi.android.common.navigation.Navigator
 import no.nordicsemi.android.common.test.R
 import no.nordicsemi.android.common.test.simple.Hello
+import no.nordicsemi.android.common.test.simple.ScannerDestinationId
 import no.nordicsemi.android.common.theme.NordicTheme
 import no.nordicsemi.android.common.ui.view.NordicSliderDefaults
 import no.nordicsemi.android.common.ui.view.PagerViewItem
@@ -76,7 +77,13 @@ import javax.inject.Inject
 val BasicsPage = PagerViewItem("Basics") {
     val vm = hiltViewModel<BasicPageViewModel>()
 
-    BasicViewsScreen(onOpenSimple = { vm.openSimple() },)
+    BasicViewsScreen(
+        onOpenSimple = { vm.openSimple() },
+        onOpenScanner = {
+            // Navigate to the scanner destination
+            vm.openScanner()
+        },
+    )
 }
 
 @HiltViewModel
@@ -88,11 +95,17 @@ class BasicPageViewModel @Inject constructor(
     fun openSimple() {
         navigator.navigateTo(Hello, 1)
     }
+
+    fun openScanner() {
+        // Navigate to the scanner destination
+        navigator.navigateTo(ScannerDestinationId)
+    }
 }
 
 @Composable
 private fun BasicViewsScreen(
     onOpenSimple: () -> Unit,
+    onOpenScanner: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -106,6 +119,10 @@ private fun BasicViewsScreen(
                 onClick = onOpenSimple
             ) {
                 Text(text = stringResource(id = R.string.action_simple))
+            }
+
+            Button(onClick = { onOpenScanner() }) {
+                Text(text = stringResource(id = R.string.action_scanner))
             }
         }
 
@@ -256,6 +273,7 @@ private fun ContentPreview() {
     NordicTheme {
         BasicViewsScreen(
             onOpenSimple = {},
+            onOpenScanner = {},
         )
     }
 }

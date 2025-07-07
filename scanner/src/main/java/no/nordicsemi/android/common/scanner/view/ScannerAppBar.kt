@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,12 +29,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.view
+package no.nordicsemi.android.common.scanner.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -42,25 +43,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.scanner.ScanFilterState
+import no.nordicsemi.android.common.ui.view.AppBarIcon
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScannerAppBar(
-    text: String,
-    showProgress: Boolean = false,
+    title: @Composable () -> Unit,
+    isScanning: Boolean,
+    state: ScanFilterState,
+    modifier: Modifier = Modifier,
+    onFilterClicked: () -> Unit,
     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
     NordicAppBar(
-        text = text,
+        modifier = modifier,
+        title = title,
         backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
         actions = {
-            if (showProgress) {
+            if (isScanning) {
                 CircularProgressIndicator(
-                    modifier = Modifier.padding(horizontal = 16.dp).size(30.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    modifier = Modifier.padding(4.dp).size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp,
+                )
+            }
+            if (state.dynamicFilters.isNotEmpty() || state.sortingOptions.isNotEmpty()) {
+                AppBarIcon(
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = null,
+                    onClick = onFilterClicked
                 )
             }
         },

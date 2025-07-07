@@ -106,7 +106,7 @@ private val HelloDialogDestination = defineDialogDestination(HelloDialog) {
     )
 }
 
-val HelloDestinations = HelloDestination + HelloDialogDestination
+val HelloDestinations = HelloDestination + HelloDialogDestination + ScannerDestination
 
 @Composable
 private fun HelloScreen(

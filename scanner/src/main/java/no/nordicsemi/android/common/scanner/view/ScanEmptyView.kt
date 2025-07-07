@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.view.internal
+package no.nordicsemi.android.common.scanner.view
 
 import android.content.Context
 import android.content.Intent
@@ -44,36 +44,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.core.parseBold
-import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.android.common.ui.view.WarningView
-import no.nordicsemi.android.kotlin.ble.ui.scanner.R
 
 @Composable
-internal fun ScanEmptyView(
-    requireLocation: Boolean,
-) {
+internal fun ScanEmptyView(locationRequiredAndDisabled: Boolean) {
     WarningView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         imageVector = Icons.AutoMirrored.Filled.BluetoothSearching,
-        title = stringResource(id = R.string.no_device_guide_title),
-        hint = stringResource(id = R.string.no_device_guide_info) + if (requireLocation) {
+        title = stringResource(id = R.string.scan_empty_title),
+        hint = stringResource(id = R.string.no_device_guide_info) + if (locationRequiredAndDisabled) {
             "\n\n" + stringResource(id = R.string.no_device_guide_location_info)
         } else {
             ""
         }.parseBold(),
         hintTextAlign = TextAlign.Justify,
     ) {
-        if (requireLocation) {
+        if (locationRequiredAndDisabled) {
             val context = LocalContext.current
             Button(onClick = { openLocationSettings(context) }) {
-                Text(text = stringResource(id = R.string.action_location_settings))
+                Text(text = stringResource(id = R.string.enable_location))
             }
         }
     }
@@ -85,22 +86,38 @@ private fun openLocationSettings(context: Context) {
     context.startActivity(intent)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ScanEmptyViewPreview_RequiredLocation() {
-    NordicTheme {
-        ScanEmptyView(
-            requireLocation = true,
-        )
-    }
+    ScanEmptyView(
+        locationRequiredAndDisabled = true,
+    )
 }
 
-@Preview(device = Devices.TABLET)
+@Preview(device = Devices.TABLET, showBackground = true)
 @Composable
 private fun ScanEmptyViewPreview() {
-    NordicTheme {
-        ScanEmptyView(
-            requireLocation = false,
-        )
+    ScanEmptyView(
+        locationRequiredAndDisabled = false,
+    )
+}
+
+/**
+ * Parses the string and makes the text between `<b>` and `</b>` bold using [AnnotatedString].
+ */
+internal fun String.parseBold(): AnnotatedString {
+    val parts = this.split("<b>", "</b>")
+    return buildAnnotatedString {
+        var bold = false
+        for (part in parts) {
+            if (bold) {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(part)
+                }
+            } else {
+                append(part)
+            }
+            bold = !bold
+        }
     }
 }

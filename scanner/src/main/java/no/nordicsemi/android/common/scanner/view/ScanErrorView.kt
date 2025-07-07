@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,10 +29,37 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.repository
+package no.nordicsemi.android.common.scanner.view
 
-internal data class DevicesScanFilter(
-    val filterUuidRequired: Boolean?,
-    val filterNearbyOnly: Boolean,
-    val filterWithNames: Boolean
-)
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.BluetoothSearching
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.scanner.R
+import no.nordicsemi.android.common.ui.view.WarningView
+
+@Composable
+internal fun ScanErrorView(
+    error: String?,
+) {
+    val message = error ?: "Unknown reason"
+    WarningView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        imageVector = Icons.AutoMirrored.Filled.BluetoothSearching,
+        title = stringResource(id = R.string.scan_failed_title),
+        hint = stringResource(id = R.string.scan_failed_info, message),
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ErrorSectionPreview() {
+    ScanErrorView(null)
+}

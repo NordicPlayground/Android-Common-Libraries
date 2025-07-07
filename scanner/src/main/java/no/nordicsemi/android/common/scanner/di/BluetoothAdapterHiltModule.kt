@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,39 +29,27 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.view.internal
+package no.nordicsemi.android.common.scanner.di
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.BluetoothSearching
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import no.nordicsemi.android.common.theme.NordicTheme
-import no.nordicsemi.android.common.ui.view.WarningView
-import no.nordicsemi.android.kotlin.ble.ui.scanner.R
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.content.Context
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 
-@Composable
-internal fun ScanErrorView(
-    error: Int,
-) {
-    WarningView(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        imageVector = Icons.AutoMirrored.Filled.BluetoothSearching,
-        title = stringResource(id = R.string.scanner_error),
-        hint = stringResource(id = R.string.scan_failed, error),
-    )
-}
+@Suppress("unused")
+@Module
+@InstallIn(SingletonComponent::class)
+internal class BluetoothAdapterHiltModule {
 
-@Preview
-@Composable
-private fun ErrorSectionPreview() {
-    NordicTheme {
-        ScanErrorView(3)
+    @Provides
+    fun provideBluetoothAdapter(
+        @ApplicationContext context: Context
+    ): BluetoothAdapter {
+        val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        return manager.adapter
     }
 }

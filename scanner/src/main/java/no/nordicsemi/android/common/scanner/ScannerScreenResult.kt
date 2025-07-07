@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor
+ * Copyright (c) 2025, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,18 +29,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.kotlin.ble.ui.scanner.repository
+package no.nordicsemi.android.common.scanner
 
-import android.annotation.SuppressLint
-import dagger.hilt.android.scopes.ViewModelScoped
-import no.nordicsemi.android.kotlin.ble.scanner.BleScanner
-import javax.inject.Inject
+import no.nordicsemi.kotlin.ble.client.android.ScanResult
 
-@ViewModelScoped
-class ScannerRepository @Inject internal constructor(
-    private val nordicScanner: BleScanner
-) {
+/**
+ * Represents the result of the scanner screen interaction.
+ * This sealed interface defines the possible outcomes when the user interacts with the scanner screen.
+ */
+sealed interface ScannerScreenResult
 
-    @SuppressLint("MissingPermission")
-    fun getScannerState() = nordicScanner.scan()
-}
+/**
+ * Represents the cancellation of the scanning process.
+ * This object is used to indicate that the user has cancelled the scanning operation.
+ */
+data object ScanningCancelled : ScannerScreenResult
+
+/**
+ * Represents the selection of a device from the scan results.
+ * @property scanResult The selected scan result containing details about the device.
+ */
+data class DeviceSelected(val scanResult: ScanResult) : ScannerScreenResult

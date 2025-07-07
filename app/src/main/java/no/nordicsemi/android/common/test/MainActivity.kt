@@ -34,7 +34,6 @@ package no.nordicsemi.android.common.test
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -44,19 +43,23 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
@@ -68,8 +71,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -93,6 +99,7 @@ import no.nordicsemi.android.common.test.simple.Advanced
 import no.nordicsemi.android.common.test.simple.AdvancedDestination
 import no.nordicsemi.android.common.test.simple.Hello
 import no.nordicsemi.android.common.test.simple.HelloDialog
+import no.nordicsemi.android.common.test.simple.ScannerDestinationId
 import no.nordicsemi.android.common.test.simple.Settings
 import no.nordicsemi.android.common.test.simple.SettingsDestination
 import no.nordicsemi.android.common.test.tab.SecondDestinations
@@ -100,6 +107,7 @@ import no.nordicsemi.android.common.test.tab.ThirdDestination
 import no.nordicsemi.android.common.test.tab.ThirdTab
 import no.nordicsemi.android.common.theme.NordicActivity
 import no.nordicsemi.android.common.theme.NordicTheme
+import no.nordicsemi.android.common.ui.view.AppBarIcon
 import no.nordicsemi.android.common.ui.view.NavigationDrawerDividerDefaults
 import no.nordicsemi.android.common.ui.view.NavigationDrawerTitle
 import no.nordicsemi.android.common.ui.view.NavigationDrawerTitleDefaults
@@ -107,6 +115,9 @@ import no.nordicsemi.android.common.ui.view.NordicLargeAppBar
 import no.nordicsemi.android.common.ui.view.NordicLogo
 
 data class Item(val title: String, val destinationId: DestinationId<Unit, *>, val icon: ImageVector)
+
+val LocalScanningState = compositionLocalOf { mutableStateOf(false) }
+val LocalFilterState = compositionLocalOf { mutableStateOf(false) }
 
 val Tabs = createSimpleDestination("tabs")
 val FirstTab = createSimpleDestination("first_tab")
@@ -140,6 +151,8 @@ class MainActivity : NordicActivity() {
 
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
+
+                var isFilterOpen by LocalFilterState.current
 
                 ModalNavigationDrawer(
                     drawerState = drawerState,
@@ -213,8 +226,10 @@ class MainActivity : NordicActivity() {
                         topBar = {
                             NordicLargeAppBar(
                                 title = { Text(text = stringResource(id = R.string.title_main)) },
-                                showBackButton = listOf(Hello, HelloDialog).contains(
-                                    currentDestination
+                                showBackButton = currentDestination in listOf(
+                                    Hello,
+                                    HelloDialog,
+                                    ScannerDestinationId
                                 ),
                                 onNavigationButtonClick = { navigator.navigateUp() },
                                 onHamburgerButtonClick = {
@@ -222,6 +237,21 @@ class MainActivity : NordicActivity() {
                                 },
                                 scrollBehavior = scrollBehavior,
                                 actions = {
+                                    if (navigator.isInHierarchy(ScannerDestinationId)
+                                            .collectAsStateWithLifecycle().value) {
+                                        if (LocalScanningState.current.value) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.padding(4.dp).size(24.dp),
+                                                color = MaterialTheme.colorScheme.onPrimary,
+                                                strokeWidth = 2.dp,
+                                            )
+                                        }
+                                        AppBarIcon(
+                                            imageVector = Icons.Default.FilterList,
+                                            contentDescription = null,
+                                            onClick = { isFilterOpen = true }
+                                        )
+                                    }
                                     val context = LocalContext.current
                                     LoggerAppBarIcon(
                                         onClick = {
