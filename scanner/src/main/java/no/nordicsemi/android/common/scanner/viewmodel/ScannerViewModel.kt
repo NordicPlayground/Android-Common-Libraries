@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import no.nordicsemi.android.common.scanner.ScanFilterState
+import no.nordicsemi.android.common.scanner.data.ScannedPeripheral
 import no.nordicsemi.kotlin.ble.client.android.CentralManager
 import no.nordicsemi.kotlin.ble.client.exception.BluetoothUnavailableException
 import no.nordicsemi.kotlin.ble.client.exception.ScanningException
@@ -96,10 +97,11 @@ internal class ScannerViewModel @Inject constructor(
             return
         }
 
-        scanning = centralManager.scan(
-            timeout = timeout,
-            filter = filterState.filter,
-        )
+        scanning = centralManager
+            .scan(
+                timeout = timeout,
+                filter = filterState.filter,
+            )
             // Update the scanning state to loading when the scan starts.
             .onStart {
                 _uiState.update {
@@ -184,6 +186,9 @@ internal class ScannerViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    /**
+     * Clears the current scan results and restarts the scanning process.
+     */
     fun reload() {
         scanResults.clear()
         _uiState.update {
@@ -193,6 +198,8 @@ internal class ScannerViewModel @Inject constructor(
                 )
             )
         }
+        scanning?.cancel()
+        scanning = null
         startScanning()
     }
 
@@ -200,17 +207,7 @@ internal class ScannerViewModel @Inject constructor(
      * Sets the filters for the scanner.
      */
     fun setFilterState(state: ScanFilterState) {
-        println("AAA Setting filter state")
         filterState = state
-        _uiState.update {
-            it.copy(
-                scanningState = ScanningState.DevicesDiscovered(
-                    result = scanResults
-                        .applyFilter(state)
-                        .sortedWith(state.activeSortingOption.comparator),
-                )
-            )
-        }
     }
 }
 
@@ -219,19 +216,4 @@ private fun ScanFilterState.passes(peripheral: ScannedPeripheral): Boolean {
     return dynamicFilters.withIndex().all { (index, filter) ->
         filter.predicate(isFilterSelected(index), peripheral.latestScanResult, peripheral.highestRssi)
     }
-}
-
-private fun List<ScannedPeripheral>.applyFilter(state: ScanFilterState): List<ScannedPeripheral> {
-    // Note: This returns the same list. All equal will return true,
-    //       even if the list has new items added.
-    //       Fortunately, we always sort the list after applying the filter,
-    //       so the list is copied to a new one which triggers the recomposition.
-    if (state.dynamicFilters.isEmpty()) return this
-
-    // Apply all filters.
-    return this
-        .filter { peripheral ->
-            state.passes(peripheral)
-        }
-        .distinct()
 }
