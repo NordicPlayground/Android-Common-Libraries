@@ -138,6 +138,7 @@ fun ScannerView(
                         isScanningChanged(false)
                     }
                 }
+                println("Recomposing scanner view content")
 
                 ScannerContent(
                     isLocationRequiredAndDisabled = isLocationRequiredAndDisabled,

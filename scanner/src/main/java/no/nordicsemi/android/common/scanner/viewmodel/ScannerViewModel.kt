@@ -208,6 +208,17 @@ internal class ScannerViewModel @Inject constructor(
      */
     fun setFilterState(state: ScanFilterState) {
         filterState = state
+        // The state needs to be updated whenever the filter changes.
+        // Otherwise, the changing the filter won't modify the list when scanning has stopped.
+        _uiState.update {
+            it.copy(
+                scanningState = ScanningState.DevicesDiscovered(
+                    result = scanResults
+                        .applyFilter(state)
+                        .sortedWith(state.activeSortingOption.comparator),
+                )
+            )
+        }
     }
 }
 
@@ -216,4 +227,19 @@ private fun ScanFilterState.passes(peripheral: ScannedPeripheral): Boolean {
     return dynamicFilters.withIndex().all { (index, filter) ->
         filter.predicate(isFilterSelected(index), peripheral.latestScanResult, peripheral.highestRssi)
     }
+}
+
+private fun List<ScannedPeripheral>.applyFilter(state: ScanFilterState): List<ScannedPeripheral> {
+    // Note: This returns the same list. All equal will return true,
+    //       even if the list has new items added.
+    //       Fortunately, we always sort the list after applying the filter,
+    //       so the list is copied to a new one which triggers the recomposition.
+    if (state.dynamicFilters.isEmpty()) return this
+
+    // Apply all filters.
+    return this
+        .filter { peripheral ->
+            state.passes(peripheral)
+        }
+        .distinct()
 }
