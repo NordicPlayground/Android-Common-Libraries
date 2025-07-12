@@ -50,7 +50,7 @@ dependencies {
     implementation(project(":permissions-wifi"))
     implementation(project(":permissions-internet"))
     implementation(project(":permissions-notification"))
-    implementation(project(":scanner"))
+    implementation(project(":scanner-ble"))
 
     implementation(libs.nordic.blek.client.android)
 
