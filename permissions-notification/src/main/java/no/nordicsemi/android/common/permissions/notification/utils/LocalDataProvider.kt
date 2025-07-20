@@ -68,7 +68,7 @@ internal class LocalDataProvider @Inject constructor(
         get() = _notificationPermissionRequested.value
         set(value) {
             _scope.launch(Dispatchers.IO) {
-                repo.updateWifiPermissionRequested(value)
+                repo.updateNotificationPermissionRequested(value)
             }
         }
 
