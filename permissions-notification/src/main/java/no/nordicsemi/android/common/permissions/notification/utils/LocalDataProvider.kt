@@ -36,31 +36,43 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val SHARED_PREFS_NAME = "SHARED_PREFS_NOTIFICATION"
-
-private const val PREFS_PERMISSION_REQUESTED = "notification_permission_requested"
+import no.nordicsemi.android.common.core.settings.SettingsRepository
 
 @Singleton
 internal class LocalDataProvider @Inject constructor(
     private val context: Context,
 ) {
-    private val sharedPrefs: SharedPreferences
-        get() = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
-
-    val isTiramisuOrAbove: Boolean
-        @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    private val repo = SettingsRepository(context)
+    private val _scope = CoroutineScope(Dispatchers.IO)
+    private val _notificationPermissionRequested = repo.nordicSettings
+        .map{ settings -> settings.notificationPermissionRequested }
+        .stateIn(
+            _scope,
+            SharingStarted.Lazily,
+            false
+        )
 
     /**
      * The first time an app requests a permission there is no 'Don't Allow' checkbox and
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
      */
     var notificationPermissionRequested: Boolean
-        get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
+        get() = _notificationPermissionRequested.value
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_PERMISSION_REQUESTED, value).apply()
+            _scope.launch(Dispatchers.IO) {
+                repo.updateWifiPermissionRequested(value)
+            }
         }
+
+    val isTiramisuOrAbove: Boolean
+        @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 }

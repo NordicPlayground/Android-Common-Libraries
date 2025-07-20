@@ -33,23 +33,38 @@ package no.nordicsemi.android.common.permissions.ble.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.app.ActivityCompat
-import androidx.core.content.edit
-
-private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
-
-private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
-private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_requested"
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import no.nordicsemi.android.common.core.settings.SettingsRepository
 
 @Suppress("unused")
 @SuppressLint("AnnotateVersionCheck")
 internal class LocalDataProvider(
     private val context: Context
 ) {
-    private val sharedPrefs: SharedPreferences
-        get() = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+    private val repo = SettingsRepository(context)
+    private val _scope = CoroutineScope(Dispatchers.IO)
+    private val _locationPermissionRequested = repo.nordicSettings
+        .map{ settings -> settings.locationPermissionRequested }
+        .stateIn(
+            _scope,
+            SharingStarted.Lazily,
+            false
+        )
+
+    private val _bluetoothPermissionRequested = repo.nordicSettings
+        .map { settings -> settings.bluetoothPermissionRequested }
+        .stateIn(
+            _scope,
+            SharingStarted.Lazily,
+            false
+        )
 
     /**
      * The first time an app requests a permission there is no 'Don't ask again' checkbox and
@@ -58,11 +73,12 @@ internal class LocalDataProvider(
      * a flag needs to be saved.
      */
     var locationPermissionRequested: Boolean
-        get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
+        get() = _locationPermissionRequested.value
         set(value) {
-            sharedPrefs.edit { putBoolean(PREFS_PERMISSION_REQUESTED, value) }
+            _scope.launch(Dispatchers.IO) {
+                repo.updateLocationPermissionRequested(value)
+            }
         }
-
     /**
      * The first time an app requests a permission there is no 'Don't ask again' checkbox and
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
@@ -70,9 +86,11 @@ internal class LocalDataProvider(
      * a flag needs to be saved.
      */
     var bluetoothPermissionRequested: Boolean
-        get() = sharedPrefs.getBoolean(PREFS_BLUETOOTH_PERMISSION_REQUESTED, false)
+        get() = _bluetoothPermissionRequested.value
         set(value) {
-            sharedPrefs.edit { putBoolean(PREFS_BLUETOOTH_PERMISSION_REQUESTED, value) }
+            _scope.launch(Dispatchers.IO) {
+                repo.updateBluetoothPermissionsRequested(value)
+            }
         }
 
     val isLocationPermissionRequired: Boolean
@@ -90,4 +108,8 @@ internal class LocalDataProvider(
 
     val isSOrAbove: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+    init {
+        _scope.launch { repo.fetchInitialSettings() }
+    }
 }

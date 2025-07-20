@@ -33,6 +33,7 @@ plugins {
     alias(libs.plugins.nordic.library.compose)
     alias(libs.plugins.nordic.nexus.android)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.google.protobuf)
 }
 
 group = "no.nordicsemi.android.common"
@@ -63,4 +64,27 @@ dokka {
 
 dependencies {
     implementation(libs.androidx.core)
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.javalite)
+}
+
+protobuf {
+    // Configures the Protobuf compilation and the protoc executable
+    protoc {
+        // Downloads from the repositories
+        artifact = "com.google.protobuf:protoc:4.31.1"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                // Configures the task output type
+                create("java") {
+                    // Java Lite has smaller code size and is recommended for Android
+                    option("lite")
+                }
+            }
+        }
+    }
 }
