@@ -31,6 +31,7 @@
 
 plugins {
     alias(libs.plugins.nordic.library.compose)
+    alias(libs.plugins.nordic.feature)
     alias(libs.plugins.nordic.nexus.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.google.protobuf)
@@ -64,15 +65,15 @@ dokka {
 
 dependencies {
     implementation(libs.androidx.core)
-    implementation(libs.androidx.datastore)
     implementation(libs.protobuf.javalite)
+    implementation(libs.datastore)
 }
 
 protobuf {
     // Configures the Protobuf compilation and the protoc executable
     protoc {
         // Downloads from the repositories
-        artifact = "com.google.protobuf:protoc:4.31.1"
+        artifact = "com.google.protobuf:protoc:3.14.0"
     }
 
     // Generates the java Protobuf-lite code for the Protobufs in this project

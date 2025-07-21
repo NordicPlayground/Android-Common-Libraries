@@ -31,29 +31,28 @@
 
 package no.nordicsemi.android.common.permissions.notification.utils
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import no.nordicsemi.android.common.core.ApplicationScope
+import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
-import no.nordicsemi.android.common.core.settings.SettingsRepository
 
 @Singleton
 internal class LocalDataProvider @Inject constructor(
-    private val context: Context,
+    private val repo: NordicCommonLibsSettingsRepository
 ) {
-    private val repo = SettingsRepository(context)
-    private val _scope = CoroutineScope(Dispatchers.IO)
-    private val _notificationPermissionRequested = repo.nordicSettings
-        .map{ settings -> settings.notificationPermissionRequested }
+    private val _scope = ApplicationScope
+    private val _notificationPermissionRequested = repo.nordicCommonLibsSettings
+        .map { settings ->
+            settings.notificationPermissionRequested
+        }
         .stateIn(
             _scope,
             SharingStarted.Lazily,
@@ -65,9 +64,10 @@ internal class LocalDataProvider @Inject constructor(
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
      */
     var notificationPermissionRequested: Boolean
-        get() = _notificationPermissionRequested.value
+        get() =
+            _notificationPermissionRequested.value
         set(value) {
-            _scope.launch(Dispatchers.IO) {
+            _scope.launch {
                 repo.updateNotificationPermissionRequested(value)
             }
         }
@@ -75,4 +75,9 @@ internal class LocalDataProvider @Inject constructor(
     val isTiramisuOrAbove: Boolean
         @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+
+    init {
+        _scope.launch { repo.fetchInitialSettings() }
+    }
 }

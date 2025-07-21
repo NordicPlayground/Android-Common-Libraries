@@ -29,71 +29,75 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.ble.bluetooth
+package no.nordicsemi.android.common.permissions.ble.permissionState
 
-import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.LocationManager
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.util.LocalDataProvider
 import no.nordicsemi.android.common.permissions.ble.util.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS = "no.nordicsemi.android.common.permission.REFRESH_BLUETOOTH_PERMISSIONS"
+private const val REFRESH_LOCATION_PERMISSIONS =
+    "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
 
 @Singleton
-internal class BluetoothStateManager @Inject constructor(
+internal class LocationStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val dataProvider: LocalDataProvider
 ) {
-    private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)
 
-    fun bluetoothState() = callbackFlow {
-        trySend(getBluetoothPermissionState())
+    fun locationState() = callbackFlow {
+        trySend(getLocationState())
 
-        val bluetoothStateChangeHandler = object : BroadcastReceiver() {
+        val locationStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                trySend(getBluetoothPermissionState())
+                trySend(getLocationState())
             }
         }
         val filter = IntentFilter().apply {
-            addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
-            addAction(REFRESH_PERMISSIONS)
+            addAction(LocationManager.MODE_CHANGED_ACTION)
+            addAction(REFRESH_LOCATION_PERMISSIONS)
         }
-        ContextCompat.registerReceiver(context, bluetoothStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
-            context.unregisterReceiver(bluetoothStateChangeHandler)
+            context.unregisterReceiver(locationStateChangeHandler)
         }
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_LOCATION_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 
-    fun markBluetoothPermissionRequested() {
-        dataProvider.bluetoothPermissionRequested = true
+    fun markLocationPermissionRequested() {
+        dataProvider.locationPermissionRequested = true
     }
 
-    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
-        return utils.isBluetoothScanPermissionDeniedForever(context)
+    fun isLocationPermissionDeniedForever(context: Context): Boolean {
+        return utils.isLocationPermissionDeniedForever(context)
     }
 
-    private fun getBluetoothPermissionState() = when {
-        !utils.isBluetoothAvailable -> BlePermissionState.NotAvailable(
-            BlePermissionNotAvailableReason.NOT_AVAILABLE)
-        !utils.areNecessaryBluetoothPermissionsGranted -> BlePermissionState.NotAvailable(
-            BlePermissionNotAvailableReason.PERMISSION_REQUIRED)
-        !utils.isBleEnabled -> BlePermissionState.NotAvailable(
-            BlePermissionNotAvailableReason.DISABLED)
-        else -> BlePermissionState.Available
+    private fun getLocationState(): BlePermissionState {
+        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return when {
+            !utils.isLocationPermissionGranted ->
+                BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.PERMISSION_REQUIRED)
+
+            dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
+                BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.DISABLED)
+
+            else -> BlePermissionState.Available
+        }
     }
 }

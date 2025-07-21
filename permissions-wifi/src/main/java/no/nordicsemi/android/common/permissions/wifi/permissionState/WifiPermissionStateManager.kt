@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Nordic Semiconductor
+ * Copyright (c) 2023, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,85 +29,87 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.notification.repository
+package no.nordicsemi.android.common.permissions.wifi.permissionState
 
-import android.app.NotificationManager
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
+import android.net.wifi.WifiManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.RECEIVER_EXPORTED
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.notification.utils.LocalDataProvider
-import no.nordicsemi.android.common.permissions.notification.utils.NotAvailableReason
-import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionState
-import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionUtils
+import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
+import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
-    "no.nordicsemi.android.common.permissions.notification.REFRESH_NOTIFICATION_PERMISSIONS"
+private const val REFRESH_WIFI_PERMISSIONS =
+    "no.nordicsemi.android.common.permissions.wifi.REFRESH_WIFI_PERMISSIONS"
 
 @Singleton
-internal class NotificationStateManager @Inject constructor(
+internal class WifiStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val dataProvider: LocalDataProvider
 ) {
-    private val dataProvider = LocalDataProvider(context)
-    private val utils = NotificationPermissionUtils(context, dataProvider)
+    private val utils = PermissionUtils(context, dataProvider)
 
-    fun notificationState() = callbackFlow {
-        trySend(getNotificationPermissionState())
+    @SuppressLint("WrongConstant")
+    fun wifiState() = callbackFlow {
+        trySend(getWifiPermissionState())
 
-        val notificationStateChangeHandler = object : BroadcastReceiver() {
+        val wifiStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                trySend(getNotificationPermissionState())
+                trySend(getWifiPermissionState())
             }
         }
         val filter = IntentFilter().apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED)
-            }
-            addAction(REFRESH_PERMISSIONS)
+            addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+            addAction(REFRESH_WIFI_PERMISSIONS)
         }
 
         ContextCompat.registerReceiver(
             context,
-            notificationStateChangeHandler,
+            wifiStateChangeHandler,
             filter,
             RECEIVER_EXPORTED
         )
 
         awaitClose {
-            context.unregisterReceiver(notificationStateChangeHandler)
+            context.unregisterReceiver(wifiStateChangeHandler)
         }
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_WIFI_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 
-    fun markNotificationPermissionRequested() {
-        dataProvider.notificationPermissionRequested = true
+    fun markWifiPermissionRequested() {
+        dataProvider.wifiPermissionRequested = true
     }
 
-    fun isNotificationPermissionDenied(context: Context): Boolean {
-        return utils.isNotificationPermissionDenied(context)
+    fun isWifiPermissionDeniedForever(context: Context): Boolean {
+        return utils.isWifiPermissionDeniedForever(context)
     }
 
-    private fun getNotificationPermissionState(): NotificationPermissionState {
-        return when {
-            !utils.isNotificationPermissionGranted && utils.isNotificationPermissionRequired ->
-                NotificationPermissionState.NotAvailable(NotAvailableReason.PERMISSION_REQUIRED)
+    private fun getWifiPermissionState() = when {
+        !utils.isWifiAvailable -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.NOT_AVAILABLE
+        )
 
-            utils.isNotificationPermissionDenied(context) ->
-                NotificationPermissionState.NotAvailable(NotAvailableReason.DENIED)
+        !utils.areNecessaryWifiPermissionsGranted -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED
+        )
 
-            else -> NotificationPermissionState.Available
-        }
+        !utils.isWifiEnabled -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.DISABLED
+        )
+
+        else -> WiFiPermissionState.Available
     }
 }

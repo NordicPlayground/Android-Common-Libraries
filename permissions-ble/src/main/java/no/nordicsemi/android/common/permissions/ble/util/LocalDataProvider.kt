@@ -32,7 +32,6 @@
 package no.nordicsemi.android.common.permissions.ble.util
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.CoroutineScope
@@ -41,24 +40,26 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import no.nordicsemi.android.common.core.settings.SettingsRepository
+import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Suppress("unused")
 @SuppressLint("AnnotateVersionCheck")
-internal class LocalDataProvider(
-    private val context: Context
+@Singleton
+internal class LocalDataProvider @Inject constructor(
+    private val repo: NordicCommonLibsSettingsRepository
 ) {
-    private val repo = SettingsRepository(context)
     private val _scope = CoroutineScope(Dispatchers.IO)
-    private val _locationPermissionRequested = repo.nordicSettings
-        .map{ settings -> settings.locationPermissionRequested }
+    private val _locationPermissionRequested = repo.nordicCommonLibsSettings
+        .map { settings -> settings.locationPermissionRequested }
         .stateIn(
             _scope,
             SharingStarted.Lazily,
             false
         )
 
-    private val _bluetoothPermissionRequested = repo.nordicSettings
+    private val _bluetoothPermissionRequested = repo.nordicCommonLibsSettings
         .map { settings -> settings.bluetoothPermissionRequested }
         .stateIn(
             _scope,
@@ -79,6 +80,7 @@ internal class LocalDataProvider(
                 repo.updateLocationPermissionRequested(value)
             }
         }
+
     /**
      * The first time an app requests a permission there is no 'Don't ask again' checkbox and
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
@@ -89,7 +91,7 @@ internal class LocalDataProvider(
         get() = _bluetoothPermissionRequested.value
         set(value) {
             _scope.launch(Dispatchers.IO) {
-                repo.updateBluetoothPermissionsRequested(value)
+                repo.updateBluetoothPermissionRequested(value)
             }
         }
 

@@ -31,34 +31,34 @@
 
 package no.nordicsemi.android.common.permissions.wifi.utils
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import no.nordicsemi.android.common.core.settings.SettingsRepository
+import no.nordicsemi.android.common.core.ApplicationScope
+import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-internal class LocalDataProvider(
-    private val context: Context
+@Singleton
+internal class LocalDataProvider @Inject constructor(
+    private val repo: NordicCommonLibsSettingsRepository
 ) {
-    private val repo = SettingsRepository(context)
-    private val _scope = CoroutineScope(Dispatchers.IO)
-    private val _locationPermissionRequested = repo.nordicSettings
+    private val _locationPermissionRequested = repo.nordicCommonLibsSettings
         .map{ settings -> settings.locationPermissionRequested }
         .stateIn(
-            _scope,
+            ApplicationScope,
             SharingStarted.Lazily,
             false
         )
-    private val _wifiPermissionRequested = repo.nordicSettings
+    private val _wifiPermissionRequested = repo.nordicCommonLibsSettings
         .map { settings -> settings.wifiPermissionRequested }
         .stateIn(
-            _scope,
+            ApplicationScope,
             SharingStarted.Lazily,
             false
         )
@@ -71,7 +71,7 @@ internal class LocalDataProvider(
     var locationPermissionRequested: Boolean
         get() = _locationPermissionRequested.value
         set(value) {
-            _scope.launch(Dispatchers.IO) {
+            ApplicationScope.launch(Dispatchers.IO) {
                 repo.updateLocationPermissionRequested(value)
             }
         }
@@ -85,7 +85,7 @@ internal class LocalDataProvider(
     var wifiPermissionRequested: Boolean
         get() = _wifiPermissionRequested.value
         set(value) {
-            _scope.launch(Dispatchers.IO) {
+            ApplicationScope.launch(Dispatchers.IO) {
                 repo.updateWifiPermissionRequested(value)
             }
         }
@@ -109,4 +109,8 @@ internal class LocalDataProvider(
     val isTiramisuOrAbove: Boolean
         @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+    init {
+        ApplicationScope.launch { repo.fetchInitialSettings() }
+    }
 }

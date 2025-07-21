@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,83 +29,83 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.wifi.location
+package no.nordicsemi.android.common.permissions.notification.permissionState
 
-import android.annotation.SuppressLint
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.location.LocationManager
+import android.os.Build
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat
+import androidx.core.content.ContextCompat.RECEIVER_EXPORTED
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
-import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
-import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
+import no.nordicsemi.android.common.permissions.notification.utils.LocalDataProvider
+import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
-    "no.nordicsemi.android.common.permissions.wifi.REFRESH_LOCATION_PERMISSIONS"
+private const val REFRESH_NOTIFICATION_PERMISSIONS =
+    "no.nordicsemi.android.common.permissions.notification.REFRESH_NOTIFICATION_PERMISSIONS"
 
 @Singleton
-internal class LocationStateManager @Inject constructor(
+internal class NotificationStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val dataProvider: LocalDataProvider
 ) {
-    private val dataProvider = LocalDataProvider(context)
-    private val utils = PermissionUtils(context, dataProvider)
+    private val utils = NotificationPermissionUtils(context, dataProvider)
 
-    @SuppressLint("WrongConstant")
-    fun locationState() = callbackFlow {
-        trySend(getLocationState())
+    fun notificationState() = callbackFlow {
+        trySend(getNotificationPermissionState())
 
-        val locationStateChangeHandler = object : BroadcastReceiver() {
+        val notificationStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                trySend(getLocationState())
+                trySend(getNotificationPermissionState())
             }
         }
         val filter = IntentFilter().apply {
-            addAction(LocationManager.MODE_CHANGED_ACTION)
-            addAction(REFRESH_PERMISSIONS)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED)
+            }
+            addAction(REFRESH_NOTIFICATION_PERMISSIONS)
         }
+
         ContextCompat.registerReceiver(
             context,
-            locationStateChangeHandler,
+            notificationStateChangeHandler,
             filter,
-            ContextCompat.RECEIVER_EXPORTED
+            RECEIVER_EXPORTED
         )
+
         awaitClose {
-            context.unregisterReceiver(locationStateChangeHandler)
+            context.unregisterReceiver(notificationStateChangeHandler)
         }
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_NOTIFICATION_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 
-    fun markLocationPermissionRequested() {
-        dataProvider.locationPermissionRequested = true
+    fun markNotificationPermissionRequested() {
+        dataProvider.notificationPermissionRequested = true
     }
 
-    fun isLocationPermissionDeniedForever(context: Context): Boolean {
-        return utils.isLocationPermissionDeniedForever(context)
+    fun isNotificationPermissionDenied(context: Context): Boolean {
+        return utils.isNotificationPermissionDenied(context)
     }
 
-    private fun getLocationState(): WiFiPermissionState {
-        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun getNotificationPermissionState(): NotificationPermissionState {
         return when {
-            !utils.isLocationPermissionGranted ->
-                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED)
+            !utils.isNotificationPermissionGranted && utils.isNotificationPermissionRequired ->
+                NotificationPermissionState.NotAvailable(NotAvailableReason.PERMISSION_REQUIRED)
 
-            dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
-                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.DISABLED)
+            utils.isNotificationPermissionDenied(context) ->
+                NotificationPermissionState.NotAvailable(NotAvailableReason.DENIED)
 
-            else -> WiFiPermissionState.Available
+            else -> NotificationPermissionState.Available
         }
     }
 }

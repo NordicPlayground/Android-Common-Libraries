@@ -19,15 +19,15 @@ kotlinxSerializationJson = "1.9.0"
 lint = "31.11.1"
 publishPlugin = "1.3.1"
 leakcanary = "2.14"
+datastore = "1.1.5"
+protobuf = "0.9.4"
+protobufJavalite = "4.30.2"
 
 nordic-log = "2.5.0"
 nordic-blek = "2.0.0-alpha04"
 nordicPlugins = "2.9"
 dokkaPlugin = "2.0.0"
 googleServicesPlugins = "4.4.3"
-datastore = "1.1.7"
-protobufJavalite = "4.31.1"
-protobuf = "0.9.5"
 
 [libraries]
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -60,6 +60,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobufJavalite" }
 
 # Nordic

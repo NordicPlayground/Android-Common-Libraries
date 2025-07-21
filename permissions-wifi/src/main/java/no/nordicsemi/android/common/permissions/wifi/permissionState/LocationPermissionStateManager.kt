@@ -29,8 +29,9 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.ble.location
+package no.nordicsemi.android.common.permissions.wifi.permissionState
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -41,23 +42,23 @@ import androidx.core.location.LocationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
-import no.nordicsemi.android.common.permissions.ble.util.LocalDataProvider
-import no.nordicsemi.android.common.permissions.ble.util.PermissionUtils
+import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
+import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
-    "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
+private const val REFRESH_LOCATION_PERMISSIONS =
+    "no.nordicsemi.android.common.permissions.wifi.REFRESH_LOCATION_PERMISSIONS"
 
 @Singleton
 internal class LocationStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val dataProvider: LocalDataProvider
 ) {
-    private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)
 
+    @SuppressLint("WrongConstant")
     fun locationState() = callbackFlow {
         trySend(getLocationState())
 
@@ -68,16 +69,21 @@ internal class LocationStateManager @Inject constructor(
         }
         val filter = IntentFilter().apply {
             addAction(LocationManager.MODE_CHANGED_ACTION)
-            addAction(REFRESH_PERMISSIONS)
+            addAction(REFRESH_LOCATION_PERMISSIONS)
         }
-        ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
+        ContextCompat.registerReceiver(
+            context,
+            locationStateChangeHandler,
+            filter,
+            ContextCompat.RECEIVER_EXPORTED
+        )
         awaitClose {
             context.unregisterReceiver(locationStateChangeHandler)
         }
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_LOCATION_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 
@@ -89,16 +95,16 @@ internal class LocationStateManager @Inject constructor(
         return utils.isLocationPermissionDeniedForever(context)
     }
 
-    private fun getLocationState(): BlePermissionState {
+    private fun getLocationState(): WiFiPermissionState {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return when {
             !utils.isLocationPermissionGranted ->
-                BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.PERMISSION_REQUIRED)
+                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED)
 
             dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
-                BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.DISABLED)
+                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.DISABLED)
 
-            else -> BlePermissionState.Available
+            else -> WiFiPermissionState.Available
         }
     }
 }

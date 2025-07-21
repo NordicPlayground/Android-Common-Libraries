@@ -29,88 +29,71 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.wifi.state
+package no.nordicsemi.android.common.permissions.ble.permissionState
 
-import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.wifi.WifiManager
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.RECEIVER_EXPORTED
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
-import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
-import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
+import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.ble.util.LocalDataProvider
+import no.nordicsemi.android.common.permissions.ble.util.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
-    "no.nordicsemi.android.common.permissions.wifi.REFRESH_WIFI_PERMISSIONS"
+private const val REFRESH_BLUETOOTH_PERMISSIONS =
+    "no.nordicsemi.android.common.permission.REFRESH_BLUETOOTH_PERMISSIONS"
 
 @Singleton
-internal class WifiStateManager @Inject constructor(
+internal class BluetoothStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val dataProvider: LocalDataProvider
 ) {
-    private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)
 
-    @SuppressLint("WrongConstant")
-    fun wifiState() = callbackFlow {
-        trySend(getWifiPermissionState())
+    fun bluetoothState() = callbackFlow {
+        trySend(getBluetoothPermissionState())
 
-        val wifiStateChangeHandler = object : BroadcastReceiver() {
+        val bluetoothStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                trySend(getWifiPermissionState())
+                trySend(getBluetoothPermissionState())
             }
         }
         val filter = IntentFilter().apply {
-            addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
-            addAction(REFRESH_PERMISSIONS)
+            addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
+            addAction(REFRESH_BLUETOOTH_PERMISSIONS)
         }
-
-        ContextCompat.registerReceiver(
-            context,
-            wifiStateChangeHandler,
-            filter,
-            RECEIVER_EXPORTED
-        )
-
+        ContextCompat.registerReceiver(context, bluetoothStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
-            context.unregisterReceiver(wifiStateChangeHandler)
+            context.unregisterReceiver(bluetoothStateChangeHandler)
         }
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_BLUETOOTH_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 
-    fun markWifiPermissionRequested() {
-        dataProvider.wifiPermissionRequested = true
+    fun markBluetoothPermissionRequested() {
+        dataProvider.bluetoothPermissionRequested = true
     }
 
-    fun isWifiPermissionDeniedForever(context: Context): Boolean {
-        return utils.isWifiPermissionDeniedForever(context)
+    fun isBluetoothScanPermissionDeniedForever(context: Context): Boolean {
+        return utils.isBluetoothScanPermissionDeniedForever(context)
     }
 
-    private fun getWifiPermissionState() = when {
-        !utils.isWifiAvailable -> WiFiPermissionState.NotAvailable(
-            WiFiPermissionNotAvailableReason.NOT_AVAILABLE
-        )
-
-        !utils.areNecessaryWifiPermissionsGranted -> WiFiPermissionState.NotAvailable(
-            WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED
-        )
-
-        !utils.isWifiEnabled -> WiFiPermissionState.NotAvailable(
-            WiFiPermissionNotAvailableReason.DISABLED
-        )
-
-        else -> WiFiPermissionState.Available
+    private fun getBluetoothPermissionState() = when {
+        !utils.isBluetoothAvailable -> BlePermissionState.NotAvailable(
+            BlePermissionNotAvailableReason.NOT_AVAILABLE)
+        !utils.areNecessaryBluetoothPermissionsGranted -> BlePermissionState.NotAvailable(
+            BlePermissionNotAvailableReason.PERMISSION_REQUIRED)
+        !utils.isBleEnabled -> BlePermissionState.NotAvailable(
+            BlePermissionNotAvailableReason.DISABLED)
+        else -> BlePermissionState.Available
     }
 }
