@@ -38,7 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
+import no.nordicsemi.android.common.permissions.ble.permissionState.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.view.LocationPermissionRequiredView
 import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
 

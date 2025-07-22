@@ -38,7 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.permissionState.WiFiPermissionState
 import no.nordicsemi.android.common.permissions.wifi.view.LocationDisabledView
 import no.nordicsemi.android.common.permissions.wifi.view.LocationPermissionRequiredView
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
