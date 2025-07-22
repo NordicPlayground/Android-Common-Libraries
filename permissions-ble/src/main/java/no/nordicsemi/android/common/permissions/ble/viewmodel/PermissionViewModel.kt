@@ -38,9 +38,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
+import no.nordicsemi.android.common.permissions.ble.permissionState.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.permissionState.BluetoothStateManager
 import no.nordicsemi.android.common.permissions.ble.permissionState.LocationStateManager
-import no.nordicsemi.android.common.permissions.ble.permissionState.BlePermissionState
 import javax.inject.Inject
 
 /**

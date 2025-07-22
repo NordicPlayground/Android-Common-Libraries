@@ -6,7 +6,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import no.nordicsemi.android.common.core.settings.migrations.getMigrationsList
 import java.io.IOException
 
