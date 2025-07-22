@@ -53,8 +53,8 @@ private const val REFRESH_NOTIFICATION_PERMISSIONS =
 @Singleton
 internal class NotificationStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val dataProvider: LocalDataProvider
 ) {
+    private val dataProvider = LocalDataProvider(context)
     private val utils = NotificationPermissionUtils(context, dataProvider)
 
     fun notificationState() = callbackFlow {

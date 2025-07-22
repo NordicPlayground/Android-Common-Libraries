@@ -32,14 +32,13 @@
 package no.nordicsemi.android.common.permissions.ble.util
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import androidx.core.app.ActivityCompat
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import no.nordicsemi.android.common.core.ApplicationScope
 import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,24 +47,11 @@ import javax.inject.Singleton
 @SuppressLint("AnnotateVersionCheck")
 @Singleton
 internal class LocalDataProvider @Inject constructor(
-    private val repo: NordicCommonLibsSettingsRepository
+    private val context: Context
 ) {
-    private val _scope = CoroutineScope(Dispatchers.IO)
-    private val _locationPermissionRequested = repo.nordicCommonLibsSettings
-        .map { settings -> settings.locationPermissionRequested }
-        .stateIn(
-            _scope,
-            SharingStarted.Lazily,
-            false
-        )
-
-    private val _bluetoothPermissionRequested = repo.nordicCommonLibsSettings
-        .map { settings -> settings.bluetoothPermissionRequested }
-        .stateIn(
-            _scope,
-            SharingStarted.Lazily,
-            false
-        )
+    private val repo = NordicCommonLibsSettingsRepository.getInstance(context)
+    private val _locationPermissionRequested = MutableStateFlow(false)
+    private val _blePermissionRequested = MutableStateFlow(false)
 
     /**
      * The first time an app requests a permission there is no 'Don't ask again' checkbox and
@@ -76,7 +62,7 @@ internal class LocalDataProvider @Inject constructor(
     var locationPermissionRequested: Boolean
         get() = _locationPermissionRequested.value
         set(value) {
-            _scope.launch(Dispatchers.IO) {
+            ApplicationScope.launch(Dispatchers.IO) {
                 repo.updateLocationPermissionRequested(value)
             }
         }
@@ -88,9 +74,9 @@ internal class LocalDataProvider @Inject constructor(
      * a flag needs to be saved.
      */
     var bluetoothPermissionRequested: Boolean
-        get() = _bluetoothPermissionRequested.value
+        get() = _blePermissionRequested.value
         set(value) {
-            _scope.launch(Dispatchers.IO) {
+            ApplicationScope.launch(Dispatchers.IO) {
                 repo.updateBluetoothPermissionRequested(value)
             }
         }
@@ -112,6 +98,12 @@ internal class LocalDataProvider @Inject constructor(
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     init {
-        _scope.launch { repo.fetchInitialSettings() }
+        ApplicationScope.launch(Dispatchers.IO) {
+            repo.nordicCommonLibsSettings
+                .collect { settings ->
+                    _locationPermissionRequested.value = settings.locationPermissionRequested
+                    _blePermissionRequested.value = settings.bluetoothPermissionRequested
+                }
+        }
     }
 }

@@ -31,13 +31,13 @@
 
 package no.nordicsemi.android.common.permissions.notification.utils
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.core.ApplicationScope
 import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
@@ -46,28 +46,20 @@ import javax.inject.Singleton
 
 @Singleton
 internal class LocalDataProvider @Inject constructor(
-    private val repo: NordicCommonLibsSettingsRepository
+    context: Context
 ) {
-    private val _scope = ApplicationScope
-    private val _notificationPermissionRequested = repo.nordicCommonLibsSettings
-        .map { settings ->
-            settings.notificationPermissionRequested
-        }
-        .stateIn(
-            _scope,
-            SharingStarted.Lazily,
-            false
-        )
+    private val repo = NordicCommonLibsSettingsRepository.getInstance(context)
+
+    private val _notificationPermissionRequested = MutableStateFlow(false)
 
     /**
      * The first time an app requests a permission there is no 'Don't Allow' checkbox and
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
      */
     var notificationPermissionRequested: Boolean
-        get() =
-            _notificationPermissionRequested.value
+        get() = _notificationPermissionRequested.value
         set(value) {
-            _scope.launch {
+            ApplicationScope.launch {
                 repo.updateNotificationPermissionRequested(value)
             }
         }
@@ -78,6 +70,12 @@ internal class LocalDataProvider @Inject constructor(
 
 
     init {
-        _scope.launch { repo.fetchInitialSettings() }
+        ApplicationScope.launch(Dispatchers.IO) {
+            repo.nordicCommonLibsSettings.map { settings ->
+                settings.notificationPermissionRequested
+            }.collect { notificationPermissionRequested ->
+                _notificationPermissionRequested.value = notificationPermissionRequested
+            }
+        }
     }
 }

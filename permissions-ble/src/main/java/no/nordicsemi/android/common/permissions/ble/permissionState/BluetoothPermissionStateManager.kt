@@ -52,8 +52,8 @@ private const val REFRESH_BLUETOOTH_PERMISSIONS =
 @Singleton
 internal class BluetoothStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val dataProvider: LocalDataProvider
 ) {
+    private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)
 
     fun bluetoothState() = callbackFlow {

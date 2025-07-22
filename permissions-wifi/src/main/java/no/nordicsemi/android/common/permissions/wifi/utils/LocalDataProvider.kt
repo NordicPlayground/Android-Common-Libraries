@@ -31,13 +31,12 @@
 
 package no.nordicsemi.android.common.permissions.wifi.utils
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.common.core.ApplicationScope
 import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
@@ -46,22 +45,13 @@ import javax.inject.Singleton
 
 @Singleton
 internal class LocalDataProvider @Inject constructor(
-    private val repo: NordicCommonLibsSettingsRepository
+    private val context: Context
 ) {
-    private val _locationPermissionRequested = repo.nordicCommonLibsSettings
-        .map{ settings -> settings.locationPermissionRequested }
-        .stateIn(
-            ApplicationScope,
-            SharingStarted.Lazily,
-            false
-        )
-    private val _wifiPermissionRequested = repo.nordicCommonLibsSettings
-        .map { settings -> settings.wifiPermissionRequested }
-        .stateIn(
-            ApplicationScope,
-            SharingStarted.Lazily,
-            false
-        )
+    private val repo = NordicCommonLibsSettingsRepository.getInstance(context)
+
+    private val _locationPermissionRequested = MutableStateFlow(false)
+    private val _wifiPermissionRequested = MutableStateFlow(false)
+
     /**
      * The first time an app requests a permission there is no 'Don't ask again' checkbox and
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
@@ -111,6 +101,12 @@ internal class LocalDataProvider @Inject constructor(
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     init {
-        ApplicationScope.launch { repo.fetchInitialSettings() }
+        ApplicationScope.launch(Dispatchers.IO) {
+            repo.nordicCommonLibsSettings
+                .collect { settings ->
+                    _locationPermissionRequested.value = settings.locationPermissionRequested
+                    _wifiPermissionRequested.value = settings.wifiPermissionRequested
+                }
+        }
     }
 }
