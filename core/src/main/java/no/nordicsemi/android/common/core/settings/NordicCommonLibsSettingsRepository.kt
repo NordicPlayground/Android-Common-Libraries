@@ -11,16 +11,14 @@ import java.io.IOException
 
 private const val TAG: String = "NordicSettingsRepo"
 private const val DATASTORE_FILENAME = "nordic_common_libs_settings.pb"
-val Context.nordicCommonLibsSettingsDataStore: DataStore<NordicCommonLibsSettings> by
-dataStore (
-    fileName = DATASTORE_FILENAME,
-    serializer = NordicCommonLibsSettingsSerializer,
-    produceMigrations = { context -> getMigrationsList(context) }
-)
+val Context.nordicCommonLibsSettingsDataStore: DataStore<NordicCommonLibsSettings>
+    by dataStore (
+        fileName = DATASTORE_FILENAME,
+        serializer = NordicCommonLibsSettingsSerializer,
+        produceMigrations = { context -> getMigrationsList(context) }
+    )
 
-class NordicCommonLibsSettingsRepository private constructor(
-    context: Context
-) {
+class NordicCommonLibsSettingsRepository private constructor(context: Context) {
     val dataStore = context.applicationContext.nordicCommonLibsSettingsDataStore
 
     val nordicCommonLibsSettings: Flow<NordicCommonLibsSettings> = dataStore.data

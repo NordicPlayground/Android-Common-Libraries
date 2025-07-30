@@ -61,7 +61,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":ui"))
 
-    implementation(libs.androidx.dataStore.preferences)
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
