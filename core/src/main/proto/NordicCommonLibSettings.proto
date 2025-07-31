@@ -9,5 +9,6 @@ message NordicCommonLibsSettings {
   bool bluetooth_permission_requested = 2;
   bool wifi_permission_requested = 3;
   bool notification_permission_requested = 4;
-
+  bool analytics_has_been_granted = 5;
+  bool analytics_was_info_shown = 6;
 }

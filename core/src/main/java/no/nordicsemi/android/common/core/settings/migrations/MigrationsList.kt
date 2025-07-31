@@ -1,6 +1,7 @@
 package no.nordicsemi.android.common.core.settings.migrations
 
 import android.content.Context
+import androidx.datastore.core.DataMigration
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettings
@@ -12,7 +13,7 @@ private const val PREFS_WIFI_PERMISSION_REQUESTED = "wifi_permission_requested"
 private const val SHARED_PREFS_NAME_NOTIFICATIONS = "SHARED_PREFS_NOTIFICATION"
 private const val PREFS_NOTIFICATION_PERMISSION_REQUESTED = "notification_permission_requested"
 
-fun getMigrationsList(context: Context): List<SharedPreferencesMigration<NordicCommonLibsSettings>> {
+fun getMigrationsList(context: Context): List<DataMigration<NordicCommonLibsSettings>> {
     return listOf(
         SharedPreferencesMigration(
             context,
@@ -55,6 +56,19 @@ fun getMigrationsList(context: Context): List<SharedPreferencesMigration<NordicC
                         .getBoolean(PREFS_NOTIFICATION_PERMISSION_REQUESTED, false)
                 )
                 .build()
+        },
+        object : DataMigration<NordicCommonLibsSettings> {
+            override suspend fun shouldMigrate(currentData: NordicCommonLibsSettings): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun migrate(currentData: NordicCommonLibsSettings): NordicCommonLibsSettings {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun cleanUp() {
+                TODO("Not yet implemented")
+            }
         }
     )
 }
