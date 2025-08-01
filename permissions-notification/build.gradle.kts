@@ -27,7 +27,10 @@ dokka {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.datastore)
+    implementation(libs.protobuf.javalite)
 
     implementation(libs.androidx.compose.material.iconsExtended)
 }

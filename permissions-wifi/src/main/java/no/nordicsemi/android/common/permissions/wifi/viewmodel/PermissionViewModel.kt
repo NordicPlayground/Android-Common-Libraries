@@ -38,9 +38,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.wifi.location.LocationStateManager
-import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
-import no.nordicsemi.android.common.permissions.wifi.state.WifiStateManager
+import no.nordicsemi.android.common.permissions.wifi.permissionState.LocationStateManager
+import no.nordicsemi.android.common.permissions.wifi.permissionState.WiFiPermissionState
+import no.nordicsemi.android.common.permissions.wifi.permissionState.WifiStateManager
 import javax.inject.Inject
 
 @HiltViewModel

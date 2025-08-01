@@ -53,6 +53,7 @@ internal class NotificationPermissionUtils(
                 ) == PackageManager.PERMISSION_GRANTED
 
     fun isNotificationPermissionDenied(context: Context): Boolean {
+        val test = dataProvider.notificationPermissionRequested
         return dataProvider.isTiramisuOrAbove &&
                 !isNotificationPermissionGranted // Notification permission must be denied
                 && dataProvider.notificationPermissionRequested // Permission must have been requested before
