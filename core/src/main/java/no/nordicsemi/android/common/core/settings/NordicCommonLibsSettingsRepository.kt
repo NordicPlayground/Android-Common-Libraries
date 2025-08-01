@@ -19,7 +19,7 @@ val Context.nordicCommonLibsSettingsDataStore: DataStore<NordicCommonLibsSetting
     )
 
 class NordicCommonLibsSettingsRepository private constructor(context: Context) {
-    val dataStore = context.applicationContext.nordicCommonLibsSettingsDataStore
+    private val dataStore = context.applicationContext.nordicCommonLibsSettingsDataStore
 
     val nordicCommonLibsSettings: Flow<NordicCommonLibsSettings> = dataStore.data
         .catch { exception ->
@@ -64,6 +64,24 @@ class NordicCommonLibsSettingsRepository private constructor(context: Context) {
             settings
                 .toBuilder()
                 .setNotificationPermissionRequested(requested)
+                .build()
+        }
+    }
+
+    suspend fun updateAnalyticsHasBeenGranted(granted: Boolean) {
+        dataStore.updateData { settings ->
+            settings
+                .toBuilder()
+                .setAnalyticsHasBeenGranted(granted)
+                .build()
+        }
+    }
+
+    suspend fun updateAnalyticsWasInfoShown(shown: Boolean) {
+        dataStore.updateData { settings ->
+            settings
+                .toBuilder()
+                .setAnalyticsWasInfoShown(shown)
                 .build()
         }
     }
