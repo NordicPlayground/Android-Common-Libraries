@@ -9,7 +9,8 @@ androidxDataStore = "1.1.7"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.9.2"
 androidxNavigation = "2.9.3"
-firebaseBom = "34.1.0"
+#noinspection GradleDependency
+firebaseBom = "33.16.0" # https://firebase.google.com/support/release-notes/android#2025-07-21 minSdkVersion increased from 21 to 23
 hilt = "2.57"
 hiltExt = "1.2.0"
 kotlin = "2.2.0"
