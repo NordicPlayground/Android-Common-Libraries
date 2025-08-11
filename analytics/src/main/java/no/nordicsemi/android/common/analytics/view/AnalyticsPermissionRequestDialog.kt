@@ -33,15 +33,17 @@
 
 package no.nordicsemi.android.common.analytics.view
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -97,9 +99,6 @@ fun AnalyticsPermissionRequestDialog(
                 Text(stringResource(id = R.string.analytics_dialog_decline))
             }
         },
-        modifier = Modifier
-            .fillMaxHeight(0.9f)
-            .fillMaxWidth(0.95f)
     )
 }
 
