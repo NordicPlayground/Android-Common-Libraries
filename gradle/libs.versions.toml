@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.37.3"
-androidGradlePlugin = "8.12.0"
+androidGradlePlugin = "8.13.0"
 androidxActivity = "1.10.1"
 androidxComposeBom = "2025.07.00" # https://developer.android.com/jetpack/compose/bom/bom-mapping
 androidxCore = "1.16.0"
@@ -9,7 +9,7 @@ androidxDatastore = "1.1.7"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.9.2"
 androidxNavigation = "2.9.3"
-firebaseBom = "34.0.0"
+firebaseBom = "33.16.0"
 hilt = "2.57"
 hiltExt = "1.2.0"
 kotlin = "2.2.0"
