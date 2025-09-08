@@ -37,9 +37,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import no.nordicsemi.android.common.permissions.notification.repository.NotificationStateManager
-import no.nordicsemi.android.common.permissions.notification.utils.NotAvailableReason
-import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionState
+import no.nordicsemi.android.common.permissions.notification.permissionState.NotAvailableReason
+import no.nordicsemi.android.common.permissions.notification.permissionState.NotificationPermissionState
+import no.nordicsemi.android.common.permissions.notification.permissionState.NotificationStateManager
 import javax.inject.Inject
 
 @HiltViewModel

@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.notification.repository
+package no.nordicsemi.android.common.permissions.notification.permissionState
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -43,13 +43,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import no.nordicsemi.android.common.permissions.notification.utils.LocalDataProvider
-import no.nordicsemi.android.common.permissions.notification.utils.NotAvailableReason
-import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionState
 import no.nordicsemi.android.common.permissions.notification.utils.NotificationPermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
+private const val REFRESH_NOTIFICATION_PERMISSIONS =
     "no.nordicsemi.android.common.permissions.notification.REFRESH_NOTIFICATION_PERMISSIONS"
 
 @Singleton
@@ -71,7 +69,7 @@ internal class NotificationStateManager @Inject constructor(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 addAction(NotificationManager.ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED)
             }
-            addAction(REFRESH_PERMISSIONS)
+            addAction(REFRESH_NOTIFICATION_PERMISSIONS)
         }
 
         ContextCompat.registerReceiver(
@@ -87,7 +85,7 @@ internal class NotificationStateManager @Inject constructor(
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_NOTIFICATION_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 

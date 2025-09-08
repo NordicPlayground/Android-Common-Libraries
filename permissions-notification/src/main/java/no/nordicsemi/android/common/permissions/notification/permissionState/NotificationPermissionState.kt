@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Nordic Semiconductor
+ * Copyright (c) 2024, Nordic Semiconductor
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -29,22 +29,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.ble.util
+package no.nordicsemi.android.common.permissions.notification.permissionState
 
-import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
+internal sealed class NotificationPermissionState {
+    /** Represents the notification permission is available. */
+    data object Available : NotificationPermissionState()
 
-/**
- * The state of Bluetooth permission.
- */
-internal sealed class BlePermissionState {
-    /** Bluetooth permission is granted. */
-    data object Available : BlePermissionState()
     /**
-     * Bluetooth is not available.
-     *
-     * @param reason The reason why the BLE permission is not available.
+     * Represents the notification permission is not available.
+     * @param reason The reason for notification permission is not available.
      */
     data class NotAvailable(
-        val reason: BlePermissionNotAvailableReason,
-    ) : BlePermissionState()
+        val reason: NotAvailableReason,
+    ) : NotificationPermissionState()
+}
+
+/**
+ * Represents the reason for notification permission is not available.
+ */
+internal enum class NotAvailableReason {
+    PERMISSION_REQUIRED,
+    DENIED,
 }

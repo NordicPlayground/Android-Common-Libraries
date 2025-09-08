@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.ble.location
+package no.nordicsemi.android.common.permissions.ble.permissionState
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -42,13 +42,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import no.nordicsemi.android.common.permissions.ble.BlePermissionNotAvailableReason
-import no.nordicsemi.android.common.permissions.ble.util.BlePermissionState
 import no.nordicsemi.android.common.permissions.ble.util.LocalDataProvider
 import no.nordicsemi.android.common.permissions.ble.util.PermissionUtils
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
+private const val REFRESH_LOCATION_PERMISSIONS =
     "no.nordicsemi.android.common.permission.REFRESH_LOCATION_PERMISSIONS"
 
 @Singleton
@@ -68,7 +67,7 @@ internal class LocationStateManager @Inject constructor(
         }
         val filter = IntentFilter().apply {
             addAction(LocationManager.MODE_CHANGED_ACTION)
-            addAction(REFRESH_PERMISSIONS)
+            addAction(REFRESH_LOCATION_PERMISSIONS)
         }
         ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
@@ -77,7 +76,7 @@ internal class LocationStateManager @Inject constructor(
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_LOCATION_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 

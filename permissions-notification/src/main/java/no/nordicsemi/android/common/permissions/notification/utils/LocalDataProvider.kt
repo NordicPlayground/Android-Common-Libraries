@@ -32,35 +32,50 @@
 package no.nordicsemi.android.common.permissions.notification.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import no.nordicsemi.android.common.core.ApplicationScope
+import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val SHARED_PREFS_NAME = "SHARED_PREFS_NOTIFICATION"
-
-private const val PREFS_PERMISSION_REQUESTED = "notification_permission_requested"
-
 @Singleton
 internal class LocalDataProvider @Inject constructor(
-    private val context: Context,
+    context: Context
 ) {
-    private val sharedPrefs: SharedPreferences
-        get() = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+    private val repo = NordicCommonLibsSettingsRepository.getInstance(context)
 
-    val isTiramisuOrAbove: Boolean
-        @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
-        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    private val _notificationPermissionRequested = MutableStateFlow(false)
 
     /**
      * The first time an app requests a permission there is no 'Don't Allow' checkbox and
      * [ActivityCompat.shouldShowRequestPermissionRationale] returns false.
      */
     var notificationPermissionRequested: Boolean
-        get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
+        get() = _notificationPermissionRequested.value
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_PERMISSION_REQUESTED, value).apply()
+            ApplicationScope.launch {
+                repo.updateNotificationPermissionRequested(value)
+            }
         }
+
+    val isTiramisuOrAbove: Boolean
+        @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+
+    init {
+        ApplicationScope.launch(Dispatchers.IO) {
+            repo.nordicCommonLibsSettings.map { settings ->
+                settings.notificationPermissionRequested
+            }.collect { notificationPermissionRequested ->
+                _notificationPermissionRequested.value = notificationPermissionRequested
+            }
+        }
+    }
 }

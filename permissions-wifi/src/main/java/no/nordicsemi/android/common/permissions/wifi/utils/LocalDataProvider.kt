@@ -32,21 +32,25 @@
 package no.nordicsemi.android.common.permissions.wifi.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import no.nordicsemi.android.common.core.ApplicationScope
+import no.nordicsemi.android.common.core.settings.NordicCommonLibsSettingsRepository
+import javax.inject.Inject
+import javax.inject.Singleton
 
-private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
-
-private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
-private const val PREFS_WIFI_PERMISSION_REQUESTED = "wifi_permission_requested"
-
-internal class LocalDataProvider(
+@Singleton
+internal class LocalDataProvider @Inject constructor(
     private val context: Context
 ) {
-    private val sharedPrefs: SharedPreferences
-        get() = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+    private val repo = NordicCommonLibsSettingsRepository.getInstance(context)
+
+    private val _locationPermissionRequested = MutableStateFlow(false)
+    private val _wifiPermissionRequested = MutableStateFlow(false)
 
     /**
      * The first time an app requests a permission there is no 'Don't ask again' checkbox and
@@ -55,9 +59,11 @@ internal class LocalDataProvider(
      * a flag needs to be saved.
      */
     var locationPermissionRequested: Boolean
-        get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
+        get() = _locationPermissionRequested.value
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_PERMISSION_REQUESTED, value).apply()
+            ApplicationScope.launch(Dispatchers.IO) {
+                repo.updateLocationPermissionRequested(value)
+            }
         }
 
     /**
@@ -67,9 +73,11 @@ internal class LocalDataProvider(
      * a flag needs to be saved.
      */
     var wifiPermissionRequested: Boolean
-        get() = sharedPrefs.getBoolean(PREFS_WIFI_PERMISSION_REQUESTED, false)
+        get() = _wifiPermissionRequested.value
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_WIFI_PERMISSION_REQUESTED, value).apply()
+            ApplicationScope.launch(Dispatchers.IO) {
+                repo.updateWifiPermissionRequested(value)
+            }
         }
 
     val isLocationPermissionRequired: Boolean
@@ -91,4 +99,14 @@ internal class LocalDataProvider(
     val isTiramisuOrAbove: Boolean
         @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
+    init {
+        ApplicationScope.launch(Dispatchers.IO) {
+            repo.nordicCommonLibsSettings
+                .collect { settings ->
+                    _locationPermissionRequested.value = settings.locationPermissionRequested
+                    _wifiPermissionRequested.value = settings.wifiPermissionRequested
+                }
+        }
+    }
 }

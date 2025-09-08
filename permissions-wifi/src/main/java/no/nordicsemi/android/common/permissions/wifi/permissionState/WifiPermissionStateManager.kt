@@ -29,83 +29,87 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package no.nordicsemi.android.common.permissions.wifi.location
+package no.nordicsemi.android.common.permissions.wifi.permissionState
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.location.LocationManager
+import android.net.wifi.WifiManager
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat
+import androidx.core.content.ContextCompat.RECEIVER_EXPORTED
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import no.nordicsemi.android.common.permissions.wifi.WiFiPermissionNotAvailableReason
 import no.nordicsemi.android.common.permissions.wifi.utils.LocalDataProvider
 import no.nordicsemi.android.common.permissions.wifi.utils.PermissionUtils
-import no.nordicsemi.android.common.permissions.wifi.utils.WiFiPermissionState
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val REFRESH_PERMISSIONS =
-    "no.nordicsemi.android.common.permissions.wifi.REFRESH_LOCATION_PERMISSIONS"
+private const val REFRESH_WIFI_PERMISSIONS =
+    "no.nordicsemi.android.common.permissions.wifi.REFRESH_WIFI_PERMISSIONS"
 
 @Singleton
-internal class LocationStateManager @Inject constructor(
+internal class WifiStateManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)
 
     @SuppressLint("WrongConstant")
-    fun locationState() = callbackFlow {
-        trySend(getLocationState())
+    fun wifiState() = callbackFlow {
+        trySend(getWifiPermissionState())
 
-        val locationStateChangeHandler = object : BroadcastReceiver() {
+        val wifiStateChangeHandler = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                trySend(getLocationState())
+                trySend(getWifiPermissionState())
             }
         }
         val filter = IntentFilter().apply {
-            addAction(LocationManager.MODE_CHANGED_ACTION)
-            addAction(REFRESH_PERMISSIONS)
+            addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+            addAction(REFRESH_WIFI_PERMISSIONS)
         }
+
         ContextCompat.registerReceiver(
             context,
-            locationStateChangeHandler,
+            wifiStateChangeHandler,
             filter,
-            ContextCompat.RECEIVER_EXPORTED
+            RECEIVER_EXPORTED
         )
+
         awaitClose {
-            context.unregisterReceiver(locationStateChangeHandler)
+            context.unregisterReceiver(wifiStateChangeHandler)
         }
     }
 
     fun refreshPermission() {
-        val intent = Intent(REFRESH_PERMISSIONS)
+        val intent = Intent(REFRESH_WIFI_PERMISSIONS)
         context.sendBroadcast(intent)
     }
 
-    fun markLocationPermissionRequested() {
-        dataProvider.locationPermissionRequested = true
+    fun markWifiPermissionRequested() {
+        dataProvider.wifiPermissionRequested = true
     }
 
-    fun isLocationPermissionDeniedForever(context: Context): Boolean {
-        return utils.isLocationPermissionDeniedForever(context)
+    fun isWifiPermissionDeniedForever(context: Context): Boolean {
+        return utils.isWifiPermissionDeniedForever(context)
     }
 
-    private fun getLocationState(): WiFiPermissionState {
-        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return when {
-            !utils.isLocationPermissionGranted ->
-                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED)
+    private fun getWifiPermissionState() = when {
+        !utils.isWifiAvailable -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.NOT_AVAILABLE
+        )
 
-            dataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(lm) ->
-                WiFiPermissionState.NotAvailable(WiFiPermissionNotAvailableReason.DISABLED)
+        !utils.areNecessaryWifiPermissionsGranted -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.PERMISSION_REQUIRED
+        )
 
-            else -> WiFiPermissionState.Available
-        }
+        !utils.isWifiEnabled -> WiFiPermissionState.NotAvailable(
+            WiFiPermissionNotAvailableReason.DISABLED
+        )
+
+        else -> WiFiPermissionState.Available
     }
 }
