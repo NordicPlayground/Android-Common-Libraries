@@ -17,8 +17,7 @@
     },
     {
       "matchPackageNames": [
-        "org.slf4j:slf4j-api",
-        "org.slf4j:slf4j-simple"
+        "com.google.firebase:firebase-bom"
       ],
       "enabled": false
     }
