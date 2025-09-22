@@ -66,7 +66,7 @@ import no.nordicsemi.android.common.permissions.notification.viewmodel.Notificat
 @Composable
 fun RequestNotificationPermission(
     onChanged: (Boolean) -> Unit = {},
-    content: @Composable (Boolean) -> Unit,
+    content: @Composable (Boolean?) -> Unit,
 ) {
     val viewModel = hiltViewModel<NotificationPermissionViewModel>()
     val state by viewModel.notificationState.collectAsStateWithLifecycle()
@@ -84,7 +84,7 @@ fun RequestNotificationPermission(
                     NotificationPermissionRequestView(content)
                 }
 
-                NotAvailableReason.DENIED -> content(false)
+                NotAvailableReason.DENIED ->  content(false)
             }
         }
     }
