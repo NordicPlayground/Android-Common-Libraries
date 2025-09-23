@@ -32,21 +32,27 @@
 package no.nordicsemi.android.common.permissions.notification.view
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import no.nordicsemi.android.common.permissions.notification.viewmodel.NotificationPermissionViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 internal fun NotificationPermissionRequestView(
-    content: @Composable (Boolean) -> Unit
+    content: @Composable (Boolean?) -> Unit
 ) {
     val viewmodel: NotificationPermissionViewModel = hiltViewModel()
     // Notification permission
@@ -57,32 +63,43 @@ internal fun NotificationPermissionRequestView(
     val context = LocalContext.current
 
     val notificationPermission = permission?.let { rememberPermissionState(it) }
-    if (notificationPermission != null) {
-        when (notificationPermission.status) {
-            is PermissionStatus.Denied -> {
-                // FCM SDK (and your app) cannot post notifications.
-                LaunchedEffect(!notificationPermission.status.isGranted) {
-                    viewmodel.markNotificationPermissionRequested()
-                    notificationPermission.launchPermissionRequest()
-                    if (!notificationPermission.status.isGranted) {
-                        // Mark the permission as requested and denied.
-                        viewmodel.isNotificationPermissionDenied(context)
 
-                    }
+    val isPendingPermissionGranted = remember { mutableStateOf<Boolean?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        isPendingPermissionGranted.value = isGranted
+    }
+
+    if (notificationPermission != null) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is denied and not requestable
+            LaunchedEffect(Unit) {
+                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+
+            isPendingPermissionGranted.value?.let {
+                // Refresh the state in the viewmodel
+                LaunchedEffect(it) {
                     viewmodel.refreshNotificationPermission()
                 }
-                content(notificationPermission.status.isGranted)
+                content(it)
+            } ?: Column {
+                Text("Requesting notification permission...")
             }
-
-            PermissionStatus.Granted -> {
-                // FCM SDK (and your app) can post notifications.
-                content(true)
-            }
+            return
+        } else {
+            // Permission is granted
+            content(true)
         }
     } else {
         // FCM SDK (and your app) can post notifications.
-        viewmodel.refreshNotificationPermission()
-        content(true)
+        content(null)
     }
 
 }
