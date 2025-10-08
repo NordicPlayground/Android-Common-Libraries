@@ -2,18 +2,18 @@
 accompanist = "0.37.3"
 androidGradlePlugin = "8.13.0"
 androidxActivity = "1.11.0"
-androidxComposeBom = "2025.09.00" # https://developer.android.com/jetpack/compose/bom/bom-mapping
+androidxComposeBom = "2025.09.01" # https://developer.android.com/jetpack/compose/bom/bom-mapping
 androidxCore = "1.17.0"
 androidxCoreSplashscreen = "1.0.1"
 androidxDataStore = "1.1.7"
 androidxHiltNavigationCompose = "1.2.0"
 androidxLifecycle = "2.9.4"
-androidxNavigation = "2.9.4"
+androidxNavigation = "2.9.5"
 #noinspection GradleDependency
 firebaseBom = "33.16.0" # https://firebase.google.com/support/release-notes/android#2025-07-21 minSdkVersion increased from 21 to 23
-hilt = "2.57.1"
+hilt = "2.57.2"
 hiltExt = "1.2.0"
-kotlin = "2.2.0"
+kotlin = "2.2.20"
 kotlinxCoroutines = "1.10.2"
 kotlinxDatetime = "0.7.1"
 kotlinxSerializationJson = "1.9.0"
@@ -23,7 +23,7 @@ leakcanary = "2.14"
 
 nordic-log = "2.5.0"
 nordic-blek = "2.0.0-alpha08"
-nordicPlugins = "2.9"
+nordicPlugins = "2.10"
 dokkaPlugin = "2.0.0"
 googleServicesPlugins = "4.4.3"
 
