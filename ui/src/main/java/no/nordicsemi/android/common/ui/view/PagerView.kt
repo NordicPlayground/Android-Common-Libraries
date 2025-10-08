@@ -41,11 +41,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -141,14 +139,14 @@ fun PagerView(
             contentPadding.calculateRightPadding(LayoutDirection.Rtl)
         )
         if (scrollable) {
-            ScrollableTabRow(
+            SecondaryScrollableTabRow(
                 edgePadding = edgePadding,
                 selectedTabIndex = tabIndex,
                 containerColor = colorResource(id = R.color.appBarColor),
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                indicator = @Composable { tabPositions ->
+                indicator = @Composable {
                     SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                        Modifier.tabIndicatorOffset(tabIndex, matchContentSize = false),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
@@ -174,14 +172,14 @@ fun PagerView(
                     .background(color = colorResource(id = R.color.appBarColor))
                     .padding(horizontal = edgePadding)
             ) {
-                TabRow(
+                SecondaryScrollableTabRow(
                     modifier = Modifier.fillMaxWidth(),
                     selectedTabIndex = tabIndex,
                     containerColor = colorResource(id = R.color.appBarColor),
                     contentColor = MaterialTheme.colorScheme.onPrimary,
-                    indicator = @Composable { tabPositions ->
+                    indicator = @Composable {
                         SecondaryIndicator(
-                            Modifier.tabIndicatorOffset(tabPositions[tabIndex]),
+                            Modifier.tabIndicatorOffset(tabIndex),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     },

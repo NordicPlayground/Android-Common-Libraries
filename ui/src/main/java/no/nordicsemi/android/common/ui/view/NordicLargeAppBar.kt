@@ -88,7 +88,7 @@ fun NordicLargeAppBar(
     LargeTopAppBar(
         title = title,
         modifier = modifier,
-        colors = TopAppBarDefaults.largeTopAppBarColors(
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorResource(id = R.color.appBarColor),
             scrolledContainerColor = colorResource(id = R.color.appBarColor),
             titleContentColor = MaterialTheme.colorScheme.onPrimary,

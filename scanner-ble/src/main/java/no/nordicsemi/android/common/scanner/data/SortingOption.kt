@@ -38,7 +38,7 @@ import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.android.common.scanner.data.ScannedPeripheral
 
 sealed class SortingOption(
-    @StringRes val title: Int,
+    @field:StringRes val title: Int,
     val comparator: Comparator<ScannedPeripheral>
 )
 
