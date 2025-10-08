@@ -54,7 +54,7 @@ private const val LOG_TAG = "ANALYTICS"
  */
 @Singleton
 class NordicAnalytics @Inject internal constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val repository: AnalyticsPermissionRepository,
 ) {
     /**

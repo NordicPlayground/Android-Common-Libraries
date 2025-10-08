@@ -51,7 +51,7 @@ private const val REFRESH_PERMISSIONS = "no.nordicsemi.android.common.permission
 
 @Singleton
 internal class BluetoothStateManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) {
     private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)

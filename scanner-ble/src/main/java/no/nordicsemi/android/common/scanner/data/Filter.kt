@@ -45,7 +45,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 sealed class Filter(
-    @StringRes val title: Int,
+    @field:StringRes val title: Int,
     val icon: ImageVector,
     val isInitiallySelected: Boolean,
     val predicate: (selected: Boolean, result: ScanResult, highestRssi: Int) -> Boolean,

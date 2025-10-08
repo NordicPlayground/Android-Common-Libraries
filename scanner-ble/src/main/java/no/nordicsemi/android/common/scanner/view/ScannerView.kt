@@ -76,9 +76,9 @@ import no.nordicsemi.android.common.permissions.ble.RequireBluetooth
 import no.nordicsemi.android.common.permissions.ble.RequireLocation
 import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.android.common.scanner.ScanFilterState
+import no.nordicsemi.android.common.scanner.data.ScannedPeripheral
 import no.nordicsemi.android.common.scanner.rememberFilterState
 import no.nordicsemi.android.common.scanner.spec.ServiceUuids
-import no.nordicsemi.android.common.scanner.data.ScannedPeripheral
 import no.nordicsemi.android.common.scanner.viewmodel.ScannerViewModel
 import no.nordicsemi.android.common.scanner.viewmodel.ScanningState
 import no.nordicsemi.android.common.scanner.viewmodel.UiState

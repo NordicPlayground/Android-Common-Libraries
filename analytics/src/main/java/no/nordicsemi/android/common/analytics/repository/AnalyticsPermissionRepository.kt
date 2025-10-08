@@ -49,7 +49,7 @@ private const val WAS_INFO_SHOWN = "WAS_INFO_SHOWN"
 
 @Singleton
 internal class AnalyticsPermissionRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = FILE)
 

@@ -44,6 +44,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -295,7 +296,8 @@ class MainActivity : NordicActivity() {
                                     }
                                 }
                             }
-                        }
+                        },
+                        contentWindowInsets = WindowInsets.statusBars
                     ) { padding ->
                         // This is a workaround for the issue with the back button going back
                         // to the previous tab instead of closing the drawer.
