@@ -31,7 +31,6 @@
 
 package no.nordicsemi.android.common.scanner
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -175,16 +174,5 @@ fun rememberFilterState(
             selectedFilters = emptySet()
             selectedSorting = null
         }
-//
-//        override fun equals(other: Any?): Boolean {
-//            val e = other is ScanFilterState &&
-//                other.activeSortingOption == activeSortingOption &&
-//                other.isEmpty == isEmpty &&
-//                dynamicFilters.foldIndexed(true) { index, acc, _ ->
-//                    acc && (other.isFilterSelected(index) == isFilterSelected(index))
-//                }
-//            Log.i("AAA", "ScanFilterState#equals: $e")
-//            return e
-//        }
     }
 }
