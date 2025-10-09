@@ -17,7 +17,8 @@
     },
     {
       "matchPackageNames": [
-        "com.google.firebase:firebase-bom"
+        "com.google.firebase:firebase-bom",
+        "/androidx.hilt/"
       ],
       "enabled": false
     }
