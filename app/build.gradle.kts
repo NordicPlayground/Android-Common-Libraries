@@ -52,7 +52,7 @@ dependencies {
     implementation(project(":permissions-notification"))
     implementation(project(":scanner-ble"))
 
-    implementation(libs.nordic.blek.client.android)
+    implementation(nordic.blek.client.android)
 
     implementation(libs.androidx.compose.material.iconsExtended)
 

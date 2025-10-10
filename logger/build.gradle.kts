@@ -60,5 +60,5 @@ dokka {
 dependencies {
     implementation(project(":ui"))
 
-    api(libs.nordic.log)
+    api(nordic.log)
 }

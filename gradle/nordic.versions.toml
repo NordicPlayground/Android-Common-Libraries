@@ -1,0 +1,13 @@
+# Versions of Nordic libraries used in this project.
+
+# This is a subset of the Version Catalog available at https://github.com/NordicSemiconductor/Android-Version-Catalog
+# The version catalog can be updated independently of this project after the release of this library.
+
+[versions]
+log = "2.5.0"
+blek = "2.0.0-alpha08"
+
+[libraries]
+log = { group = "no.nordicsemi.android", name = "log", version.ref = "log" }
+blek-client-core-android = { group = "no.nordicsemi.kotlin.ble", name = "client-core-android", version.ref = "blek" }
+blek-client-android = { group = "no.nordicsemi.kotlin.ble", name = "client-android", version.ref = "blek" }
