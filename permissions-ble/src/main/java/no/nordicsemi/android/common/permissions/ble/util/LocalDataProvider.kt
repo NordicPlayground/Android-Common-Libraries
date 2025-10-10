@@ -43,7 +43,6 @@ private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
 private const val PREFS_PERMISSION_REQUESTED = "permission_requested"
 private const val PREFS_BLUETOOTH_PERMISSION_REQUESTED = "bluetooth_permission_requested"
 
-@Suppress("unused")
 @SuppressLint("AnnotateVersionCheck")
 internal class LocalDataProvider(
     private val context: Context
