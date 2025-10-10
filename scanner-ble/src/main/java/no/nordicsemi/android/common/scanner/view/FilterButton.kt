@@ -31,23 +31,43 @@
 
 package no.nordicsemi.android.common.scanner.view
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Label
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MyLocation
+import androidx.annotation.DrawableRes
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import no.nordicsemi.android.common.scanner.R
 
 @Composable
 internal fun FilterButton(
     title: String,
-    icon: ImageVector,
+    @DrawableRes icon: Int,
+    isSelected: Boolean,
+    containerColorEnabled: Color = Color.Unspecified,
+    containerColorDisabled: Color = Color.Unspecified,
+    onClick: () -> Unit = {},
+) {
+    FilterButton(
+        title = title,
+        painter = painterResource(icon),
+        isSelected = isSelected,
+        containerColorEnabled = containerColorEnabled,
+        containerColorDisabled = containerColorDisabled,
+        onClick = onClick
+    )
+}
+
+@Composable
+internal fun FilterButton(
+    title: String,
+    painter: Painter,
     isSelected: Boolean,
     containerColorEnabled: Color = Color.Unspecified,
     containerColorDisabled: Color = Color.Unspecified,
@@ -59,7 +79,7 @@ internal fun FilterButton(
         label = { Text(title) },
         leadingIcon = {
             Icon(
-                imageVector = if (isSelected) Icons.Default.Close else icon,
+                painter = if (isSelected) painterResource(R.drawable.baseline_close_24) else painter,
                 contentDescription = null
             )
         },
@@ -70,12 +90,31 @@ internal fun FilterButton(
     )
 }
 
+@Composable
+internal fun FilterButton(
+    title: String,
+    icon: ImageVector,
+    isSelected: Boolean,
+    containerColorEnabled: Color = Color.Unspecified,
+    containerColorDisabled: Color = Color.Unspecified,
+    onClick: () -> Unit = {},
+) {
+    FilterButton(
+        title = title,
+        painter = rememberVectorPainter(icon),
+        isSelected = isSelected,
+        containerColorEnabled = containerColorEnabled,
+        containerColorDisabled = containerColorDisabled,
+        onClick = onClick
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun FilterButtonPreviewSelected() {
     FilterButton(
         title = "Nearby",
-        icon = Icons.Default.MyLocation,
+        icon = R.drawable.baseline_my_location_24,
         isSelected = true
     )
 }
@@ -85,7 +124,7 @@ private fun FilterButtonPreviewSelected() {
 private fun FilterButtonPreview() {
     FilterButton(
         title = "Named",
-        icon = Icons.AutoMirrored.Default.Label,
+        icon = R.drawable.baseline_label_24,
         isSelected = false
     )
 }

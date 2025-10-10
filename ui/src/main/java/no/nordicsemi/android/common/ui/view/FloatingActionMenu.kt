@@ -46,9 +46,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -66,6 +63,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -75,6 +73,7 @@ import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
@@ -84,6 +83,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import no.nordicsemi.android.common.ui.R
 
 @Composable
 fun FloatingActionMenu(
@@ -198,6 +198,36 @@ fun FloatingActionMenuItem(
 }
 
 @Composable
+fun FloatingActionMenuItem(
+    label: String,
+    painter: Painter,
+    onClick: () -> Unit,
+    shape: Shape = FloatingActionButtonDefaults.shape,
+    contentPadding: PaddingValues = ButtonDefaults.TextButtonContentPadding,
+) {
+    FloatingActionMenuItem(
+        text = { Text(text = label) },
+        icon = {
+            Icon(
+                painter = painter,
+                contentDescription = label,
+                modifier = Modifier
+                    .size(56.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = shape,
+                    )
+                    .padding(16.dp),
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+        },
+        onClick = onClick,
+        shape = shape,
+        contentPadding = contentPadding,
+    )
+}
+
+@Composable
 fun FloatingActionMenuItemSecondary(
     label: String,
     imageVector: ImageVector,
@@ -209,6 +239,35 @@ fun FloatingActionMenuItemSecondary(
         icon = {
             Icon(
                 imageVector = imageVector,
+                contentDescription = label,
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 8.dp)
+                    .size(40.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        shape = shape,
+                    )
+                    .padding(8.dp),
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+        },
+        onClick = onClick,
+        shape = shape,
+    )
+}
+
+@Composable
+fun FloatingActionMenuItemSecondary(
+    label: String,
+    painter: Painter,
+    onClick: () -> Unit,
+    shape: Shape = FloatingActionButtonDefaults.smallShape,
+) {
+    FloatingActionMenuItem(
+        text = { Text(text = label) },
+        icon = {
+            Icon(
+                painter = painter,
                 contentDescription = label,
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp)
@@ -267,12 +326,12 @@ private fun FloatingActionMenuPreview() {
                     menuContent = {
                         FloatingActionMenuItem(
                             label = "Option 1",
-                            imageVector = Icons.Default.Add,
+                            painter = painterResource(R.drawable.baseline_add_24),
                             onClick = { /*TODO*/ }
                         )
                         FloatingActionMenuItem(
                             label = "Option 2",
-                            imageVector = Icons.Default.Restore,
+                            painter = painterResource(R.drawable.ic_cross),
                             onClick = { /*TODO*/ }
                         )
                     }
@@ -281,7 +340,7 @@ private fun FloatingActionMenuPreview() {
                         text = { Text(text = "Menu") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Add,
+                                painter = painterResource(R.drawable.baseline_add_24),
                                 contentDescription = null,
                             )
                         },

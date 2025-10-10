@@ -33,25 +33,11 @@
 
 package no.nordicsemi.android.common.scanner.spec
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.DirectionsBike
-import androidx.compose.material.icons.automirrored.filled.DirectionsRun
-import androidx.compose.material.icons.filled.BatteryStd
-import androidx.compose.material.icons.filled.Bloodtype
-import androidx.compose.material.icons.filled.MonitorHeart
-import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.material.icons.filled.SwapHoriz
-import androidx.compose.material.icons.filled.SyncAlt
-import androidx.compose.material.icons.filled.Thermostat
-import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import no.nordicsemi.android.common.scanner.R
-import java.util.UUID
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-import kotlin.uuid.toKotlinUuid
 
 internal val HTS_SERVICE_UUID= Uuid.parse("00001809-0000-1000-8000-00805f9b34fb")
 internal val BPS_SERVICE_UUID= Uuid.parse("00001810-0000-1000-8000-00805f9b34fb")
@@ -75,37 +61,37 @@ object ServiceUuids {
     @OptIn(ExperimentalUuidApi::class)
     fun getServiceInfo(uuid: Uuid): ServiceNameWithIcon? {
         return when (uuid) {
-            HTS_SERVICE_UUID -> ServiceNameWithIcon("Health Thermometer", Icons.Default.Thermostat)
-            BPS_SERVICE_UUID -> ServiceNameWithIcon("Blood Pressure", Icons.Default.Bloodtype)
+            HTS_SERVICE_UUID -> ServiceNameWithIcon("Health Thermometer", R.drawable.baseline_thermostat_24)
+            BPS_SERVICE_UUID -> ServiceNameWithIcon("Blood Pressure", R.drawable.baseline_bloodtype_24)
             CSC_SERVICE_UUID -> ServiceNameWithIcon(
                 "Cycling Speed and Cadence",
-                Icons.AutoMirrored.Default.DirectionsBike,
+                R.drawable.baseline_directions_bike_24,
             )
 
             CGMS_SERVICE_UUID -> ServiceNameWithIcon(
                 "Continuous Glucose Monitoring",
-                Icons.Outlined.WaterDrop
+                R.drawable.baseline_water_drop_24
             )
 
-            DF_SERVICE_UUID -> ServiceNameWithIcon("Direction Finding", Icons.Default.MyLocation)
-            GLS_SERVICE_UUID -> ServiceNameWithIcon("Glucose", Icons.Outlined.WaterDrop)
-            HRS_SERVICE_UUID -> ServiceNameWithIcon("Heart Rate", Icons.Default.MonitorHeart)
-            PRX_SERVICE_UUID -> ServiceNameWithIcon("Proximity", Icons.Default.Thermostat)
+            DF_SERVICE_UUID -> ServiceNameWithIcon("Direction Finding", R.drawable.baseline_my_location_24)
+            GLS_SERVICE_UUID -> ServiceNameWithIcon("Glucose", R.drawable.baseline_water_drop_24)
+            HRS_SERVICE_UUID -> ServiceNameWithIcon("Heart Rate", R.drawable.baseline_monitor_heart_24)
+            PRX_SERVICE_UUID -> ServiceNameWithIcon("Proximity", R.drawable.baseline_thermostat_24)
             RSCS_SERVICE_UUID -> ServiceNameWithIcon(
                 "Running Speed and Cadence",
-                Icons.AutoMirrored.Default.DirectionsRun
+                R.drawable.baseline_directions_run_24
             )
 
-            UART_SERVICE_UUID -> ServiceNameWithIcon("UART", Icons.Default.SwapHoriz)
-            BATTERY_SERVICE_UUID -> ServiceNameWithIcon("Battery", Icons.Default.BatteryStd)
-            THROUGHPUT_SERVICE_UUID -> ServiceNameWithIcon("Throughput", Icons.Default.SyncAlt)
+            UART_SERVICE_UUID -> ServiceNameWithIcon("UART", R.drawable.baseline_sync_alt_24)
+            BATTERY_SERVICE_UUID -> ServiceNameWithIcon("Battery", R.drawable.outline_battery_full_24)
+            THROUGHPUT_SERVICE_UUID -> ServiceNameWithIcon("Throughput", R.drawable.baseline_sync_alt_24)
             CHANNEL_SOUND_SERVICE_UUID -> ServiceNameWithIcon(
                 "Channel Sounding",
-                Icons.Default.MyLocation
+                R.drawable.baseline_my_location_24
             )
             MDS_SERVICE_UUID -> ServiceNameWithIcon(
                 "Memfault",
-                ImageVector.vectorResource(R.drawable.ic_memfault_app_logo)
+                R.drawable.ic_memfault_app_logo
             )
 
             else -> null
@@ -115,5 +101,5 @@ object ServiceUuids {
 
 data class ServiceNameWithIcon(
     val service: String,
-    val icon: ImageVector,
+    @field:DrawableRes val icon: Int,
 )

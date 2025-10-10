@@ -35,8 +35,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,10 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.ui.R
 import no.nordicsemi.android.common.ui.view.internal.BigIcon
 import no.nordicsemi.android.common.ui.view.internal.Hint
 
@@ -229,7 +229,7 @@ fun WarningView(
 private fun WarningViewPreview() {
     MaterialTheme {
         WarningView(
-            imageVector = Icons.Filled.Warning,
+            painterResource = painterResource(R.drawable.baseline_warning_24),
             title = "Warning",
             hint = "This is a warning view",
             modifier = Modifier.fillMaxSize(),

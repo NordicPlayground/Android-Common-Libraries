@@ -50,11 +50,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -75,12 +70,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.ui.R
 
 /**
  * A wizard step action to be displayed on the right side of a step.
@@ -446,11 +445,346 @@ fun WizardStepComponent(
     contentStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    WizardStepComponent(
+        iconPainter = rememberVectorPainter(image = icon),
+        title = title,
+        state = state,
+        modifier = modifier,
+        decor = decor,
+        contentColor = contentColor,
+        contentStyle = contentStyle,
+        content = content,
+    )
+}
+
+/**
+ * A wizard step component.
+ *
+ * Wizard is a common pattern for guiding users through a series of linear steps.
+ * With this component you can create a step with an icon, title, optional action and a content.
+ *
+ * ### Example
+ * ```kotlin
+ * Box(
+ *     modifier = Modifier.fillMaxSize(),
+ *     contentAlignment = Alignment.TopCenter
+ * ) {
+ *     OutlinedCard(
+ *         modifier = Modifier
+ *             .verticalScroll(rememberScrollState())
+ *             .widthIn(max = 600.dp)
+ *             .padding(all = 16.dp),
+ *     ) {
+ *         Column(
+ *             modifier = Modifier
+ *                 .fillMaxWidth()
+ *                 .padding(16.dp),
+ *         ) {
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.Warning,
+ *                 title = "Identify",
+ *                 state = WizardStepState.COMPLETED,
+ *                 decor = WizardStepAction.Action(
+ *                     text = "Action",
+ *                     onClick = { }
+ *                 ),
+ *             ) {
+ *                 StatusItem {
+ *                     Text(text = "Identified")
+ *                 }
+ *             }
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.AccountBox,
+ *                 title = "Very Long Title That Won't Fit",
+ *                 state = WizardStepState.CURRENT,
+ *                 decor = WizardStepAction.Action(
+ *                     text = "Action",
+ *                     onClick = { }
+ *                 ),
+ *             ) {
+ *                 StatusItem {
+ *                     Text(text = "Select color")
+ *                 }
+ *             }
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.AccountCircle,
+ *                 title = "Connect",
+ *                 state = WizardStepState.CURRENT,
+ *                 decor = WizardStepAction.ProgressIndicator,
+ *             ) {
+ *                 ProgressItem(
+ *                     text = "Completed",
+ *                     status = ProgressItemStatus.SUCCESS,
+ *                 )
+ *
+ *                 val infiniteTransition =
+ *                     rememberInfiniteTransition(label = "ProgressTransition")
+ *                 val progress by infiniteTransition.animateFloat(
+ *                     initialValue = 0.0f,
+ *                     targetValue = 1.0f,
+ *                     animationSpec = infiniteRepeatable(
+ *                         animation = tween(10000, easing = LinearEasing),
+ *                         repeatMode = RepeatMode.Restart
+ *                     ),
+ *                     label = "Progress"
+ *                 )
+ *
+ *                 ProgressItem(
+ *                     status = ProgressItemStatus.WORKING,
+ *                 ) {
+ *                     Column {
+ *                         Text(text = "In progress")
+ *                         LinearProgressIndicator(
+ *                             progress = { progress },
+ *                             modifier = Modifier.fillMaxWidth(),
+ *                             trackColor = MaterialTheme.colorScheme.surfaceVariant,
+ *                             drawStopIndicator = {}
+ *                         )
+ *                         Text(
+ *                             text = "%.1f%%".format(progress * 100),
+ *                             modifier = Modifier.fillMaxWidth(),
+ *                             textAlign = TextAlign.End
+ *                         )
+ *                     }
+ *                 }
+ *
+ *                 ProgressItem(
+ *                     text = "Future",
+ *                     status = ProgressItemStatus.DISABLED,
+ *                 )
+ *
+ *                 ProgressItem(
+ *                     text = "Error happened",
+ *                     status = ProgressItemStatus.ERROR,
+ *                 )
+ *
+ *                 StatusItem {
+ *                     Text(text = "Connect to the device")
+ *                 }
+ *             }
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.Build,
+ *                 title = "Destroy",
+ *                 state = WizardStepState.INACTIVE,
+ *                 decor = WizardStepAction.Action(
+ *                     text = "Terminate",
+ *                     dangerous = true,
+ *                     onClick = { }
+ *                 ),
+ *             ) {
+ *                 StatusItem {
+ *                     Row(
+ *                         verticalAlignment = Alignment.CenterVertically,
+ *                     ) {
+ *                         Text(
+ *                             text = "Engage warp 4",
+ *                             modifier = Modifier.weight(1f)
+ *                         )
+ *                         var checked by rememberSaveable { mutableStateOf(false) }
+ *                         Switch(
+ *                             checked = checked,
+ *                             onCheckedChange = { checked = it },
+ *                         )
+ *                     }
+ *                 }
+ *             }
+ *         }
+ *     }
+ * }
+ * ```
+ *
+ * @param icon The icon will be placed in a circular container.
+ * @param title The title of the step.
+ * @param state Current state of the step.
+ * @param decor An optional action or decoration that will be shown on the right.
+ */
+@Composable
+fun WizardStepComponent(
+    icon: Painter,
+    title: String,
+    state: WizardStepState,
+    modifier: Modifier = Modifier,
+    decor: WizardStepAction? = null,
+    contentColor: Color = LocalContentColor.current,
+    contentStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    WizardStepComponent(
+        iconPainter = icon,
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        state = state,
+        modifier = modifier,
+        decor = decor,
+        contentColor = contentColor,
+        contentStyle = contentStyle,
+        content = content,
+    )
+}
+
+/**
+ * A wizard step component.
+ *
+ * Wizard is a common pattern for guiding users through a series of linear steps.
+ * With this component you can create a step with an icon, title, optional action and a content.
+ *
+ * ### Example
+ * ```kotlin
+ * Box(
+ *     modifier = Modifier.fillMaxSize(),
+ *     contentAlignment = Alignment.TopCenter
+ * ) {
+ *     OutlinedCard(
+ *         modifier = Modifier
+ *             .verticalScroll(rememberScrollState())
+ *             .widthIn(max = 600.dp)
+ *             .padding(all = 16.dp),
+ *     ) {
+ *         Column(
+ *             modifier = Modifier
+ *                 .fillMaxWidth()
+ *                 .padding(16.dp),
+ *         ) {
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.Warning,
+ *                 title = "Identify",
+ *                 state = WizardStepState.COMPLETED,
+ *                 decor = WizardStepAction.Action(
+ *                     text = "Action",
+ *                     onClick = { }
+ *                 ),
+ *             ) {
+ *                 StatusItem {
+ *                     Text(text = "Identified")
+ *                 }
+ *             }
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.AccountBox,
+ *                 title = "Very Long Title That Won't Fit",
+ *                 state = WizardStepState.CURRENT,
+ *                 decor = WizardStepAction.Action(
+ *                     text = "Action",
+ *                     onClick = { }
+ *                 ),
+ *             ) {
+ *                 StatusItem {
+ *                     Text(text = "Select color")
+ *                 }
+ *             }
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.AccountCircle,
+ *                 title = "Connect",
+ *                 state = WizardStepState.CURRENT,
+ *                 decor = WizardStepAction.ProgressIndicator,
+ *             ) {
+ *                 ProgressItem(
+ *                     text = "Completed",
+ *                     status = ProgressItemStatus.SUCCESS,
+ *                 )
+ *
+ *                 val infiniteTransition =
+ *                     rememberInfiniteTransition(label = "ProgressTransition")
+ *                 val progress by infiniteTransition.animateFloat(
+ *                     initialValue = 0.0f,
+ *                     targetValue = 1.0f,
+ *                     animationSpec = infiniteRepeatable(
+ *                         animation = tween(10000, easing = LinearEasing),
+ *                         repeatMode = RepeatMode.Restart
+ *                     ),
+ *                     label = "Progress"
+ *                 )
+ *
+ *                 ProgressItem(
+ *                     status = ProgressItemStatus.WORKING,
+ *                 ) {
+ *                     Column {
+ *                         Text(text = "In progress")
+ *                         LinearProgressIndicator(
+ *                             progress = { progress },
+ *                             modifier = Modifier.fillMaxWidth(),
+ *                             trackColor = MaterialTheme.colorScheme.surfaceVariant,
+ *                             drawStopIndicator = {}
+ *                         )
+ *                         Text(
+ *                             text = "%.1f%%".format(progress * 100),
+ *                             modifier = Modifier.fillMaxWidth(),
+ *                             textAlign = TextAlign.End
+ *                         )
+ *                     }
+ *                 }
+ *
+ *                 ProgressItem(
+ *                     text = "Future",
+ *                     status = ProgressItemStatus.DISABLED,
+ *                 )
+ *
+ *                 ProgressItem(
+ *                     text = "Error happened",
+ *                     status = ProgressItemStatus.ERROR,
+ *                 )
+ *
+ *                 StatusItem {
+ *                     Text(text = "Connect to the device")
+ *                 }
+ *             }
+ *             WizardStepComponent(
+ *                 icon = Icons.Default.Build,
+ *                 title = "Destroy",
+ *                 state = WizardStepState.INACTIVE,
+ *                 decor = WizardStepAction.Action(
+ *                     text = "Terminate",
+ *                     dangerous = true,
+ *                     onClick = { }
+ *                 ),
+ *             ) {
+ *                 StatusItem {
+ *                     Row(
+ *                         verticalAlignment = Alignment.CenterVertically,
+ *                     ) {
+ *                         Text(
+ *                             text = "Engage warp 4",
+ *                             modifier = Modifier.weight(1f)
+ *                         )
+ *                         var checked by rememberSaveable { mutableStateOf(false) }
+ *                         Switch(
+ *                             checked = checked,
+ *                             onCheckedChange = { checked = it },
+ *                         )
+ *                     }
+ *                 }
+ *             }
+ *         }
+ *     }
+ * }
+ * ```
+ *
+ * @param iconPainter The icon will be placed in a circular container.
+ * @param title The title of the step.
+ * @param state Current state of the step.
+ * @param decor An optional action or decoration that will be shown on the right.
+ */
+@Composable
+fun WizardStepComponent(
+    iconPainter: Painter,
+    title: @Composable () -> Unit,
+    state: WizardStepState,
+    modifier: Modifier = Modifier,
+    decor: WizardStepAction? = null,
+    contentColor: Color = LocalContentColor.current,
+    contentStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CircularIcon(icon, enabled = state != WizardStepState.INACTIVE)
+            CircularIcon(iconPainter, enabled = state != WizardStepState.INACTIVE)
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -553,7 +887,7 @@ private fun WizardScreen() {
                         .padding(16.dp),
                 ) {
                     WizardStepComponent(
-                        icon = Icons.Default.Warning,
+                        icon = painterResource(R.drawable.baseline_warning_24),
                         title = "Identify",
                         state = WizardStepState.COMPLETED,
                         decor = WizardStepAction.Action(
@@ -566,7 +900,7 @@ private fun WizardScreen() {
                         }
                     }
                     WizardStepComponent(
-                        icon = Icons.Default.AccountBox,
+                        icon = painterResource(R.drawable.baseline_add_24),
                         title = "Very Long Title That Won't Fit",
                         state = WizardStepState.CURRENT,
                         decor = WizardStepAction.Action(
@@ -579,7 +913,7 @@ private fun WizardScreen() {
                         }
                     }
                     WizardStepComponent(
-                        icon = Icons.Default.AccountCircle,
+                        icon = painterResource(R.drawable.baseline_filter_list_24),
                         title = "Connect",
                         state = WizardStepState.CURRENT,
                         decor = WizardStepAction.ProgressIndicator,
@@ -635,7 +969,7 @@ private fun WizardScreen() {
                         }
                     }
                     WizardStepComponent(
-                        icon = Icons.Default.Build,
+                        icon = painterResource(R.drawable.baseline_menu_24),
                         title = "Destroy",
                         state = WizardStepState.INACTIVE,
                         decor = WizardStepAction.Action(

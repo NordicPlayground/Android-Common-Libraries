@@ -33,12 +33,8 @@
 
 package no.nordicsemi.android.common.scanner.data
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Label
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.ui.graphics.vector.ImageVector
 import no.nordicsemi.android.common.scanner.R
 import no.nordicsemi.kotlin.ble.client.android.ScanResult
 import kotlin.uuid.ExperimentalUuidApi
@@ -46,7 +42,7 @@ import kotlin.uuid.Uuid
 
 sealed class Filter(
     @field:StringRes val title: Int,
-    val icon: ImageVector,
+    @field:DrawableRes val icon: Int,
     val isInitiallySelected: Boolean,
     val predicate: (selected: Boolean, result: ScanResult, highestRssi: Int) -> Boolean,
 )
@@ -65,7 +61,7 @@ class OnlyWithNames(
     isInitiallySelected: Boolean = false,
 ) : Filter(
     title = title,
-    icon = Icons.AutoMirrored.Default.Label,
+    icon = R.drawable.baseline_label_24,
     isInitiallySelected = isInitiallySelected,
     predicate = { selected, result, _ ->
         !selected || result.advertisingData.name?.isNotEmpty() == true
@@ -87,7 +83,7 @@ class OnlyNearby(
     isInitiallySelected: Boolean = false,
 ) : Filter(
     title = title,
-    icon = Icons.Default.MyLocation,
+    icon = R.drawable.baseline_my_location_24,
     isInitiallySelected = isInitiallySelected,
     predicate = { selected, _, highestRssi ->
         !selected || highestRssi >= rssiThreshold
@@ -108,7 +104,7 @@ class OnlyNearby(
 @OptIn(ExperimentalUuidApi::class)
 class WithServiceUuid(
     uuid: Uuid,
-    icon: ImageVector = Icons.Default.Check,
+    @DrawableRes icon: Int = R.drawable.baseline_check_24,
     @StringRes title: Int = R.string.filter_with_service_uuid,
     isInitiallySelected: Boolean = false,
 ) : Filter(
@@ -136,7 +132,7 @@ class WithServiceUuid(
  */
 class CustomFilter(
     @StringRes title: Int,
-    icon: ImageVector = Icons.Default.Check,
+    @DrawableRes icon: Int = R.drawable.baseline_check_24,
     isInitiallySelected: Boolean = false,
     predicate:  (selected: Boolean, result: ScanResult, highestRssi: Int) -> Boolean,
 ) : Filter(

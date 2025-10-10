@@ -54,7 +54,7 @@ dependencies {
 
     implementation(nordic.blek.client.android)
 
-    implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.androidx.activity.compose)
 

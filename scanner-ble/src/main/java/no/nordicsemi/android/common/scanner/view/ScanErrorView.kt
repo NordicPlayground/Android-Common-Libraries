@@ -33,10 +33,9 @@ package no.nordicsemi.android.common.scanner.view
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.BluetoothSearching
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +51,7 @@ internal fun ScanErrorView(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        imageVector = Icons.AutoMirrored.Filled.BluetoothSearching,
+        painterResource = painterResource(R.drawable.outline_bluetooth_searching_24),
         title = stringResource(id = R.string.scan_failed_title),
         hint = stringResource(id = R.string.scan_failed_info, message),
     )

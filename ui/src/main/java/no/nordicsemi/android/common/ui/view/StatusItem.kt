@@ -43,17 +43,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import no.nordicsemi.android.common.ui.R
 
 /**
  * A component that displays list of items grouped by a vertical line on the left.
@@ -116,7 +116,7 @@ internal fun VerticalDivider(
 private fun VerticalDividerInWizardPreview() {
     MaterialTheme {
         WizardStepComponent(
-            icon = Icons.Default.Warning,
+            icon = painterResource(R.drawable.baseline_warning_24),
             title = "Identify",
             state = WizardStepState.COMPLETED,
             decor = WizardStepAction.Action(
