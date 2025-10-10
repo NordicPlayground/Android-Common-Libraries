@@ -32,9 +32,21 @@
 pluginManagement {
     repositories {
         mavenLocal()
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
-        gradlePluginPortal()
+        gradlePluginPortal {
+            content {
+                includeGroupByRegex("com\\.gradle.*")
+                includeGroupByRegex("no\\.nordicsemi.*")
+                includeGroupByRegex("org\\.jetbrains")
+            }
+        }
     }
 }
 
@@ -42,8 +54,28 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenLocal()
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
+    }
+    versionCatalogs {
+        // Use Nordic Gradle Version Catalog with common external libraries versions.
+        create("libs") {
+            from("no.nordicsemi.android.gradle:version-catalog:2.10-1")
+        }
+        // Fixed versions for Nordic libraries.
+        create("nordic") {
+            from(files("gradle/nordic.versions.toml"))
+        }
+        // Nordic Version Catalog is released after library releases, so cannot be used internally in libs.
+        // create("nordic") {
+        //    from("no.nordicsemi.android:version-catalog:2025.10.00")
+        // }
     }
 }
 rootProject.name = "Common Libraries"
