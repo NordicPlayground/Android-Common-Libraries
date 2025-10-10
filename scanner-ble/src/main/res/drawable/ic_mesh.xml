@@ -39,25 +39,25 @@
         <path
             android:fillColor="#00000000"
             android:pathData="M224.16,136.46l0,-68.43l-59.26,-34.22l-59.26,34.22l0,68.43l59.26,34.21l59.26,-34.21z"
-            android:strokeWidth="8"
+            android:strokeWidth="12"
             android:strokeColor="@android:color/white" />
 
         <path
             android:fillColor="#00000000"
             android:pathData="M164.9,33.81L164.9,171.97"
-            android:strokeWidth="8"
+            android:strokeWidth="12"
             android:strokeColor="@android:color/white" />
 
         <path
             android:fillColor="#00000000"
             android:pathData="M105.64,136.46L224.91,68.03"
-            android:strokeWidth="8"
+            android:strokeWidth="12"
             android:strokeColor="@android:color/white" />
 
         <path
             android:fillColor="#00000000"
             android:pathData="M105.64,68.03L224.91,137.76"
-            android:strokeWidth="8"
+            android:strokeWidth="12"
             android:strokeColor="@android:color/white" />
     </group>
 </vector>

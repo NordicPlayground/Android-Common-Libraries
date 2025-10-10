@@ -226,7 +226,12 @@ internal fun DeviceListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        peripheralIcon?.let { CircularIcon(painter = painterResource(it)) }
+        peripheralIcon?.let {
+            CircularIcon(
+                painter = painterResource(it),
+                iconSize = 30.dp
+            )
+        }
 
         Column(
             horizontalAlignment = Alignment.Start,
