@@ -29,36 +29,38 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@Suppress("UnstableApiUsage")
 pluginManagement {
     repositories {
         mavenLocal()
         google {
             content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+                includeGroupAndSubgroups("androidx")
+            }
+        }
+        gradlePluginPortal {
+            content {
+                includeGroupAndSubgroups("com.gradle")
+                includeGroupAndSubgroups("no.nordicsemi")
+                includeGroupAndSubgroups("org.jetbrains")
             }
         }
         mavenCentral()
-        gradlePluginPortal {
-            content {
-                includeGroupByRegex("com\\.gradle.*")
-                includeGroupByRegex("no\\.nordicsemi.*")
-                includeGroupByRegex("org\\.jetbrains")
-            }
-        }
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenLocal()
         google {
             content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+                includeGroupAndSubgroups("androidx")
             }
         }
         mavenCentral()
