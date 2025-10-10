@@ -54,7 +54,7 @@ private const val REFRESH_PERMISSIONS =
 
 @Singleton
 internal class WifiStateManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) {
     private val dataProvider = LocalDataProvider(context)
     private val utils = PermissionUtils(context, dataProvider)

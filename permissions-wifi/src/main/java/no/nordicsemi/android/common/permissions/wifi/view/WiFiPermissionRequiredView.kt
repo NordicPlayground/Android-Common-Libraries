@@ -54,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permissions.wifi.R
 import no.nordicsemi.android.common.permissions.wifi.viewmodel.PermissionViewModel
@@ -105,8 +104,7 @@ internal fun WiFiPermissionRequiredView() {
 }
 
 private fun openPermissionSettings(context: Context) {
-    ContextCompat.startActivity(
-        context,
+    context.startActivity(
         Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.fromParts("package", context.packageName, null)
