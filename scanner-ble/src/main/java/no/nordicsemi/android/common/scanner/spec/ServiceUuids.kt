@@ -52,7 +52,12 @@ internal val UART_SERVICE_UUID= Uuid.parse("6E400001-B5A3-F393-E0A9-E50E24DCCA9E
 internal val BATTERY_SERVICE_UUID= Uuid.parse("0000180F-0000-1000-8000-00805f9b34fb")
 internal val THROUGHPUT_SERVICE_UUID = Uuid.parse("0483DADD-6C9D-6CA9-5D41-03AD4FFF4ABB")
 internal val CHANNEL_SOUND_SERVICE_UUID = Uuid.parse("0000185B-0000-1000-8000-00805F9B34FB")
+// Nordic Service UUIDs
 internal val MDS_SERVICE_UUID = Uuid.parse("54220000-f6a5-4007-a371-722f4ebd8436")
+internal val LBS_SERVICE_UUID = Uuid.parse("00001523-1212-EFDE-1523-785FEABCD123")
+internal val MESH_PROVISIONING_SERVICE_UUID = Uuid.parse("00001827-0000-1000-8000-00805F9B34FB")
+internal val MESH_PROXY_SERVICE_UUID = Uuid.parse("00001828-0000-1000-8000-00805F9B34FB")
+internal val MESH_PROXY_SOLICITATION_SERVICE_UUID = Uuid.parse("00001829-0000-1000-8000-00805F9B34FB")
 
 // TODO: make a callback which checks the uuid and returns the name and icon for the service.
 object ServiceUuids {
@@ -67,12 +72,10 @@ object ServiceUuids {
                 "Cycling Speed and Cadence",
                 R.drawable.baseline_directions_bike_24,
             )
-
             CGMS_SERVICE_UUID -> ServiceNameWithIcon(
                 "Continuous Glucose Monitoring",
                 R.drawable.baseline_water_drop_24
             )
-
             DF_SERVICE_UUID -> ServiceNameWithIcon("Direction Finding", R.drawable.baseline_my_location_24)
             GLS_SERVICE_UUID -> ServiceNameWithIcon("Glucose", R.drawable.baseline_water_drop_24)
             HRS_SERVICE_UUID -> ServiceNameWithIcon("Heart Rate", R.drawable.baseline_monitor_heart_24)
@@ -90,9 +93,13 @@ object ServiceUuids {
                 R.drawable.baseline_my_location_24
             )
             MDS_SERVICE_UUID -> ServiceNameWithIcon(
-                "Memfault",
+                "Monitoring & Diagnostics",
                 R.drawable.ic_memfault_app_logo
             )
+            LBS_SERVICE_UUID -> ServiceNameWithIcon("LED Button", R.drawable.outline_lightbulb_2_24)
+            MESH_PROXY_SERVICE_UUID,
+            MESH_PROXY_SOLICITATION_SERVICE_UUID,
+            MESH_PROVISIONING_SERVICE_UUID -> ServiceNameWithIcon("Mesh", R.drawable.ic_mesh)
 
             else -> null
         }

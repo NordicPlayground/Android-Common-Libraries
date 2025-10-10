@@ -226,7 +226,12 @@ internal fun DeviceListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        peripheralIcon?.let { CircularIcon(painter = painterResource(it)) }
+        peripheralIcon?.let {
+            CircularIcon(
+                painter = painterResource(it),
+                iconSize = 30.dp
+            )
+        }
 
         Column(
             horizontalAlignment = Alignment.Start,
@@ -236,9 +241,10 @@ internal fun DeviceListItem(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+                    val name = result.advertisingData.name ?: result.peripheral.name
                     Text(
-                        text = result.peripheral.name ?: stringResource(R.string.no_name),
-                        color = if (result.peripheral.name != null) {
+                        text = name ?: stringResource(R.string.no_name),
+                        color = if (name != null) {
                             MaterialTheme.colorScheme.onSurface
                         } else {
                             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
