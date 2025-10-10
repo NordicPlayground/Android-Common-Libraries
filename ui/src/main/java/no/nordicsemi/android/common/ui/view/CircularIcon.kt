@@ -36,6 +36,7 @@ package no.nordicsemi.android.common.ui.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
@@ -48,16 +49,30 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.ui.R
 
+/**
+ * A circular icon with a background.
+ *
+ * @param painter The painter to be used for the icon.
+ * @param modifier The modifier to be applied to the icon.
+ * @param backgroundColor The background color of the circle.
+ * @param enabled If false, the icon will be displayed in a disabled state.
+ * @param size The size of the circular background.
+ * @param iconSize The size of the icon inside the circle.
+ */
 @Composable
 fun CircularIcon(
     painter: Painter,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
     enabled: Boolean = true,
+    size: Dp = 40.dp,
+    iconSize: Dp = 24.dp,
 ) {
+    val padding = (size - iconSize) / 2
     Image(
         painter = painter,
         contentDescription = null,
@@ -66,7 +81,9 @@ fun CircularIcon(
         } else {
             ColorFilter.tint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
         },
-        modifier = modifier
+        modifier = Modifier
+            .size(size)
+            .then(modifier)
             .background(
                 color = if (enabled) {
                     backgroundColor
@@ -75,22 +92,35 @@ fun CircularIcon(
                 },
                 shape = CircleShape
             )
-            .padding(8.dp)
+            .padding(padding)
     )
 }
 
+/**
+ * A circular icon with a background.
+ *
+ * @param imageVector The vector image to be used for the icon.
+ * @param modifier The modifier to be applied to the icon.
+ * @param backgroundColor The background color of the circle.
+ * @param enabled If false, the icon will be displayed in a disabled state.
+ * @param size The size of the circular background.
+ * @param iconSize The size of the icon inside the circle.
+ */
 @Composable
 fun CircularIcon(
     imageVector: ImageVector,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
     enabled: Boolean = true,
+    size: Dp = 40.dp,
+    iconSize: Dp = 24.dp,
 ) {
     CircularIcon(
         painter = rememberVectorPainter(image = imageVector),
         modifier = modifier,
         backgroundColor = backgroundColor,
-        enabled = enabled
+        enabled = enabled,
+        iconSize = iconSize,
     )
 }
 
