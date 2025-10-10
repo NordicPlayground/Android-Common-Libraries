@@ -38,6 +38,7 @@ import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 private const val SHARED_PREFS_NAME = "SHARED_PREFS_NOTIFICATION"
 
@@ -61,6 +62,6 @@ internal class LocalDataProvider @Inject constructor(
     var notificationPermissionRequested: Boolean
         get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_PERMISSION_REQUESTED, value).apply()
+            sharedPrefs.edit { putBoolean(PREFS_PERMISSION_REQUESTED, value) }
         }
 }

@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":permissions-notification"))
     implementation(project(":scanner-ble"))
 
+    // Sample app uses native Android client.
     implementation(nordic.blek.client.android)
 
     implementation(libs.androidx.compose.material.icons.extended)
@@ -62,6 +63,6 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.runtime.compose)
 
-    // debugImplementation because LeakCanary should only run in debug builds.
+    // LeakCanary should only run in debug builds.
     debugImplementation(libs.leakcanary)
 }

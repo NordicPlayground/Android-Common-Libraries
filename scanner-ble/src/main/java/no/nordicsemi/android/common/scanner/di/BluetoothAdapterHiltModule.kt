@@ -40,7 +40,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
-@Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
 internal class BluetoothAdapterHiltModule {

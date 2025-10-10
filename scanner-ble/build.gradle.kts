@@ -55,5 +55,9 @@ dependencies {
     implementation(project(":permissions-ble"))
     implementation(project(":ui"))
 
+    // Scanner can be used with Native or Mock Android client.
+    // Add dependency to "nordic.blek.client.android" or "nordic.blek.client.android.mock"
+    // in your application module.
+    // See build.gradle.kts of the sample app for reference.
     api(nordic.blek.client.core.android)
 }

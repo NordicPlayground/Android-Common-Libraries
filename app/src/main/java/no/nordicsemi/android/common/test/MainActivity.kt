@@ -153,6 +153,8 @@ class MainActivity : NordicActivity() {
                 val drawerState = rememberDrawerState(DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
 
+                // Note: This state is read in ScannerDestination.kt.
+                @Suppress("VariableNeverRead")
                 var isFilterOpen by LocalFilterState.current
 
                 ModalNavigationDrawer(
@@ -250,7 +252,10 @@ class MainActivity : NordicActivity() {
                                         AppBarIcon(
                                             imageVector = Icons.Default.FilterList,
                                             contentDescription = null,
-                                            onClick = { isFilterOpen = true }
+                                            onClick = {
+                                                @Suppress("AssignedValueIsNeverRead")
+                                                isFilterOpen = true
+                                            }
                                         )
                                     }
                                     val context = LocalContext.current
