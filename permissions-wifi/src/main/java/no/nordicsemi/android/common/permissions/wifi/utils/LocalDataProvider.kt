@@ -36,6 +36,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.edit
 
 private const val SHARED_PREFS_NAME = "SHARED_PREFS_NAME"
 
@@ -57,7 +58,7 @@ internal class LocalDataProvider(
     var locationPermissionRequested: Boolean
         get() = sharedPrefs.getBoolean(PREFS_PERMISSION_REQUESTED, false)
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_PERMISSION_REQUESTED, value).apply()
+            sharedPrefs.edit { putBoolean(PREFS_PERMISSION_REQUESTED, value) }
         }
 
     /**
@@ -69,7 +70,7 @@ internal class LocalDataProvider(
     var wifiPermissionRequested: Boolean
         get() = sharedPrefs.getBoolean(PREFS_WIFI_PERMISSION_REQUESTED, false)
         set(value) {
-            sharedPrefs.edit().putBoolean(PREFS_WIFI_PERMISSION_REQUESTED, value).apply()
+            sharedPrefs.edit { putBoolean(PREFS_WIFI_PERMISSION_REQUESTED, value) }
         }
 
     val isLocationPermissionRequired: Boolean
