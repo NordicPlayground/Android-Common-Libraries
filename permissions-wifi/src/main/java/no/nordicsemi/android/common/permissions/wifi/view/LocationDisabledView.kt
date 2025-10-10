@@ -35,14 +35,13 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permissions.wifi.R
@@ -51,7 +50,7 @@ import no.nordicsemi.android.common.ui.view.WarningView
 @Composable
 internal fun LocationDisabledView() {
     WarningView(
-        imageVector = Icons.Default.LocationOff,
+        painterResource = painterResource(R.drawable.baseline_location_off_24),
         title = stringResource(id = R.string.location_disabled),
         hint = stringResource(id = R.string.location_disabled_des),
         modifier = Modifier

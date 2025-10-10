@@ -41,12 +41,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,8 +52,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -74,7 +71,42 @@ fun NordicLargeAppBar(
     onNavigationButtonClick: (() -> Unit)? = null,
     onHamburgerButtonClick: (() -> Unit)? = null,
     showBackButton: Boolean = onNavigationButtonClick != null,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    backButtonIcon: ImageVector,
+    showHamburgerButton: Boolean = onHamburgerButtonClick != null,
+    collapsedHeight: Dp = TopAppBarDefaults.LargeAppBarCollapsedHeight,
+    expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
+    windowInsets: WindowInsets = WindowInsets.displayCutout
+        .union(WindowInsets.statusBars)
+        .union(WindowInsets.navigationBars)
+        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    NordicLargeAppBar(
+        title = title,
+        modifier = modifier,
+        onNavigationButtonClick = onNavigationButtonClick,
+        onHamburgerButtonClick = onHamburgerButtonClick,
+        showBackButton = showBackButton,
+        backButtonIcon = rememberVectorPainter(image = backButtonIcon),
+        showHamburgerButton = showHamburgerButton,
+        collapsedHeight = collapsedHeight,
+        expandedHeight = expandedHeight,
+        windowInsets = windowInsets,
+        scrollBehavior = scrollBehavior,
+        actions = actions,
+    )
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun NordicLargeAppBar(
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigationButtonClick: (() -> Unit)? = null,
+    onHamburgerButtonClick: (() -> Unit)? = null,
+    showBackButton: Boolean = onNavigationButtonClick != null,
+    backButtonIcon: Painter = painterResource(R.drawable.baseline_arrow_back_24),
     showHamburgerButton: Boolean = onHamburgerButtonClick != null,
     collapsedHeight: Dp = TopAppBarDefaults.LargeAppBarCollapsedHeight,
     expandedHeight: Dp = TopAppBarDefaults.LargeAppBarExpandedHeight,
@@ -99,7 +131,7 @@ fun NordicLargeAppBar(
             onNavigationButtonClick?.takeIf { showBackButton }?.let { action ->
                 IconButton(onClick = { action() }) {
                     Icon(
-                        imageVector = backButtonIcon,
+                        painter = backButtonIcon,
                         contentDescription = stringResource(id = R.string.navigation_item_accessibility),
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )
@@ -108,7 +140,7 @@ fun NordicLargeAppBar(
                 onHamburgerButtonClick?.takeIf { showHamburgerButton }?.let { action ->
                     IconButton(onClick = { action() }) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
+                            painter = painterResource(R.drawable.baseline_menu_24),
                             contentDescription = stringResource(id = R.string.menu_item_accessibility),
                             tint = MaterialTheme.colorScheme.onPrimary,
                         )
@@ -133,16 +165,13 @@ private fun NordicLargeAppBarPreview() {
             title = { Text(text = "Title") },
             actions = {
                 IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Default.FilterList, contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.baseline_filter_list_24), contentDescription = "")
                 }
                 CircularProgressIndicator(
                     modifier = Modifier.padding(4.dp).size(24.dp),
                 )
                 IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "")
-                }
-                IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.baseline_add_24), contentDescription = "")
                 }
             },
             onHamburgerButtonClick = {},

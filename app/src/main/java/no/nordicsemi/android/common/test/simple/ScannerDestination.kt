@@ -98,12 +98,6 @@ val ScannerDestination = defineDestination(ScannerDestinationId) {
         dynamicFilters = listOf(
             OnlyNearby(),
             OnlyWithNames(),
-            WithServiceUuid(
-                title = R.string.filter_hrm,
-                icon = Icons.Default.MonitorHeart,
-                uuid = Uuid.fromShortUuid(0x180D), // Heart Rate Service UUID,
-                isInitiallySelected = true
-            ),
             CustomFilter(
                 title = R.string.filter_show_all,
                 predicate = { selected, result, _ ->

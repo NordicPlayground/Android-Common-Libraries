@@ -31,6 +31,7 @@
 
 package no.nordicsemi.android.common.scanner.view
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,8 +51,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -66,7 +65,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -198,7 +197,7 @@ internal fun LazyListScope.DeviceListItems(
     devices: List<ScannedPeripheral>,
     onScanResultSelected: (ScanResult) -> Unit,
     deviceItem: @Composable (ScanResult) -> Unit = { scanResult ->
-        DeviceListItem(scanResult, peripheralIcon = Icons.Default.Bluetooth)
+        DeviceListItem(scanResult)
     },
 ) {
     items(devices) {device ->
@@ -216,9 +215,9 @@ internal fun LazyListScope.DeviceListItems(
 @Composable
 internal fun DeviceListItem(
     result: ScanResult,
-    peripheralIcon: ImageVector? = result.advertisingData.serviceUuids
+    @DrawableRes peripheralIcon: Int? = result.advertisingData.serviceUuids
         .firstNotNullOfOrNull { ServiceUuids.getServiceInfo(it)?.icon }
-        ?: Icons.Default.Bluetooth,
+        ?: R.drawable.outline_bluetooth_24,
 ) {
     Row(
         modifier = Modifier
@@ -227,7 +226,7 @@ internal fun DeviceListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        peripheralIcon?.let { CircularIcon(peripheralIcon) }
+        peripheralIcon?.let { CircularIcon(painter = painterResource(it)) }
 
         Column(
             horizontalAlignment = Alignment.Start,

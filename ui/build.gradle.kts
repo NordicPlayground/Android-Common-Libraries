@@ -58,5 +58,5 @@ dokka {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.material.iconsExtended)
+    // No dependencies
 }

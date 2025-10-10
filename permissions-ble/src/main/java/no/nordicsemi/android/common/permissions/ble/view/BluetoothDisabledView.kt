@@ -38,14 +38,13 @@ import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import no.nordicsemi.android.common.permissions.ble.R
@@ -54,7 +53,7 @@ import no.nordicsemi.android.common.ui.view.WarningView
 @Composable
 internal fun BluetoothDisabledView() {
     WarningView(
-        imageVector = Icons.Default.BluetoothDisabled,
+        painterResource = painterResource(R.drawable.baseline_bluetooth_disabled_24),
         title = stringResource(id = R.string.bluetooth_disabled_title),
         hint = stringResource(id = R.string.bluetooth_disabled_info),
         modifier = Modifier

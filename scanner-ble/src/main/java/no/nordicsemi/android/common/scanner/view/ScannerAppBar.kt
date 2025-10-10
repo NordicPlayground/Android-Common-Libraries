@@ -33,17 +33,15 @@ package no.nordicsemi.android.common.scanner.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import no.nordicsemi.android.common.scanner.ScanFilterState
+import no.nordicsemi.android.common.ui.R
 import no.nordicsemi.android.common.ui.view.AppBarIcon
 import no.nordicsemi.android.common.ui.view.NordicAppBar
 
@@ -55,13 +53,11 @@ fun ScannerAppBar(
     state: ScanFilterState,
     modifier: Modifier = Modifier,
     onFilterClicked: () -> Unit,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onNavigationButtonClick: (() -> Unit)? = null,
 ) {
     NordicAppBar(
         modifier = modifier,
         title = title,
-        backButtonIcon = backButtonIcon,
         onNavigationButtonClick = onNavigationButtonClick,
         actions = {
             if (isScanning) {
@@ -73,7 +69,7 @@ fun ScannerAppBar(
             }
             if (state.dynamicFilters.isNotEmpty() || state.sortingOptions.isNotEmpty()) {
                 AppBarIcon(
-                    imageVector = Icons.Default.FilterList,
+                    painter = painterResource(R.drawable.baseline_filter_list_24),
                     contentDescription = null,
                     onClick = onFilterClicked
                 )

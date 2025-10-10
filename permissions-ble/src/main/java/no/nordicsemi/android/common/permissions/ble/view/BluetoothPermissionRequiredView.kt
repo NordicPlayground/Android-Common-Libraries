@@ -43,8 +43,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,8 +52,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import no.nordicsemi.android.common.permissions.ble.R
 import no.nordicsemi.android.common.permissions.ble.viewmodel.PermissionViewModel
@@ -69,7 +67,7 @@ internal fun BluetoothPermissionRequiredView() {
     var permissionDenied by remember { mutableStateOf(viewModel.isBluetoothScanPermissionDeniedForever(context)) }
 
     WarningView(
-        imageVector = Icons.Default.BluetoothDisabled,
+        painterResource = painterResource(R.drawable.baseline_bluetooth_disabled_24),
         title = stringResource(id = R.string.bluetooth_permission_title),
         hint = stringResource(id = R.string.bluetooth_permission_info),
         modifier = Modifier

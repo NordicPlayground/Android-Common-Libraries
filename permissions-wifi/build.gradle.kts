@@ -27,6 +27,4 @@ dokka {
 
 dependencies {
     implementation(project(":ui"))
-
-    implementation(libs.androidx.compose.material.iconsExtended)
 }
