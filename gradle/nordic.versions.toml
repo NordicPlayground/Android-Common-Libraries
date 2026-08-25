@@ -4,8 +4,8 @@
 # The version catalog can be updated independently of this project after the release of this library.
 
 [versions]
-log = "2.5.0"
-blek = "2.0.0-beta04"
+log = "2.6.0"
+blek = "2.0.0-beta05"
 
 [libraries]
 log = { group = "no.nordicsemi.android", name = "log", version.ref = "log" }
