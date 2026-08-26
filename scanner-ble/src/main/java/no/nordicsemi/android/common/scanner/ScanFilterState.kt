@@ -141,7 +141,7 @@ interface ScanFilterState {
 @Composable
 fun rememberFilterState(
     filter: ConjunctionFilterScope.() -> Unit = {},
-    scanResultFilter: (ScanResult) -> Boolean = { it.isConnectable },
+    scanResultFilter: (ScanResult) -> Boolean = { it.isConnectable != false },
     dynamicFilters: List<Filter> = listOf(
         OnlyNearby(),
         OnlyWithNames(isInitiallySelected = true),
